@@ -25,4 +25,4 @@ Extended types (ADR, constitution, migration plan, benchmarks) orbit these witho
 
 - Positive: deterministic document → task routing; agents cannot "implement from research" without a spec-writing hop.
 - Negative: taxonomy overhead — teams must classify before routing.
-- Operational: compatibility tables and `documentation-gatekeeper` encode this boundary.
+- Operational: compatibility tables and the recommended-routing docs encode this boundary (the documentation-gatekeeper skill was removed — see ADR 0017).

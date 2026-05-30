@@ -25,7 +25,7 @@ The Lead Engineer adopts this task type as part of orchestration (becomes The Sk
 | **Source doc**       | A branch under review + the original source doc (spec/audit/bug-report) |
 | **Lead persona**     | [The Skeptic](../personas/the-skeptic.md)         |
 | **Output**           | Verdict + findings list                            |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `adversarial-review`, `empirical-proof` |
+| **Recommended skills** | `adversarial-review`, `empirical-proof`, `persona-skeptic` |
 | **Verification gate slots** | `cmdInstall` (pre), `cmdValidate` (post — **run by you**), `cmdTest` (post — **run by you**), `git diff` of branch under review |
 
 ---
@@ -36,16 +36,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 

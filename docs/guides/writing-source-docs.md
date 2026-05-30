@@ -47,7 +47,7 @@ A doc that mixes stances is a smell — split it.
 - [ ] If distilled from research: Distillation Loss Statement complete
 - [ ] `git status` shows only the spec doc changed
 
-See [The Architect's worked example](../personas/the-architect.md#%EF%B8%8F-example-how-the-architect-resolves-a-representative-issue) for a real-shaped flow.
+See [The Architect](../personas/the-architect.md) for the persona's stance and constraints.
 
 ---
 
@@ -76,7 +76,7 @@ See [The Architect's worked example](../personas/the-architect.md#%EF%B8%8F-exam
 - [ ] "No callers" claims verified by grep
 - [ ] `git status` clean on source
 
-See [The Auditor's worked example](../personas/the-auditor.md#%EF%B8%8F-example-how-the-auditor-resolves-a-representative-issue) for the `src/billing/` audit.
+See [The Auditor](../personas/the-auditor.md) for the persona's stance and constraints.
 
 ---
 
@@ -103,7 +103,7 @@ See [The Auditor's worked example](../personas/the-auditor.md#%EF%B8%8F-example-
 - [ ] Regression test plan included
 - [ ] `git status` clean on source (no fix in this session)
 
-See [The Bug Hunter's worked example](../personas/the-bug-hunter.md#%EF%B8%8F-example-how-the-bug-hunter-resolves-a-representative-issue) for the proxy-streaming corruption bug.
+See [The Bug Hunter](../personas/the-bug-hunter.md) for the persona's stance and constraints.
 
 ---
 
@@ -131,7 +131,7 @@ See [The Bug Hunter's worked example](../personas/the-bug-hunter.md#%EF%B8%8F-ex
 - [ ] If technical: product-behaviour claims verified, not inferred
 - [ ] If UX/market: 3+ concrete competitor examples cited; observed-vs-claimed distinguished
 
-See [The Researcher's worked example](../personas/the-researcher.md#%EF%B8%8F-example-how-the-researcher-resolves-a-representative-issue) (message broker) and [The Surveyor's example](../personas/the-surveyor.md#%EF%B8%8F-example-how-the-surveyor-resolves-a-representative-issue) (checkout flow) for both modes.
+See [The Researcher](../personas/the-researcher.md) (technical mode) and [The Surveyor](../personas/the-surveyor.md) (UX/market mode) for both stances.
 
 ---
 

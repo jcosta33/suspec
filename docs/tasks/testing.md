@@ -2,7 +2,7 @@
 
 > **TL;DR.** Add or improve test coverage. Lead persona is The Test Author. Test behaviour, not implementation. One test, one reason to fail. Verify each test fails when the assertion is flipped — paste the proof.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-testing.md`](../../scaffold/.agents/templates/task-testing.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-testing/references/task-template.md`](../../scaffold/.agents/skills/write-testing/references/task-template.md).
 
 ---
 
@@ -26,7 +26,7 @@ If you're adding tests *as part of* a feature task, that's `feature` — the Bui
 | **Lead persona**     | [The Test Author](../personas/the-test-author.md) |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md) (review) |
 | **Output**           | New test cases; coverage gap closed                |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `empirical-proof` |
+| **Recommended skills** | `write-testing`, `empirical-proof` (the Test Author mindset is carried by `write-testing`) |
 | **Verification gate slots** | `cmdInstall` (pre), `cmdTest` (after each new test), `cmdTest` + coverage report (post), `cmdValidate` (post) |
 
 ---
@@ -37,16 +37,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 
@@ -65,4 +56,5 @@ See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-
 
 - [`personas/the-test-author.md`](../personas/the-test-author.md)
 - [`documents/extended.md`](../documents/extended.md) — test plan format (when used)
+- [`skills/write-testing.md`](../skills/write-testing.md) — the recommended skill (carries the Test Author mindset)
 - [`skills/empirical-proof.md`](../skills/empirical-proof.md)

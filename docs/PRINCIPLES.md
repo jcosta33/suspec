@@ -36,11 +36,13 @@ When a task discovers something durable, the agent halts, *promotes* the finding
 
 ---
 
-## 4. 🎯 Personas are 1-to-1 with task types
+## 4. 🎯 Personas pair with task types as a suggested default
 
-Each task type has exactly one default primary persona. The mapping is deterministic. The agent does not choose; the framework chooses. Secondary personas exist only for handoff (e.g., the Skeptic reviews after a Builder task).
+Each task type has one default primary persona. That mapping is a **suggested default route**, not a deterministic assignment. Activation is by the agent's self-assessment: each persona ships as a standalone skill with a directive `description`, and the agent loads the one whose triggers match the work in front of it. When the task straddles types or the default misfits, the agent re-assesses, loads a different persona skill, and records the divergence in its task file's `## Decisions`.
 
-> **Tiebreaker.** When proposing a many-to-many mapping: the determinism is the value. Adopters get the auto-conditioning benefit only if the routing is unambiguous. Override at the project level (via `swarm.config` or equivalent), not at the framework level. See [ADR 0002](adrs/0002-personas-1-to-1-with-task-types.md).
+Determinism is **recommended routing, not framework enforcement**. The flow graph is Swarm's documented conditioning model; a launcher *may* apply it deterministically when scaffolding a task file, but nothing in-session blocks a re-assessment. Secondary personas still exist for handoff (e.g., the Skeptic reviews after a feature task).
+
+> **Tiebreaker.** When tempted to hard-wire the mapping back into gatekeeper enforcement: don't. The routing is guidance the agent reproduces in-session through directive descriptions; the value is auto-conditioning a launcher *can* apply, not a lock the agent cannot escape. Override at the project level (via overlay personas), not by re-enforcing determinism at the framework level. See [ADR 0020](adrs/0020-activation-by-self-assessment.md), which supersedes [ADR 0002](adrs/0002-personas-1-to-1-with-task-types.md).
 
 ---
 
@@ -60,11 +62,13 @@ The task file is primary. It carries the persona, the skills, the verification g
 
 ---
 
-## 7. 🧠 Skills are progressively disclosed; AGENTS.md only carries universal invariants
+## 7. 🧠 Skills are progressively disclosed; AGENTS.md carries persistent context and the command contract
 
-`AGENTS.md` is the entry point. It is short. It contains only what every agent in the repo must know: where the task file lives, the standing convention to load `manage-task` and `documentation-gatekeeper`, and the repo's named verification gate bindings. Skills carry the deep knowledge and load on demand based on their `description` field.
+`AGENTS.md` is the entry point. It is short. It carries only **persistent project context** — the facts and conventions every agent in the repo needs, plus the **command contract** (`## Commands`, which maps Validation / Test / Format and the extended slots to `{{cmd*}}` placeholders). It does *not* carry multi-step procedures. Those are skills, and they load on demand based on their directive `description` field.
 
-> **Tiebreaker.** When tempted to put a domain rule in `AGENTS.md`: write a skill instead. AGENTS.md grows linearly with what's universal; skills grow linearly with what's specialised. Conflating them rots both.
+There are **no always-load skills**. A "skill" authored to load on every task is the wrong primitive — its content is persistent context and belongs in `AGENTS.md` instead. The old always-loaded skills are gone: the task-file lifecycle and promotion discipline now live in the task templates and process docs, and the routing/forbidden-flow rules are framework concept-docs (recommended routing), not an enforced skill.
+
+> **Tiebreaker.** When tempted to put a domain rule or a multi-step procedure in `AGENTS.md`: write an on-demand skill instead. When tempted to author a skill that fires on every task: that's persistent context — put it in `AGENTS.md`. AGENTS.md grows with what's persistent and universal; skills grow with what's specialised and on-demand. Conflating them rots both. See [ADR 0017](adrs/0017-no-always-load-skills.md) and [ADR 0018](adrs/0018-agents-md-command-contract.md).
 
 ---
 
@@ -86,9 +90,9 @@ Plain declarative statements. No "you might want to consider…" hedge words unl
 
 ## 10. 🔁 The catalogue grows, but slowly and with evidence
 
-New personas, new task types, new doc types are framework-level changes. They require evidence ("agents do this all the time across many repos"), an ADR ("considered and rejected: folding into existing X for these reasons"), and a migration path ([`MIGRATIONS.md`](../MIGRATIONS.md)). Bespoke project needs are handled by **overlays** (project-level personas, project-specific task types) — not by inflating the framework.
+New personas, new task types, new doc types are framework-level changes. They require evidence ("agents do this all the time across many repos"), an ADR ("considered and rejected: folding into existing X for these reasons"), and a migration path (per the versioning policy, [ADR 0015](adrs/0015-versioning-scheme.md)). Bespoke project needs are handled by **overlays** (project-level personas, project-specific task types) — not by inflating the framework.
 
-> **Tiebreaker.** When proposing a new persona: can you collapse it into an existing one with a different mindset switch? If yes, do that. The bar for catalogue growth is high because the determinism (Principle 4) depends on the catalogue being small enough to memorise.
+> **Tiebreaker.** When proposing a new persona: can you collapse it into an existing one with a different mindset switch? If yes, do that. The bar for catalogue growth is high because the agent's self-assessment (Principle 4) stays unambiguous only while the catalogue is small enough that the suggested routing is memorisable.
 
 ---
 

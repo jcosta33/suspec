@@ -2,7 +2,7 @@
 
 > **TL;DR.** Produce a research file an Architect can lift directly into spec requirements. Lead persona is The Researcher (technical mode) or The Surveyor (UX/market mode). Every claim cites a primary source. End with an actionable recommendation. Read-only on source code.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-research.md`](../../scaffold/.agents/templates/task-research.md). The doc-template the research-writing task produces lives at [`/scaffold/.agents/templates/research.md`](../../scaffold/.agents/templates/research.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-research/references/task-template.md`](../../scaffold/.agents/skills/write-research/references/task-template.md). The doc-template the research-writing task produces lives at [`/scaffold/.agents/templates/research.md`](../../scaffold/.agents/templates/research.md).
 
 ---
 
@@ -25,7 +25,7 @@ If the answer is simple enough to capture in a task file's `## Findings`, you do
 | **Source doc**       | `research question` (optional) / human ask         |
 | **Lead persona**     | [The Researcher](../personas/the-researcher.md) (technical) **or** [The Surveyor](../personas/the-surveyor.md) (UX/market) |
 | **Output**           | `research.md` at `.agents/research/{{slug}}.md`    |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-research`, `distillation-discipline` |
+| **Recommended skills** | `write-research`, `distillation-discipline` (the Researcher mindset is carried by `write-research`; `persona-surveyor` for the UX/market mode) |
 | **Verification gate slots** | post: `git status` (clean on source)        |
 
 ---
@@ -36,16 +36,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 

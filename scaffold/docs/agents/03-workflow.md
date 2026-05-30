@@ -30,10 +30,10 @@ stateDiagram-v2
 The launcher creates `.agents/tasks/{{slug}}.md`. By the time the agent sees it:
 
 - Metadata is filled in (slug, branch, base, worktree, created, status `active`)
-- Persona is named in the `> **PERSONA:**` blockquote
+- A suggested persona may be named in the `> **PERSONA:**` blockquote
 - Source doc(s) are linked
-- Required skills list is populated
-- Verification gate slots are bound to project commands (per AGENTS.md)
+- The list of skills worth loading is populated
+- Verification gate slots are bound to project commands (per `AGENTS.md > Commands`)
 - Constraints include the persona's forbidden actions
 - Self-review checklist is pre-written with empty answer slots
 
@@ -84,7 +84,7 @@ The agent declares work complete. Self-review becomes the gate:
 1. **Read the persona's Self-review questions** (in the task template).
 2. **Write answers** below each question.
 3. **Paste verification outputs** verbatim in `### Verification outputs`.
-4. **Promote durable findings** upstream (to audits/specs/research/bug-reports). The `manage-task` skill checks this.
+4. **Promote durable findings** upstream (to audits/specs/research/bug-reports). The task file's `## Self-review` gate prompts for this — promotion is part of the task structure, not a separate skill.
 5. **Verify all gates satisfied** — every question answered, every output pasted, every `[pending]` resolved or surfaced.
 
 If any gate fails, the agent returns to Active until the gate can be satisfied.
@@ -103,7 +103,7 @@ Three terminal outcomes:
 
 After Self-review passes:
 
-1. **Promote durable findings** (the pre-close gate enforces this)
+1. **Promote durable findings** (the task file's pre-close `## Self-review` gate prompts for this)
 2. **Hand off to downstream** — most code-producing tasks hand off to a Skeptic review task
 3. **Close the worktree** — branch merged (or kicked back, or abandoned), worktree removed, gitignored task file deleted
 
@@ -113,8 +113,8 @@ After Self-review passes:
 
 When a fresh session starts in an existing worktree (status `active`):
 
-1. **Read the task file.** Standing convention from AGENTS.md.
-2. **Re-adopt the persona.** Load `.agents/skills/personas/SKILL.md` and the named persona profile.
+1. **Read the task file.** This is the standing convention in `AGENTS.md` — the task file is always the first read.
+2. **Re-load the skills the work needs.** Re-adopt the suggested persona: load `persona-<slug>/SKILL.md` if one of the seven persona skills fits, else the matching workflow skill carries the mindset. Re-load any workflow and quality-gate skills the task calls for.
 3. **Read the linked source docs in full.** Don't trust the previous session's summarisation.
 4. **Read `## Decisions`, `## Findings`, `## Assumptions`, `## Next steps`** in that order.
 5. **Re-run any verification commands** `## Next steps` flags. Confirm worktree state matches.
@@ -143,6 +143,6 @@ These are real limits. The framework is honest about them.
 - `01-process.md` — the documentation-first workflow
 - `02-file-types.md` — what each document type contains
 - `04-standards.md` — writing and execution standards
-- `05-flow-graph.md` — the deterministic routing graph
-- `.agents/skills/manage-task/SKILL.md` — the lifecycle-managing skill
-- `.agents/templates/task-base.md` — the shared task skeleton
+- `05-flow-graph.md` — the recommended routing graph
+- `.agents/templates/task-base.md` — the shared task skeleton that carries the lifecycle and Self-review gate
+- `.agents/skills/` — the workflow, quality-gate, and persona skills loaded on demand

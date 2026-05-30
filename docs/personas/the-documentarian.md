@@ -1,6 +1,6 @@
 # Persona (documentation): The Documentarian
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Documentarian**.
+> **Runtime profile:** ships no standalone persona skill. The Documentarian mindset — its constraints, forbiddances, proofs, and red flags — is carried by the matching workflow skill [`scaffold/.agents/skills/write-documentation/SKILL.md`](../../scaffold/.agents/skills/write-documentation/SKILL.md).
 
 ---
 

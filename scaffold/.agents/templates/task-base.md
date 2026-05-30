@@ -1,6 +1,6 @@
 # {{title}}
 
-> This file documents the **shared task skeleton** every type-specific task template extends. It is not itself launched as a task — type-specific templates (`task-feature.md`, `task-fix.md`, etc.) include these sections plus their own additions.
+> This file documents the **shared task skeleton** every type-specific task template extends. It is not itself launched as a task. Each workflow skill ships its own `references/task-template.md` (e.g. `write-feature`, `write-audit`) that includes these sections plus its own additions; the two skill-less task types keep flat templates here (`task-orchestration.md`, `task-review.md`).
 
 ## Metadata
 
@@ -17,7 +17,7 @@
 
 > 🔒 / ⚠️ / 🧪 / 📚 **<TASK TYPE> SESSION** — short descriptor of the session's discipline.
 >
-> **PERSONA:** Load `.agents/skills/personas/SKILL.md` and adopt **<Persona name>** persona.
+> **AGENTS.md:** `{{cmdValidate}}` / `{{cmdTest}}` / `{{cmdInstall}}` resolve from `AGENTS.md > Commands`. Non-contract values (`{{cmdBenchmark}}`, `{{cmdValidateDeps}}`, `{{cmdTypecheck}}`) — ask the user. If `AGENTS.md` is missing, ask before substituting.
 
 ---
 
@@ -34,18 +34,21 @@ What is true when this task is done. One paragraph maximum.
 
 ---
 
-## Required skills
+## Skills to load
 
-- `manage-task`
-- `documentation-gatekeeper`
-- `personas` → <Persona>
-- (task-type-specific skills, e.g., `write-feature`, `empirical-proof`)
+Skills self-activate by description match — load the ones whose `description` fits the work in front of you:
+
+- The **workflow skill** for this task type (e.g. `write-feature`, `write-fix`, `write-audit`).
+- The **quality gates** whose descriptions match (`empirical-proof` on any task with verifiable claims, `adversarial-review` on review/audit passes, `distillation-discipline` when transforming an upstream doc).
+- The **suggested persona** (a `persona-<slug>` skill if one matches the work; otherwise the mindset is carried by the workflow skill itself). Record the choice — and any divergence from the suggested default — in `## Decisions`.
+
+There is no always-loaded skill. Install and load only what the work needs.
 
 ---
 
 ## Domain skills
 
-- (Project-specific skills determined by description-matching to the work.)
+- (Project-specific skills under `.agents/skills/domain/`, loaded by description-matching to the work.)
 
 ---
 
@@ -56,27 +59,27 @@ What is true when this task is done. One paragraph maximum.
 - Do not merge, rebase, or push unless explicitly instructed
 - (Task-type-specific constraints)
 - (Persona's forbidden actions, summarised)
-- **Proactively research and read related docs.** Browse `.agents/specs/`, `.agents/audits/`, `.agents/research/`, `.agents/bugs/`, `docs/`, `AGENTS.md`, and `.agents/skills/` as needed.
+- **Proactively research and read related docs.** Browse `.agents/specs/`, `.agents/audits/`, `.agents/research/`, `.agents/bugs/`, `docs/`, `AGENTS.md`, and the project skills directory as needed.
 
 ---
 
 ## (Type-specific blocks)
 
-Per task type, additional sections are inserted here. See:
+Per task type, additional sections are inserted here. See each skill's `references/task-template.md` (or the flat template for skill-less types):
 
-- `task-feature.md`: (no extra blocks beyond Objective + Linked docs)
-- `task-fix.md`: `## Reproduction`
-- `task-refactor.md`: `## Before / after state`, `## Shim contracts`
-- `task-rewrite.md`: `## Behavior delta`, `## Acceptance criteria`, `## Module plan`
-- `task-migration.md`: `## Migration source and target`, `## Wave plan`, `## Compatibility shims`, `## Callsite tracker`
-- `task-performance.md`: `## Baseline`, `## Target`, `## Hypothesis`, `## Measurement protocol`
-- `task-testing.md`: `## Coverage gap`, `## Test cases`, `## Test placement`
-- `task-documentation.md`: `## Doc target`, `## Source material`, `## Examples to verify`
-- `task-orchestration.md`: `## Worker tracker`, `## Kickback queue`, `## Merge log`
-- `task-review.md`: `## Diff overview`, `## Findings`, `## Verdict`
-- `task-bug-report.md`: `## Reported behavior`, `## Reproduction attempts`, `## Reliable reproduction`, `## Hypothesis tracker`, `## Root cause`
-- `task-audit.md`: `## Goal`, `## Scope`, `## Code paths to inspect`
-- `task-research.md`: `## Research question`, `## Sources to consult`, `## Findings outline`
+- `write-feature`: (no extra blocks beyond Objective + Linked docs)
+- `write-fix`: `## Reproduction`
+- `write-refactor`: `## Before / after state`, `## Shim contracts`
+- `write-rewrite`: `## Behavior delta`, `## Acceptance criteria`, `## Module plan`
+- `write-migration`: `## Migration source and target`, `## Wave plan`, `## Compatibility shims`, `## Callsite tracker`
+- `write-performance`: `## Baseline`, `## Target`, `## Hypothesis`, `## Measurement protocol`
+- `write-testing`: `## Coverage gap`, `## Test cases`, `## Test placement`
+- `write-documentation`: `## Doc target`, `## Source material`, `## Examples to verify`
+- `write-bug-report`: `## Reported behavior`, `## Reproduction attempts`, `## Reliable reproduction`, `## Hypothesis tracker`, `## Root cause`
+- `write-audit`: `## Goal`, `## Scope`, `## Code paths to inspect`
+- `write-research`: `## Research question`, `## Sources to consult`, `## Findings outline`
+- `task-orchestration.md` (flat): `## Worker tracker`, `## Kickback queue`, `## Merge log`
+- `task-review.md` (flat): `## Diff overview`, `## Findings`, `## Verdict`
 
 ---
 
@@ -92,7 +95,7 @@ Per task type, additional sections are inserted here. See:
 
 ## Progress checklist
 
-(Discrete items, marked as they complete.)
+(Discrete items, marked as they complete. Each template ends the checklist with one Self-review item per Self-review question.)
 
 - [ ] (item)
 
@@ -100,7 +103,7 @@ Per task type, additional sections are inserted here. See:
 
 ## Decisions
 
-(Significant choices made during the session, with rationale.)
+(Significant choices made during the session, with rationale. Record which skills and persona were loaded, and any divergence from the suggested default.)
 
 - ***
 
@@ -134,24 +137,23 @@ Per task type, additional sections are inserted here. See:
 
 ## Self-review
 
-<self_review>
-
-(Persona-specific framing — see each task template for the questions.)
+Stop. (Persona-specific framing — see each task template for the opening stance and questions.)
 
 > **Hard gate.** The task is not complete until every question below has a written answer directly beneath it.
 
 ### Verification outputs (paste actual command output — do not paraphrase)
 
-- (per-task slot list)
+- `git status` →
+- (per-task verification slots, e.g. `{{cmdValidate}}` / `{{cmdTest}}` last 2 lines)
 
 ### (persona-specific Self-review questions)
 
 - ...
+  Answer:
 
 ### Final Polish
 
-- (the standing "what did I leave behind" question)
+- Did you ask yourself: "What did I leave behind? Did I actually run all the gates, or did I trust my memory?" Do not leave the work without this final adversarial pass.
+  Answer:
 
 Only when every answer above is written is this task complete.
-
-</self_review>

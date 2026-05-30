@@ -15,4 +15,4 @@ Convention: `.agents/tasks/` is **gitignored**. Durable knowledge must promote t
 ## Consequences
 
 - Positive: worktrees stay disposable; prompts stay reproducible via source docs + template, not accidental task prose.
-- Negative: forgetting promotion loses findings — mitigated by `manage-task` + `documentation-gatekeeper` close gates.
+- Negative: forgetting promotion loses findings — mitigated by the task template's pre-close Self-review gate (the always-loaded manage-task/documentation-gatekeeper skills were removed — see ADR 0017).

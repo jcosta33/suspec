@@ -1,13 +1,19 @@
 ---
 name: write-refactor
-description: Load when restructuring code (refactor) or migrating an API (migration / upgrade). Encodes the Janitor / Migrator discipline — behaviour preservation, per-batch architectural validation (every 10 files for refactor; every wave for migration), documented shim contracts with verifiable removal criteria, deletion-safety proof.
+description: Restructure code to address audit findings without changing surface behaviour. ALWAYS apply this skill when the user asks to refactor, restructure, clean up, extract, or address an audit's "Needed" items — only when behaviour is preserved. Do not change observable behaviour, batch unrelated structural changes together, or remove a shim without proving call-site coverage. Skip this skill for behaviour-changing rewrites of existing modules, API/framework migrations, or net-new feature implementation against a fresh spec.
 ---
 
 # Skill: write-refactor
 
 ## Purpose
 
-Refactors and migrations fail when behaviour drifts silently or when shims become permanent. This skill is the discipline that keeps the change *structural* (not behavioural) and ensures every shim has a documented exit.
+Refactors fail when behaviour drifts silently or when shims become permanent. This skill is the discipline that keeps the change *structural* (not behavioural) and ensures every shim has a documented exit.
+
+A refactor restructures code while preserving behaviour end-to-end. The audit drives the changes; the structure improves; the surface and semantics stay the same. Anything that *also* changes the surface — replacing one API with another, upgrading a framework version — is a different discipline (API/framework migration) and belongs in a separate task.
+
+## Project context (the AGENTS.md contract)
+
+Resolves project commands via the consuming repo's `AGENTS.md` — `Commands > Validation`, `Commands > Test`, plus an optional dep-validation command (e.g. `pnpm dep-cruise`) used at the every-N-files architectural checkpoint — not in the standard contract; ask the user if the project uses one. If `AGENTS.md` is missing or an entry is undefined, ask the user which command to run before proceeding — do not guess.
 
 ## Core rules
 
@@ -15,12 +21,9 @@ Refactors and migrations fail when behaviour drifts silently or when shims becom
 
 The test suite passes before, during (at every checkpoint), and after. If a test fails after a refactor, the refactor changed behaviour — investigate before "fixing" the test.
 
-For refactor: behaviour is preserved end-to-end.
-For migration / upgrade: behaviour is preserved at the surface; the implementation moves from API A to API B.
-
 ### 2. Periodic architectural validation
 
-For refactor: `{{cmdValidateDeps}}` after every 10 files (the framework convention; the audit may set a different frequency). For migration: after every wave. Per-checkpoint validation catches drift early; final-only validation lets drift accumulate.
+Run the project's dependency-validation command after every 10 files (or at the audit's chosen checkpoint frequency). Per-checkpoint validation catches drift early; final-only validation lets drift accumulate.
 
 ### 3. Each file modified individually
 
@@ -28,7 +31,7 @@ No bulk codemods. No `sed` over hundreds of files in one commit. Bulk operations
 
 ### 4. Document every shim
 
-Every shim added during the work has:
+Every shim added during the refactor has:
 
 - A **shim path** (where it lives)
 - A **forward target** (what it forwards to)
@@ -47,12 +50,11 @@ Paste the grep output into `## Self-review`. Deletion without grep-evidence is u
 
 ### 6. Promote out-of-scope findings
 
-Anything you discover that's not on the audit's (or migration plan's) list gets *promoted* to the audit, not silently fixed. Scope creep dilutes the refactor's review.
+Anything you discover that's not on the audit's list gets *promoted* to the audit, not silently fixed. Scope creep dilutes the refactor's review.
 
 ## What does not belong
 
-- **In a refactor:** new features, behavioural improvements, "while I'm here" semantic changes.
-- **In a migration:** behavioural drift bundled with the surface change.
+- **In a refactor:** new features, behavioural improvements, "while I'm here" semantic changes, surface-level API replacements (those are migrations — different discipline).
 - **In `## Findings`:** durable architectural concerns not promoted upstream.
 
 ## Anti-patterns
@@ -65,10 +67,8 @@ Anything you discover that's not on the audit's (or migration plan's) list gets 
 - Refactoring tests "for clarity" alongside production code
 - Shims with no removal criteria
 
-## See also
+## Bundled resources
 
-- `.agents/templates/task-refactor.md` — the refactor task template
-- `.agents/templates/task-migration.md` — the migration task template
-- `.agents/templates/audit.md` — the input doc type
-- `.agents/skills/empirical-proof/SKILL.md`
-- `.agents/skills/personas/SKILL.md` — The Janitor / The Migrator personas
+- `references/task-template.md` — a fillable refactor-task template with before/after state, shim contracts table, plan, progress checklist with per-batch validation slots, and a self-review hard gate covering behaviour preservation, architectural cleanliness, shim hygiene, and deletion safety.
+
+Substitute the `{{...}}` placeholders and fill in as you work.

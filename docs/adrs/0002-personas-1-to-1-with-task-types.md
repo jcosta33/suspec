@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Superseded by [0020](./0020-activation-by-self-assessment.md) (and informed by [0019](./0019-personas-ship-as-individual-skills.md)).
+
+The 1:1 task-type → persona pairing now stands as a **suggested default route**, not a deterministic assignment. The agent may re-assess and load a different persona skill when the work in front of it doesn't match the suggested default (recording the divergence in its task file's `## Decisions`). Determinism is **no longer gatekeeper-enforced** — the flow graph is recommended routing (a launcher *may* apply it deterministically, but nothing in-session blocks a re-assessment). The original decision text below is kept as history.
 
 ## Context
 

@@ -1,6 +1,6 @@
 # Persona (documentation): The Bug Hunter
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Bug Hunter**.
+> **Runtime profile:** ships no standalone persona skill. The Bug Hunter mindset — its constraints, forbiddances, proofs, and red flags — is carried by the matching workflow skill [`scaffold/.agents/skills/write-bug-report/SKILL.md`](../../scaffold/.agents/skills/write-bug-report/SKILL.md).
 
 ---
 

@@ -12,7 +12,7 @@
 
 **Where it lives:** `.agents/specs/{{slug}}.md`. After ship: `.agents/specs/shipped/`.
 
-**Authoring persona:** The Architect.
+**Authoring persona:** The Architect (`persona-architect/SKILL.md`).
 
 **Spawns:** `feature` task.
 
@@ -41,7 +41,7 @@
 
 **Where it lives:** `.agents/audits/{{slug}}.md`. After all "Needed" entries close: `.agents/audits/resolved/`.
 
-**Authoring persona:** The Auditor (or The Skeptic for `deepen-audit`).
+**Authoring persona:** The Auditor (`persona-auditor/SKILL.md`), or The Skeptic (`persona-skeptic/SKILL.md`) for `deepen-audit`.
 
 **Spawns:** `refactor` task (default), `performance`, `deepen-audit`, or `bug-report-writing` depending on the findings.
 
@@ -68,7 +68,7 @@
 
 **Where it lives:** `.agents/bugs/{{slug}}.md`. After fix + regression test: `.agents/bugs/closed/`.
 
-**Authoring persona:** The Bug Hunter.
+**Authoring persona:** The Bug Hunter — a mindset carried by the `write-bug-report` skill (no standalone persona skill ships for it).
 
 **Spawns:** `fix` task.
 
@@ -98,7 +98,7 @@
 
 **Where it lives:** `.agents/research/{{slug}}.md`. Terminal — superseded by newer research when the world changes.
 
-**Authoring persona:** The Researcher (technical) or The Surveyor (UX/market).
+**Authoring persona:** The Researcher (technical) — a mindset carried by the `write-research` skill — or The Surveyor (UX/market), which ships as `persona-surveyor/SKILL.md`.
 
 **Spawns:** `spec-writing` task.
 
@@ -122,17 +122,17 @@
 
 ## Task files
 
-**Purpose:** The worktree-local execution scaffolding. Names the persona, lists the skills, links the source doc, captures plan / progress / decisions / findings / blockers / next steps / self-review.
+**Purpose:** The worktree-local execution scaffolding. May name a suggested persona, lists the skills worth loading, links the source doc, captures plan / progress / decisions / findings / blockers / next steps / self-review.
 
 **Where it lives:** `.agents/tasks/{{slug}}.md` — **gitignored**.
 
 **Authoring:** the launcher (CLI or human) scaffolds the file from the source doc. The agent fills in the in-flight sections.
 
-**Lifecycle:** Active → (Paused if session ends mid-task) → Self-review → Done (or Kicked-back / Abandoned).
+**Lifecycle:** Active → (Paused if session ends mid-task) → Self-review → Done (or Kicked-back / Abandoned). The task file's own structure carries this lifecycle discipline — the `## Self-review` hard gate and the `## Findings` → promotion step are sections of the file, not a separate skill.
 
 **Why gitignored:** task files are execution scaffolding. Durable findings migrate upstream (to audits/specs/research/bug-reports) before the worktree is deleted. Committing them would couple branches in unhelpful ways and pollute history.
 
-The shared task skeleton lives at `.agents/templates/task-base.md`. Type-specific templates extend it (`task-feature.md`, `task-fix.md`, `task-refactor.md`, etc.).
+The shared task skeleton lives at `.agents/templates/task-base.md`. Two skill-less task types keep flat templates next to it (`task-orchestration.md`, `task-review.md`); for every other task type the per-type template ships inside the matching skill at `.agents/skills/<skill>/references/task-template.md`.
 
 ---
 
@@ -156,9 +156,9 @@ These are *specialisations* of the core types — an ADR is conceptually a small
 
 ---
 
-## Forbidden compositions
+## Anti-pattern compositions
 
-The framework refuses:
+These compositions are the documented anti-patterns the source-doc types exist to prevent:
 
 - **A spec that contains current-state observations.** That's an audit. Split.
 - **An audit that prescribes new behaviour.** That's a spec. Split.
@@ -166,7 +166,7 @@ The framework refuses:
 - **A research file that doubles as a spec.** The transition is `spec-writing` — separate task.
 - **One doc with multiple `## Recommendation` sections covering different concerns.** Split.
 
-The `documentation-gatekeeper` skill enforces these rules at the structural level.
+These are recommended-routing rules (`05-flow-graph.md`). Each authoring skill (`write-spec`, `write-audit`, `write-bug-report`, `write-research`) reproduces the relevant boundary in its own discipline. They are guidance the launcher and agent honour, not a gatekeeper that refuses you.
 
 ---
 
@@ -175,6 +175,6 @@ The `documentation-gatekeeper` skill enforces these rules at the structural leve
 - `01-process.md` — the documentation-first workflow
 - `03-workflow.md` — step-by-step session flow
 - `04-standards.md` — writing and execution standards
-- `05-flow-graph.md` — the deterministic routing graph
-- `.agents/templates/` — the actual templates
-- `.agents/skills/documentation-gatekeeper/SKILL.md` — boundary enforcement
+- `05-flow-graph.md` — the recommended routing graph
+- `.agents/templates/` — the source-doc templates and the shared task skeleton
+- `.agents/skills/` — the authoring skills that carry each source-doc type's discipline

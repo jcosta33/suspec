@@ -1,6 +1,6 @@
 # 04 · Personas
 
-> **TL;DR.** Personas are *mindsets*, not roles. Same agent, same model — different stance, different output. Each task type has exactly one default lead persona; the agent never picks. Personas have hard rules, forbidden actions, and required empirical proofs. They hand off to each other deterministically along the flow graph.
+> **TL;DR.** Personas are *mindsets*, not roles. Same agent, same model — different stance, different output. The catalogue is **13 mindsets**; **7 ship as runtime skills** (`persona-<slug>`) and the other 6 are mindsets carried by the matching workflow skill. Each task type has one *suggested* default persona — the agent arrives pre-conditioned but may re-assess. Personas have hard rules, forbidden actions, and required empirical proofs. They hand off to each other along the flow graph.
 
 ---
 
@@ -24,9 +24,11 @@ See [ADR 0009](../adrs/0009-personas-are-mindsets.md).
 
 ---
 
-## 🧬 What every persona file contains
+## 🧬 What every persona profile contains
 
-Each persona file at [`personas/`](../personas/) follows the same structure:
+The conceptual catalogue at [`personas/`](../personas/) describes all 13 mindsets — routing wedges, contrasts, hazards. The *executable* profile for each of the 7 shipped personas lives in its own runtime skill at `.agents/skills/persona-<slug>/SKILL.md` (split out from the old consolidated `personas/SKILL.md`). For the other 6 mindsets, the executable discipline is folded into the matching workflow skill (Builder → `write-feature`, Bug Hunter → `write-bug-report`, Documentarian → `write-documentation`, Researcher → `write-research`, Test Author → `write-testing`; Lead Engineer is orchestration with no skill).
+
+A persona profile — whether a standalone `persona-<slug>` skill or carried inside a workflow skill — follows the same structure:
 
 ```markdown
 # Persona: <Display name>
@@ -53,10 +55,10 @@ Tiebreakers when rules don't directly apply.
 Which source docs lead to this persona.
 
 ## Triggering task types
-Which task types route to this persona by default.
+Which task types suggest this persona by default.
 
-## Skills auto-attached
-The skills loaded when this persona becomes active.
+## Skills worth loading
+The skills worth loading alongside this persona's work.
 
 ## Empirical proofs required
 What must be pasted into Self-review.
@@ -81,27 +83,27 @@ The format is borrowed from the *Superpowers* framework's "iron law + red flags"
 
 ---
 
-## 📋 The 13 personas
+## 📋 The 13 mindsets (7 ship as skills)
 
-The full catalogue lives at [`personas/`](../personas/). Quick reference:
+The full catalogue lives at [`personas/`](../personas/). The `Ships as` column shows where each mindset's executable profile lives: a standalone `persona-<slug>` skill, or carried inside the named workflow skill.
 
-| Persona                  | Primary task types                       | Symbolic colour   |
-| ------------------------ | ---------------------------------------- | ----------------- |
-| 🟦 [The Builder](../personas/the-builder.md)           | feature, integration, kickback           | Pragmatic         |
-| 🟥 [The Skeptic](../personas/the-skeptic.md)           | review, deepen-audit, fix                | Paranoid          |
-| 🟪 [The Architect](../personas/the-architect.md)       | spec-writing                             | Structural        |
-| 🟫 [The Janitor](../personas/the-janitor.md)           | refactor                                 | Surgical          |
-| 🟧 [The Lead Engineer](../personas/the-lead-engineer.md) | orchestration                          | Coordinative      |
-| 🟩 [The Researcher](../personas/the-researcher.md)     | research-writing (technical)             | Evidentiary       |
-| 🟩 [The Surveyor](../personas/the-surveyor.md)         | research-writing (UX/market)             | Empathetic        |
-| 🟥 [The Bug Hunter](../personas/the-bug-hunter.md)     | bug-report-writing                       | Forensic          |
-| 🟦 [The Auditor](../personas/the-auditor.md)           | audit-writing                            | Observational     |
-| 🟫 [The Migrator](../personas/the-migrator.md)         | migration, upgrade                       | Mechanical        |
-| 🟨 [The Performance Surgeon](../personas/the-performance-surgeon.md) | performance              | Quantitative      |
-| 🟩 [The Test Author](../personas/the-test-author.md)   | testing                                  | Boundary-pushing  |
-| 🟦 [The Documentarian](../personas/the-documentarian.md) | documentation                          | Reader-first      |
+| Persona                  | Primary task types                       | Stance            | Ships as                    |
+| ------------------------ | ---------------------------------------- | ----------------- | --------------------------- |
+| 🟦 [The Builder](../personas/the-builder.md)           | feature, integration, kickback           | Pragmatic         | `write-feature` (mindset)   |
+| 🟥 [The Skeptic](../personas/the-skeptic.md)           | review, deepen-audit, fix                | Paranoid          | **`persona-skeptic`**       |
+| 🟪 [The Architect](../personas/the-architect.md)       | spec-writing                             | Structural        | **`persona-architect`**     |
+| 🟫 [The Janitor](../personas/the-janitor.md)           | refactor                                 | Surgical          | **`persona-janitor`**       |
+| 🟧 [The Lead Engineer](../personas/the-lead-engineer.md) | orchestration                          | Coordinative      | orchestration (no skill)    |
+| 🟩 [The Researcher](../personas/the-researcher.md)     | research-writing (technical)             | Evidentiary       | `write-research` (mindset)  |
+| 🟩 [The Surveyor](../personas/the-surveyor.md)         | research-writing (UX/market)             | Empathetic        | **`persona-surveyor`**      |
+| 🟥 [The Bug Hunter](../personas/the-bug-hunter.md)     | bug-report-writing                       | Forensic          | `write-bug-report` (mindset) |
+| 🟦 [The Auditor](../personas/the-auditor.md)           | audit-writing                            | Observational     | **`persona-auditor`**       |
+| 🟫 [The Migrator](../personas/the-migrator.md)         | migration, upgrade                       | Mechanical        | **`persona-migrator`**      |
+| 🟨 [The Performance Surgeon](../personas/the-performance-surgeon.md) | performance              | Quantitative      | **`persona-performance-surgeon`** |
+| 🟩 [The Test Author](../personas/the-test-author.md)   | testing                                  | Boundary-pushing  | `write-testing` (mindset)   |
+| 🟦 [The Documentarian](../personas/the-documentarian.md) | documentation                          | Reader-first      | `write-documentation` (mindset) |
 
-Total: 13. The 1-to-1 mapping with task types means each persona owns 1+ task types; some task types (like `kickback`) re-use a persona but in a different mode.
+Total: 13 mindsets, 7 shipped as `persona-<slug>` skills (bold). The remaining 6 are carried by the workflow skill that owns the matching work — there is no separate skill to load. The task-type → persona pairing is a *suggested* default: each mindset is the recommended stance for 1+ task types, and the agent may re-assess. Some task types (like `kickback`) re-use a mindset in a different mode.
 
 For the full task-type ↔ persona map, see [the compatibility matrix](../reference/compatibility-matrix.md).
 
@@ -182,9 +184,9 @@ The framework prefers two crisp tasks over one blended one. The cost of splittin
 
 Sometimes a project has work that doesn't fit cleanly into a framework persona — a regulated codebase needs a SecurityReviewer; a TypeScript-heavy shop needs a TypeSurgeon for variance-architecture work; an SDK-integration shop needs an Integrator. The framework supports these as **overlays**:
 
-- The project adds its own persona file at `.agents/skills/personas/<name>.md`
-- Project tasks can route to the overlay persona via the project's `swarm.config` (CLI concern)
-- The framework remains 13; the project remains expressive
+- The project adds its own persona skill at `.agents/skills/persona-<name>/SKILL.md` with a directive `description` so it self-activates on matching work
+- Project tasks can route to the overlay persona via the project's launcher config (CLI concern), or the agent loads it in-session when the `description` matches
+- The framework's catalogue remains 13 mindsets (7 shipped); the project remains expressive
 
 Overlays do not need an ADR or framework approval. They are a project decision. The framework graduates an overlay to canonical only when many projects independently demand it.
 
@@ -213,6 +215,6 @@ The framework's response is the **Self-review hard gate**. The agent cannot clos
 - [`06-task-types.md`](06-task-types.md) — what personas execute
 - [`07-flow-graph.md`](07-flow-graph.md) — how personas hand off
 - [`09-empirical-proof.md`](09-empirical-proof.md) — the discipline that prevents costume-mode
-- [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md) — why 1-to-1
+- [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md) — the original 1:1 persona↔task mapping, superseded to suggested defaults
 - [ADR 0009](../adrs/0009-personas-are-mindsets.md) — why mindset, not role
 - [ADR 0013](../adrs/0013-iron-law-red-flags-pattern.md) — the persona profile format

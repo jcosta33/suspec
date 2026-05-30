@@ -2,7 +2,7 @@
 
 > **TL;DR.** Write or update user-facing documentation (READMEs, contributor guides, ADRs, public API docs). Lead persona is The Documentarian. The reader is a human who has not read the code; lead with what they need to do. Every code example must run as written.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-documentation.md`](../../scaffold/.agents/templates/task-documentation.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-documentation/references/task-template.md`](../../scaffold/.agents/skills/write-documentation/references/task-template.md).
 
 ---
 
@@ -24,7 +24,7 @@ A `documentation` task is right when:
 | **Lead persona**     | [The Documentarian](../personas/the-documentarian.md) |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md) (review) |
 | **Output**           | User-facing doc(s) at the project's doc location   |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `distillation-discipline`, `empirical-proof` |
+| **Recommended skills** | `write-documentation`, `distillation-discipline`, `empirical-proof` (the Documentarian mindset is carried by `write-documentation`) |
 | **Verification gate slots** | post: every code example actually run (output pasted), `cmdValidate` (if doc-linting applies) |
 
 ---
@@ -35,16 +35,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 
@@ -62,6 +53,7 @@ See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-
 ## See also
 
 - [`personas/the-documentarian.md`](../personas/the-documentarian.md)
+- [`skills/write-documentation.md`](../skills/write-documentation.md) — the recommended skill (carries the Documentarian mindset)
 - [`skills/distillation-discipline.md`](../skills/distillation-discipline.md)
 - [`skills/empirical-proof.md`](../skills/empirical-proof.md)
 - The [Diátaxis](https://diataxis.fr) framework — the doc-type vocabulary

@@ -103,7 +103,7 @@ Three points on the spectrum:
 
 - Persona profiles are short (one screen)
 - Hard rules and forbidden actions, not prose backstories
-- Rigid 1-to-1 task mapping (the agent never picks)
+- Suggested 1:1 task mapping (the agent may re-assess)
 
 See [ADR 0009](../adrs/0009-personas-are-mindsets.md).
 
@@ -119,7 +119,7 @@ See [ADR 0009](../adrs/0009-personas-are-mindsets.md).
 
 Superpowers ships a session-start hook that injects a short bootstrap document — reportedly under two thousand tokens — telling the agent to invoke a relevant skill before doing anything else. This is what makes the framework work in practice: skills don't apply themselves; the hook ensures they're considered.
 
-**Swarm's position:** specified. See [`reference/agents-md.md`](../reference/agents-md.md). The framework recommends an AGENTS.md leading instruction (or equivalent CLI hook) that says: "First action — read your task file and the gatekeeper skill. Then proceed." The mechanism is at the agent CLI layer; the *content* of the hook is framework-defined.
+**Swarm's position:** specified. See [`reference/agents-md.md`](../reference/agents-md.md). The framework recommends an AGENTS.md leading instruction (or equivalent CLI hook) that says: "First action — read your task file, then load the skills whose descriptions match the work." The mechanism is at the agent CLI layer; the *content* of the hook is framework-defined.
 
 ---
 
@@ -133,7 +133,7 @@ The frontier research surfaced six gaps in earlier Swarm drafts. The current doc
 | 2. AGENTS.md not specified                     | New reference: [`reference/agents-md.md`](../reference/agents-md.md)         |
 | 3. No session-start hook spec                  | Specified in [`reference/agents-md.md`](../reference/agents-md.md)            |
 | 4. No "iron law + red flags" pattern           | Adopted in persona profiles; see each [`personas/`](../personas/) page       |
-| 5. Research is reactive, not proactive         | Research is the preparation phase of `research-writing`; gatekeeper enforces "research-first when scope is unclear" |
+| 5. Research is reactive, not proactive         | Research is the preparation phase of `research-writing`; the recommended routing is "research-first when scope is unclear" (the `write-research` skill carries the discipline) |
 | 6. No session-resumption semantics             | Documented in [`11-session-lifecycle.md`](11-session-lifecycle.md)            |
 
 ---
@@ -144,13 +144,13 @@ The frontier research surfaced six gaps in earlier Swarm drafts. The current doc
 | -------------------------- | ---------------- | -------------------- | --------------------------- | ------------------ | --------------------- | ---------------------------------- |
 | Primary unit of work       | Spec command     | Story file           | Skill-driven task           | Devin session      | Lead Researcher query | **Task file**                      |
 | Spec required for features | ✅ Yes           | ✅ Yes (PRD + arch)  | ✅ Yes (after brainstorming) | ⚠️ Implicit (plan.md) | n/a (research)        | ✅ **Yes**                         |
-| Personas                   | None             | 21+ named characters | None (skill-based)          | None               | Lead + Subagents      | **13, mindset-based, 1:1 to task** |
+| Personas                   | None             | 21+ named characters | None (skill-based)          | None               | Lead + Subagents      | **13 mindsets (7 ship as skills), 1:1 suggested** |
 | Skills format              | n/a              | YAML workflows       | SKILL.md (Anthropic format) | n/a                | SKILL.md              | **SKILL.md**                       |
 | Subagent strategy          | n/a              | Persona-handoff      | Subagent-per-task           | Read-only only     | Orchestrator-worker   | **Read-side parallel; write-side single-threaded** |
 | Validation enforcement     | Manual           | QA agent phase       | TDD iron law                | CI before merge    | Citation agent        | **Named gate slots + Self-review hard gate** |
 | Cross-tool portability     | Yes (30+ agents) | Yes (multi-IDE)      | Yes (6 hosts)               | Devin-only         | Anthropic-only        | **Tool-agnostic by design**        |
 | Session start hook         | n/a              | YAML state           | Bootstrap doc               | Cloud session      | n/a                   | **Specified via AGENTS.md**        |
-| Sequencing rules           | Implicit         | Phase-based          | Skill-based                 | Implicit           | Orchestration prompts | **Explicit gatekeeper rules**      |
+| Sequencing rules           | Implicit         | Phase-based          | Skill-based                 | Implicit           | Orchestration prompts | **Explicit recommended-routing rules** |
 | Forbidden-flows table      | Implicit         | Implicit             | Implicit                    | Implicit           | n/a                   | **Explicit (this is novel)**       |
 
 ---
@@ -161,7 +161,7 @@ The frontier research surfaced six gaps in earlier Swarm drafts. The current doc
 
 2. **Explicit forbidden flows.** No other framework writes them out as a table the way Swarm does. Spec Kit, Superpowers, BMAD all have these implicitly. Making them explicit is genuinely novel — and load-bearing for the determinism guarantee.
 
-3. **Persona ceremony pitched correctly.** Mindsets, not characters. Hard rules and forbidden actions, not roleplay. Rigid 1-to-1 task mapping so the agent never chooses. A better middle ground than Spec Kit's "no personas" or BMAD's "21+ characters."
+3. **Persona ceremony pitched correctly.** Mindsets, not characters. Hard rules and forbidden actions, not roleplay. Suggested 1:1 task mapping the agent may re-assess. A better middle ground than Spec Kit's "no personas" or BMAD's "21+ characters."
 
 4. **Tool-agnostic validation gates.** Most frameworks bake in `pnpm test` or `cargo check`. Swarm's named-slot approach is portable in a way the others aren't.
 

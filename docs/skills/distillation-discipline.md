@@ -6,34 +6,42 @@
 
 ## TL;DR
 
-Compressing artefacts without confessing truncation is covert loss. Accountability requires enumerating deliberate omissions — **Distillation Loss Statement**.
+Compressing an artefact without confessing what was truncated is covert loss. Accountability requires enumerating the deliberate omissions — a **Distillation Loss Statement** appended to every doc distilled from upstream. The skill self-activates when transforming a high-verbosity document (research) into a lower-verbosity one (spec, audit, task), or finalising a long-running investigation; it stays out of net-new authoring with no upstream to distil from.
 
-## Relation to directional gatekeeping
+## What the skill actually enforces
 
-[`documentation-gatekeeper`](documentation-gatekeeper.md) enforces lawful routing; **`distillation-discipline`** interrogates fidelity *given* lawful transition. Separation prevents collapsing "illegal hop" vs "acceptable narrative trimming" diagnoses.
+The verbosity gradient is `research → spec/audit/bug-report → task → terminal output`, and every transition drops something. The skill permits dropping conversational fluff and exploratory narrative, and forbids dropping load-bearing content: architectural constraints, API payload shapes, acceptance criteria, identified risks, and `[CRITICAL]` open questions. The Loss Statement must list **explicit removed claims** mapped to the rationale for dropping them — "removed fluff" is a non-statement; "dropped the comparison of three sorting algorithms (we picked merge-sort)" is real.
 
-Decision record: [ADR 0003](../adrs/0003-distillation-is-unidirectional.md).
+The body carries a **four-tests result table** (🎯 Requirements, 🧬 Behavior, 🔍 Edge case, 🧪 Empirical) with one row per upstream load-bearing item, and a **pre-deliver visibility gate**: the distilled doc is not delivered until that table is in the task file and every row is ✅. A row marked `dropped (without justification)` is a gate failure — halt and revise.
 
 ## Loss budgets versus zero-loss choke points
 
-Transitions carry declared tolerance:
+Transitions carry a declared tolerance, encoded in the body's budget table:
 
-- Research → Spec (high permissible narrative drop)
-- Spec → Executable task (**near-zero** structural loss — behavioural contracts survive)
+- `research → spec/audit/bug-report` — 🟡 high; narratives and explored alternatives are fair to drop.
+- `spec → task` — 🟢 zero; architectural constraints and data shapes survive verbatim. This is the critical choke point: parsing a spec into sub-tasks is forbidden from shedding any constraint.
+- `bug-report → task` — 🟢 zero; reproduction and root cause preserved.
 
-Architect role isn't poetry reduction — it's conserving invariants identifiable downstream.
+The author's job here is not poetry reduction — it is conserving the invariants a downstream reader will need.
 
-Bad loss statements cite vague "removed fluff"; good ones map **explicit removed claims** ↔ **risk accepted** rationale.
+## Why the template forces an explicit field
 
-## Why templates force explicit fields
+Invisible mental accounting evaporates mid-edit. A dedicated `## Distillation Loss Statement` section makes the omission reviewable: a reader can hold the upstream and downstream docs side by side and verify nothing load-bearing went missing.
 
-Invisible mental accounting evaporates mid-edit. Dedicated section makes omission reviewable during spec-writing QA.
+## The sister discipline: promotion
 
-## Skeptic checkpoints
+Distillation flows downhill; promotion flows back up. When a task discovers something durable, the finding is promoted into the upstream doc (audit, spec, research, bug-report) before the task closes — not silently dropped. The two disciplines together keep the document graph honest in both directions.
 
-Suspect undocumented silent drops when downstream Builder repeatedly halts ambiguous — symptom of upstream careless distillation, not inferior coding.
+## When upstream distillation was careless
+
+A downstream symptom worth watching: an implementer that repeatedly halts on ambiguity is often reading a spec that quietly shed a constraint during `spec → task`, not writing inferior code. Treat recurrent blockers as evidence to re-audit the distillation, not to pressure the implementer.
+
+## Bundled resources
+
+- `references/worked-example.md` — the full Stripe research → spec walk-through, including the four-tests result table for that example. (The SKILL body inlines a one-pair excerpt; the reference carries the full version.)
 
 ## Related
 
 - [Distillation concept](../concepts/03-distillation.md)
-- [Architect persona](../personas/the-architect.md)
+- [ADR 0003: distillation is unidirectional](../adrs/0003-distillation-is-unidirectional.md)
+- [Architect persona](../personas/the-architect.md) — ships as `persona-architect`

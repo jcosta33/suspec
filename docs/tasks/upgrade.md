@@ -2,7 +2,7 @@
 
 > **TL;DR.** A specialised migration for dependency / framework / language version bumps. Same persona (The Migrator), same wave discipline, same per-wave validation. The distinction is purely in the source of the change — an external library version, not an internal API replacement.
 
-> 📦 **This page is documentation.** The `upgrade` task type uses the same template as `migration`: [`/scaffold/.agents/templates/task-migration.md`](../../scaffold/.agents/templates/task-migration.md), with `Type: upgrade` and the additions noted below.
+> 📦 **This page is documentation.** The `upgrade` task type uses the same template as `migration`: [`/scaffold/.agents/skills/write-migration/references/task-template.md`](../../scaffold/.agents/skills/write-migration/references/task-template.md), with `Type: upgrade` and the additions noted below.
 
 ---
 
@@ -31,14 +31,14 @@ Mechanically, `upgrade` and `migration` use the same template, persona, and disc
 | **Lead persona**     | [The Migrator](../personas/the-migrator.md)       |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md) (review per wave) |
 | **Output**           | Codebase compatible with the upgraded dependency / version |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-refactor`, `empirical-proof` |
+| **Recommended skills** | `write-migration`, `empirical-proof`, `persona-migrator` |
 | **Verification gate slots** | Same as `migration` + `cmdInstall` (must succeed first), `cmdBuild` (post) where applicable |
 
 ---
 
 ## Canonical template (agent artefact)
 
-Uses **`/scaffold/.agents/templates/task-migration.md`** with **`Type: upgrade`**. Persona (`Migrator`), wave discipline, and empirical cadence mirror [`migration`](migration.md); divergence is semantic input (upstream release artefacts vs internally authored API retirement).
+Uses **`/scaffold/.agents/skills/write-migration/references/task-template.md`** with **`Type: upgrade`**. Persona (`Migrator`), wave discipline, and empirical cadence mirror [`migration`](migration.md); divergence is semantic input (upstream release artefacts vs internally authored API retirement).
 
 ### Semantic split recap
 
@@ -48,7 +48,7 @@ See table in **When to use** — framework keeps templates unified to minimise m
 
 - Rename wave narrative headers to **`## Upgrade source and target`** emphasising semver endpoints + business/security motivation.
 - **Linked docs** must cite authoritative upstream migration / release-note URLs (not merely internal shorthand).
-- **Wave validation column** biases toward adding `cmdBuild` each wave — version bumps surface statically before tests.
+- **Wave validation column** biases toward adding the project's build step (`AGENTS.md > Commands > Build`) each wave — version bumps surface statically before tests.
 - Self-review substitutes **pattern-coverage / removed API extinguishment** language for purely internal callsite hunts.
 
 Operational Markdown belongs in spawned task artefacts under `.agents/tasks/`, not mirrored here.
@@ -57,7 +57,7 @@ Operational Markdown belongs in spawned task artefacts under `.agents/tasks/`, n
 
 ## ⚠️ Common anti-patterns
 
-- Skipping `{{cmdBuild}}` in per-wave validation (upgrades often surface at build time, not test time)
+- Skipping the build step (`AGENTS.md > Commands > Build`) in per-wave validation (upgrades often surface at build time, not test time)
 - Bumping multiple major dependencies in one task (each is its own upgrade)
 - Treating "tests pass" as sufficient when the upgrade may have changed behaviour the suite doesn't cover
 - Trusting the upstream migration guide without verifying the cited deprecated patterns exist in *our* codebase

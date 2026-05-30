@@ -8,7 +8,7 @@
 
 ## 🎯 Purpose
 
-Bundle external truths + synthesized implications for Architects. Must never become an implicit spec shortcut; gatekeeper forbids hopping straight to Builder ([`documentation-gatekeeper` rationale](../skills/documentation-gatekeeper.md)).
+Bundle external truths + synthesized implications for Architects. Must never become an implicit spec shortcut; research is upstream input, and the recommended routing is research → `spec-writing`, not straight to implementation (see [`reference/flow-graph.md`](../reference/flow-graph.md)).
 
 Avoid generating research artefacts when training-data sufficiency suffices—intellectual honesty check lives in authoring skill scaffold.
 

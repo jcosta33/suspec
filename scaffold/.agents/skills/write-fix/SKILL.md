@@ -1,6 +1,6 @@
 ---
 name: write-fix
-description: Load when fixing a bug from a bug-report.md. Encodes the discipline — reproduce in your worktree, patch the root cause (not the symptom), add a regression test that fails before the fix and passes after, no scope creep.
+description: Fix a bug from a bug-report. ALWAYS apply this skill when the user asks to fix, patch, resolve, or close a bug, regression, or defect — including hot-fixes and revert-and-re-fix flows. Do not patch the symptom, ship a fix without a regression test that fails before and passes after, or scope-creep into unrelated changes. Skip this skill for authoring the bug-report itself (a separate upstream task), behaviour-preserving refactors, or behaviour-changing rewrites of existing modules.
 ---
 
 # Skill: write-fix
@@ -8,6 +8,10 @@ description: Load when fixing a bug from a bug-report.md. Encodes the discipline
 ## Purpose
 
 Fixes fail when they patch symptoms or when the regression test doesn't actually exercise the bug. This skill is the discipline that ensures the bug stays fixed.
+
+## Project context (the AGENTS.md contract)
+
+Resolves project commands via the consuming repo's `AGENTS.md` — `Commands > Validation`, `Commands > Test`. If `AGENTS.md` is missing or a referenced entry is undefined, ask the user which command to run before proceeding — do not guess.
 
 ## Core rules
 
@@ -36,11 +40,15 @@ Bugs often have neighbours. You found one (or the bug report did). The fix task 
 
 ### 5. Run the full test suite
 
-A fix that passes the regression test but breaks elsewhere is a worse bug. Run `{{cmdTest}}` after the patch; paste the output.
+A fix that passes the regression test but breaks elsewhere is a worse bug. Run the project's full test command after the patch; paste the output.
 
 ### 6. Document the patch's reasoning
 
 Why this patch addresses the root cause (and not just the symptom) goes in `## Decisions`. The reviewer of the fix will check this.
+
+### 7. Mistrust your own confidence
+
+Adopt an adversarial stance toward your own patch. If you find yourself thinking "this should fix it" without having flipped the regression test to red and back to green, that's the gate failing — finish the proof before declaring done.
 
 ## What does not belong
 
@@ -56,10 +64,6 @@ Why this patch addresses the root cause (and not just the symptom) goes in `## D
 - Scope creep ("while I'm here, this related bug…")
 - Bundling the fix with unrelated cleanup
 
-## See also
+## Bundled resources
 
-- `.agents/templates/task-fix.md` — the fix task template
-- `.agents/templates/bug-report.md` — the input doc type
-- `.agents/skills/empirical-proof/SKILL.md`
-- `.agents/skills/adversarial-review/SKILL.md` — fix tasks adopt the Skeptic mindset
-- `.agents/skills/personas/SKILL.md` — The Skeptic persona (in fixer mode)
+- `references/task-template.md` — a fillable fix-task template with reproduction block, plan, progress checklist, and a self-review hard gate that requires pre-patch and post-patch reproduction output. Copy it into your project's task file location, substitute the `{{...}}` placeholders, and fill it in as you work.

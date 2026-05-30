@@ -78,7 +78,7 @@ The framework refuses:
 - **A research file that doubles as a spec.** The transition is `spec-writing` — separate task.
 - **One doc with multiple `## Recommendation` sections covering different concerns.** Split.
 
-These rules are enforced by [`skills/documentation-gatekeeper.md`](../skills/documentation-gatekeeper.md).
+These composition boundaries are **recommended routing**, not gatekeeper-enforced (see [`concepts/07-flow-graph.md`](../concepts/07-flow-graph.md) / [`reference/flow-graph.md`](../reference/flow-graph.md)). There is no gatekeeper skill; each `write-<type>` skill prevents its own type's failures.
 
 ---
 
@@ -105,5 +105,5 @@ Full matrix: [`reference/compatibility-matrix.md`](../reference/compatibility-ma
 - [`concepts/05-document-types.md`](../concepts/05-document-types.md) — the conceptual frame
 - [`concepts/03-distillation.md`](../concepts/03-distillation.md) — how docs distil into one another
 - [`reference/document-base.md`](../reference/document-base.md) — the shared skeleton
-- [`skills/documentation-gatekeeper.md`](../skills/documentation-gatekeeper.md) — boundary enforcement
+- [`concepts/07-flow-graph.md`](../concepts/07-flow-graph.md) / [`reference/flow-graph.md`](../reference/flow-graph.md) — composition boundaries as recommended routing
 - [ADR 0001](../adrs/0001-four-doc-types.md) — why four

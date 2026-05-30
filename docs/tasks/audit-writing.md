@@ -2,7 +2,7 @@
 
 > **TL;DR.** Honestly describe the current state of a codebase area against a defined goal. Lead persona is The Auditor. Findings cite file:line. Every issue has a "Needed". Read-only on source code; only the audit doc changes.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-audit.md`](../../scaffold/.agents/templates/task-audit.md). The doc-template the audit-writing task produces lives at [`/scaffold/.agents/templates/audit.md`](../../scaffold/.agents/templates/audit.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-audit/references/task-template.md`](../../scaffold/.agents/skills/write-audit/references/task-template.md). The doc-template the audit-writing task produces lives at [`/scaffold/.agents/templates/audit.md`](../../scaffold/.agents/templates/audit.md).
 
 ---
 
@@ -25,7 +25,7 @@ If you're re-walking an existing audit, that's `deepen-audit`. If you're investi
 | **Source doc**       | `audit brief` (optional) / human ask               |
 | **Lead persona**     | [The Auditor](../personas/the-auditor.md)         |
 | **Output**           | `audit.md` at `.agents/audits/{{slug}}.md`         |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-audit`, `adversarial-review` |
+| **Recommended skills** | `write-audit`, `adversarial-review`, `persona-auditor` |
 | **Verification gate slots** | post: `git status` (clean on source), `cmdValidate` and `cmdValidateDeps` if structural claims rely on them |
 
 ---
@@ -36,16 +36,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 

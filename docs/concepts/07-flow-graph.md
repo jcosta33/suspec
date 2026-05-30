@@ -1,6 +1,6 @@
 # 07 · The flow graph
 
-> **TL;DR.** The deterministic mapping between source documents, task types, personas, skills, and verification commands. Pick a source document and the rest follows automatically. The full operational tables live in [`reference/flow-graph.md`](../reference/flow-graph.md); this concept doc explains the *why* and the *edge cases*.
+> **TL;DR.** The recommended mapping between source documents, task types, personas, skills, and verification commands. Pick a source document and the rest follows as a *suggested* default — a launcher may apply it deterministically when it scaffolds a task file, and the directive skill `description`s reproduce it in-session, but it is guidance, not gatekeeper-enforced. The agent self-assesses and may re-route, recording the divergence in `## Decisions`. The full operational tables live in [`reference/flow-graph.md`](../reference/flow-graph.md); this concept doc explains the *why* and the *edge cases*.
 
 ---
 
@@ -44,7 +44,7 @@ Task files are terminal. They never feed another doc; durable findings are *prom
 
 ## 🚦 Document → task type (the routing rules)
 
-Every source document has exactly one default task type. The launcher (CLI or human) can override at session start, but the default is deterministic.
+Every source document has exactly one *suggested* default task type. A launcher (CLI or human) may apply the default deterministically at session start; the agent may also re-route in-session when the work doesn't match. Either way, the default is the recommendation, not a lock.
 
 | Source document                         | Default task type                                                    | Why                                                                                |
 | --------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -66,11 +66,11 @@ For the operational tables, see [`reference/flow-graph.md`](../reference/flow-gr
 
 ---
 
-## 🚫 Edges that look possible but aren't
+## 🚫 Edges the routing discourages
 
-The framework forbids certain "tempting" edges because they violate the distillation discipline or the doc-type epistemic stances.
+Swarm discourages certain "tempting" edges because they violate the distillation discipline or the doc-type epistemic stances. These are recommended routing — the agent honours them as guidance and surfaces a divergence in `## Decisions` if it ever crosses one deliberately.
 
-| Forbidden edge                                | Why                                                                                  |
+| Discouraged edge                              | Why                                                                                  |
 | --------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `research → fix` (skipping spec/audit)        | Research is input. Implementation requires a spec, audit, or bug-report to translate the input into a contract. |
 | `spec → refactor`                             | Refactor tasks are driven by audits. If a spec calls for restructuring, the spec is implicitly the refactor's plan, but the task is still tracked as a feature unless the change is purely structural. |
@@ -78,54 +78,54 @@ The framework forbids certain "tempting" edges because they violate the distilla
 | `audit → feature`                             | Audits do not specify new features. If the audit's recommended approach is "build something new", the next step is spec-writing, not a feature task. |
 | `code → spec` (back-fill)                     | Specs are forward-looking. Narrating finished code as a spec is dishonest. Use documentation instead. |
 | `task with no source doc and no task scope`   | Every task is grounded.                                                              |
-| `one source doc → multiple task types`        | The mapping is rigid. Split the work.                                                |
+| `one source doc → multiple task types`        | One suggested route per source. Split the work.                                      |
 | `multiple source docs → one task`             | One source per task. Multiple sources = multiple tasks (or use orchestration).      |
 | `task file authored after implementation begins` | The task file is step one. Conditioning before action.                            |
-| `persona invented per session`                | Personas are catalogued.                                                             |
+| `persona invented per session`                | Personas are catalogued (13 mindsets; 7 ship as skills).                            |
 | `durable findings left only in the task file` | Task files are gitignored. Migrate findings to audits/specs/research.                |
 
-These rules are codified in [`skills/documentation-gatekeeper.md`](../skills/documentation-gatekeeper.md), the always-loaded skill that refuses to allow forbidden flows.
+These are recommended routing, not gatekeeper-enforced. The old always-loaded `documentation-gatekeeper` skill that blocked forbidden flows has been removed; its rules now live here as framework guidance, and each `write-<type>` workflow skill prevents its own type's failure modes. The discipline that keeps these edges honest — pasting empirical proof of what changed — is carried by the `empirical-proof` and `adversarial-review` quality-gate skills, which self-activate on matching work.
 
 ---
 
 ## 🎯 Task type → persona
 
-Each task type has a primary persona that is auto-attached. Some have secondary personas for handoff.
+Each task type has a suggested primary persona; the agent may re-assess. Some have secondary personas for handoff.
 
 For the full table, see [`reference/flow-graph.md`](../reference/flow-graph.md).
 
 Highlights worth understanding:
 
-- **`fix → The Skeptic`.** The framework's existing convention is that fix sessions adopt the Skeptic mindset because root-causing demands hostility toward the most plausible-sounding explanation. See [ADR 0006](../adrs/0006-skeptic-owns-fix-tasks.md).
-- **`refactor → The Janitor`.** Behaviour preservation is the contract; the Janitor is the persona built around safety-of-change.
-- **`orchestration → The Lead Engineer`.** The only persona that doesn't write code. Becomes the Skeptic for each review pass.
-- **`kickback → original persona`.** When a Skeptic kicks back a Builder's branch, the kickback is itself a task — assigned to the *original* Builder (or a fresh agent in the same persona) with the Skeptic's notes attached.
+- **`fix → The Skeptic`** (ships as `persona-skeptic`). The framework's convention is that fix sessions adopt the Skeptic mindset because root-causing demands hostility toward the most plausible-sounding explanation. See [ADR 0006](../adrs/0006-skeptic-owns-fix-tasks.md).
+- **`refactor → The Janitor`** (ships as `persona-janitor`). Behaviour preservation is the contract; the Janitor is the mindset built around safety-of-change.
+- **`orchestration → The Lead Engineer`** (a mindset, no skill). The only mindset that doesn't write code. Becomes the Skeptic for each review pass.
+- **`kickback → original persona`.** When a Skeptic kicks back a Builder's branch, the kickback is itself a task — assigned to the *original* Builder (or a fresh agent in the same mindset) with the Skeptic's notes attached.
 
 ---
 
 ## 🛠️ Task type → skills
 
-Two skills are always loaded for every task: `manage-task` and `documentation-gatekeeper`. Type-specific additions:
+There is **no always-loaded skill**. Each skill self-activates when its directive `description` matches the work; the table below is the recommended set per task type (workflow skill + quality gates + the `persona-<slug>` skill where the suggested persona ships as one). For the 6 mindsets carried by a workflow skill, the persona discipline is already inside that skill — there is no separate skill to load.
 
-| Task type          | Additional skills                                           |
-| ------------------ | ----------------------------------------------------------- |
-| feature            | `write-feature`, `empirical-proof`                          |
-| fix                | `write-fix`, `adversarial-review`, `empirical-proof`        |
-| refactor           | `write-refactor`, `empirical-proof`                         |
-| rewrite            | `write-rewrite`, `empirical-proof`                          |
-| spec-writing       | `write-spec`, `distillation-discipline`                     |
-| research-writing   | `write-research`, `distillation-discipline`                 |
-| audit-writing      | `write-audit`, `adversarial-review`                         |
-| bug-report-writing | `write-bug-report`, `adversarial-review`, `empirical-proof` |
-| migration          | `write-refactor` (overlaps), `empirical-proof`              |
-| performance        | `empirical-proof`                                           |
-| testing            | `empirical-proof`                                           |
-| documentation      | `distillation-discipline`, `empirical-proof`                |
-| review             | `adversarial-review`, `empirical-proof`                     |
-| deepen-audit       | `write-audit`, `adversarial-review`, `empirical-proof`      |
-| orchestration      | `adversarial-review`, `empirical-proof`                     |
+| Task type          | Skills worth loading                                                          |
+| ------------------ | ----------------------------------------------------------------------------- |
+| feature            | `write-feature` (carries Builder), `empirical-proof`                          |
+| fix                | `write-fix`, `persona-skeptic`, `adversarial-review`, `empirical-proof`       |
+| refactor           | `write-refactor`, `persona-janitor`, `empirical-proof`                        |
+| rewrite            | `write-rewrite`, `empirical-proof`                                            |
+| spec-writing       | `write-spec`, `persona-architect`, `distillation-discipline`                  |
+| research-writing   | `write-research` (carries Researcher), `persona-surveyor` (UX/market), `distillation-discipline` |
+| audit-writing      | `write-audit`, `persona-auditor`, `adversarial-review`                        |
+| bug-report-writing | `write-bug-report` (carries Bug Hunter), `adversarial-review`, `empirical-proof` |
+| migration / upgrade | `write-migration`, `persona-migrator`, `empirical-proof`                     |
+| performance        | `write-performance`, `persona-performance-surgeon`, `empirical-proof`         |
+| testing            | `write-testing` (carries Test Author), `empirical-proof`                      |
+| documentation      | `write-documentation` (carries Documentarian), `distillation-discipline`, `empirical-proof` |
+| review             | `persona-skeptic`, `adversarial-review`, `empirical-proof`                    |
+| deepen-audit       | `write-audit`, `persona-skeptic`, `adversarial-review`, `empirical-proof`     |
+| orchestration      | `adversarial-review`, `empirical-proof` (Lead Engineer is a mindset, no skill) |
 
-Project-specific skills attach in addition based on description-matching to the task domain. The convention: skills with a `description` field that semantically matches the task's objective attach automatically.
+Project-specific skills self-activate in addition, by the same rule: a skill whose `description` field semantically matches the task's objective fires on its own.
 
 ---
 
@@ -221,17 +221,17 @@ Trivial tasks may skip the full doc chain. Examples: a one-line documentation up
 
 The agent has done the research, the answer seems clear, and the temptation is to implement directly without writing the spec.
 
-**Framework response: forbidden.** If you find yourself implementing directly from research, *stop and write the spec first*. Research is input; spec is contract. The failure mode (drift between research findings and implementation) is severe and silent — the framework treats this as a hard rule.
+**Framework response: strongly discouraged.** If you find yourself implementing directly from research, *stop and write the spec first*. Research is input; spec is contract. The failure mode (drift between research findings and implementation) is severe and silent — the `distillation-discipline` skill treats this as a near-absolute rule, and crossing it should be surfaced loudly in `## Decisions` rather than done silently.
 
 ### ⚖️ Optimisation overlapping structural edits (resolved tension)
 
 Older exploratory drafts debated precedence when **performance improvements require internal reorganisation**. Default stance:
 
-1. **Prefer sequential specialised tasks** — `performance` carries measurement obligations; follow-on `refactor` (Janitor persona) absorbs behaviour-neutral extraction—wire dependencies through orchestration metadata so reviewers grasp ordering.
+1. **Prefer sequential specialised tasks** — `performance` carries measurement obligations; a follow-on `refactor` (Janitor mindset, via `persona-janitor`) absorbs behaviour-neutral extraction — wire dependencies through orchestration metadata so reviewers grasp ordering.
 2. **Merged single-task exception** permitted only when `## Linked docs` explicitly ranks the benchmark/report above cosmetic debt *and* the conditioned Self-review inherits **both** measurement + behavioural invariance checks.
-3. **Never** disguise semantic deltas as refactors (`documentation-gatekeeper` blocks) or cite perf wins without artefacts (`empirical-proof` blocks).
+3. **Never** disguise semantic deltas as refactors (the `adversarial-review` skill catches this on review) or cite perf wins without artefacts (the `empirical-proof` skill refuses unproven claims in Self-review).
 
-ADR / constitution notes for storage layout (research vs specs): prefer `.agents/adrs/` chronology distinct from drafts in `.agents/specs/` when teams need divergence tracking—launcher paths remain project conventions as long as routing tables stay deterministic.
+ADR / constitution notes for storage layout (research vs specs): prefer `.agents/adrs/` chronology distinct from drafts in `.agents/specs/` when teams need divergence tracking — launcher paths remain project conventions as long as the routing tables stay consistent.
 
 ---
 
@@ -249,14 +249,14 @@ Does a source document exist?
 │
 └── Yes → look up the source doc type in "Document → task type" above
               │
-              └── Route to the default task type
+              └── Take the suggested default task type
                        │
-                       └── Look up persona in "Task type → persona"
+                       └── Look up the suggested persona in "Task type → persona"
                                 │
-                                └── Attach skills, inject commands, scaffold task file
+                                └── List the skills worth loading, inject commands, scaffold task file
 ```
 
-The launcher does this. The agent does not need to think about it — the agent reads the conditioned task file and adopts the persona named in the `> **PERSONA:**` blockquote.
+A launcher may run this when it scaffolds the file; the directive skill `description`s reproduce the same routing in-session. The agent reads the conditioned task file, adopts the persona named in the `> **PERSONA:**` blockquote — and re-assesses against the actual work, recording any divergence in `## Decisions`.
 
 ---
 
@@ -266,4 +266,4 @@ The launcher does this. The agent does not need to think about it — the agent 
 - [`08-recursion-and-delegation.md`](08-recursion-and-delegation.md) — recursion and kickback in detail
 - [`../reference/flow-graph.md`](../reference/flow-graph.md) — the operational tables
 - [`../reference/compatibility-matrix.md`](../reference/compatibility-matrix.md) — the doc × task × persona matrices
-- [`../skills/documentation-gatekeeper.md`](../skills/documentation-gatekeeper.md) — the enforcement skill
+- [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md) — the 1:1 persona↔task mapping, superseded to suggested defaults

@@ -1,6 +1,6 @@
 # Persona (documentation): The Builder
 
-> **Runtime profile:** all constraints, forbiddances, proofs, red flags → [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) (**The Builder** section).
+> **Runtime profile:** ships no standalone persona skill. The Builder mindset — its constraints, forbiddances, proofs, and red flags — is carried by the matching workflow skill [`scaffold/.agents/skills/write-feature/SKILL.md`](../../scaffold/.agents/skills/write-feature/SKILL.md).
 
 ---
 

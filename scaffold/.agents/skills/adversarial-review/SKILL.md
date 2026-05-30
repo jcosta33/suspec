@@ -1,19 +1,23 @@
 ---
 name: adversarial-review
-description: Load when reviewing a worker's branch, deepening an existing audit, root-causing a bug, or auditing a codebase area. Encodes the Skeptic's six adversarial questions, the cross-module caller search, and the "run validation yourself" rule.
+description: Review another agent's work hostile-to-plausible-explanations. ALWAYS apply this skill when reviewing a branch, a follow-up revision after a previous review, an existing audit you are deepening, a bug you are root-causing, or a codebase area you are auditing — even if the work looks correct on the surface. Do not approve, merge, or sign off on a worker's pasted output alone — run the project's validation and tests yourself in your own worktree first. Skip this skill for original authoring work — apply it only when something already exists to be reviewed.
 ---
 
 # Skill: adversarial-review
 
 ## Purpose
 
-Reviews fail when the reviewer accepts the worker's framing. The discipline of *adversarial review* is to set the worker's claims aside, read the code with fresh eyes, and run the validators yourself. This skill is what The Skeptic uses; The Auditor and The Bug Hunter use it too because the same hostility-to-plausible-explanations applies.
+Reviews fail when the reviewer accepts the worker's framing. The discipline of *adversarial review* is to set the worker's claims aside, read the code with fresh eyes, and run the validators yourself. Apply this discipline whenever you are reviewing a branch, deepening an audit, or hunting a bug — the same hostility-to-plausible-explanations applies in all three.
+
+## Project context (the AGENTS.md contract)
+
+Resolves project commands via the consuming repo's `AGENTS.md` — `Commands > Validation`, `Commands > Test`, plus an optional dep-validation command (architectural-rules check) not in the standard contract; ask the user if the project uses one. If `AGENTS.md` is missing or an entry is undefined, ask the user which command to run before pasting any verification output — do not guess.
 
 ## Core rules
 
 ### 1. Run validation yourself
 
-The reviewer runs `{{cmdInstall}}`, `{{cmdValidate}}`, `{{cmdTest}}` themselves, in their own worktree, with the branch checked out. The worker's pasted output is *evidence the worker ran the command at some past moment*; it is not evidence the command passes *now in your worktree*.
+The reviewer runs the project's install, validate, and test commands themselves, in their own worktree, with the branch checked out. The worker's pasted output is *evidence the worker ran the command at some past moment*; it is not evidence the command passes *now in your worktree*.
 
 ### 2. The six adversarial questions
 
@@ -62,7 +66,7 @@ These are *confessions of unverified assumptions*, not assurances. Investigate e
 
 ### 6. Do not trust the diff to be the work
 
-The Skeptic verifies that the worker's small diff is actually the work that was asked for. A diff that touches 3 files when the spec called for 8 is *evidence* something was missed (or the scope is misunderstood).
+Verify that the worker's small diff is actually the work that was asked for. A diff that touches 3 files when the spec called for 8 is *evidence* something was missed (or the scope is misunderstood).
 
 ## What does not belong
 
@@ -80,14 +84,6 @@ The Skeptic verifies that the worker's small diff is actually the work that was 
 - Demoting findings to "MINOR" to avoid blocking the worker
 - Approving a small diff without confirming the small diff is the right work
 
-## Interaction with other skills
+## Bundled resources
 
-- **`empirical-proof`** is the discipline of pasting verification output. `adversarial-review` is the discipline of *running it yourself* and *walking the diff hostilely*. The two pair: paste your own outputs (not the worker's), and walk the diff with the six questions.
-- **`personas`** loads the persona profile. For The Skeptic / The Bug Hunter / The Auditor, the persona profile leans on this skill explicitly.
-- **`documentation-gatekeeper`** enforces that the *kind* of work matches the task type. `adversarial-review` enforces that the *quality* of review meets the bar.
-
-## See also
-
-- `.agents/skills/personas/SKILL.md` — the personas that use this skill (The Skeptic, The Auditor, The Bug Hunter)
-- `.agents/skills/empirical-proof/SKILL.md` — sister skill
-- `.agents/templates/task-review.md` — where this skill is the workhorse
+- `references/task-template.md` — a fillable task template for a review session: diff overview, findings table, verdict, and a self-review hard gate. Copy it into your project's task file, substitute the project-specific commands and slugs (`{{...}}` placeholders), and fill it in as you work.

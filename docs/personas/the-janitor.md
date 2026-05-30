@@ -1,6 +1,6 @@
 # Persona (documentation): The Janitor
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Janitor**.
+> **Runtime profile:** [`scaffold/.agents/skills/persona-janitor/SKILL.md`](../../scaffold/.agents/skills/persona-janitor/SKILL.md) — the shipped persona skill carrying The Janitor's constraints, forbiddances, proofs, and red flags.
 
 ---
 

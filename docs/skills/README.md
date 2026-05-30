@@ -1,54 +1,81 @@
 # 🛠️ Skills
 
-> The framework's shipped skills. Two categories: **cross-cutting** (always or near-always loaded) and **authoring** (per doc type / per task type). Project-specific skills live in `.agents/skills/domain/` in the consumer repo.
+> The framework's shipped skills. Each is a self-contained discipline that loads on demand when its `description` matches the work in front of you. Project-specific skills live in `.agents/skills/domain/` in the consumer repo.
 
 > 📦 **The pages in this directory are *documentation about* the skills — what they do, why they exist, what failure modes they prevent.**
 >
-> The actual skill files (the ones the agent loads at runtime) live in [`/scaffold/.agents/skills/`](../../scaffold/.agents/skills/). Copy from there into your project; everything in the scaffold is self-contained (its cross-references stay valid after copying).
+> The actual skill files (the ones the agent loads at runtime) live in [`/scaffold/.agents/skills/`](../../scaffold/.agents/skills/). Copy the folders you need into your project; each skill is self-contained (its body assumes no sibling skill is installed, so it stays valid after copying).
 
 ---
 
 ## ⚡ TL;DR
 
-A skill is a Markdown file with YAML frontmatter that the agent loads on demand based on its `description`. The format matches Anthropic's Skills format and OpenAI Codex's Agent Skills, so a skill written for Swarm works in any compatible agent CLI.
+A skill is a Markdown file with YAML frontmatter that the agent loads on demand based on its `description`. The format matches the open [Agent Skills spec](https://agentskills.io), so a skill written for Swarm works in any compatible agent CLI. **There is no always-loaded skill** — install only the skills your work needs, and each one fires on its own directive `description`.
 
 ---
 
 ## 🧭 The catalogue
 
-### 🌐 Cross-cutting framework skills
+Swarm ships **23 skills**, in four groups. Each loads independently when its `description` matches the task; none depends on another being installed.
 
-Loaded by default (or near-default) for every task. They encode the framework-level disciplines.
+### 🚦 Quality gates (3)
 
-| Skill                                                              | Loaded                                | Purpose                                                                          |
-| ------------------------------------------------------------------ | ------------------------------------- | -------------------------------------------------------------------------------- |
-| [`manage-task`](manage-task.md)                                    | always                                | Task-file authoring/maintenance, lifecycle hooks, promotion protocol             |
-| [`documentation-gatekeeper`](documentation-gatekeeper.md)          | always                                | Enforces the flow graph; refuses forbidden flows                                 |
-| [`personas`](personas.md)                                          | always (when persona blockquote present) | Loads the persona profile and adopts the mindset                              |
-| [`distillation-discipline`](distillation-discipline.md)            | when distilling between doc tiers     | The Distillation Loss Statement protocol                                         |
-| [`empirical-proof`](empirical-proof.md)                            | code-producing tasks; review tasks    | Show, Don't Tell — paste verbatim verification output                           |
-| [`adversarial-review`](adversarial-review.md)                      | review, audit-writing, bug-report-writing, fix | The six adversarial questions; cross-module caller search           |
+Cross-cutting disciplines that surface inside whatever task is in play.
 
-### ✍️ Authoring skills
+| Skill | Purpose |
+| ----- | ------- |
+| [`adversarial-review`](adversarial-review.md) | Review another agent's work hostile-to-plausible-explanations: the six adversarial questions, cross-module caller search, re-run validation yourself. |
+| [`distillation-discipline`](distillation-discipline.md) | Distil a high-verbosity doc into a lower-verbosity one accountably — append a `## Distillation Loss Statement` recording what was dropped and why. |
+| [`empirical-proof`](empirical-proof.md) | Back every verifiable claim with verbatim pasted command output. Show, don't tell — no "✅ all passing" summaries. |
 
-One skill per authoring task type. Each codifies the failure modes the corresponding doc type is built to prevent.
+### 🩺 Specialised (1)
 
-| Skill                                              | Pairs with task                          | Doc produced     |
-| -------------------------------------------------- | ---------------------------------------- | ---------------- |
-| [`write-spec`](write-spec.md)                      | `spec-writing`                           | spec             |
-| [`write-audit`](write-audit.md)                    | `audit-writing`, `deepen-audit`          | audit            |
-| [`write-research`](write-research.md)              | `research-writing`                       | research         |
-| [`write-bug-report`](write-bug-report.md)          | `bug-report-writing`                     | bug-report       |
-| [`write-feature`](write-feature.md)                | `feature`, `integration`                 | (code, no doc — just the discipline) |
-| [`write-fix`](write-fix.md)                        | `fix`                                    | (code patch + regression test)       |
-| [`write-refactor`](write-refactor.md)              | `refactor`, `migration`, `upgrade`       | (refactored code, behaviour preserved) |
-| [`write-rewrite`](write-rewrite.md)                | `rewrite`                                | (new implementation, behaviour delta enforced) |
+A discipline for one narrowly-shaped problem.
+
+| Skill | Purpose |
+| ----- | ------- |
+| [`fix-flaky-test`](fix-flaky-test.md) | Diagnose and stabilise a non-deterministic test — root-cause the nondeterminism rather than adding sleeps, retries, or quarantine. |
+
+### ✍️ Authoring (12)
+
+One skill per kind of work. Each codifies the failure modes its deliverable is built to prevent. Some produce a source doc; some produce code under a discipline.
+
+| Skill | Authors / produces |
+| ----- | ------------------ |
+| [`write-spec`](write-spec.md) | A forward-looking spec — testable requirements, alternatives considered, no implementation details, halt on `[CRITICAL]`. |
+| [`write-audit`](write-audit.md) | An audit of present state — observation not prescription, `file:line` citations, a "Needed" line per finding. Covers deepening an existing audit. |
+| [`write-research`](write-research.md) | A research doc grounded in primary sources — finding vs opinion, no blog-post-as-source, no bare "it depends". |
+| [`write-bug-report`](write-bug-report.md) | A defect record — reproduced verbatim, symptom separated from root cause, no fix included. |
+| [`write-feature`](write-feature.md) | A feature from a spec — survey patterns first, map criteria to steps, halt on ambiguity, no scope creep. |
+| [`write-fix`](write-fix.md) | A bug fix from a bug-report — regression test that fails before and passes after, no symptom-patching. |
+| [`write-refactor`](write-refactor.md) | Behaviour-preserving restructuring — no observable behaviour change, prove call-site coverage before removing a shim. |
+| [`write-rewrite`](write-rewrite.md) | A re-implementation with an explicit, recorded behaviour delta — halt and update the spec on any unplanned change. |
+| [`write-migration`](write-migration.md) | An API migration or framework / language version upgrade — wave-by-wave validation, documented shim contracts, callsite coverage proof. |
+| [`write-performance`](write-performance.md) | A targeted optimisation under a measured baseline — same-protocol benchmarks, full test suite after every change, document the conditions. |
+| [`write-testing`](write-testing.md) | New or improved test coverage — test behaviour not implementation, the assertion-flip proof, no production code edited to pass a test. |
+| [`write-documentation`](write-documentation.md) | User-facing documentation — one Diátaxis frame per doc, no hedging, every code example actually run. |
+
+> Each skill name above links to its documentation page in this directory; the actual `SKILL.md` body ships in [`/scaffold/.agents/skills/`](../../scaffold/.agents/skills/) and is the runtime source of truth.
+
+### 🎭 Personas (7)
+
+Mindset-conditioning skills for role-shaped work. Each is a standalone, self-contained profile (~70 lines); load the one whose `description` matches the task. See [`personas.md`](personas.md) for the split model and why seven standalone skills beat one consolidated file.
+
+| Skill | Mindset |
+| ----- | ------- |
+| [`persona-architect`](../../scaffold/.agents/skills/persona-architect/SKILL.md) | Structural rigour for spec / requirements / design authoring. |
+| [`persona-auditor`](../../scaffold/.agents/skills/persona-auditor/SKILL.md) | Observation-not-prescription for present-state audits. |
+| [`persona-janitor`](../../scaffold/.agents/skills/persona-janitor/SKILL.md) | Behaviour preservation for refactor and dead-code work. |
+| [`persona-migrator`](../../scaffold/.agents/skills/persona-migrator/SKILL.md) | Wave-by-wave precision for API migrations and version upgrades. |
+| [`persona-performance-surgeon`](../../scaffold/.agents/skills/persona-performance-surgeon/SKILL.md) | Measure-first discipline for optimisation under a target. |
+| [`persona-skeptic`](../../scaffold/.agents/skills/persona-skeptic/SKILL.md) | Hostile-to-plausible-explanations review of another agent's work. |
+| [`persona-surveyor`](../../scaffold/.agents/skills/persona-surveyor/SKILL.md) | Observed-vs-claimed evidence discipline for UX / market research. |
 
 ---
 
 ## 📐 The skill format
 
-Every skill is a Markdown file with YAML frontmatter. The format is identical to Anthropic Skills / OpenAI Codex Agent Skills.
+Every skill is a Markdown file with YAML frontmatter. The format follows the open [Agent Skills spec](https://agentskills.io).
 
 ```markdown
 ---
@@ -84,15 +111,15 @@ Worked examples illustrating the rules in action.
 
 Key conventions:
 
-- **`description` is for the model.** It answers the model's question: *"Should I load this now?"* Phrase it as a trigger, not a summary. Bad: "this skill is about empirical proof". Good: "Load when you've made a verifiable claim and need to back it with command output."
+- **`description` is for the model.** It answers the model's question: *"Should I load this now?"* Phrase it as a directive — a WHAT verb, an `ALWAYS apply this skill when …`, a `Do not … directly`, and a `Skip this skill for …` clause. See [`building/activation.md`](building/activation.md) for the empirical case behind that form.
 - **Skills can be folders.** `.agents/skills/<name>/SKILL.md` plus `references/`, `scripts/`, `examples/` subdirectories enable progressive disclosure within a skill.
-- **Skills load on demand.** The `description` triggers loading; the body of the skill is read only when triggered.
+- **Skills load on demand.** The `description` triggers loading; the body is read only when triggered, and `references/` files only when the body points to them.
 
 ---
 
 ## 🛠️ Project-specific skills
 
-Projects add their own skills under `.agents/skills/domain/`. Common candidates:
+Projects add their own skills under `.agents/skills/domain/`. They self-activate the same way the shipped skills do — by `description` match. Common candidates:
 
 | Project skill                | Triggers when…                              |
 | ---------------------------- | ------------------------------------------- |
@@ -106,36 +133,23 @@ These accumulate over time as the team encounters areas where agents repeatedly 
 
 ---
 
-## 🚦 Skill loading conventions
+## 🚦 How skills activate
 
-The framework's standing convention is two skills always load:
+Skills don't apply themselves by being installed; each carries a directive `description` and loads when its triggers match the work. There is no "core", "loader", or "index" skill that the others depend on, and nothing loads on every task — persistent project context (your stack, conventions, and commands) lives in `AGENTS.md`, not in a resident skill.
 
-1. `manage-task` — the lifecycle / promotion / next-steps discipline
-2. `documentation-gatekeeper` — refuses forbidden flows
+- The agent reads its task file (`.agents/tasks/<slug>.md`), which links the source doc, names a suggested persona, and lists the skills worth loading for that task type.
+- Each skill fires on its own `description` when the task matches. A persona skill loads when the work is role-shaped (authoring a spec, reviewing a branch, refactoring); a quality gate loads when its discipline is in play (a verifiable claim → `empirical-proof`).
+- The routing from source-doc → task type → suggested persona → skills is **recommended, not enforced**. A launcher may apply it deterministically when scaffolding a task; in-session, the directive descriptions reproduce it. When the work doesn't match the default, load the skill whose `description` fits and record the divergence in the task file.
 
-These two are loaded by every conditioned task file in its `## Required skills` section.
-
-The persona's skill (`personas` itself, plus the named persona profile) loads when the task file's `> **PERSONA:**` blockquote names a persona — which it always does in framework-conformant task files.
-
-The other skills load based on the task type's auto-attach table (see [`reference/flow-graph.md`](../reference/flow-graph.md)) and based on description-matching to project-specific skills.
-
----
-
-## 📜 The session-start hook
-
-Skills don't apply themselves; the agent has to be told to load them. The framework recommends a session-start instruction (in AGENTS.md or via the agent CLI's hook mechanism) that says:
-
-> First action: read your task file at `.agents/tasks/<slug>.md`. Load `manage-task` and `documentation-gatekeeper`. Adopt the persona named in the task file. Then proceed.
-
-This is what makes the discipline operational rather than aspirational. See [`reference/agents-md.md`](../reference/agents-md.md) for the recommended language.
+The empirical reason this works — directive descriptions hitting ~100 % activation versus ~55 % for passive ones — and the reason there is no always-loaded skill both live in [`building/activation.md`](building/activation.md). The full rationale for every structural choice in the skill layer is in [`building/`](building/README.md).
 
 ---
 
 ## See also
 
-- [`concepts/04-personas.md`](../concepts/04-personas.md) — how personas use skills
-- [`concepts/06-task-types.md`](../concepts/06-task-types.md) — which skills attach to which tasks
-- [`concepts/12-prior-art.md`](../concepts/12-prior-art.md) — the Anthropic/Codex skills format origin
-- [`reference/flow-graph.md`](../reference/flow-graph.md) — skill attachment by task type
-- [`guides/writing-skills.md`](../guides/writing-skills.md) — how to write project-specific skills
-- [`reference/agents-md.md`](../reference/agents-md.md) — session-start hook
+- [`building/README.md`](building/README.md) — the science behind every structural choice in the skill layer
+- [`building/activation.md`](building/activation.md) — why descriptions take the directive form; the no-always-load rule
+- [`building/body-anatomy.md`](building/body-anatomy.md) — numbered rules, length budgets, progressive disclosure
+- [`personas.md`](personas.md) — the seven persona skills and the split model
+- [`../guides/writing-skills.md`](../guides/writing-skills.md) — how to write project-specific skills
+- [`../reference/flow-graph.md`](../reference/flow-graph.md) — the recommended routing graph (source-doc → task → persona → skills)

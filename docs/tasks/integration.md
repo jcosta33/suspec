@@ -2,7 +2,7 @@
 
 > **TL;DR.** Wire a third-party SDK, API, or MCP server into the codebase per a spec. Same persona as `feature` (The Builder), specialised constraints around credential handling, error semantics, and protocol fidelity. Output: working integration + tests + handoff to The Skeptic.
 
-> 📦 **This page is documentation.** The `integration` task type uses the same template as `feature`: [`/scaffold/.agents/templates/task-feature.md`](../../scaffold/.agents/templates/task-feature.md), with `Type: integration` and the additions noted below.
+> 📦 **This page is documentation.** The `integration` task type uses the same template as `feature`: [`/scaffold/.agents/skills/write-feature/references/task-template.md`](../../scaffold/.agents/skills/write-feature/references/task-template.md), with `Type: integration` and the additions noted below.
 
 ---
 
@@ -26,7 +26,7 @@ If you're *consuming* an already-integrated SDK to add a feature, that's `featur
 | **Lead persona**     | [The Builder](../personas/the-builder.md) (in integration mode) |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md), [The Architect](../personas/the-architect.md) (boundary review) |
 | **Output**           | Working integration with credential handling + tests |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-feature`, `empirical-proof` |
+| **Recommended skills** | `write-feature`, `empirical-proof` (the Builder mindset is carried by `write-feature`; `persona-architect` for boundary review) |
 | **Verification gate slots** | `cmdInstall` (pre), `cmdValidate` (periodic + post), `cmdTest` (post including integration tests) |
 
 ---
@@ -43,7 +43,7 @@ If you're *consuming* an already-integrated SDK to add a feature, that's `featur
 
 ## Canonical template (agent artefact)
 
-Uses **`/scaffold/.agents/templates/task-feature.md`** with **`Type: integration`**. Routing still selects The Builder (`write-feature` skill bundle) — the task type specialises *proof obligations*, not persona.
+Uses **`/scaffold/.agents/skills/write-feature/references/task-template.md`** with **`Type: integration`**. Routing still selects The Builder (`write-feature` skill bundle) — the task type specialises *proof obligations*, not persona.
 
 ### Why a distinct `integration` type exists
 

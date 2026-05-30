@@ -1,6 +1,6 @@
 # 06 · Task types
 
-> **TL;DR.** 18 task types. Each one has a default lead persona, an attached skill set, named verification gate slots, and a template. Each type earns its place by being something agents do *constantly* across projects, languages, and stacks. The 1-to-1 mapping with personas is rigid: the framework — not the agent — decides which mindset the task gets.
+> **TL;DR.** 18 task types. Each one has a *suggested* lead persona, a set of skills worth loading, named verification gate slots, and a template. Each type earns its place by being something agents do *constantly* across projects, languages, and stacks. The task-type → persona mapping is a **suggested default**, not a forced pick — the agent arrives pre-conditioned and may re-assess (the original rigid 1:1 mapping in [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md) is superseded to suggested defaults).
 
 ---
 
@@ -46,9 +46,9 @@ Each task type has the following metadata, defined once in the framework and reu
 
 | Field                 | What it is                                                     |
 | --------------------- | -------------------------------------------------------------- |
-| **Lead persona**      | The default mindset (1-to-1; framework picks)                  |
+| **Suggested persona** | The default mindset (a suggestion; the agent may re-assess)    |
 | **Source doc(s)**     | Which document type(s) ground the task                         |
-| **Auto-loaded skills** | The skills attached at task launch (always includes `manage-task` and `documentation-gatekeeper`) |
+| **Skills worth loading** | The skills whose `description` matches the task; they self-activate (there is no always-loaded skill) |
 | **Verification slots** | Named gate slots that fire pre/periodic/post                  |
 | **Self-review focus** | The persona-specific Self-review questions                     |
 | **Template**          | The literal task-file skeleton with placeholders               |
@@ -61,7 +61,7 @@ The metadata flows through the conditioning pipeline (see [`02-conditioning-pipe
 
 Tasks whose deliverable is **code** (or another concrete change to the running system).
 
-| Task              | Lead persona              | Source doc            | What it produces                    | Page                                         |
+| Task              | Suggested persona         | Source doc            | What it produces                    | Page                                         |
 | ----------------- | ------------------------- | --------------------- | ----------------------------------- | -------------------------------------------- |
 | **feature**       | The Builder               | spec                  | New behaviour                       | [`tasks/feature.md`](../tasks/feature.md)    |
 | **fix**           | The Skeptic               | bug-report            | Defect repaired + regression test   | [`tasks/fix.md`](../tasks/fix.md)            |
@@ -80,7 +80,7 @@ Tasks whose deliverable is **code** (or another concrete change to the running s
 
 Tasks whose deliverable is a **source document** (which then grounds a downstream implementation task).
 
-| Task                      | Lead persona               | Source doc                    | What it produces        | Page                                                    |
+| Task                      | Suggested persona          | Source doc                    | What it produces        | Page                                                    |
 | ------------------------- | -------------------------- | ----------------------------- | ----------------------- | ------------------------------------------------------- |
 | **spec-writing**          | The Architect              | research / audit (optional)   | spec                    | [`tasks/spec-writing.md`](../tasks/spec-writing.md)     |
 | **audit-writing**         | The Auditor                | audit brief / human ask       | audit                   | [`tasks/audit-writing.md`](../tasks/audit-writing.md)   |
@@ -95,7 +95,7 @@ These are **read-only on source code** — the worktree's source files don't cha
 
 Tasks whose deliverable is a **decision**, **review**, or **coordination artefact**.
 
-| Task              | Lead persona             | Source doc                 | What it produces                         | Page                                           |
+| Task              | Suggested persona        | Source doc                 | What it produces                         | Page                                           |
 | ----------------- | ------------------------ | -------------------------- | ---------------------------------------- | ---------------------------------------------- |
 | **review**        | The Skeptic              | another agent's branch     | Verdict (approve / kickback / abandon) + findings list | [`tasks/review.md`](../tasks/review.md) |
 | **deepen-audit**  | The Skeptic              | existing audit             | Updated audit with previously missed findings | [`tasks/deepen-audit.md`](../tasks/deepen-audit.md) |
@@ -119,7 +119,7 @@ Every task type in the catalogue is defended by **ubiquity**: agents do this con
 | **Spike / Investigation**   | `research-writing` — produces a research file, even when scope is exploratory |
 | **Code Review (PR)**        | `review` — same task type, regardless of whether the source is human or agent |
 
-These collapses are deliberate: a smaller catalogue is easier to memorise, easier to route deterministically, and easier to teach. When a real-world task genuinely doesn't fit, the catalogue grows — but with evidence, an ADR, and a migration path.
+These collapses are deliberate: a smaller catalogue is easier to memorise, easier to route, and easier to teach. When a real-world task genuinely doesn't fit, the catalogue grows — but with evidence, an ADR, and a migration path.
 
 ---
 
@@ -134,7 +134,7 @@ All 18 task types extend a common base. The base sections are present in every t
 - Slug · Agent · Branch · Base · Worktree · Created · Status · Type
 
 > 🔒 / ⚠️ / (no marker) **<TASK TYPE> SESSION** — short descriptor of constraints
-> **PERSONA:** Load `.agents/skills/personas/SKILL.md` and adopt **<Persona>**
+> **PERSONA:** Suggested **<Persona>** — load `.agents/skills/persona-<slug>/SKILL.md` (for the 7 shipped personas) or rely on the workflow skill that carries the mindset; re-assess and record any divergence in `## Decisions`
 
 ## Objective
 One paragraph; what is true when this task is done.
@@ -144,14 +144,13 @@ One paragraph; what is true when this task is done.
 - Optional research
 - Related artefacts
 
-## Required skills
-- manage-task
-- documentation-gatekeeper
-- (persona skill)
-- (write-<type> skill if the task produces a doc)
+## Skills
+- (workflow skill, e.g. write-<type>)
+- (quality-gate skills whose description matches: empirical-proof / adversarial-review / distillation-discipline)
+- (persona-<slug> skill, for the 7 shipped personas, when role-shaped)
 
 ## Domain skills
-Project-specific skills determined by description-matching.
+Project-specific skills that self-activate by description-matching.
 
 ## Constraints
 Task-specific + persona's forbidden actions.
@@ -190,7 +189,7 @@ The base lives at [`reference/task-base.md`](../reference/task-base.md). Type-sp
 
 ## 🔌 Verification gate slots by task type
 
-The framework defines **slots**; the project binds slots to commands. The slots fire at known phases:
+The framework defines **slots**; the project binds them to commands in `AGENTS.md > Commands`, and the launcher fills the matching `{{cmd*}}` placeholders in the task template. Skill bodies reference the commands by name (`AGENTS.md > Commands > Validation`) and degrade gracefully when a binding is missing. The slots fire at known phases:
 
 | Phase                   | When                                  |
 | ----------------------- | ------------------------------------- |
@@ -201,23 +200,22 @@ The framework defines **slots**; the project binds slots to commands. The slots 
 
 Per-task slot map: [`reference/flow-graph.md`](../reference/flow-graph.md) (the verification command attachment table).
 
-The universal slots present on every code-producing task:
+The universal slots present on every code-producing task (template placeholder → `AGENTS.md > Commands` entry):
 
-- `git-status` — only intended files changed
-- `{{cmdLint}}` — code style
-- `{{cmdFormat}}` — formatting
-- `{{cmdTypecheck}}` — static analysis
-- `{{cmdValidate}}` — the project's catch-all check (most projects bind this to "lint + format + typecheck")
-- `{{cmdTest}}` — the test runner
-- `{{cmdValidateDeps}}` — architectural / dependency boundary check (projects may not have this; mark `n/a`)
-- `{{cmdBuild}}` — build the artefact
+- `git status` — only intended files changed
+- `{{cmdValidate}}` (`Commands > Validation`) — the project's catch-all check; most projects bind it to typecheck + lint
+- `{{cmdFormat}}` (`Commands > Format`) — formatting
+- `{{cmdTest}}` (`Commands > Test`) — the test runner
+- `{{cmdTypecheck}}` (`Commands > Typecheck`) — standalone static analysis, where the project separates it from Validation
+- `{{cmdValidateDeps}}` (`Commands > ValidateDeps`) — architectural / dependency boundary check (projects may not have this; mark `n/a`)
+- `{{cmdBuild}}` (`Commands > Build`) — build the artefact
 
 Type-specific additions (some examples):
 
-- `performance` adds `{{cmdBenchmark}}` — fired at baseline and after target.
+- `performance` adds `{{cmdBenchmark}}` (`Commands > Benchmark`) — fired at baseline and after target.
 - `migration` adds `{{cmdValidate}}` *after every wave* (the codebase must compile and pass tests at every wave checkpoint, not just at the end).
-- `bug-report-writing` adds a *reproduction-output* slot (the proof that the bug fires deterministically).
-- Doc-producing tasks (research, audit, spec, documentation) use `{{cmdMarkdownLint}}`, `{{cmdLinkCheck}}`, and (for research) `{{cmdCitationCheck}}`.
+- `bug-report-writing` adds a *reproduction-output* slot (the proof that the bug fires reliably).
+- Doc-producing tasks (research, audit, spec, documentation) run their markdown lint / link check / citation check through the project's `Commands > Validation` binding, or the skill asks the user when no doc-lint command is bound.
 
 For the full slot catalogue: [`reference/template-placeholders.md`](../reference/template-placeholders.md).
 
@@ -258,11 +256,11 @@ When a real-world task pattern recurs across projects and doesn't fit any existi
 
 1. **Evidence** — the same pattern in at least 3 independent codebases.
 2. **An ADR** — captures the alternatives considered (folding into existing types) and why they were rejected.
-3. **A migration path** — `MIGRATIONS.md` entry for adopters.
+3. **A migration path** — a documented upgrade route for adopters, under the versioning/migration policy ([ADR 0015](../adrs/0015-versioning-scheme.md)).
 4. **Conformance update** — the conformance checker updates to validate the new type.
 5. **Versioning bump** — a minor version (additive) or major version (if breaking).
 
-Conversely, when a task type has no users in practice, it can be deprecated (see [`DEPRECATIONS.md`](../../DEPRECATIONS.md)). Deprecation has a similar bar: evidence, ADR, migration path.
+Conversely, when a task type has no users in practice, it can be deprecated under the same versioning/migration policy ([ADR 0015](../adrs/0015-versioning-scheme.md)). Deprecation has a similar bar: evidence, ADR, migration path.
 
 ---
 

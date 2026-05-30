@@ -1,10 +1,10 @@
 # 05 · The flow graph
 
-> The deterministic mapping between documents, tasks, and personas. This is the core of the framework's auto-conditioning: pick a source document and the task type, the persona, the skills, and the verification commands all follow.
+> The recommended mapping between documents, tasks, and personas. This is the core of the framework's conditioning model: pick a source document and a default task type, suggested persona, skills, and verification commands all follow. They are defaults — the agent may re-assess and route differently when the work in front of it doesn't match.
 
-This document is reference material — agents consult it when deciding what to do, but the rules themselves are enforced by the launcher (the Swarm CLI or any compliant tool), the task templates, and the `documentation-gatekeeper` skill.
+This document is reference material — agents consult it when deciding what to do. A launcher (the Swarm CLI or any compatible tool) **may** apply this graph deterministically when it scaffolds a task file, and the directive skill `description`s reproduce the routing in-session. But none of it is gatekeeper-enforced: when the task doesn't match the suggested default, load the skill whose `description` fits and record the divergence in your task file's `## Decisions`.
 
-For the personas referenced here, see `.agents/skills/personas/SKILL.md`. For the documentation tiers, see `01-process.md`. For document types and their structure, see `02-file-types.md`.
+For the personas referenced here, see the `persona-<slug>` skills under `.agents/skills/` (seven ship as skills). For the documentation tiers, see `01-process.md`. For document types and their structure, see `02-file-types.md`.
 
 ---
 
@@ -16,19 +16,19 @@ For the personas referenced here, see `.agents/skills/personas/SKILL.md`. For th
 └────────┬─────────┘
          │
          ▼
-┌──────────────────┐    Determined by document type:
+┌──────────────────┐    Default by document type (agent may re-assess):
 │    Task type     │    audit → refactor, spec → feature, etc.
 └────────┬─────────┘
          │
          ▼
-┌──────────────────┐    Determined by task type:
+┌──────────────────┐    Suggested by task type (agent may re-assess):
 │     Persona      │    refactor → Janitor, feature → Builder, etc.
 └────────┬─────────┘
          │
          ▼
-┌──────────────────┐    Skills + verification commands attached.
-│  Conditioned     │    Worktree + branch created. Agent CLI launches.
-│   task.md        │
+┌──────────────────┐    Skills self-activate by directive description;
+│  Conditioned     │    verification commands referenced. Worktree +
+│   task.md        │    branch created. Agent CLI launches.
 └──────────────────┘
 ```
 
@@ -48,7 +48,7 @@ Task files are terminal. They never feed another doc; durable findings are promo
 
 ## Document → task type
 
-Every document the human (or an upstream agent) hands to the framework has exactly one default task type. The user can override at session start, but the default is deterministic.
+Every document the human (or an upstream agent) hands to the framework has a recommended default task type. A launcher may apply the default automatically; the user can override at session start, and the agent may re-assess once it reads the source doc and record any divergence in `## Decisions`.
 
 | Source document                              | Default task type                                                    | Why                                                                              |
 | -------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -66,18 +66,22 @@ Every document the human (or an upstream agent) hands to the framework has exact
 | `cleanup list`                               | refactor                                                             | Janitor proves deletion safety                                                  |
 | `test plan`                                  | testing                                                              | New test coverage from a structured plan                                         |
 
-### Edges that look possible but aren't
+### Edges the routing strongly discourages
 
-- **research → fix** — forbidden. Research must go through a spec or audit before becoming actionable. Implementing directly from research means skipping the stage whose job is to translate.
+These aren't gatekeeper-enforced, but the routing model treats them as anti-patterns. If you take one of them anyway, document why in `## Decisions`.
+
+- **research → fix** — discouraged. Research should go through a spec or audit before becoming actionable. Implementing directly from research means skipping the stage whose job is to translate.
 - **spec → refactor** — uncommon. Refactor tasks are driven by audits. If a spec calls for restructuring, the spec is implicitly the refactor's plan, but the task is still tracked as a feature unless the change is purely structural.
-- **bug-report → refactor** — forbidden. A bug report drives a fix, not a cleanup. If fixing the bug reveals broader cleanup needs, surface them as findings; do not expand scope silently.
-- **audit → feature** — forbidden. Audits do not specify new features; they describe current state and recommend cleanup. If the audit's recommended approach is "build something new", the next step is a spec, not a feature task.
+- **bug-report → refactor** — discouraged. A bug report drives a fix, not a cleanup. If fixing the bug reveals broader cleanup needs, surface them as findings; do not expand scope silently.
+- **audit → feature** — discouraged. Audits do not specify new features; they describe current state and recommend cleanup. If the audit's recommended approach is "build something new", the next step is a spec, not a feature task.
 
 ---
 
 ## Task type → persona
 
-Each task type has a primary persona that is auto-attached. Some have secondary personas for handoff (e.g. a feature task ends with a Skeptic review; a refactor task ends the same way).
+Each task type has a **suggested** primary persona. Some have secondary personas for handoff (e.g. a feature task ends with a Skeptic review; a refactor task ends the same way). These are defaults, not assignments — the agent adopts the suggested mindset unless the work calls for a different one.
+
+Of the persona mindsets named below, **seven ship as standalone skills**: Architect, Auditor, Janitor, Migrator, Performance Surgeon, Skeptic, Surveyor (`.agents/skills/persona-<slug>/SKILL.md`). The other lead personas are **mindsets carried by the matching workflow skill**, not separate skills: Builder by `write-feature`, Bug Hunter by `write-bug-report`, Documentarian by `write-documentation`, Test Author by `write-testing`, Researcher by `write-research`. Lead Engineer is an orchestration stance with no skill of its own.
 
 | Task type                    | Primary persona                                               | Secondary (handoff)                                                                                                           |
 | ---------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -101,15 +105,15 @@ Each task type has a primary persona that is auto-attached. Some have secondary 
 | upgrade                      | The Migrator                                                  | The Skeptic (review of each wave)                                                                                             |
 | kickback                     | The Builder (or whichever persona produced the original work) | The Skeptic (re-review after fix)                                                                                             |
 
-The project's `swarm.config` (a CLI artefact) may override the primary persona for any task type. The most common override: routing fix tasks to a dedicated Fixer persona instead of the Skeptic, when a team prefers minimality-focus over adversarial-focus.
+A project may override the suggested primary persona for any task type — via launcher configuration, or simply because the agent re-assesses in-session and loads a different `persona-<slug>` skill. Record the choice in `## Decisions`. A common override: a team that prefers minimality-focus over adversarial-focus may route fix tasks toward the Janitor mindset rather than the Skeptic.
 
 ---
 
 ## Task type → skills attached
 
-Every task type loads `manage-task` and `documentation-gatekeeper` by default (per the framework's standing convention). The table below lists the *additional* skills the task type loads.
+There is **no always-loaded skill**. Skills self-activate by their directive `description` — each one fires when its triggers match the work in front of you. The table below lists the skills that *typically* match each task type; treat it as a guide, not a load order.
 
-| Task type          | Additional skills                                           |
+| Task type          | Skills that typically match                                 |
 | ------------------ | ----------------------------------------------------------- |
 | feature            | `write-feature`, `empirical-proof`                          |
 | fix                | `write-fix`, `adversarial-review`, `empirical-proof`        |
@@ -119,18 +123,18 @@ Every task type loads `manage-task` and `documentation-gatekeeper` by default (p
 | research-writing   | `write-research`, `distillation-discipline`                 |
 | audit-writing      | `write-audit`, `adversarial-review`                         |
 | bug-report-writing | `write-bug-report`, `adversarial-review`, `empirical-proof` |
-| migration          | `write-refactor` (overlaps), `empirical-proof`              |
-| upgrade            | `write-refactor` (overlaps), `empirical-proof`              |
-| performance        | `empirical-proof`                                           |
-| testing            | `empirical-proof`                                           |
-| documentation      | `distillation-discipline`, `empirical-proof`                |
+| migration          | `write-migration`, `empirical-proof`                        |
+| upgrade            | `write-migration`, `empirical-proof`                        |
+| performance        | `write-performance`, `empirical-proof`                      |
+| testing            | `write-testing`, `empirical-proof`                          |
+| documentation      | `write-documentation`, `distillation-discipline`, `empirical-proof` |
 | review             | `adversarial-review`, `empirical-proof`                     |
 | deepen-audit       | `write-audit`, `adversarial-review`, `empirical-proof`      |
 | orchestration      | `adversarial-review`, `empirical-proof`                     |
 | integration        | `write-feature`, `empirical-proof`                          |
 | kickback           | (same as the original task type) + `adversarial-review`     |
 
-Project-specific skills (architecture-violations, testing-file-layout, etc.) attach in addition based on description-matching to the task domain.
+Project-specific skills under `.agents/skills/domain/` (architecture-violations, testing-file-layout, etc.) self-activate the same way when their `description` matches the task domain.
 
 ---
 
@@ -223,15 +227,15 @@ Round limit (recommendation, not hard rule): 3. After 3, escalate (re-spec / re-
 
 ## Edge cases
 
-**Ambiguous source document.** If a doc is unclear — a research file that's really an audit, a spec that contains too much current-state — the launcher should ask the human to confirm the doc type rather than guess. The framework strongly prefers explicit reclassification over silent re-routing.
+**Ambiguous source document.** If a doc is unclear — a research file that's really an audit, a spec that contains too much current-state — the launcher (or the agent) should ask the human to confirm the doc type rather than guess. The framework strongly prefers explicit reclassification over silent re-routing.
 
-**No source document.** A "blank slate" ask kicks off an authoring task. The launcher selects the authoring type from the human's prompt — "research X", "audit Y", "spec Z", "find the bug in W" — or asks if it cannot tell.
+**No source document.** A "blank slate" ask kicks off an authoring task. The authoring type follows from the human's prompt — "research X", "audit Y", "spec Z", "find the bug in W"; if neither the launcher nor the agent can tell, ask.
 
 **Multiple source docs.** A task may legitimately have multiple sources (spec + research, audit + research, original spec + skeptic notes for a kickback). All sources go in `## Linked docs`. The task type follows the *primary* source's routing rule.
 
 **No research, no spec.** Trivial tasks may skip the docs entirely — see `01-process.md` on what counts as trivial. For non-trivial work, document the skip in the task file's `## Decisions` with the reason.
 
-**Research that's sufficient without a spec.** Forbidden. If you find yourself implementing directly from research, stop and write the spec first. Research is input; spec is contract. The framework treats this as a hard rule because the failure mode (drift between research findings and implementation) is severe and silent.
+**Research that's sufficient without a spec.** Strongly discouraged. If you find yourself implementing directly from research, stop and write the spec first. Research is input; spec is contract. The framework leans hard against this because the failure mode (drift between research findings and implementation) is severe and silent — skip the spec only with an explicit, recorded reason.
 
 ---
 
@@ -256,7 +260,7 @@ Does a source document exist?
                                 └── Attach skills, inject commands, scaffold task file
 ```
 
-The launcher does this. The agent does not need to think about it — the agent reads the conditioned task file and adopts the persona named in the `> **PERSONA:**` blockquote.
+A launcher may run this routing for you when it scaffolds the task file; the agent then reads the conditioned task file and adopts the persona named in the `> **PERSONA:**` blockquote. But the agent stays in the loop: if the source doc or the ask doesn't fit the routed default, re-assess, load the skill whose `description` matches, and record the divergence in `## Decisions`.
 
 ---
 
@@ -266,5 +270,4 @@ The launcher does this. The agent does not need to think about it — the agent 
 - `02-file-types.md` — what each document type contains
 - `03-workflow.md` — step-by-step session flow
 - `04-standards.md` — writing and execution standards
-- `.agents/skills/personas/SKILL.md` — full persona definitions
-- `.agents/skills/documentation-gatekeeper/SKILL.md` — enforcement of the routing rules
+- `.agents/skills/persona-<slug>/SKILL.md` — the seven shipped persona skills (Architect, Auditor, Janitor, Migrator, Performance Surgeon, Skeptic, Surveyor)

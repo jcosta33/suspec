@@ -10,9 +10,9 @@ Adopting Swarm is mostly *copying the scaffold* and *binding a few placeholders*
 
 The full install:
 
-1. Copy `/scaffold/` into your repo's root (mirror-the-paths convention)
+1. Copy `/scaffold/` into your repo's root (mirror-the-paths convention) — or vendor only the skill folders you actually need
 2. Append `/scaffold/.gitignore.additions` to your `.gitignore`
-3. Edit `AGENTS.md` to bind the `{{cmdX}}` placeholders to your project's commands
+3. Edit `AGENTS.md`'s `## Commands` section to bind the command contract to your project's commands
 4. Optionally write a `.agents/constitution.md` capturing project-wide non-negotiable baselines
 5. Verify the install (the conformance checker, when it ships, automates this)
 
@@ -70,26 +70,26 @@ mkdir -p .agents/{tasks,specs,audits,bugs,research}
 
 What this gives you:
 
-- `AGENTS.md` (root entry point with `TODO` markers)
+- `AGENTS.md` (root entry point with `TODO` markers and a `## Commands` contract section)
 - `CLAUDE.md`, `GEMINI.md` (cross-tool aliases)
 - `.gitignore` includes `.agents/tasks/` and `.worktrees/`
 - `docs/agents/01-process.md` through `05-flow-graph.md` (process docs every project ships)
-- `.agents/skills/` with all 6 cross-cutting skills + 8 authoring skills + the `personas/SKILL.md` (all 13 persona profiles)
-- `.agents/templates/` with all 19 task and doc templates
+- `.agents/skills/` with all 23 shipped skills: 3 quality gates, 1 specialised, 12 authoring, and 7 individual `persona-<slug>` skills — each a self-contained `<name>/SKILL.md`. There is **no always-loaded skill**; each self-activates on its directive `description`.
+- `.agents/templates/` with the 8 flat templates (4 source-doc templates, the `skill.md` meta-template, the shared `task-base.md`, and the two skill-less task types `task-orchestration.md` / `task-review.md`). Per-skill task templates live in each skill's `references/task-template.md`.
 - Empty `.agents/{tasks,specs,audits,bugs,research}/` directories ready for content
 
 Verify:
 
 ```bash
-ls -la .agents/skills/personas/   # should list SKILL.md
-ls -la .agents/templates/         # should list 19 templates
+ls -1 .agents/skills/             # should list 23 skill directories
+ls -la .agents/templates/         # should list 8 flat templates
 ls -la docs/agents/               # should list 5 process docs
 grep -F ".agents/tasks/" .gitignore  # should match
 ```
 
 ---
 
-## 🪜 Step 2: Bind the verification gate placeholders
+## 🪜 Step 2: Bind the command contract
 
 Open `AGENTS.md`. Search for `TODO` markers:
 
@@ -100,23 +100,27 @@ grep -n "TODO" AGENTS.md
 You'll find:
 
 - A `## Project conventions` section with `TODO` placeholders for language, runtime, test runner, package manager
-- A verification gate bindings table with `TODO: <bind>` per slot
+- A `## Commands` section — the **command contract**. Skill bodies reference these entries by name in prose (e.g. *"run the project's validation command, `AGENTS.md > Commands > Validation`"*) and degrade gracefully — if an entry is missing they ask you before running anything. Launchers bind the `{{cmd*}}` placeholders in templates and `references/task-template.md` files from the same entries.
 
-For each `{{cmdX}}` slot, replace `TODO: <bind>` with your project's command. Example for a TypeScript / pnpm project:
+The `## Commands` section has a **Required** block (skills rely on these) and an **Extended** block (bound when the relevant work occurs; mark `n/a` with a one-line reason if your project has none). Replace each `TODO` with your command. Example for a TypeScript / pnpm project:
 
 ```markdown
-| `{{cmdInstall}}`       | `pnpm install`                       |                                         |
-| `{{cmdValidate}}`      | `pnpm run validate`                  | runs lint + format + typecheck          |
-| `{{cmdLint}}`          | `pnpm run lint`                      |                                         |
-| `{{cmdFormat}}`        | `pnpm run format:check`              |                                         |
-| `{{cmdTypecheck}}`     | `pnpm run typecheck`                 |                                         |
-| `{{cmdTest}}`          | `pnpm test`                          |                                         |
-| `{{cmdBuild}}`         | `pnpm run build`                     |                                         |
-| `{{cmdValidateDeps}}`  | `pnpm run validate:deps`             | dependency-cruiser                      |
-| `{{cmdBenchmark}}`     | `n/a`                                | only used by performance tasks         |
+| Command (referenced as `Commands > …`) | Template placeholder | Bind to                              |
+| -------------------------------------- | -------------------- | ------------------------------------ |
+| `Validation`                           | `{{cmdValidate}}`    | `pnpm typecheck && pnpm lint`        |
+| `Test`                                 | `{{cmdTest}}`        | `pnpm test`                          |
+| `Format`                               | `{{cmdFormat}}`      | `pnpm format`                        |
+
+Extended (bind when the work occurs, or mark `n/a`):
+
+| `Install`        | `{{cmdInstall}}`      | `pnpm install`                       |
+| `Typecheck`      | `{{cmdTypecheck}}`    | `pnpm typecheck`                     |
+| `Build`          | `{{cmdBuild}}`        | `pnpm build`                         |
+| `ValidateDeps`   | `{{cmdValidateDeps}}` | `pnpm validate:deps` (dependency-cruiser) |
+| `Benchmark`      | `{{cmdBenchmark}}`    | `n/a` — only used by performance tasks |
 ```
 
-Slots you don't have can be marked `n/a` with a one-line justification.
+Skills never invent commands. If a value isn't in `## Commands`, they ask you and proceed once told. Extended entries you don't have can be marked `n/a` with a one-line justification.
 
 ---
 
@@ -138,13 +142,15 @@ The constitution is read by every persona before serious work; it's the supreme 
 
 Manual checklist (when the conformance checker ships, automates these):
 
-- [ ] `AGENTS.md` exists at repo root
+- [ ] `AGENTS.md` exists at repo root, with a `## Commands` section
 - [ ] `AGENTS.md` no longer contains `TODO` markers (`grep -c TODO AGENTS.md` → 0)
 - [ ] `.gitignore` includes `.agents/tasks/` and `.worktrees/`
-- [ ] `.agents/skills/personas/SKILL.md` exists
-- [ ] `.agents/skills/manage-task/SKILL.md`, `documentation-gatekeeper/SKILL.md`, `personas/SKILL.md`, `distillation-discipline/SKILL.md`, `empirical-proof/SKILL.md`, `adversarial-review/SKILL.md` all exist
-- [ ] `.agents/skills/write-spec/SKILL.md` and the other 7 write-skills exist
-- [ ] `.agents/templates/` contains 19 templates
+- [ ] `.agents/skills/` contains 23 skill directories (`ls -1 .agents/skills/ | wc -l` → 23)
+- [ ] The 3 quality gates exist: `adversarial-review/`, `distillation-discipline/`, `empirical-proof/`
+- [ ] The 7 persona skills exist: `persona-{architect,auditor,janitor,migrator,performance-surgeon,skeptic,surveyor}/`
+- [ ] The 12 authoring skills exist: `write-{spec,audit,research,bug-report,feature,fix,refactor,rewrite,migration,performance,testing,documentation}/`
+- [ ] `fix-flaky-test/SKILL.md` exists
+- [ ] `.agents/templates/` contains the 8 flat templates
 - [ ] `.agents/specs/`, `.agents/audits/`, `.agents/bugs/`, `.agents/research/` all exist
 - [ ] `docs/agents/01-process.md` through `05-flow-graph.md` exist
 
@@ -155,13 +161,13 @@ Manual checklist (when the conformance checker ships, automates these):
 Pick a small piece of work — a feature, a small refactor, a doc update — and:
 
 1. **Author the source doc** (e.g., a small spec at `.agents/specs/<slug>.md`, using the template at `.agents/templates/spec.md`).
-2. **Scaffold a conditioned task file** at `.agents/tasks/<slug>.md` (use the appropriate template from `.agents/templates/task-<type>.md`; bind the placeholders).
+2. **Scaffold a conditioned task file** at `.agents/tasks/<slug>.md` (use the governing skill's `references/task-template.md` — e.g. `.agents/skills/write-feature/references/task-template.md` — or, for the two skill-less task types, `.agents/templates/task-orchestration.md` / `task-review.md`; bind the placeholders).
 3. **Open the task file in your agent CLI**.
 4. **Tell the agent: *"Read the task file and proceed."***
 
 The agent will:
 
-- Read the persona profile (`.agents/skills/personas/SKILL.md`) and adopt the named persona's mindset
+- Load the persona skill whose directive `description` matches the work (e.g. `.agents/skills/persona-skeptic/SKILL.md`), or adopt the mindset carried by the matching workflow skill (e.g. The Builder via `write-feature`), and adopt that stance
 - Read the source doc
 - Plan, implement, run gates, paste outputs
 - Hand off to The Skeptic for review (if applicable)
@@ -175,8 +181,8 @@ If something feels off — the agent skipped a step, didn't load a skill, paraph
 Over time:
 
 - **Promote durable findings** to audits / specs / research (the promotion protocol; see `docs/agents/01-process.md` in your installed scaffold)
-- **Add project-specific skills** under `.agents/skills/domain/` as you encounter patterns. Use `.agents/templates/skill.md` as the template.
-- **Add overlay personas** if the framework's thirteen defaults miss recurring local discipline. Operational text either appends sections to **your fork** of `personas/SKILL.md` or lives beside it under `.agents/skills/personas/overlays/` with loader wiring spelled out in `AGENTS.md`.
+- **Add project-specific skills** under `.agents/skills/domain/` as you encounter patterns. Use `.agents/templates/skill.md` as the meta-template, and the [writing-skills guide](writing-skills.md) for the authoring discipline.
+- **Add overlay personas** if the seven shipped persona skills miss recurring local discipline. An overlay is a new self-contained persona skill at `.agents/skills/persona-<name>/SKILL.md`, beside the shipped seven (see [`customizing-personas.md`](customizing-personas.md)). There's no central `personas/SKILL.md` to fork.
 - **Add ADRs** as you make structurally significant decisions. There's no canonical scaffold ADR template (yet); use the format documented in `docs/documents/extended.md` of this Swarm repo.
 - **Update the constitution** as architectural invariants emerge.
 
@@ -188,10 +194,10 @@ The framework grows with the project. The discipline is in the *artefacts*, not 
 
 When this Swarm framework releases a new version with scaffold changes:
 
-1. **Read the project's CHANGELOG and `MIGRATIONS.md`** to see what changed
+1. **Read the project's CHANGELOG and the release notes** to see what changed
 2. **Diff your installed copy against the new scaffold** (e.g., `diff -r .agents/skills /path/to/swarm/scaffold/.agents/skills`)
 3. **Apply changes** — copy in new files; merge changes to modified files; remove deprecated files
-4. **Re-bind any new `{{cmdX}}` placeholders** introduced by new templates
+4. **Re-bind any new `## Commands` entries** introduced by new templates or skills
 
 Treat the scaffold like any vendored dependency: track the version you installed, update deliberately.
 
@@ -205,7 +211,7 @@ Treat the scaffold like any vendored dependency: track the version you installed
 | Binding placeholders to commands that don't exist                      | Tasks fail at the verification gate                                | Either implement the command or mark the slot `n/a`             |
 | Trying to copy from `/docs/` instead of `/scaffold/`                  | Cross-references break (because `/docs/` files reference each other) | Always copy from `/scaffold/`. `/docs/` is documentation; `/scaffold/` is artefacts |
 | Installing skills as "just files" without reading them                 | Discipline doesn't take hold                                       | Read each skill at least once; understand what it enforces       |
-| Writing the first task before any source doc                           | Forbidden flow (no grounding) — `documentation-gatekeeper` halts  | Author a source doc first, even a tiny one                       |
+| Writing the first task before any source doc                           | Ungrounded work — the recommended routing wants a source doc first | Author a source doc first, even a tiny one. Routing is guidance, not gatekeeper-enforced |
 | Trying to bend Swarm to a tooling-first mental model                   | Frustration that the framework "doesn't do" the work for you     | Re-read [`PRINCIPLES.md`](../PRINCIPLES.md); Swarm is documentation, not tooling |
 
 ---
@@ -231,15 +237,14 @@ your-project/
 │
 └── .agents/
     ├── tasks/                         # gitignored, worktree-local
-    ├── templates/                     # 19 task and doc templates
-    ├── skills/
-    │   ├── personas/SKILL.md          # all 13 persona profiles
-    │   ├── manage-task/SKILL.md
-    │   ├── documentation-gatekeeper/SKILL.md
-    │   ├── distillation-discipline/SKILL.md
-    │   ├── empirical-proof/SKILL.md
-    │   ├── adversarial-review/SKILL.md
-    │   └── write-{spec,audit,research,bug-report,feature,fix,refactor,rewrite}/SKILL.md
+    ├── templates/                     # 8 flat templates (source-doc + skill meta + task-base + 2 skill-less task types)
+    ├── skills/                        # 23 self-contained skills, each <name>/SKILL.md
+    │   ├── adversarial-review/        # quality gates (3)
+    │   ├── distillation-discipline/
+    │   ├── empirical-proof/
+    │   ├── fix-flaky-test/            # specialised (1)
+    │   ├── persona-{architect,auditor,janitor,migrator,performance-surgeon,skeptic,surveyor}/  # personas (7)
+    │   └── write-{spec,audit,research,bug-report,feature,fix,refactor,rewrite,migration,performance,testing,documentation}/  # authoring (12); each ships references/task-template.md
     ├── specs/                         # populate as your project authors specs
     ├── audits/                        # populate as your project audits areas
     ├── bugs/                          # populate as bugs are reported

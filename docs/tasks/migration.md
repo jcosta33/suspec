@@ -2,7 +2,7 @@
 
 > **TL;DR.** Move the codebase from API A to API B mechanically across many call sites. Lead persona is The Migrator. Plan in waves; the codebase must compile and pass tests after each wave, not only at the end. No bulk codemods.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-migration.md`](../../scaffold/.agents/templates/task-migration.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-migration/references/task-template.md`](../../scaffold/.agents/skills/write-migration/references/task-template.md).
 
 ---
 
@@ -26,7 +26,7 @@ If behaviour changes, it's `rewrite`. If it's a single file with a small change,
 | **Lead persona**     | [The Migrator](../personas/the-migrator.md)       |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md) (review of each wave) |
 | **Output**           | Codebase using the target API; old API removed (or scheduled) |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-refactor` (overlap), `empirical-proof` |
+| **Recommended skills** | `write-migration`, `empirical-proof`, `persona-migrator` |
 | **Verification gate slots** | `cmdInstall` (pre), `cmdValidate` (per wave), `cmdValidate` (post), `cmdTest` (post), migration-coverage check (post) |
 
 ---
@@ -37,16 +37,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 
@@ -66,4 +57,4 @@ See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-
 - [`tasks/upgrade.md`](upgrade.md) — close cousin (dependency / framework version)
 - [`tasks/refactor.md`](refactor.md) — when scope is single-module
 - [`documents/extended.md`](../documents/extended.md) — the migration plan format
-- [`skills/write-refactor.md`](../skills/write-refactor.md)
+- [`skills/write-migration.md`](../skills/write-migration.md)

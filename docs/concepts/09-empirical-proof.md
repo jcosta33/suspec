@@ -212,7 +212,7 @@ The blocker is real and visible; the gate isn't bypassed silently.
 
 ## 🛠️ The skill that codifies this
 
-The discipline lives in [`skills/empirical-proof.md`](../skills/empirical-proof.md), which auto-attaches to every task type that produces code or runs verifications. The skill's six rules (above) are quoted in every persona profile's "Hard constraints" section.
+The discipline lives in [`skills/empirical-proof.md`](../skills/empirical-proof.md), which self-activates (by its directive description) for tasks that produce code or run verifications. The skill's six rules (above) are restated by the persona skills and the workflow skills.
 
 ---
 

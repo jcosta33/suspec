@@ -1,6 +1,6 @@
 ---
 name: write-rewrite
-description: Load when re-implementing a module with explicit behaviour changes. Encodes the discipline — make the behaviour delta explicit before changing code, preserve everything not in the delta, identify all affected callers, halt and update the spec if a behaviour change emerges that wasn't planned.
+description: Re-implement a module with explicit behaviour changes. ALWAYS apply this skill when the user asks to rewrite a module with new behaviour, replace an implementation, or re-do something that was wrong — when behaviour will change deliberately. Do not start before the behaviour delta is explicit and recorded, preserve unintended differences, or proceed past an unplanned behaviour change without halting and updating the spec. Skip this skill for behaviour-preserving cleanup of existing modules, API/framework migrations, or net-new feature implementation against a fresh spec.
 ---
 
 # Skill: write-rewrite
@@ -9,11 +9,17 @@ description: Load when re-implementing a module with explicit behaviour changes.
 
 Rewrites are riskier than refactors precisely because behaviour is *permitted* to change. Without discipline, unintended changes hide. This skill forces the behaviour delta to be explicit — the contract between the spec and the implementation about what changes and what doesn't.
 
+A rewrite is not a refactor. A refactor preserves behaviour end-to-end; a rewrite changes some of it deliberately. If your task changes no behaviour, it's a refactor (use the refactor discipline). If it changes some behaviour, it's a rewrite (this skill).
+
+## Project context (the AGENTS.md contract)
+
+Resolves project commands via the consuming repo's `AGENTS.md` — `Commands > Validation`, `Commands > Test`. If `AGENTS.md` is missing or a referenced entry is undefined, ask the user which command to run before proceeding — do not guess.
+
 ## Core rules
 
 ### 1. Behaviour delta is explicit
 
-Before writing code, fill in the `<behavior_delta>` table with every aspect that changes:
+Before writing code, fill in a behaviour-delta table with every aspect that changes:
 
 | Aspect | Before | After |
 | ------ | ------ | ----- |
@@ -40,11 +46,11 @@ If during implementation you discover a behaviour change that *isn't* in the del
 
 ### 5. Module plan documented
 
-The `<module_plan>` table lists which modules will be touched and what changes in each. The reviewer can use this to verify the diff matches the plan.
+A module plan lists which modules will be touched and what changes in each. The reviewer can use it to verify the diff matches the plan.
 
 ### 6. Run validation after every batch
 
-Same discipline as refactor: per-batch validation catches drift early.
+The project's validation command runs after every batch of changes, not only at the end. Catching drift early is cheaper than catching it at the end.
 
 ## What does not belong
 
@@ -59,10 +65,6 @@ Same discipline as refactor: per-batch validation catches drift early.
 - Calling it a refactor when behaviour changes (mislabelling)
 - Calling it a rewrite when behaviour is preserved (over-marking; should be refactor)
 
-## See also
+## Bundled resources
 
-- `.agents/templates/task-rewrite.md` — the rewrite task template
-- `.agents/templates/task-refactor.md` — sibling for behaviour-preserved restructuring
-- `.agents/templates/spec.md` — the spec doc this task implements from
-- `.agents/skills/empirical-proof/SKILL.md`
-- `.agents/skills/personas/SKILL.md` — The Builder persona
+- `references/task-template.md` — a fillable rewrite-task template with behaviour-delta table, acceptance criteria, module plan, progress checklist, and a self-review hard gate. Copy it into your project's task file location, substitute the `{{...}}` placeholders, and fill it in as you work.

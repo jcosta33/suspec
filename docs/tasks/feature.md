@@ -2,7 +2,7 @@
 
 > **TL;DR.** Build new behaviour from a complete spec. Lead persona is The Builder. Spec is the contract; the Builder doesn't improvise around it. Output: code + tests + handoff to The Skeptic for review.
 
-> 📦 **This page is documentation.** The actual task template (the one a launcher / Swarm CLI scaffolds tasks from) lives at [`/scaffold/.agents/templates/task-feature.md`](../../scaffold/.agents/templates/task-feature.md).
+> 📦 **This page is documentation.** The actual task template (the one a launcher / Swarm CLI scaffolds tasks from) lives at [`/scaffold/.agents/skills/write-feature/references/task-template.md`](../../scaffold/.agents/skills/write-feature/references/task-template.md).
 
 ---
 
@@ -26,7 +26,7 @@ If the spec is incomplete, the task type is `spec-writing` (with The Architect),
 | **Lead persona**     | [The Builder](../personas/the-builder.md)         |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md) (review) |
 | **Output**           | Code (with tests) + Skeptic handoff                |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-feature`, `empirical-proof` |
+| **Recommended skills** | `write-feature`, `empirical-proof` (the Builder mindset is carried by `write-feature`) |
 | **Verification gate slots** | `cmdInstall` (pre), `cmdValidate` (periodic + post), `cmdTest` (post), `cmdValidateDeps` (post, where applicable) |
 
 ---
@@ -37,15 +37,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 
@@ -65,5 +57,5 @@ See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-
 - [`personas/the-skeptic.md`](../personas/the-skeptic.md) — handoff partner
 - [`tasks/review.md`](review.md) — the downstream review task
 - [`tasks/kickback.md`](kickback.md) — what happens if the Skeptic kicks back
-- [`skills/write-feature.md`](../skills/write-feature.md) — the auto-attached skill
+- [`skills/write-feature.md`](../skills/write-feature.md) — the recommended skill (carries the Builder mindset)
 - [`documents/spec.md`](../documents/spec.md) — what the source doc looks like

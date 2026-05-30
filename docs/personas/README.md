@@ -2,13 +2,13 @@
 
 > The 13 mindsets that condition agents in Swarm. Each persona has its own page; this README is the catalogue and the index.
 
-> 📦 **`/docs/personas/` is conceptual — routing wedges, contrasts, hazards.** Executable profiles (constraints, forbiddances, proofs, red flags) live strictly in [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md).
+> 📦 **`/docs/personas/` is conceptual — routing wedges, contrasts, hazards.** Of the 13 mindsets, **7 ship as executable persona skills** (constraints, forbiddances, proofs, red flags) under [`/scaffold/.agents/skills/persona-<slug>/SKILL.md`](../../scaffold/.agents/skills/); the other 6 are carried by the matching workflow skill (see the routing table below).
 
 ---
 
 ## ⚡ TL;DR
 
-A persona is a **mindset, not a role**. Same agent, same model — different stance, different output. Each task type has exactly one default persona; the agent never picks. Personas have hard rules, forbidden actions, required empirical proofs, and "red flags" — the rationalisations they refuse to accept.
+A persona is a **mindset, not a role**. Same agent, same model — different stance, different output. Each task type has a **suggested default persona**; the agent may re-assess when the task in front of it doesn't match (the 1-to-1 mapping is now a default, not a lock — see [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md)). Personas have hard rules, forbidden actions, required empirical proofs, and "red flags" — the rationalisations they refuse to accept. Of the 13 mindsets, **7 ship as standalone persona skills**; the other 6 ride along inside the matching workflow skill.
 
 For the conceptual framing, see [`concepts/04-personas.md`](../concepts/04-personas.md).
 
@@ -86,29 +86,33 @@ flowchart LR
 
 ---
 
-## 🪜 Persona × Task type matrix (1-to-1 mapping)
+## 🪜 Persona × Task type matrix (suggested routing)
 
-| Task type            | Lead persona                  | Secondary (handoff)                       |
-| -------------------- | ----------------------------- | ----------------------------------------- |
-| feature              | The Builder                   | The Skeptic (review)                      |
-| fix                  | The Skeptic                   | (kickback returns to original persona)    |
-| refactor             | The Janitor                   | The Skeptic (review)                      |
-| rewrite              | The Builder                   | The Skeptic (review)                      |
-| spec-writing         | The Architect                 | —                                         |
-| research-writing (technical) | The Researcher        | —                                         |
-| research-writing (UX/market) | The Surveyor          | —                                         |
-| audit-writing        | The Auditor                   | —                                         |
-| bug-report-writing   | The Bug Hunter                | —                                         |
-| migration            | The Migrator                  | The Skeptic (review of each wave)         |
-| upgrade              | The Migrator                  | The Skeptic (review of each wave)         |
-| performance          | The Performance Surgeon       | The Skeptic (review)                      |
-| testing              | The Test Author               | The Skeptic (review)                      |
-| documentation        | The Documentarian             | The Skeptic (review)                      |
-| review               | The Skeptic                   | —                                         |
-| deepen-audit         | The Skeptic                   | —                                         |
-| orchestration        | The Lead Engineer             | The Skeptic (the merge-gate review pass)  |
-| integration          | The Builder                   | The Skeptic (review)                      |
-| kickback             | (original persona)            | The Skeptic (re-review after fix)         |
+These are **suggested defaults**, not a lock. A launcher may apply them deterministically when scaffolding a task; in-session the agent loads the skill whose `description` fits and records any divergence in the task file's `## Decisions`. The **Runtime carrier** column names how each lead persona's stance reaches the agent: 🟢 a shipped `persona-<slug>` skill, or 🔵 the workflow skill that carries the mindset (no standalone persona skill).
+
+| Task type            | Lead persona                  | Runtime carrier                                   | Secondary (handoff)                       |
+| -------------------- | ----------------------------- | ------------------------------------------------- | ----------------------------------------- |
+| feature              | The Builder                   | 🔵 `write-feature`                                | The Skeptic (review)                      |
+| fix                  | The Skeptic                   | 🟢 `persona-skeptic`                              | (kickback returns to original persona)    |
+| refactor             | The Janitor                   | 🟢 `persona-janitor`                              | The Skeptic (review)                      |
+| rewrite              | The Builder                   | 🔵 `write-feature` (Builder mindset)              | The Skeptic (review)                      |
+| spec-writing         | The Architect                 | 🟢 `persona-architect`                            | —                                         |
+| research-writing (technical) | The Researcher        | 🔵 `write-research`                               | —                                         |
+| research-writing (UX/market) | The Surveyor          | 🟢 `persona-surveyor`                             | —                                         |
+| audit-writing        | The Auditor                   | 🟢 `persona-auditor`                              | —                                         |
+| bug-report-writing   | The Bug Hunter                | 🔵 `write-bug-report`                             | —                                         |
+| migration            | The Migrator                  | 🟢 `persona-migrator`                             | The Skeptic (review of each wave)         |
+| upgrade              | The Migrator                  | 🟢 `persona-migrator`                             | The Skeptic (review of each wave)         |
+| performance          | The Performance Surgeon       | 🟢 `persona-performance-surgeon`                  | The Skeptic (review)                      |
+| testing              | The Test Author               | 🔵 `write-testing`                                | The Skeptic (review)                      |
+| documentation        | The Documentarian             | 🔵 `write-documentation`                          | The Skeptic (review)                      |
+| review               | The Skeptic                   | 🟢 `persona-skeptic`                              | —                                         |
+| deepen-audit         | The Skeptic                   | 🟢 `persona-skeptic`                              | —                                         |
+| orchestration        | The Lead Engineer             | — (no skill; flat `task-orchestration.md` template) | The Skeptic (the merge-gate review pass)  |
+| integration          | The Builder                   | 🔵 `write-feature` (Builder mindset)              | The Skeptic (review)                      |
+| kickback             | (original persona)            | (carrier of the original persona)                 | The Skeptic (re-review after fix)         |
+
+**Carrier legend.** 🟢 shipped persona skill at `scaffold/.agents/skills/persona-<slug>/SKILL.md` (7: architect, auditor, janitor, migrator, performance-surgeon, skeptic, surveyor). 🔵 mindset carried by a workflow skill — Builder→`write-feature`, Bug Hunter→`write-bug-report`, Documentarian→`write-documentation`, Researcher→`write-research`, Test Author→`write-testing`. Lead Engineer ships no skill at all: the orchestration stance lives in the flat `task-orchestration.md` template.
 
 ---
 
@@ -124,13 +128,13 @@ A project can add overlay personas that the framework doesn't ship — for stack
 | **The Security Reviewer**    | (project-defined)                              | Regulated codebase requiring per-PR security audit            |
 | **The Accessibility Auditor** | (project-defined)                              | UI codebase with WCAG conformance requirements                |
 
-Overlays ship in consumer repos beside the forked **`personas/SKILL.md`** or under `.agents/skills/personas/overlays/` — see [`guides/customizing-personas.md`](../guides/customizing-personas.md). They inherit the iron-law pattern but remain project-owned artefacts.
+Overlays ship in consumer repos as their own persona skills under `.agents/skills/persona-<name>/` (beside the shipped seven) — see [`guides/customizing-personas.md`](../guides/customizing-personas.md). They inherit the iron-law pattern but remain project-owned artefacts.
 
 ---
 
 ## 📐 Profile shape (conceptual — full headings live in `/scaffold`)
 
-Canonical personas embed **constraints, forbiddances, routing tables, proofs, adversarial Self-review deltas, iron-law red-flag tables**. That literal outline is maintained once inside [`personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) so loaders ingest a uniform catalogue.
+Canonical personas embed **constraints, forbiddances, routing tables, proofs, adversarial Self-review deltas, iron-law red-flag tables**. For the 7 shipped personas that literal outline lives in each [`scaffold/.agents/skills/persona-<slug>/SKILL.md`](../../scaffold/.agents/skills/); for the other 6 the same shape is folded into the matching workflow skill so loaders still ingest a uniform stance.
 
 Consult [ADR 0013](../adrs/0013-iron-law-red-flags-pattern.md) for why the iron-law + rationalisation refusal table anchors reliability more than motivational blurbs ever could.
 
@@ -145,7 +149,7 @@ These apply to *every* persona:
 - **Treating the persona as a costume** rather than a stance — the constraints are real, the empirical proofs are non-negotiable
 - **Self-promoting to a different persona** because you decided the original was wrong — surface the concern, do not switch silently
 
-The framework's response is the **Self-review hard gate**. The agent cannot close the task without pasting empirical proof matching the persona's required proofs. The constraint mechanism enforces the constraint stance.
+The framework's response is the **Self-review pass**: each persona skill makes the agent paste empirical proof matching its required proofs before declaring the task done. It is an agent self-assessment baked into the skill, not an external gatekeeper — the discipline holds because the stance demands it of itself.
 
 ---
 
@@ -166,7 +170,7 @@ Before declaring any task complete, every persona verifies:
 - [`concepts/04-personas.md`](../concepts/04-personas.md) — the conceptual frame
 - [`reference/compatibility-matrix.md`](../reference/compatibility-matrix.md) — full matrices
 - [`guides/customizing-personas.md`](../guides/customizing-personas.md) — adding overlays
-- [`skills/personas.md`](../skills/personas.md) — the skill that loads persona profiles
-- [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md) — why 1-to-1
+- [`skills/personas.md`](../skills/personas.md) — how the persona layer maps to the shipped `persona-<slug>` skills
+- [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md) — the 1-to-1 mapping, now superseded to suggested defaults
 - [ADR 0009](../adrs/0009-personas-are-mindsets.md) — mindset vs role
 - [ADR 0013](../adrs/0013-iron-law-red-flags-pattern.md) — the profile format

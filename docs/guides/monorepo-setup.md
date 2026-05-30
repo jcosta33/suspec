@@ -20,8 +20,8 @@ The `.agents/` directory typically lives at the repo root and is shared. Per-wor
 ├── .gitignore                           # includes .agents/tasks/
 ├── .agents/
 │   ├── tasks/                           # gitignored
-│   ├── templates/                       # shared templates
-│   ├── skills/                          # shared skills (cross-cutting + 8 authoring + personas)
+│   ├── templates/                       # shared flat templates (8)
+│   ├── skills/                          # shared skills (23: quality gates + specialised + authoring + 7 persona skills)
 │   ├── specs/                           # shared specs (or per-workspace; see below)
 │   ├── audits/
 │   ├── bugs/
@@ -55,15 +55,15 @@ When the agent works in `packages/api/`, the active `AGENTS.md` is `packages/api
 The root `AGENTS.md` carries:
 
 - The session-start hook (first action: read your task file)
-- Shared bindings that apply *everywhere* (e.g., `cmdInstall: pnpm install`)
+- The `## Commands` contract that applies *everywhere* (e.g., `Install` → `pnpm install`)
 - Monorepo conventions (workspace layout, where each workspace lives)
-- The standing skill load convention
+- The `## Skills` note (skills self-activate; there is no always-loaded skill)
 - The constitution pointer
 
 ```markdown
 # AGENTS.md (repo root)
 
-> First action: read your task file at `.agents/tasks/<your-slug>.md`. The file names your persona, lists your skills, links your source doc, and binds the verification commands. Then proceed.
+> First action: read your task file at `.agents/tasks/<your-slug>.md`. The file names a suggested persona, lists the skills worth loading, links your source doc, and binds the verification commands. Then proceed.
 
 ## Project conventions
 
@@ -71,14 +71,14 @@ The root `AGENTS.md` carries:
 - Languages: TypeScript ≥ 5.5 (`packages/*`), Rust 1.79 (`tools/`)
 - Test runner per workspace (see workspace AGENTS.md)
 
-## Verification gate bindings (defaults)
+## Commands
 
-| Slot | Command | Notes |
-|------|---------|-------|
-| `{{cmdInstall}}` | `pnpm install --frozen-lockfile` | repo-wide install |
-| `{{cmdValidate}}` | `pnpm -r run validate` | runs across all workspaces |
-| `{{cmdTest}}` | `pnpm -r test` | runs across all workspaces |
-| `{{cmdValidateDeps}}` | `pnpm run validate:deps` | dependency-cruiser at root |
+| Command (referenced as `Commands > …`) | Template placeholder | Bind to (repo-wide default) | Notes |
+|----------------------------------------|----------------------|-----------------------------|-------|
+| `Install` | `{{cmdInstall}}` | `pnpm install --frozen-lockfile` | repo-wide install |
+| `Validation` | `{{cmdValidate}}` | `pnpm -r run validate` | runs across all workspaces |
+| `Test` | `{{cmdTest}}` | `pnpm -r test` | runs across all workspaces |
+| `ValidateDeps` | `{{cmdValidateDeps}}` | `pnpm run validate:deps` | dependency-cruiser at root |
 
 Per-workspace overrides may narrow these to a single workspace (see workspace AGENTS.md files).
 
@@ -89,9 +89,9 @@ Per-workspace overrides may narrow these to a single workspace (see workspace AG
 - `packages/shared/` — shared types and utilities (no runtime dependencies)
 - `tools/` — Rust CLIs (cargo, cargo-test)
 
-## Standing skill load
+## Skills
 
-Every session starts by loading `manage-task` and `documentation-gatekeeper`. Adopt the persona named in the task file's `> **PERSONA:**` blockquote.
+Skills live in `.agents/skills/<name>/SKILL.md` and self-activate on their directive `description`. There is no always-loaded skill. Adopt the persona skill whose `description` matches your task (or the mindset carried by the matching workflow skill).
 
 ## Constitution
 
@@ -121,14 +121,14 @@ Each workspace's `AGENTS.md` *overrides* the root for the bindings that differ:
 
 This workspace overrides the root `AGENTS.md` for the following:
 
-## Verification gate bindings (api workspace)
+## Commands (api workspace)
 
-| Slot | Command (this workspace only) |
-|------|--------------------------------|
-| `{{cmdValidate}}` | `pnpm --filter api run validate` |
-| `{{cmdTest}}` | `pnpm --filter api test` |
-| `{{cmdBuild}}` | `pnpm --filter api build` |
-| `{{cmdValidateDeps}}` | `pnpm --filter api run validate:deps` |
+| Command | Template placeholder | Bind to (this workspace only) |
+|---------|----------------------|-------------------------------|
+| `Validation` | `{{cmdValidate}}` | `pnpm --filter api run validate` |
+| `Test` | `{{cmdTest}}` | `pnpm --filter api test` |
+| `Build` | `{{cmdBuild}}` | `pnpm --filter api build` |
+| `ValidateDeps` | `{{cmdValidateDeps}}` | `pnpm --filter api run validate:deps` |
 
 ## Workspace-specific constraints
 
@@ -138,7 +138,7 @@ This workspace overrides the root `AGENTS.md` for the following:
 
 ## Workspace-specific overlay personas
 
-This workspace uses **The Integrator** overlay for SDK-wiring tasks. Keep the operative profile beside your forked personas catalogue (`personas/SKILL.md` appendices or `.agents/skills/personas/overlays/`) and cite the binding in this workspace's `AGENTS.md`.
+This workspace uses **The Integrator** overlay for SDK-wiring tasks. The overlay is a self-contained persona skill at `.agents/skills/persona-integrator/SKILL.md` (beside the shipped seven); note the standing preference in this workspace's `AGENTS.md > Routing`.
 ```
 
 The Rust workspace has different bindings:
@@ -148,18 +148,17 @@ The Rust workspace has different bindings:
 
 > Same first-action rule.
 
-## Verification gate bindings (tools workspace — Rust)
+## Commands (tools workspace — Rust)
 
-| Slot | Command |
-|------|---------|
-| `{{cmdInstall}}` | `cargo build` |
-| `{{cmdValidate}}` | `cargo check && cargo clippy -- -D warnings` |
-| `{{cmdLint}}` | `cargo clippy -- -D warnings` |
-| `{{cmdFormat}}` | `cargo fmt --check` |
-| `{{cmdTypecheck}}` | `cargo check` |
-| `{{cmdTest}}` | `cargo test` |
-| `{{cmdBuild}}` | `cargo build --release` |
-| `{{cmdValidateDeps}}` | `cargo deny check` |
+| Command | Template placeholder | Bind to |
+|---------|----------------------|---------|
+| `Install` | `{{cmdInstall}}` | `cargo build` |
+| `Validation` | `{{cmdValidate}}` | `cargo check && cargo clippy -- -D warnings` |
+| `Format` | `{{cmdFormat}}` | `cargo fmt --check` |
+| `Typecheck` | `{{cmdTypecheck}}` | `cargo check` |
+| `Test` | `{{cmdTest}}` | `cargo test` |
+| `Build` | `{{cmdBuild}}` | `cargo build --release` |
+| `ValidateDeps` | `{{cmdValidateDeps}}` | `cargo deny check` |
 ```
 
 ---
@@ -225,14 +224,14 @@ OpenAI Codex supports a `AGENTS.override.md` filename that *only overrides* (rat
 ```markdown
 # packages/api/AGENTS.override.md
 
-(no preamble — inherits everything from ../../AGENTS.md and only overrides the listed slots)
+(no preamble — inherits everything from ../../AGENTS.md and only overrides the listed commands)
 
-## Verification gate overrides
+## Commands (overrides)
 
-| Slot | Command |
-|------|---------|
-| `{{cmdValidate}}` | `pnpm --filter api run validate` |
-| `{{cmdTest}}` | `pnpm --filter api test` |
+| Command | Template placeholder | Bind to |
+|---------|----------------------|---------|
+| `Validation` | `{{cmdValidate}}` | `pnpm --filter api run validate` |
+| `Test` | `{{cmdTest}}` | `pnpm --filter api test` |
 ```
 
 The framework treats `AGENTS.md` and `AGENTS.override.md` interchangeably for monorepo nesting; the choice is a stylistic one.

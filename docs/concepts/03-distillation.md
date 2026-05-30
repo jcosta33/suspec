@@ -156,7 +156,7 @@ flowchart LR
 Steps:
 
 1. **During execution**, the agent records significant discoveries in the task file's `## Findings` section.
-2. **Before closing**, the `manage-task` skill checks for unresolved findings.
+2. **Before closing**, the task template's pre-close gate checks for unresolved findings (no separate manage-task skill).
 3. **For each durable finding**, the agent edits the appropriate upstream document (audit, spec, research, or bug-report) to capture it.
 4. **The task is marked `done`** only after promotion is complete.
 
@@ -241,7 +241,7 @@ The lifecycle conventions are recommended, not enforced. Different teams may org
 
 ## 📚 The `distillation-discipline` skill
 
-The skill that enforces the discipline is at [`skills/distillation-discipline.md`](../skills/distillation-discipline.md). It is auto-attached to:
+The skill that enforces the discipline is at [`skills/distillation-discipline.md`](../skills/distillation-discipline.md). It self-activates (loads on its directive description) for:
 
 - `spec-writing` (transitions research → spec)
 - `research-writing` (creates the source for downstream distillation)
@@ -264,5 +264,5 @@ The Distillation Loss Statement is the audit trail of the decision. The promotio
 - [`05-document-types.md`](05-document-types.md) — the four core doc types
 - [`07-flow-graph.md`](07-flow-graph.md) — the legal flows the discipline enforces
 - [`../skills/distillation-discipline.md`](../skills/distillation-discipline.md) — the skill that codifies the rules
-- [`../skills/documentation-gatekeeper.md`](../skills/documentation-gatekeeper.md) — the always-loaded skill that enforces forbidden flows
+- [`07-flow-graph.md`](07-flow-graph.md) — recommended routing, including the discouraged (forbidden) flows
 - [ADR 0003](../adrs/0003-distillation-is-unidirectional.md) — the unidirectional decision

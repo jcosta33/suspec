@@ -2,7 +2,7 @@
 
 > **TL;DR.** A revision task spawned when The Skeptic rejects a worker's branch. The original persona (Builder, Janitor, Migrator, etc.) revises per the Skeptic's specific notes. Source docs: original spec/audit/bug-report **plus** the Skeptic's review notes. After revision, hand back to The Skeptic for re-review.
 
-> 📦 **This page is documentation.** Kickback tasks use the original task type's template (`/scaffold/.agents/templates/task-feature.md`, `task-refactor.md`, etc.) with `Type: kickback (originally: <type>)` and the additions noted below.
+> 📦 **This page is documentation.** Kickback tasks use the original task type's template (`/scaffold/.agents/skills/write-feature/references/task-template.md`, `task-refactor.md`, etc.) with `Type: kickback (originally: <type>)` and the additions noted below.
 
 ---
 
@@ -26,7 +26,7 @@ If the Skeptic's verdict was `ABANDON`, the path forward is *not* a kickback —
 | **Lead persona**     | (Original persona — typically The Builder, sometimes Janitor or Migrator) |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md) (re-review) |
 | **Output**           | Revised branch addressing every BLOCKER and (where waived) MAJOR |
-| **Auto-loaded skills** | Same as the original task type, plus `adversarial-review` (so the persona can re-check their work against the Skeptic's notes) |
+| **Recommended skills** | Same as the original task type, plus `adversarial-review` (so the persona can re-check their work against the Skeptic's notes) |
 | **Verification gate slots** | Same as the original task type                |
 
 ---
@@ -37,16 +37,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 

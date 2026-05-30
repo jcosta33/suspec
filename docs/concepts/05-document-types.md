@@ -105,9 +105,9 @@ Full templates: [`documents/`](../documents/).
 
 **Where it lives:** `.agents/specs/`.
 
-**Authoring persona:** [The Architect](../personas/the-architect.md) (always — see [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md)).
+**Authoring persona:** [The Architect](../personas/the-architect.md) (suggested default; ships as the `persona-architect` skill — see [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md), superseded to suggested defaults).
 
-**Spawns task type:** `feature`.
+**Suggested downstream task type:** `feature`.
 
 **Required sections (beyond base):** Goal · Scope · User-visible behaviour · Acceptance criteria · Design decisions · Constraints · Open questions · Tradeoffs and risks.
 
@@ -125,9 +125,9 @@ Full templates: [`documents/`](../documents/).
 
 **Where it lives:** `.agents/audits/`.
 
-**Authoring persona:** [The Auditor](../personas/the-auditor.md).
+**Authoring persona:** [The Auditor](../personas/the-auditor.md) (ships as the `persona-auditor` skill).
 
-**Spawns task type:** `refactor` (default), or `deepen-audit` (when an audit triggers further investigation), or `performance` (when the audit identifies perf issues).
+**Suggested downstream task type:** `refactor` (default), or `deepen-audit` (when an audit triggers further investigation), or `performance` (when the audit identifies perf issues).
 
 **Required sections (beyond base):** Goal · Scope · Code paths inspected · Findings (numbered, with file:line, severity, and "Needed") · Risks · Suggested approaches.
 
@@ -145,9 +145,9 @@ Full templates: [`documents/`](../documents/).
 
 **Where it lives:** `.agents/bugs/`.
 
-**Authoring persona:** [The Bug Hunter](../personas/the-bug-hunter.md).
+**Authoring persona:** [The Bug Hunter](../personas/the-bug-hunter.md) (mindset carried by the `write-bug-report` skill).
 
-**Spawns task type:** `fix`.
+**Suggested downstream task type:** `fix`.
 
 **Required sections (beyond base):** Reported behavior · Reproduction attempts · Reliable reproduction (steps + expected vs actual + conditions) · Hypothesis tracker · Root cause (file:line + state + input + caller) · Regression test plan.
 
@@ -167,9 +167,9 @@ Full templates: [`documents/`](../documents/).
 
 **Where it lives:** `.agents/research/`.
 
-**Authoring persona:** [The Researcher](../personas/the-researcher.md) (technical) or [The Surveyor](../personas/the-surveyor.md) (UX/market).
+**Authoring persona:** [The Researcher](../personas/the-researcher.md) (technical; mindset carried by the `write-research` skill) or [The Surveyor](../personas/the-surveyor.md) (UX/market; ships as the `persona-surveyor` skill).
 
-**Spawns task type:** `spec-writing` (research is upstream input; the next step is translating into requirements).
+**Suggested downstream task type:** `spec-writing` (research is upstream input; the next step is translating into requirements).
 
 **Required sections (beyond base):** Research question · Sources (numbered, primary preferred) · Findings (every claim cites a source) · Comparison (where multiple options exist) · Recommendation (actionable enough to spec from).
 
@@ -260,7 +260,7 @@ Different doc types live longer or shorter on this cycle:
 
 ## 🚫 Forbidden compositions
 
-A few things the framework refuses:
+A few things the framework discourages:
 
 - **A spec that contains current-state observations.** That's an audit. Split.
 - **An audit that prescribes new behaviour.** That's a spec. Split.
@@ -268,7 +268,7 @@ A few things the framework refuses:
 - **A research file that doubles as a spec.** The transition is *spec-writing* — a separate task, not a single document.
 - **One doc with multiple `## Recommendation` sections covering different concerns.** Split.
 
-These are codified in [`skills/documentation-gatekeeper.md`](../skills/documentation-gatekeeper.md), the always-loaded skill that enforces the boundaries.
+These boundaries are recommended routing, documented in [`07-flow-graph.md`](07-flow-graph.md) (the forbidden-edge table). They are guidance the agent honours when authoring, not a gatekeeper skill that blocks — the old always-loaded `documentation-gatekeeper` skill has been removed; its routing rules now live in the concept docs, and each `write-<type>` skill prevents its own type's failure modes.
 
 ---
 
@@ -276,7 +276,6 @@ These are codified in [`skills/documentation-gatekeeper.md`](../skills/documenta
 
 - [`documents/`](../documents/) — the per-type pages with templates
 - [`03-distillation.md`](03-distillation.md) — how docs distil into one another
-- [`07-flow-graph.md`](07-flow-graph.md) — the routing map
-- [`../skills/documentation-gatekeeper.md`](../skills/documentation-gatekeeper.md) — the enforcement skill
+- [`07-flow-graph.md`](07-flow-graph.md) — the routing map and the forbidden-edge table (recommended routing)
 - [ADR 0001](../adrs/0001-four-doc-types.md) — why four
 - [ADR 0007](../adrs/0007-bug-report-as-meta-task.md) — why bug-report is a meta-task

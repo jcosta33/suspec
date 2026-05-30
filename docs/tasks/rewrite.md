@@ -2,7 +2,7 @@
 
 > **TL;DR.** Re-implement a module with explicit behaviour changes. Distinct from refactor (which preserves behaviour). Lead persona is The Builder. The behaviour delta must be explicit before code changes; everything not in the delta must be preserved.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-rewrite.md`](../../scaffold/.agents/templates/task-rewrite.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-rewrite/references/task-template.md`](../../scaffold/.agents/skills/write-rewrite/references/task-template.md).
 
 ---
 
@@ -26,7 +26,7 @@ If behaviour is preserved, it's `refactor`. If it's a new module from scratch wi
 | **Lead persona**     | [The Builder](../personas/the-builder.md)         |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md) (review) |
 | **Output**           | New implementation, behaviour delta enforced       |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-rewrite`, `empirical-proof` |
+| **Recommended skills** | `write-rewrite`, `empirical-proof` (the Builder mindset is carried by `write-rewrite`) |
 | **Verification gate slots** | `cmdInstall` (pre), `cmdValidate` (after each module), `cmdValidate` (post), `cmdTest` (post) |
 
 ---
@@ -37,16 +37,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 

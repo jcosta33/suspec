@@ -71,8 +71,11 @@ A project-wide spec capturing non-negotiable baselines (tech stack, code quality
 ### `[CRITICAL]`
 A marker for an open question whose answer would change the doc's content. The doc halts on `[CRITICAL]` open questions; they must be resolved (or downgraded with reasoning) before the doc finalises. Distinct from `[MINOR]`.
 
-### cross-cutting framework skill
-A skill loaded by default (or near-default) for every task: `manage-task`, `documentation-gatekeeper`, `personas`, `distillation-discipline`, `empirical-proof`, `adversarial-review`. Distinct from *authoring skills* (per-task-type) and *project-specific skills*.
+### command contract
+The interface between skills and a project's commands. `AGENTS.md > Commands` maps named entries — `Validation`, `Test`, `Format` (required), plus extended `Install`, `Typecheck`, `Build`, `ValidateDeps`, `Benchmark` — to a project's actual commands and to the `{{cmd*}}` template placeholders. Skill bodies reference the *named entries* in prose ("`AGENTS.md > Commands > Validation`") and degrade gracefully (ask the user if an entry is missing); templates carry the `{{cmd*}}` placeholders a launcher binds. See [`reference/agents-md.md`](agents-md.md) and [`reference/template-placeholders.md`](template-placeholders.md).
+
+### cross-cutting skill
+A *quality-gate* skill whose discipline surfaces inside whatever task is in play, rather than belonging to a single task type: `empirical-proof`, `adversarial-review`, `distillation-discipline`. It self-activates on its own `description` when its trigger fires (a verifiable claim, a review/audit pass, an upstream-doc transformation). There is **no always-loaded tier** — a cross-cutting skill is not loaded by default; it loads on description match like every other skill. Distinct from *workflow/authoring skills* (per-task-type) and *domain skills* (project-specific).
 
 ---
 
@@ -87,8 +90,14 @@ The Lead Engineer pattern: decomposing work into sub-tasks, spawning workers in 
 ### Diátaxis
 The documentation framework distinguishing *tutorial / how-to / reference / explanation*. Swarm's core docs map to: research = explanation, spec/audit = reference, task = how-to.
 
+### directive description
+The imperative `description` in a skill's YAML frontmatter that makes it **self-activate**. It names triggers and exclusions in the shape "ALWAYS apply this skill when … Do not … Skip this skill for …", so the agent loads the skill when the work matches without being told to. Directive descriptions also reproduce the recommended routing in-session (and encode the discouraged edges as "Skip this skill for …" exclusions). See [`reference/flow-graph.md`](flow-graph.md).
+
 ### Distillation Loss Statement
 The explicit record of what was dropped during a downhill transition, plus the justification for why the next stage doesn't need it. Required for docs distilled from upstream. See [`concepts/03-distillation.md`](../concepts/03-distillation.md).
+
+### documentation-gatekeeper (removed as a skill)
+The old always-loaded skill that enforced the flow graph and blocked discouraged edges. **No longer ships as a skill** — routing is now *recommended, not gatekeeper-enforced*. Its routing/exclusion rules are now framework concept-docs ([`reference/flow-graph.md`](flow-graph.md), recommended routing) reproduced in-session by the directive skill `description`s, and a launcher may apply them deterministically. See *recommended routing* and *discouraged edge*.
 
 ### document vs documentation
 *Document:* a structured artefact with a defined type (spec, audit, bug-report, research). *Documentation:* the broader category of written explanation, including user-facing docs (READMEs, how-to guides) authored via the `documentation` task type.
@@ -119,8 +128,8 @@ A task type that repairs a defect documented in a bug-report. Lead persona: The 
 ### flow graph
 The deterministic mapping between source documents, task types, personas, skills, and verification commands. See [`concepts/07-flow-graph.md`](../concepts/07-flow-graph.md) and [`reference/flow-graph.md`](flow-graph.md).
 
-### forbidden flow
-A `(source-doc → task-type)` or `(task-type → other)` edge the framework refuses. Examples: `research → fix` (skipping spec); `code → spec` (back-fill). Enforced by [`documentation-gatekeeper`](../skills/documentation-gatekeeper.md).
+### discouraged edge (formerly "forbidden flow")
+A `(source-doc → task-type)` or `(task-type → other)` edge the framework treats as a routing smell. Examples: `research → fix` (skipping spec); `code → spec` (back-fill). **Guidance, not gatekeeper-enforced** — no always-loaded skill blocks it; the relevant directive skill `description`s encode it (as "Skip this skill for …" exclusions) and a launcher may warn. Take one anyway by naming the reason in the task file's `## Decisions`. See [`reference/flow-graph.md`](flow-graph.md).
 
 ---
 
@@ -179,8 +188,8 @@ Short for *Distillation Loss Statement*.
 
 ## M
 
-### manage-task
-The always-loaded skill that owns the task file's lifecycle: pre-flight, in-flight maintenance, pre-close gate, promotion protocol. See [`skills/manage-task.md`](../skills/manage-task.md).
+### manage-task (removed as a skill)
+The old always-loaded skill that owned the task file's lifecycle (pre-flight, in-flight maintenance, pre-close gate, promotion protocol). **No longer ships as a skill** — there is no always-loaded tier. Its discipline now lives in the task templates (the shared `task-base.md` skeleton + each workflow skill's `references/task-template.md`) and the process docs ([`concepts/`](../concepts/), [`tasks/`](../tasks/)). The pre-close hard gate is now carried by the Self-review section of every task template (see *hard gate*).
 
 ### migration
 A task type that moves the codebase from API A to API B mechanically across many call sites. Lead persona: The Migrator. Plans in waves; per-wave validation. See [`tasks/migration.md`](../tasks/migration.md).
@@ -199,23 +208,23 @@ A marker for an open question worth recording but not blocking the doc. Distinct
 A task type for the Lead Engineer pattern — decomposing complex asks into independent sub-tasks. See [`tasks/orchestration.md`](../tasks/orchestration.md).
 
 ### overlay persona
-A project-specific persona added beyond the framework's 13. Lives in the project's `.agents/skills/personas/`. See [`guides/customizing-personas.md`](../guides/customizing-personas.md).
+A project-specific persona added beyond the framework's catalogue. Ships as its own `.agents/skills/persona-<slug>/SKILL.md` skill (self-activating on its `description`), the same shape as the 7 framework persona skills. See [`guides/customizing-personas.md`](../guides/customizing-personas.md).
 
 ---
 
 ## P
 
 ### `[pending]` / `[confirmed]`
-Markers for assumptions in a task file. Every assumption starts as `[pending]`; the agent promotes to `[confirmed]` when verified. Closing a task with unresolved `[pending]` assumptions is forbidden by `manage-task`.
+Markers for assumptions in a task file. Every assumption starts as `[pending]`; the agent promotes to `[confirmed]` when verified. Closing a task with unresolved `[pending]` assumptions is disallowed by the task template's pre-close hard gate (see *hard gate*).
 
 ### performance
 A task type for optimising a specific bottleneck under a measured target. Lead persona: The Performance Surgeon. See [`tasks/performance.md`](../tasks/performance.md).
 
 ### persona
-A *mindset*, not a role. Each task type has exactly one default lead persona. See [`concepts/04-personas.md`](../concepts/04-personas.md). Distinct from *role* (which implies a job title) and *agent* (the model+CLI running the work).
+A *mindset*, not a role. The flow graph names a **suggested** lead persona per task type; the agent may re-assess (ADR 0002's 1:1 mapping is superseded). The `docs/personas/` catalogue describes 13 mindsets, but only **7 ship as skills** (`persona-{architect,auditor,janitor,migrator,performance-surgeon,skeptic,surveyor}`); the other 6 (Builder, Bug Hunter, Documentarian, Lead Engineer, Researcher, Test Author) are mindsets carried by the matching workflow skill (or, for Lead Engineer, the orchestration template). See [`concepts/04-personas.md`](../concepts/04-personas.md). Distinct from *role* (which implies a job title) and *agent* (the model+CLI running the work).
 
-### persona blockquote
-The `> **PERSONA:**` line in a conditioned task file naming the persona the agent must adopt. Example: `> **PERSONA:** Load .agents/skills/personas/SKILL.md and adopt **The Builder** persona.`
+### persona skill
+A self-activating skill at `.agents/skills/persona-<slug>/SKILL.md` that conditions a mindset for role-shaped work. Loads on its own directive `description` when the task matches; no dependency on any other skill. Seven ship: `persona-{architect,auditor,janitor,migrator,performance-surgeon,skeptic,surveyor}`. The remaining 6 catalogued mindsets do not have a persona skill — they ride along with the matching workflow skill.
 
 ### placeholder
 A `{{name}}` token in a task or doc template, resolved by the launcher per task. See [`reference/template-placeholders.md`](template-placeholders.md).
@@ -226,6 +235,9 @@ The act of moving a durable finding from a task file (gitignored, ephemeral) to 
 ---
 
 ## R
+
+### recommended routing
+Swarm's documented conditioning model: the flow graph mapping a source doc → task type → suggested persona → skills worth loading → verification commands. It is **guidance, not gatekeeper-enforced** — a launcher *may* apply it deterministically when scaffolding a task file, and the directive skill `description`s reproduce it in-session, but the agent may re-assess and diverge (recording the choice in `## Decisions`). Replaces the old gatekeeper-enforced "flow-graph enforcement". See [`reference/flow-graph.md`](flow-graph.md).
 
 ### red flags
 A persona-profile section listing rationalisations the persona refuses to accept (the *iron law* enforcement). See [ADR 0013](../adrs/0013-iron-law-red-flags-pattern.md).
@@ -249,8 +261,11 @@ What an agent is *paid to do*. The framework deliberately prefers *persona* over
 
 ## S
 
+### self-containment
+The rule governing the **body** of a `SKILL.md`: it carries everything the agent needs to apply the skill without reaching for framework-internal context. No cross-skill "See also" links and no framework-internal paths (`.agents/…`, `docs/agents/…`) in the skill body; it references project commands by their `AGENTS.md > Commands` entry name, not a path. The skills repo governs the skill layer. (Docs files under `docs/` are exempt — they cross-link freely; self-containment is only a SKILL.md-body rule.) See [`reference/agents-md.md`](agents-md.md).
+
 ### Self-review
-The hard-gated section of every task file. Filled in at task close with persona-specific questions answered and verification outputs pasted verbatim. See [`concepts/09-empirical-proof.md`](../concepts/09-empirical-proof.md).
+The hard-gated section of every task file. Filled in at task close with persona-specific questions answered and verification outputs pasted verbatim. The pre-close hard gate that closes this section is the discipline formerly owned by the (now removed) `manage-task` skill. See [`concepts/09-empirical-proof.md`](../concepts/09-empirical-proof.md).
 
 ### session
 The lifespan of an agent CLI instance working on a task. May be one task or part of a multi-session task. The task file is the resumption record across sessions. See [`concepts/11-session-lifecycle.md`](../concepts/11-session-lifecycle.md).
@@ -262,7 +277,7 @@ A compatibility layer added during a refactor or migration so the old surface co
 The empirical-proof discipline's slogan. Paste actual output, not paraphrase. See [`concepts/09-empirical-proof.md`](../concepts/09-empirical-proof.md).
 
 ### skill
-A Markdown file with YAML frontmatter that the agent loads on demand based on its `description`. Format borrowed from Anthropic Skills / OpenAI Codex Agent Skills. See [`skills/README.md`](../skills/README.md).
+A `SKILL.md` with YAML frontmatter that **self-activates**: the agent loads it on demand when its directive `description` matches the work. There is no always-loaded skill. Skill bodies are self-contained (see *self-containment*). Format follows the open [Agent Skills spec](https://agentskills.io). See [`skills/README.md`](../skills/README.md).
 
 ### Skeptic
 The framework's universal terminal node for code-producing work. Reviews adversarially; runs validation themselves; refuses confident-sounding claims. Also adopts for `fix` (root-causing demands hostility). See [`personas/the-skeptic.md`](../personas/the-skeptic.md).

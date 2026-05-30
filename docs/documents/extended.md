@@ -195,7 +195,7 @@ Changes to the constitution require human approval and a corresponding ADR.
 - ADRs that informed each section: <list>
 ```
 
-The constitution is **referenced** from every spec / audit / ADR. The `documentation-gatekeeper` skill enforces that consumers of constitutional rules cite them.
+The constitution is **referenced** from every spec / audit / ADR. Citing the constitutional rules a document depends on is a recommended discipline carried by each authoring skill — there is no gatekeeper skill enforcing it.
 
 ---
 

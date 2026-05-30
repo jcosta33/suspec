@@ -1,6 +1,6 @@
 ---
 name: write-research
-description: Load when authoring a research.md file. Encodes the research's discipline — every claim cites a primary source, options compared explicitly with criteria, recommendation actionable, unverified claims marked [unconfirmed].
+description: Author a research doc grounded in primary sources. ALWAYS apply this skill when the user asks for research, comparison, evaluation of options, or a recommendation that informs a downstream decision — including UX/market research and library/API/protocol research. Do not present opinion as finding, cite blog posts without finding the primary source, or output "it depends" without saying on what. Skip this skill for forward-looking spec authoring or present-state audit authoring — research is the upstream input to those, not a substitute.
 ---
 
 # Skill: write-research
@@ -8,6 +8,13 @@ description: Load when authoring a research.md file. Encodes the research's disc
 ## Purpose
 
 A research file answers a decision-informing question. The deliverable is a recommendation a spec author can lift directly into requirements. The discipline is *evidentiary*: cite or omit; vague attribution is not citation.
+
+Two modes share this skill:
+
+- **Technical research** — libraries, APIs, algorithms, standards, peer-reviewed sources.
+- **UX/market research** — user expectations, competitor behaviour, design patterns. Same evidentiary discipline, applied to a softer subject.
+
+A single research file picks one mode. If the topic is genuinely both technical and UX, split it.
 
 ## Core rules
 
@@ -41,7 +48,7 @@ Three is a minimum, not a target. The discipline is *coverage* of the space, not
 
 ### 5. Compare options explicitly
 
-Where multiple options exist, compare them in a table with named criteria. Side-by-side, not narrative. The Architect should be able to lift the comparison directly into a `## Design decisions` section.
+Where multiple options exist, compare them in a table with named criteria. Side-by-side, not narrative. The spec author should be able to lift the comparison directly into a `## Design decisions` section.
 
 ### 6. Recommendation is actionable
 
@@ -58,9 +65,28 @@ Don't fabricate. If a claim is not yet verified (couldn't reach the source, sour
 
 Don't infer how a product behaves from its documentation; verify by interacting with it (curl, sandbox env, recorded session). The doc and the actual behaviour can diverge.
 
-### 9. Distillation Loss Statement when distilling
+### 9. UX/market mode — concrete examples, not generalisations
 
-When the research distils a long-running investigation, append a `## Distillation Loss Statement` per `.agents/skills/distillation-discipline/SKILL.md`.
+For UX/market research:
+
+- "Common practice" must cite at least three concrete examples
+- User-expectation claims cite the research that produced them, not the agent's intuition
+- Distinguish "what users do" (observed) from "what users want" (claimed) — they are different things
+- Where competitors disagree, compare explicitly and state which approach this project should follow and why
+
+### 10. Distillation Loss Statement when distilling
+
+When the research distils a long-running investigation, append a `## Distillation Loss Statement` listing what was dropped from the upstream notes/transcript and why the next stage doesn't need it.
+
+### 11. Pre-deliver visibility gate (forced visible output)
+
+Do not finalise the research doc until every paragraph in `## Findings` ends with a `[N]` citation **and** every claim not yet verified is bracketed `[unconfirmed]`. Before declaring the doc done, output the verification table:
+
+| Findings paragraph | Citation `[N]` present? | Claim verified or `[unconfirmed]`? |
+| --- | --- | --- |
+| <paragraph 1> | ✅ / ❌ | verified / `[unconfirmed]` |
+
+A row with any ❌ means the doc is not finalisable — halt, fix the row, output the table again. The agent does not deliver the research doc to the user until this table is in the task file with all ✅.
 
 ## What does not belong
 
@@ -77,16 +103,11 @@ When the research distils a long-running investigation, append a `## Distillatio
 - Inferring product behaviour without verifying
 - Citing blog posts without finding the primary source
 - Research without a decision-informing question
+- Treating one example as a pattern (UX mode)
+- Conflating "users said they want X" with "users actually do X" (UX mode)
 
-## Two modes
+## Bundled resources
 
-The Researcher writes *technical* research (libraries, APIs, algorithms, standards). The Surveyor writes *UX/market* research (user expectations, competitor behaviour, design patterns). Same discipline, different subject matter.
+- `references/task-template.md` — a fillable research-task template combining the workflow scaffold (metadata, AGENTS.md contract, constraints, progress checklist, decisions, self-review) with the deliverable structure inlined as a `## Deliverable` block (research question, sources, findings, comparison table, recommendation, open questions, Distillation Loss Statement). At session close, copy the `## Deliverable` block to its final home (`<your-research-dir>/{{slug}}.md`).
 
-A single research file picks one mode. If the topic is genuinely both technical and UX, split it.
-
-## See also
-
-- `.agents/templates/research.md` — the research doc template
-- `.agents/templates/task-research.md` — the research-writing task template
-- `.agents/skills/distillation-discipline/SKILL.md` — sister skill for distilling
-- `.agents/skills/personas/SKILL.md` — The Researcher / The Surveyor personas
+Substitute the `{{...}}` placeholders and fill in as you work.

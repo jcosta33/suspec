@@ -12,7 +12,7 @@ A session can end mid-task — context window fills, human pauses, model session
 
 ## 🪜 Before you stop
 
-The agent's *last action* before ending a session is to update `## Next steps`. This is enforced by the [`manage-task`](../skills/manage-task.md) skill's pre-pause hook.
+The agent's *last action* before ending a session is to update `## Next steps`. This is the task-file lifecycle discipline now carried by the task templates and the process docs (`docs/agents/03-workflow.md`), not by any always-loaded skill — the template's `## Next steps` section is the pre-pause checkpoint.
 
 A good `## Next steps` entry includes:
 
@@ -68,7 +68,7 @@ A fresh agent reading this can resume *exactly* where the previous one stopped.
 When a fresh session starts in an existing worktree (status `active`):
 
 1. **Read the task file.** This is the standing convention from AGENTS.md.
-2. **Re-adopt the persona.** Load the persona profile named in the `> **PERSONA:**` blockquote.
+2. **Re-adopt the persona.** Load the `persona-<slug>` skill named as the task's suggested persona (or re-adopt the mindset carried by the matching workflow skill). The suggested persona is recorded in the task file's header.
 3. **Read the linked source docs** in full. Don't trust the previous session's summarisation; read the docs.
 4. **Read `## Decisions`, `## Findings`, `## Assumptions`, `## Next steps`** in that order.
 5. **Re-run any verification commands `## Next steps` flags.** Confirm the worktree state matches what the previous session claimed.
@@ -98,7 +98,7 @@ These are real limits. The framework is honest about them — see [`NON-GOALS.md
 
 | Pitfall                                                                            | Fix                                                                |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Previous session ended without updating `## Next steps`                           | The pre-pause hook in `manage-task` enforces this; check that it fired |
+| Previous session ended without updating `## Next steps`                           | The task template's `## Next steps` section is the pre-pause checkpoint; the process docs make updating it the last action before stopping |
 | Fresh agent skips reading the linked source docs ("the previous agent summarised") | Re-read in full; summarisation isn't the source                   |
 | Fresh agent doesn't re-run verification commands                                   | Worktree state is presumed-stale until verified                    |
 | Previous session left `[pending]` assumptions unresolved                           | Resolve or surface as a blocker in the new session                 |
@@ -127,6 +127,6 @@ The Active ↔ Paused transition is the resumption pattern. The framework's disc
 ## See also
 
 - [`concepts/11-session-lifecycle.md`](../concepts/11-session-lifecycle.md) — the full lifecycle in detail
-- [`skills/manage-task.md`](../skills/manage-task.md) — the skill that owns this discipline
+- [`skills/building/task-files.md`](../skills/building/task-files.md) — why working state externalises to a task file at all
 - [`reference/task-base.md`](../reference/task-base.md) — the resumption-record sections (`## Decisions`, `## Findings`, `## Assumptions`, `## Next steps`, `## Self-review`)
 - [`tasks/`](../tasks/) — every task template embeds the resumption structure

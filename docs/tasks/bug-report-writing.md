@@ -2,7 +2,7 @@
 
 > **TL;DR.** Reproduce a defect deterministically, isolate the root cause, and produce a `bug-report.md` a fixer can act on. Lead persona is The Bug Hunter. Read-only on source code (the fix is downstream). Distinguish observation from inference.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-bug-report.md`](../../scaffold/.agents/templates/task-bug-report.md). The doc-template the bug-report-writing task produces lives at [`/scaffold/.agents/templates/bug-report.md`](../../scaffold/.agents/templates/bug-report.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-bug-report/references/task-template.md`](../../scaffold/.agents/skills/write-bug-report/references/task-template.md). The doc-template the bug-report-writing task produces lives at [`/scaffold/.agents/templates/bug-report.md`](../../scaffold/.agents/templates/bug-report.md).
 
 ---
 
@@ -25,7 +25,7 @@ If the report already has a deterministic reproduction and a verified root cause
 | **Source doc**       | Human report / agent observation                   |
 | **Lead persona**     | [The Bug Hunter](../personas/the-bug-hunter.md)   |
 | **Output**           | `bug-report.md` at `.agents/bugs/{{slug}}.md`      |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-bug-report`, `adversarial-review`, `empirical-proof` |
+| **Recommended skills** | `write-bug-report`, `adversarial-review`, `empirical-proof` (the Bug Hunter mindset is carried by `write-bug-report`) |
 | **Verification gate slots** | post: `git status` (clean — no source changes), reproduction-output proof |
 
 ---
@@ -36,16 +36,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 

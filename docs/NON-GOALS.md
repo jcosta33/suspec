@@ -34,7 +34,7 @@ See [`concepts/11-session-lifecycle.md`](concepts/11-session-lifecycle.md) for w
 
 ## ❌ Swarm does not include a TUI, CLI, or any executable artifact
 
-The framework repo has no source code that runs. It is documentation, scaffold artefacts, examples, and (eventually) a conformance checker. The Swarm CLI lives in a separate repository. If you need a tool to use Swarm, install the CLI; the framework can also be adopted by hand.
+The framework repo has no source code that runs. It is documentation, scaffold artefacts, and (eventually) a conformance checker. The Swarm CLI lives in a separate repository. If you need a tool to use Swarm, install the CLI; the framework can also be adopted by hand.
 
 ---
 
@@ -43,6 +43,20 @@ The framework repo has no source code that runs. It is documentation, scaffold a
 There is no extension API at the framework level. Extension is by composition: projects add their own personas (overlays), their own task types (with the bar set high), their own skills (in `.agents/skills/domain/`), and their own placeholders within reserved namespaces.
 
 A future plugin layer is plausible, but it would be a CLI concern, not a framework concern.
+
+---
+
+## ❌ Swarm's skill layer does not ship stack-, vendor-, or engineering-domain skills
+
+The shipped skills are **universal agent-workflow disciplines** — how an agent shapes its work for a kind of task (feature, fix, audit, spec, …), not what an engineer should know about a problem domain. So the framework ships no `react-19-best-practices`, no `postgres-index-patterns`, no `auth-patterns`, no vendor runbooks. A skill that speaks React is dead weight in a Python service, and a domain-knowledge skill either couples to one stack or balloons into an everything-skill — both documented failure modes.
+
+Stack-specific and engineering-domain knowledge has homes: the consuming project's `AGENTS.md` (for its commands, architecture, and conventions), its own `.agents/skills/domain/` folder, or a stack-specific skill collection vendored only when that stack is in play. The gating question for any candidate skill is whether a team on a different language, framework, CI provider, and agent could vendor it by itself and still get the intended behaviour. See [`skills/building/scope.md`](skills/building/scope.md).
+
+---
+
+## ❌ Swarm's skill layer contains no automation
+
+The skill layer is a container for skills plus their surrounding documentation — nothing executable. No validation scripts, no CI workflows, no eval harnesses, no README generators, no "core" / "loader" / "index" skill that other skills depend on. Automation in the layer drifts out of sync with the skills it checks, locks consumers into one runtime, and invites tooling-of-tooling. If validation tooling proves load-bearing it lives in the maintainer's own CI, outside the layer; reviews are reviewer-driven against the authoring rules. This is the same boundary as [Principle 1](PRINCIPLES.md#1--documentation-first-not-tooling-first): if it runs code, it is not framework. See [`skills/building/scope.md`](skills/building/scope.md).
 
 ---
 

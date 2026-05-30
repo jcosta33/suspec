@@ -1,6 +1,6 @@
 # Persona (documentation): The Auditor
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Auditor**.
+> **Runtime profile:** [`scaffold/.agents/skills/persona-auditor/SKILL.md`](../../scaffold/.agents/skills/persona-auditor/SKILL.md) — the shipped persona skill carrying The Auditor's constraints, forbiddances, proofs, and red flags.
 
 ---
 

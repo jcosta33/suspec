@@ -28,17 +28,18 @@ The bar quantitatively: at least 3 independent projects (different teams, differ
 
 Process:
 
-1. **Try the existing 13 first.** Spend 5+ sessions trying to make the work fit one of the framework personas. Often the existing persona, used properly, suffices.
-2. **Try an overlay first.** If your project genuinely needs the new persona, add it as an overlay (per [`customizing-personas.md`](customizing-personas.md)). Use it for a few months.
+1. **Try the existing personas first.** Spend 5+ sessions trying to make the work fit one of the thirteen catalogued mindsets (seven ship as `persona-<slug>` skills; the other six ride in their matching workflow skill). Often the existing persona, used properly, suffices.
+2. **Try an overlay first.** If your project genuinely needs the new persona, add it as an overlay persona skill (per [`customizing-personas.md`](customizing-personas.md)). Use it for a few months.
 3. **Cite multiple projects.** Your project + at least 2 others must independently want the same persona.
-4. **Draft the ADR.** Use the ADR template ([`documents/extended.md`](../documents/extended.md#-adr)). The ADR enumerates the alternatives considered (folding into existing personas) and the reason they were rejected.
-5. **Submit the proposal.** Open a PR with the ADR + the proposed persona profile.
+4. **Draft the ADR.** Use the ADR template ([`documents/extended.md`](../documents/extended.md#-adr)). The ADR enumerates the alternatives considered (folding into an existing persona or workflow skill) and the reason they were rejected.
+5. **Submit the proposal.** Open a PR with the ADR + the proposed persona skill (`SKILL.md` in directive form).
 6. **Conformance impact.** A new persona requires:
-   - The persona profile in `docs/personas/<persona>.md`
-   - Updates to `personas/README.md` (the catalogue)
+   - The persona skill at `scaffold/.agents/skills/persona-<slug>/SKILL.md`
+   - The conceptual page at `docs/personas/<persona>.md`
+   - Updates to `personas/README.md` and `skills/personas.md` (the mindset → skill mapping)
    - Updates to `reference/compatibility-matrix.md`
-   - Updates to `reference/flow-graph.md` (which task types route here)
-   - An entry in `MIGRATIONS.md` (with a note for adopters)
+   - Updates to `reference/flow-graph.md` (which task types suggest this persona)
+   - A release-notes entry (with a note for adopters)
 
 ---
 
@@ -51,11 +52,11 @@ Process:
 3. **Draft the ADR** with alternatives.
 4. **Conformance impact.** A new task type requires:
    - A page at `docs/tasks/<type>.md`
-   - A template at `scaffold/.agents/templates/task-<type>.md` (in implementing CLIs)
+   - A task template — either a `references/task-template.md` inside the governing workflow skill, or a flat `scaffold/.agents/templates/task-<type>.md` if the task type is skill-less (like `orchestration` and `review`)
    - Updates to `concepts/06-task-types.md` (the conceptual catalogue)
    - Updates to `reference/flow-graph.md` (the routing table)
    - Updates to `reference/compatibility-matrix.md`
-   - An entry in `MIGRATIONS.md`
+   - A release-notes entry
 
 ---
 
@@ -86,26 +87,26 @@ Process:
 3. **For framework-namespace placeholders** (no prefix or `cmd*`), open an ADR proposing the addition. The ADR cites use cases and confirms the placeholder doesn't collide with existing semantics.
 4. **Conformance impact.** A new placeholder requires:
    - Updates to `reference/template-placeholders.md`
+   - A corresponding entry in the `AGENTS.md` `## Commands` contract if it's a `cmd*` placeholder
    - Updates to any task templates that should use it
-   - An entry in `MIGRATIONS.md`
+   - A release-notes entry
 
 ---
 
-## ➕ Proposing a new cross-cutting skill
+## ➕ Proposing a new quality-gate (cross-cutting) skill
 
-Cross-cutting skills are the framework's standing disciplines (`manage-task`, `documentation-gatekeeper`, etc.). A new one is a major change.
+Quality-gate skills are the framework's cross-cutting disciplines that surface inside whatever task is in play — `empirical-proof`, `adversarial-review`, `distillation-discipline`. They self-activate on their directive `description`; none is always-loaded. A new one is a major change.
 
 Process:
 
 1. **Try writing it as a project-level skill first.** Most "cross-cutting" needs are project-cross-cutting, not framework-cross-cutting.
-2. **Cite the framework-level discipline.** A new cross-cutting skill captures a discipline that *every project* should have, regardless of stack or domain.
-3. **Draft the ADR with alternatives.** Why isn't this discipline already covered by the existing 6?
-4. **Conformance impact.** A new cross-cutting skill requires:
-   - The skill at `docs/skills/<name>.md`
-   - Updates to relevant persona profiles (which now reference it)
-   - Updates to relevant task templates (which now auto-load it)
-   - Updates to `reference/flow-graph.md`
-   - An entry in `MIGRATIONS.md`
+2. **Cite the framework-level discipline.** A new quality-gate skill captures a discipline that *every project* should have, regardless of stack or domain.
+3. **Draft the ADR with alternatives.** Why isn't this discipline already covered by the existing three quality gates?
+4. **Conformance impact.** A new quality-gate skill requires:
+   - The skill at `scaffold/.agents/skills/<name>/SKILL.md` (directive `description`, self-contained, no cross-skill links) and its conceptual page at `docs/skills/<name>.md`
+   - A directive `description` whose triggers fire it inside the relevant task types (it does not need to be referenced from other skills — self-containment forbids that)
+   - Updates to `reference/flow-graph.md` (where it surfaces)
+   - A release-notes entry
 
 ---
 
@@ -123,7 +124,7 @@ Changes to existing personas / task types / doc types / skills / placeholders al
 | Removing a verification gate slot                                 | Major — adopters must migrate                     |
 | Updating a worked example                                         | Patch — no adopter action needed                  |
 
-Major changes always include a migration path in `MIGRATIONS.md`.
+Major changes always include a migration path in the release notes.
 
 ---
 
@@ -138,7 +139,7 @@ flowchart TD
     B -->|Yes| C[Draft ADR with alternatives]
     C --> D[Open PR with ADR + change]
     D --> E[Framework discussion]
-    E -->|Accept| F[Merge; add to MIGRATIONS.md]
+    E -->|Accept| F[Merge; add to release notes]
     E -->|Reject| R[Document the rejection in the ADR]
     style A fill:#fef3c7
     style B fill:#fef3c7
@@ -169,11 +170,11 @@ flowchart TD
 
 The framework uses semver:
 
-- **Major** — scaffold-breaking changes (new required template; renamed persona; removed placeholder). Adopters must follow the `MIGRATIONS.md` for the version.
+- **Major** — scaffold-breaking changes (new required template; renamed persona skill; removed placeholder). Adopters must follow the release notes for the version.
 - **Minor** — additive changes (new optional doc type; new persona overlay graduated to canonical; new placeholder).
 - **Patch** — clarifications, examples, typo fixes; no adopter action needed.
 
-Every release that touches the scaffold (templates, persona profiles, skill files) gets a `MIGRATIONS.md` entry detailing what changed and what the adopter should do.
+Every release that touches the scaffold (templates, persona skills, skill files) gets release notes detailing what changed and what the adopter should do.
 
 See [ADR 0015](../adrs/0015-versioning-scheme.md).
 
@@ -189,7 +190,7 @@ A future addition: a conformance checker that validates a project against the fr
 
 - [`PRINCIPLES.md`](../PRINCIPLES.md) — the load-bearing constraints
 - [`NON-GOALS.md`](../NON-GOALS.md) — what's out of scope
-- [`adrs/`](../adrs/) — the design decisions the framework is built on
-- [`MIGRATIONS.md`](../../MIGRATIONS.md) — adopter migration path per release
+- [`adrs/`](../adrs/) — the design decisions the framework is built on (release notes carry the per-version adopter migration path)
+- [`adrs/README.md`](../adrs/README.md) — the ADR index
 - [`customizing-personas.md`](customizing-personas.md) — the project-level alternative
 - [`writing-skills.md`](writing-skills.md) — the skill-level alternative

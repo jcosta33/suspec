@@ -13,9 +13,11 @@
 
 ---
 
-> ⚠️ **ORCHESTRATION SESSION** — You are managing other agents, not writing code yourself. Your output is the merged result and the trail showing how it got there. Never merge a branch without verifying it empirically; adopt **The Skeptic** for every review pass.
+> ⚠️ **ORCHESTRATION SESSION** — You are managing other agents, not writing code yourself. Your output is the merged result and the trail showing how it got there. Never merge a branch without verifying it empirically.
 >
-> **PERSONA:** Load `.agents/skills/personas/SKILL.md` and adopt **The Lead Engineer** persona. Switch to **The Skeptic** for each review pass; switch back when delegating or merging.
+> **MINDSET:** Orchestration carries the **Lead Engineer** mindset — it ships no skill of its own; you decompose, delegate, review, and merge. For every review pass, load `.agents/skills/persona-skeptic/SKILL.md` and run the diff hostile to the worker's word; drop it again when delegating or merging.
+>
+> **AGENTS.md:** `{{cmdValidate}}` / `{{cmdTest}}` / `{{cmdInstall}}` resolve from `AGENTS.md > Commands`. Non-contract values (`{{cmdBenchmark}}`, `{{cmdValidateDeps}}`, `{{cmdTypecheck}}`) — ask the user. If `AGENTS.md` is missing, ask before substituting.
 
 ---
 
@@ -81,11 +83,11 @@ The order branches were merged, conflicts encountered, and how they were resolve
 - Work only inside this worktree
 - Do not write feature code yourself — delegate
 - Do not merge a branch without empirical verification (paste worker-branch validation output)
-- Adopt The Skeptic for every review pass; do not approve on the worker's word
+- Load `.agents/skills/persona-skeptic/SKILL.md` for every review pass; do not approve on the worker's word
 - Kickback feedback must cite files and lines; vague rejections waste worker time
 - Document the merge protocol used (order, conflict resolution)
-- Recursive sub-orchestration is permitted up to the limit set in `swarm.config`
-- **Proactively research and read related docs.** Browse `.agents/specs/`, `.agents/research/`, `.agents/audits/`, `docs/`, and `AGENTS.md` as needed.
+- Recursive sub-orchestration is permitted up to the project's configured limit
+- **Proactively research and read related docs.** Browse `.agents/specs/`, `.agents/research/`, `.agents/audits/`, `docs/`, `AGENTS.md`, and the project skills directory as needed.
 
 ---
 
@@ -94,7 +96,7 @@ The order branches were merged, conflicts encountered, and how they were resolve
 - [ ] Decompose the human's ask into N sub-tasks; one source doc per sub-task
 - [ ] Fill in the worker tracker
 - [ ] Spawn each worker (own worktree, own branch, conditioned task file)
-- [ ] As each worker completes: switch to The Skeptic, review the branch, paste verification output
+- [ ] As each worker completes: load `persona-skeptic`, review the branch, paste verification output
 - [ ] Approve or kick back; if kicked back, fill in the kickback queue
 - [ ] Re-review revised branches
 - [ ] Merge approved branches in the order documented in the merge log
@@ -141,7 +143,7 @@ Concrete starting points for the next session if this one ends incomplete. The n
 
 <self_review>
 
-Stop. Orchestration fails when a worker's word is taken as proof, when a kickback is too vague to act on, or when merges happen out of order and break the integration. Act as a senior engineer about to ship the merged result, hostile to all three.
+Stop. Orchestration fails when a worker's word is taken as proof, when a kickback is too vague to act on, or when merges happen out of order and break the integration. Load `.agents/skills/persona-skeptic/SKILL.md` and act as a senior engineer about to ship the merged result, hostile to all three.
 
 > **Hard gate.** The task is not complete until every question below has a written answer directly beneath it.
 
@@ -154,7 +156,7 @@ Stop. Orchestration fails when a worker's word is taken as proof, when a kickbac
 
 ### Per-worker review
 
-- Did you run validation locally for every worker, not trust their pasted output? Did you read each diff with The Skeptic stance? Are review verdicts in the tracker accurate?
+- Did you run validation locally for every worker, not trust their pasted output? Did you read each diff under `persona-skeptic`? Are review verdicts in the tracker accurate?
   Answer:
 
 ### Kickback specificity

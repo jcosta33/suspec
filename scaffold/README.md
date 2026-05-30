@@ -1,10 +1,10 @@
 # 🐝 Swarm scaffold
 
-> **The literal, copy-and-paste artefacts that turn any repo into a Swarm-conformant repo.** Self-contained: every reference inside this directory points to other files inside this directory. No `/docs/` references, no broken links when you copy.
+> **The literal, copy-and-paste artefacts that turn any repo into a Swarm-conformant repo.** The copied runtime artefacts are self-contained: skill bodies and templates reference only files that land in your repo (`AGENTS.md`, sibling skills, the shipped `docs/agents/`), so nothing breaks when you copy. This README is meta — it points back at the framework's `/docs/` for the *why*, which you don't copy.
 
 This directory mirrors what your repository's structure should look like at the relevant paths. Copy the contents into your repo's root; bind the `{{cmdX}}` placeholders in `AGENTS.md` to your project's commands; you're conformant.
 
-For the *why* behind these artefacts — the conceptual rationale, design decisions, worked examples — see the project's `/docs/` directory. The scaffold is what to copy; the docs are what to read.
+For the *why* behind these artefacts — the conceptual rationale, design decisions, worked examples — see the upstream Swarm framework repo's `/docs/` directory (not copied into your repo). The scaffold is what to copy; the upstream docs are what to read.
 
 ---
 
@@ -24,47 +24,53 @@ scaffold/
 │       ├── 02-file-types.md               ← what each document type contains
 │       ├── 03-workflow.md                 ← step-by-step session flow
 │       ├── 04-standards.md                ← writing and execution standards
-│       └── 05-flow-graph.md               ← the deterministic routing graph
+│       └── 05-flow-graph.md               ← the recommended routing graph
 │
 └── .agents/
-    ├── skills/
-    │   ├── personas/
-    │   │   └── SKILL.md                   ← the personas skill (loads all 13 persona profiles)
-    │   ├── manage-task/SKILL.md           ← always loaded
-    │   ├── documentation-gatekeeper/SKILL.md ← always loaded
-    │   ├── distillation-discipline/SKILL.md
-    │   ├── empirical-proof/SKILL.md
-    │   ├── adversarial-review/SKILL.md
-    │   ├── write-spec/SKILL.md
-    │   ├── write-audit/SKILL.md
-    │   ├── write-research/SKILL.md
-    │   ├── write-bug-report/SKILL.md
-    │   ├── write-feature/SKILL.md
-    │   ├── write-fix/SKILL.md
-    │   ├── write-refactor/SKILL.md
-    │   └── write-rewrite/SKILL.md
+    ├── skills/                            ← 23 self-activating skills, one dir each (SKILL.md + references/)
+    │   │  # quality gates (3) — cross-cutting disciplines
+    │   ├── adversarial-review/
+    │   ├── distillation-discipline/
+    │   ├── empirical-proof/
+    │   │  # specialised (1)
+    │   ├── fix-flaky-test/
+    │   │  # authoring (12) — one per kind of work
+    │   ├── write-audit/
+    │   ├── write-bug-report/
+    │   ├── write-documentation/
+    │   ├── write-feature/
+    │   ├── write-fix/
+    │   ├── write-migration/
+    │   ├── write-performance/
+    │   ├── write-refactor/
+    │   ├── write-research/
+    │   ├── write-rewrite/
+    │   ├── write-spec/
+    │   ├── write-testing/
+    │   │  # personas (7) — role mindsets that ship as skills
+    │   ├── persona-architect/
+    │   ├── persona-auditor/
+    │   ├── persona-janitor/
+    │   ├── persona-migrator/
+    │   ├── persona-performance-surgeon/
+    │   ├── persona-skeptic/
+    │   └── persona-surveyor/
+    │       # Each non-persona skill ships a references/ dir alongside SKILL.md:
+    │       #   references/task-template.md  (the per-skill task template),
+    │       #   except distillation-discipline=worked-example.md, empirical-proof=evasions.md
     │
-    └── templates/
-        ├── spec.md                        ← document templates
+    └── templates/                         ← 8 flat templates
+        ├── spec.md                        ← source-doc templates (4)
         ├── audit.md
         ├── bug-report.md
         ├── research.md
-        ├── skill.md                       ← template for new project-specific skills
+        ├── skill.md                       ← meta-template for new project-specific skills
         ├── task-base.md                   ← shared task skeleton
-        ├── task-feature.md                ← task templates per type
-        ├── task-fix.md
-        ├── task-refactor.md
-        ├── task-rewrite.md
-        ├── task-research.md
-        ├── task-audit.md
-        ├── task-bug-report.md
-        ├── task-migration.md
-        ├── task-performance.md
-        ├── task-testing.md
-        ├── task-documentation.md
-        ├── task-orchestration.md
+        ├── task-orchestration.md          ← the two skill-less task types
         └── task-review.md
 ```
+
+> Per-skill task templates are **not** in the flat `templates/` directory — they live in each skill's `references/task-template.md`, so loading the skill brings its template with it. The flat `templates/` holds only the source-doc templates, the skill meta-template, the shared task skeleton, and the two task types that have no skill (`orchestration`, `review`).
 
 ---
 
@@ -103,26 +109,27 @@ grep -rn "TODO" AGENTS.md .agents/
 
 You must:
 
-1. **Bind the verification gate slots in `AGENTS.md`.** Replace each `TODO: <bind>` with your project's command (e.g., `pnpm install`, `cargo check`).
+1. **Bind the command contract in `AGENTS.md`'s `## Commands` section.** Replace each `TODO` with your project's command — the **Required** rows (`Validation`, `Test`, `Format`) plus any **Extended** rows your work touches (`Install`, `Typecheck`, `Build`, `ValidateDeps`, `Benchmark`); mark unavailable extended rows `n/a` with a one-line reason. Skills reference these by name in prose (e.g. `AGENTS.md > Commands > Validation`) and degrade gracefully — an unbound entry means the skill asks you before running anything.
 2. **Fill in the `## Project conventions` section in `AGENTS.md`** — language, runtime, test runner, package manager.
 3. **Optionally:** add a `.agents/constitution.md` capturing project-wide non-negotiable baselines.
 
 ### Verify
 
 ```bash
-ls -la .agents/skills/personas/        # should list SKILL.md
-ls -la .agents/templates/              # should list 18 task templates + 5 doc templates
-cat AGENTS.md | grep -c "TODO"         # should be 0 after you've bound the placeholders
-grep -F ".agents/tasks/" .gitignore     # should match
+ls -1 .agents/skills/                   # should list 23 skill directories
+ls -1 .agents/templates/                # should list 8 files (4 source-doc + skill.md + task-base.md + task-orchestration.md + task-review.md)
+ls .agents/skills/write-feature/references/task-template.md   # per-skill task templates live here, not in templates/
+grep -c "TODO" AGENTS.md                 # should be 0 after you've bound the placeholders
+grep -F ".agents/tasks/" .gitignore      # should match
 ```
 
 ---
 
 ## 🪞 The placeholder contract
 
-Every template in `.agents/templates/` uses `{{name}}` placeholders. They fall into two namespaces:
+Both the flat templates in `.agents/templates/` and the per-skill `references/task-template.md` files use `{{name}}` placeholders. They fall into two namespaces:
 
-### Command placeholders (project-bound, set once in `AGENTS.md`)
+### Command placeholders (project-bound, set once in `AGENTS.md`'s `## Commands` section)
 
 | Placeholder              | What it represents                                                           |
 | ------------------------ | ---------------------------------------------------------------------------- |
@@ -164,25 +171,30 @@ A runner (the Swarm CLI or any other) is **Swarm-compliant** if it substitutes e
 
 ## 🎭 The persona catalogue
 
-The `personas/SKILL.md` file is a single skill defining all 13 framework personas:
+Personas condition mindset for role-shaped work. The framework's catalogue (in the upstream Swarm framework repo's `/docs/personas/`, not copied here) describes **13 mindsets**, but only **7 ship as standalone skills** in this scaffold — each in its own `persona-<slug>/SKILL.md`, self-activating when its `description` matches the task:
 
-| Persona                | Primary tasks                       |
-| ---------------------- | ----------------------------------- |
-| The Builder            | feature, integration, kickback      |
-| The Skeptic            | review, deepen-audit, fix           |
-| The Architect          | spec-writing                        |
-| The Janitor            | refactor                            |
-| The Lead Engineer      | orchestration                       |
-| The Researcher         | research-writing (technical)        |
-| The Surveyor           | research-writing (UX/market)        |
-| The Bug Hunter         | bug-report-writing                  |
-| The Auditor            | audit-writing                       |
-| The Migrator           | migration, upgrade                  |
-| The Performance Surgeon | performance                        |
-| The Test Author        | testing                             |
-| The Documentarian      | documentation                       |
+| Persona skill                | Primary tasks                |
+| ---------------------------- | ---------------------------- |
+| `persona-architect`          | spec-writing                 |
+| `persona-auditor`            | audit-writing                |
+| `persona-janitor`            | refactor                     |
+| `persona-migrator`           | migration, upgrade           |
+| `persona-performance-surgeon` | performance                 |
+| `persona-skeptic`            | review, deepen-audit, fix    |
+| `persona-surveyor`           | research-writing (UX/market) |
 
-Open `personas/SKILL.md` for the full profiles. Project-specific overlay personas (e.g., a TypeSurgeon for a TS-heavy shop) should live alongside as separate files in this directory.
+The other **6 mindsets do not ship as separate skills** — each is carried by the matching workflow (authoring) skill, so loading the skill brings the mindset with it:
+
+| Mindset           | Carried by             |
+| ----------------- | ---------------------- |
+| The Builder       | `write-feature`        |
+| The Bug Hunter    | `write-bug-report`     |
+| The Documentarian | `write-documentation`  |
+| The Researcher    | `write-research`       |
+| The Test Author   | `write-testing`        |
+| The Lead Engineer | (orchestration — no skill; flat `task-orchestration.md` template + Lead Engineer mindset in the docs) |
+
+Open any `persona-<slug>/SKILL.md` for the full profile. Project-specific overlay personas (e.g., a TypeSurgeon for a TS-heavy shop) should live alongside as their own `persona-<slug>/SKILL.md` directories.
 
 ---
 
@@ -210,11 +222,11 @@ Treat the scaffold like any vendored dependency: track the version you installed
 
 ## 📚 Reference
 
-For the *why* behind every artefact:
+For the *why* behind every artefact, see the upstream Swarm framework repo (these live there, not in your vendored copy):
 
-- The framework's main documentation is at `/docs/` in this repo.
-- The persona-task-doc mapping is in `/docs/reference/flow-graph.md`.
-- The placeholder contract is in `/docs/reference/template-placeholders.md`.
-- The conceptual frame is in `/docs/concepts/`.
+- The framework's main documentation is at `/docs/` in the Swarm framework repo.
+- The persona-task-doc mapping is in the Swarm framework repo's `/docs/reference/flow-graph.md` (the scaffold ships its own copy of the routing graph at `docs/agents/05-flow-graph.md`).
+- The placeholder contract is in the Swarm framework repo's `/docs/reference/template-placeholders.md`.
+- The conceptual frame is in the Swarm framework repo's `/docs/concepts/`.
 
-But again — **once you copy the scaffold into your repo, you don't need `/docs/` for day-to-day operation.** The scaffold is self-contained.
+But again — **once you copy the scaffold into your repo, you don't need the upstream `/docs/` for day-to-day operation.** The scaffold is self-contained.

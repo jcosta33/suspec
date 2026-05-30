@@ -14,7 +14,7 @@ cp $SWARM_REPO/scaffold/{AGENTS.md,CLAUDE.md,GEMINI.md} .
 cat $SWARM_REPO/scaffold/.gitignore.additions >> .gitignore
 mkdir -p .agents/{tasks,specs,audits,bugs,research}
 
-# Edit AGENTS.md to bind {{cmdInstall}}, {{cmdValidate}}, {{cmdTest}}, etc.
+# Edit AGENTS.md's `## Commands` section to bind Validation / Test / Format (+ extended) to your commands.
 # Then write a small spec, scaffold a task file, point your agent CLI at it.
 ```
 
@@ -55,36 +55,33 @@ mkdir -p .agents/{tasks,specs,audits,bugs,research}
 Verify the structure:
 
 ```bash
-ls -la .agents/skills/personas/        # SKILL.md
-ls -la .agents/templates/              # 19 task and doc templates
-ls -la docs/agents/                    # 5 process docs
+ls -1 .agents/skills/                   # 23 skill directories
+ls -la .agents/templates/               # 8 flat templates
+ls -la docs/agents/                     # 5 process docs
 grep -F ".agents/tasks/" .gitignore     # should match
 ```
 
 ---
 
-## 🪜 Step 2: Bind the placeholders in AGENTS.md
+## 🪜 Step 2: Bind the command contract in AGENTS.md
 
-Open `AGENTS.md`. The scaffold ships with `TODO` markers where your project's specifics belong.
+Open `AGENTS.md`. The scaffold ships with `TODO` markers where your project's specifics belong, and a `## Commands` section — the command contract that skills reference by name (`AGENTS.md > Commands > Validation`, etc.).
 
 ```bash
 grep -n "TODO" AGENTS.md
 ```
 
-For each `{{cmdX}}` slot, replace `TODO: <bind>` with your project's command. Example for a TS / pnpm project:
+In the `## Commands` section, replace each `TODO` with your project's command. The **Required** entries (skills rely on them) and an example binding for a TS / pnpm project:
 
 ```markdown
-| `{{cmdInstall}}`       | `pnpm install`                       |
-| `{{cmdValidate}}`      | `pnpm run validate`                  |
-| `{{cmdLint}}`          | `pnpm run lint`                      |
-| `{{cmdFormat}}`        | `pnpm run format:check`              |
-| `{{cmdTypecheck}}`     | `pnpm run typecheck`                 |
-| `{{cmdTest}}`          | `pnpm test`                          |
-| `{{cmdBuild}}`         | `pnpm run build`                     |
-| `{{cmdValidateDeps}}`  | `n/a`                                |
+| Command      | Template placeholder | Bind to                       |
+| ------------ | -------------------- | ----------------------------- |
+| `Validation` | `{{cmdValidate}}`    | `pnpm typecheck && pnpm lint` |
+| `Test`       | `{{cmdTest}}`        | `pnpm test`                   |
+| `Format`     | `{{cmdFormat}}`      | `pnpm format`                 |
 ```
 
-Slots you don't have can be `n/a` with a one-line justification.
+The **Extended** entries (`Install`, `Typecheck`, `Build`, `ValidateDeps`, `Benchmark`) are bound when the relevant work occurs; mark any you don't have `n/a` with a one-line reason.
 
 Also fill in the `## Project conventions` section (language, runtime, test runner, package manager).
 
@@ -144,10 +141,10 @@ EOF
 
 ## 🪜 Step 4: Scaffold a conditioned task file
 
-In a real install, the Swarm CLI scaffolds this from the spec. For the quickstart, copy the template and fill in the placeholders by hand:
+In a real install, the Swarm CLI scaffolds this from the spec. For the quickstart, copy the feature skill's task template and fill in the placeholders by hand:
 
 ```bash
-cp .agents/templates/task-feature.md .agents/tasks/feat-example-greet.md
+cp .agents/skills/write-feature/references/task-template.md .agents/tasks/feat-example-greet.md
 ```
 
 Now edit `.agents/tasks/feat-example-greet.md` and replace:
@@ -159,7 +156,7 @@ Now edit `.agents/tasks/feat-example-greet.md` and replace:
 - `{{worktreePath}}` → `.worktrees/feat-example-greet` (or wherever you'll work)
 - `{{createdAt}}` → today's ISO-8601 timestamp
 - `{{specFile}}` → `.agents/specs/example-greet.md`
-- The `{{cmdX}}` placeholders → your project's commands (or leave them — your AGENTS.md already binds them and the agent will resolve via context)
+- The `{{cmd*}}` placeholders → your project's commands (or leave them — your `AGENTS.md > Commands` section already binds them and the agent resolves via that contract)
 
 ---
 
@@ -173,12 +170,12 @@ If you have an agent CLI installed (Claude Code, Codex, Cursor, Aider, etc.):
 
 The agent will:
 
-- Read the persona profile (`.agents/skills/personas/SKILL.md` → The Builder section)
-- Adopt The Builder mindset
+- Load `write-feature` — the workflow skill that carries The Builder mindset (there's no standalone `persona-builder`; the six mindset-only personas ride in their matching workflow skill)
+- Adopt The Builder stance
 - Read the spec at `.agents/specs/example-greet.md`
 - Plan, then implement `greet`
 - Add the test
-- Run the validation gates (`pnpm validate`, `pnpm test`)
+- Run the validation and test commands (`AGENTS.md > Commands > Validation`, `> Test`)
 - Fill in `## Self-review` with pasted output
 
 The whole thing is the framework working as designed: the task file conditions the agent; the agent reads one file and acts.
@@ -190,9 +187,9 @@ The whole thing is the framework working as designed: the task file conditions t
 You now have:
 
 - A Swarm-conformant `.agents/` directory
-- An `AGENTS.md` binding the framework's slots to your project's commands
-- The 13 persona profiles + 6 cross-cutting skills + 8 authoring skills installed
-- 19 task and doc templates ready to use
+- An `AGENTS.md` with a `## Commands` section binding the command contract to your project's commands
+- The 23 shipped skills installed: 3 quality gates, 1 specialised, 12 authoring, 7 persona skills
+- The 8 flat templates ready to use (per-skill task templates live in each skill's `references/task-template.md`)
 - One spec (`example-greet.md`)
 - One conditioned task file (gitignored)
 - (After running the agent) one feature implementation with verification proof

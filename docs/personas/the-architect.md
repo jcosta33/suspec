@@ -1,6 +1,6 @@
 # Persona (documentation): The Architect
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Architect**.
+> **Runtime profile:** [`scaffold/.agents/skills/persona-architect/SKILL.md`](../../scaffold/.agents/skills/persona-architect/SKILL.md) — the shipped persona skill carrying The Architect's constraints, forbiddances, proofs, and red flags.
 
 ---
 

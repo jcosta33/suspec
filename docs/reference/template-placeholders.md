@@ -8,10 +8,12 @@
 
 Placeholders use `{{name}}` syntax. They fall into two namespaces:
 
-- **Command placeholders** (`{{cmdInstall}}`, `{{cmdValidate}}`, …) — bound by the project to repo-specific commands
+- **Command placeholders** (`{{cmdInstall}}`, `{{cmdValidate}}`, …) — bound by the project to repo-specific commands, sourced from `AGENTS.md > Commands`
 - **Scaffolding placeholders** (`{{slug}}`, `{{branch}}`, `{{worktreePath}}`, …) — bound by the launcher per task
 
 A runner is **Swarm-compliant** if it honours every placeholder in the catalogues below.
+
+> **Dual contract.** Templates carry `{{cmd*}}` placeholders; skill **bodies** do not. A `SKILL.md` body references a command by its named `AGENTS.md > Commands` entry in prose ("run the project's validation command, `AGENTS.md > Commands > Validation`") and degrades gracefully — if the entry is missing the skill asks the user before running anything. The `{{cmd*}}` placeholders appear only in the **task templates** (`references/task-template.md` and the flat `templates/` files), where a launcher binds them from the same `AGENTS.md > Commands` entries. See the next section.
 
 ---
 
@@ -29,9 +31,34 @@ See [ADR 0005](../adrs/0005-placeholder-syntax.md) for the syntax decision.
 
 ---
 
+## 🔗 The dual contract: prose vs templates
+
+Commands are referenced in two different shapes depending on *where* the reference lives:
+
+| Where                                     | Shape                                                        | Bound by                                         |
+| ----------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------ |
+| **Skill body** (`SKILL.md` prose)          | Named entry — `AGENTS.md > Commands > Validation`           | Read by the agent at run time (degrades to "ask the user" if the entry is missing) |
+| **Task template** (`{{cmd*}}` placeholder) | `{{cmdValidate}}`, `{{cmdTest}}`, …                          | The launcher, from the same `AGENTS.md > Commands` entries |
+
+This keeps skill bodies **self-contained**: a `SKILL.md` body never hardcodes a command and never carries a `{{cmd*}}` placeholder (placeholders would be meaningless without a launcher to resolve them). It points at the project's `AGENTS.md > Commands` section by name. The templates, which a launcher *does* resolve, carry the `{{cmd*}}` placeholders. Both ends bind to the same `AGENTS.md > Commands` table — required entries `Validation` / `Test` / `Format`, plus extended `Install` / `Typecheck` / `Build` / `ValidateDeps` / `Benchmark`.
+
+### Where the templates live
+
+| Template                                   | Location                                                    |
+| ------------------------------------------ | ----------------------------------------------------------- |
+| Per-task-type task templates               | each workflow skill's `references/task-template.md` (e.g. `write-feature/references/task-template.md`) |
+| Shared task skeleton                       | `.agents/templates/task-base.md` (documents the skeleton; not launched) |
+| Skill-less task types (orchestration, review) | flat `.agents/templates/task-orchestration.md`, `.agents/templates/task-review.md` |
+| Source-doc templates                       | flat `.agents/templates/{spec,audit,bug-report,research}.md` |
+| Meta-template for new skills               | `.agents/templates/skill.md`                                |
+
+There are **no** flat per-skill task templates in `.agents/templates/` — each workflow skill owns its own task template under `references/`. Only `task-base` (the shared skeleton) and the two skill-less task types stay flat. All of these consume the placeholders catalogued below.
+
+---
+
 ## 🛠️ Command placeholders
 
-These are bound by the project (typically in the project's `AGENTS.md`, or in the CLI's `swarm.config.yaml`-equivalent). The framework cares only about the slot names; the project binds them.
+These are bound by the project in its `AGENTS.md > Commands` section (a launcher may also read a CLI config). The framework cares only about the slot names; the project binds them. The skill-body equivalent is the named `Commands > …` entry the placeholder maps to (see the dual contract above).
 
 | Placeholder              | Semantics                                                                  | Example bindings                                  |
 | ------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------- |
@@ -147,6 +174,6 @@ The convention is also model-friendly — agent CLIs see `{{X}}` and recognise i
 ## See also
 
 - [`reference/flow-graph.md`](flow-graph.md) — when each `cmd*` slot fires
-- [`reference/agents-md.md`](agents-md.md) — where the project binds the slots
+- [`reference/agents-md.md`](agents-md.md) — the `## Commands` section where the project binds the slots
 - [ADR 0005](../adrs/0005-placeholder-syntax.md) — syntax decision
 - [`tasks/`](../tasks/) — the templates that consume these placeholders

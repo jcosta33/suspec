@@ -20,7 +20,7 @@ Bind Architect intent to mechanically testable predicates so downstream tasks ca
 
 ## ✍️ Authoring persona
 
-[The Architect](../personas/the-architect.md) exclusively for default routing ([ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md)).
+[The Architect](../personas/the-architect.md) is the suggested default ([ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md), superseded by [0020](../adrs/0020-activation-by-self-assessment.md)); routing is recommended, not enforced, so the agent may re-assess and record divergence.
 
 ---
 

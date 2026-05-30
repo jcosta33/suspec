@@ -1,6 +1,6 @@
 # 🐝 Swarm — Agentic Documentation Framework
 
-> **Swarm is a documentation framework that conditions coding agents for the work they do.** Pick a source document, and the task type, persona, skills, and verification gates all follow — deterministically.
+> **Swarm is a documentation framework that conditions coding agents for the work they do.** Pick a source document, and a recommended task type, persona, skills, and verification gates all follow.
 
 This directory is the canonical home of the framework. Everything you need to understand, adopt, extend, or audit Swarm lives here.
 
@@ -27,7 +27,7 @@ flowchart LR
     style F fill:#f1f5f9,stroke:#334155
 ```
 
-A human (or upstream agent) hands a source document to the framework. Swarm routes it deterministically: a `spec.md` becomes a `feature` task assigned to **The Builder**; an `audit.md` becomes a `refactor` task assigned to **The Janitor**; a `bug-report.md` becomes a `fix` task assigned to **The Skeptic**. Skills attach automatically. Verification commands are bound to named slots. The agent reads one file (the conditioned task file), adopts the named persona, executes the task, and pastes empirical proof into a hard-gated `## Self-review`.
+A human (or upstream agent) hands a source document to the framework. Swarm has a recommended route for it: a `spec.md` suggests a `feature` task in the mindset of **The Builder**; an `audit.md` suggests a `refactor` task in the mindset of **The Janitor**; a `bug-report.md` suggests a `fix` task in the mindset of **The Skeptic**. The matching skills self-activate by directive `description`. Verification commands are bound to named slots. The agent reads one file (the conditioned task file), adopts the suggested mindset (re-assessing if the work doesn't fit), executes the task, and pastes empirical proof into a hard-gated `## Self-review`. The flow graph is **recommended routing**: a launcher may apply it deterministically, but the agent may re-assess and record the divergence.
 
 The framework itself is just disciplined Markdown — no runtime, no DSL, no executable. A CLI (e.g., the **Swarm CLI**) implements the framework. **This repository is the framework.**
 
@@ -60,25 +60,27 @@ swarm/
     │   ├── 01-process.md ··· 05-flow-graph.md
     │
     └── .agents/
-        ├── skills/                ← the actual skill files
-        │   ├── personas/SKILL.md  ← all 13 persona profiles
-        │   ├── manage-task/SKILL.md
-        │   ├── documentation-gatekeeper/SKILL.md
-        │   ├── distillation-discipline/SKILL.md
-        │   ├── empirical-proof/SKILL.md
-        │   ├── adversarial-review/SKILL.md
-        │   └── write-{spec,audit,research,bug-report,feature,fix,refactor,rewrite}/SKILL.md
-        └── templates/             ← task and doc templates with {{placeholders}}
-            ├── task-{feature,fix,...}.md          (task templates bundled for copy)
-            ├── {spec,audit,bug-report,research}.md  (4 doc templates)
-            └── skill.md
+        ├── skills/                ← the 23 shipped skills, each <name>/SKILL.md (+ references/)
+        │   ├── adversarial-review/, distillation-discipline/, empirical-proof/   (3 quality gates)
+        │   ├── fix-flaky-test/                                                   (1 specialised)
+        │   ├── write-{spec,audit,research,bug-report,feature,fix,refactor,      (12 authoring)
+        │   │           rewrite,migration,performance,testing,documentation}/
+        │   └── persona-{architect,auditor,janitor,migrator,                     (7 personas)
+        │                 performance-surgeon,skeptic,surveyor}/
+        └── templates/             ← 8 flat templates with {{placeholders}}
+            ├── {spec,audit,bug-report,research}.md  (4 source-doc templates)
+            ├── task-base.md                         (shared task skeleton)
+            ├── task-{orchestration,review}.md       (the 2 skill-less task types)
+            └── skill.md                             (meta-template)
 ```
+
+> Each non-persona skill also ships a `references/` directory — a `task-template.md` carrying `{{cmd*}}`/`{{slug}}` placeholders (except `distillation-discipline`, which ships `worked-example.md`, and `empirical-proof`, which ships `evasions.md`). Per-skill task templates live there, **not** in the flat `templates/` directory.
 
 > **`/docs/` is for understanding; `/scaffold/` is for adopting.**
 >
 > The `/docs/` directory explains the framework — concepts, design rationale, comparisons, examples, and references. Every page links freely across `/docs/`.
 >
-> The `/scaffold/` directory is **self-contained**: every reference inside it points to other files inside it (using `.agents/...` paths the consumer would have). Copy `/scaffold/` into your repo's root, bind the placeholders, and you're conformant. No `/docs/` references break when you copy.
+> The `/scaffold/` directory is the skill layer Swarm governs: each `SKILL.md` **body** is self-contained — no cross-skill "See also" links, no framework-internal paths — so a skill behaves identically wherever it's vendored. Skills self-activate by directive `description`; there is no always-loaded skill. Copy `/scaffold/` into your repo's root, bind the placeholders in `AGENTS.md > Commands`, and you're conformant.
 
 Every directory has its own `README.md` that catalogues what's inside.
 
@@ -97,6 +99,7 @@ Reading order depends on who you are and why you're here:
 | 📋 Looking for the right task type           | [`tasks/README.md`](tasks/README.md) → the matrix                                          |
 | 📦 Looking for the actual files to copy      | [`/scaffold/README.md`](../scaffold/README.md)                                             |
 | 🧰 Building a tool that consumes Swarm       | [`reference/template-placeholders.md`](reference/template-placeholders.md)                |
+| 🔬 Asking *why* the skills are shaped this way | [`skills/building/`](skills/building/) — the empirical science behind the skill layer (650-trial activation study, Reflexion, the no-always-load decision) |
 | 🤝 Contributing or extending the framework   | [`guides/extending-the-framework.md`](guides/extending-the-framework.md) → [`adrs/`](adrs/) |
 | 🔬 Comparing to Spec Kit / BMAD / Superpowers | [`concepts/12-prior-art.md`](concepts/12-prior-art.md)                                    |
 
@@ -106,11 +109,10 @@ Reading order depends on who you are and why you're here:
 
 | Dimension          | Cardinality | Where                                                       |
 | ------------------ | ----------- | ----------------------------------------------------------- |
-| 🎭 Personas        | 13          | [`personas/`](personas/)                                    |
+| 🎭 Persona mindsets | 13 (7 ship as skills) | [`personas/`](personas/) — 7 ship as `persona-*` skills; the other 6 are mindsets carried by the matching workflow skill |
 | 📋 Task types      | 18          | [`tasks/`](tasks/)                                          |
 | 📄 Core doc types  | 4           | [`documents/`](documents/) (+ extended variants)            |
-| 🛠️ Cross-cutting skills | 6      | [`skills/`](skills/) (`manage-task`, `documentation-gatekeeper`, `personas`, `distillation-discipline`, `empirical-proof`, `adversarial-review`) |
-| ✍️ Authoring skills | 8         | [`skills/`](skills/) (`write-spec`, `write-audit`, `write-research`, `write-bug-report`, `write-feature`, `write-fix`, `write-refactor`, `write-rewrite`) |
+| 🛠️ Skills          | 23          | [`skills/`](skills/) — 3 quality gates (`adversarial-review`, `distillation-discipline`, `empirical-proof`), 1 specialised (`fix-flaky-test`), 12 authoring (`write-*`), 7 personas (`persona-*`) |
 
 ---
 
@@ -120,7 +122,7 @@ Reading order depends on who you are and why you're here:
 
 - ✅ Multiple agents (or one agent across many sessions) are doing real engineering work in your repo
 - ✅ You've been bitten by drift, hallucinated completion, or context pollution
-- ✅ You want determinism: the same source doc always routes to the same persona, every time
+- ✅ You want repeatable conditioning: the same source doc routes to the same suggested task type, persona, and skills — a recommended default the agent can re-assess and record
 - ✅ Your stack is heterogeneous and you don't want a framework that bakes in `pnpm` or `cargo` or `pip`
 - ✅ You like Diátaxis / Spec Kit / Superpowers but want something more rigorous on the documentation side
 
@@ -139,12 +141,12 @@ See [`NON-GOALS.md`](NON-GOALS.md) for the full list of what Swarm explicitly is
 
 | Surface                                  | Status     |
 | ---------------------------------------- | ---------- |
-| Persona catalogue (13 personas)          | 🟢 Stable  |
+| Persona catalogue (13 mindsets, 7 ship as skills) | 🟢 Stable  |
 | Task type catalogue (18 task types)      | 🟢 Stable  |
 | Core doc types (4)                       | 🟢 Stable  |
-| Flow graph (document → task → persona)   | 🟢 Stable  |
+| Flow graph (document → task → persona)   | 🟢 Stable — recommended routing, not gatekeeper-enforced |
 | Template placeholder contract            | 🟢 Stable  |
-| Cross-cutting skill set                  | 🟡 Evolving — see [`skills/README.md`](skills/README.md) |
+| Skill set (23 skills)                    | 🟡 Evolving — see [`skills/README.md`](skills/README.md) |
 | Subagent strategy                        | 🟡 Evolving — see [`concepts/10-subagent-strategy.md`](concepts/10-subagent-strategy.md) |
 | Project-level overlays (constitution, ADR) | 🟠 Recommended, not required |
 

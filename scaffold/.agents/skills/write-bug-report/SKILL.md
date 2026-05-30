@@ -1,13 +1,17 @@
 ---
 name: write-bug-report
-description: Load when authoring a bug-report.md file. Encodes the bug report's discipline — reproduce deterministically before explaining, find the root cause (not the symptom), distinguish observation from inference, propose a regression test.
+description: Author a bug-report. ALWAYS apply this skill when the user reports a bug, observed defect, regression, or unexpected behaviour — including when the symptom is reproducible only intermittently. Do not include the fix in the bug-report, conflate symptom with root cause, or finalise the report without a verbatim reproduction output pasted into it. Skip this skill for fixing the bug (a separate downstream task once the report is in hand) or authoring a present-state audit — a bug-report is a defect record, not a fix and not a survey.
 ---
 
 # Skill: write-bug-report
 
 ## Purpose
 
-A bug report is the input to a `fix` task. The fixer must be able to patch from the report alone, with zero re-investigation. This skill is the discipline that gets the report there.
+A bug report is the input to a fix task. The fixer must be able to patch from the report alone, with zero re-investigation. This skill is the discipline that gets the report there.
+
+## Project context (the AGENTS.md contract)
+
+The reproduction step (rule 1) requires running the project's test or runtime entry point. Resolve via the consuming repo's `AGENTS.md`: `Commands > Test` for test-suite reproductions, plus any project-specific run/start command for runtime defects. The pasted reproduction output (rule 8) must come from one of these commands. If `AGENTS.md` is missing or an entry is undefined, ask the user which command to run — do not guess.
 
 ## Core rules
 
@@ -31,7 +35,7 @@ The root cause is *file:line + state + input + caller*. The symptom alone is not
 - **Observation:** "Reproduction fires deterministically with `NODE_ENV=production` and 12 MB input."
 - **Inference:** "The proxy is dropping bytes."
 
-Both are useful; conflating them obscures the trail. Mark inferences in `## Hypothesis tracker` with status `[supports]`/`[disproven]`/`[confirmed]`.
+Both are useful; conflating them obscures the trail. Mark inferences in `## Hypothesis tracker` with status `[supports]` / `[disproven]` / `[confirmed]`.
 
 ### 5. Search for related defects
 
@@ -40,6 +44,30 @@ For every root cause, grep the codebase for the *pattern* (not just the file). N
 ### 6. Propose a regression test
 
 Identify the test that would catch the regression. State its location and assertion. If the project's test framework makes the test difficult to write, note the gap.
+
+### 7. Adversarial mindset
+
+A bug report that gets the cause wrong wastes the fixer's session and lets the bug ship. Mistrust your own first plausible explanation. If you find yourself stopping at the first hypothesis that fits, push past it: "Could the cause be elsewhere? Have I disproven the alternatives?"
+
+### 8. Pre-deliver visibility gate (forced visible output)
+
+Do not finalise the bug-report until you have pasted the failing reproduction output verbatim into `## Reliable reproduction`. Before declaring the report done, the section must contain:
+
+```markdown
+## Reliable reproduction
+
+**Command:** <exact command>
+
+**Output (verbatim):**
+
+\`\`\`
+<paste full failing output here, unedited>
+\`\`\`
+
+**Determinism:** fires every run / fires N of M runs / [unable to reproduce]
+```
+
+A `## Reliable reproduction` section without verbatim pasted output, or marked `[unable to reproduce]` without an explanation in `## Reproduction attempts`, means the report is not finalisable. The agent does not deliver the bug-report to the user until the section is filled with verbatim output (or an explicit `[unable to reproduce]` justification).
 
 ## What does not belong
 
@@ -60,15 +88,13 @@ Identify the test that would catch the regression. State its location and assert
 
 The diagnosis and the fix have *different mindsets*, *different empirical proofs*, and *different ways of being wrong*. Splitting them into two tasks lets each session be done well:
 
-- **bug-report-writing** (The Bug Hunter): forensic, hypothesis-driven, read-only on code.
-- **fix** (The Skeptic-as-fixer): adversarial about the patch, runs the regression test, verifies the cause.
+- **bug-report-writing:** forensic, hypothesis-driven, read-only on code.
+- **fix:** adversarial about the patch, runs the regression test, verifies the cause.
 
 A combined "diagnose-and-fix" task tends to short-circuit the diagnosis at the first plausible explanation. The split forces the diagnosis to stand on its own.
 
-## See also
+## Bundled resources
 
-- `.agents/templates/bug-report.md` — the bug-report doc template
-- `.agents/templates/task-bug-report.md` — the bug-report-writing task template
-- `.agents/templates/task-fix.md` — the downstream fix task
-- `.agents/skills/adversarial-review/SKILL.md` — sister skill for the hostile reading
-- `.agents/skills/personas/SKILL.md` — The Bug Hunter persona
+- `references/task-template.md` — a fillable bug-report-writing task template combining the workflow scaffold (metadata, AGENTS.md contract, constraints, progress checklist, decisions, self-review for reproduction reliability and root-cause depth) with the deliverable structure inlined as a `## Deliverable` block (reported behaviour, reliable reproduction, reproduction attempts history, hypothesis tracker, root cause, related defects, regression test plan, open questions, Distillation Loss Statement). At session close, copy the `## Deliverable` block to its final home (`<your-bugs-dir>/{{slug}}.md`).
+
+Substitute the `{{...}}` placeholders and fill in as you work.

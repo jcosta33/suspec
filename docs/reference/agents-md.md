@@ -8,9 +8,9 @@
 
 `AGENTS.md` lives at the repo root. It tells the agent:
 
-1. Where the task file lives
-2. The standing convention to load `manage-task` and `documentation-gatekeeper` first
-3. The repo's named verification gate bindings
+1. Where the task file lives (read it first)
+2. The repo's **command contract** — named `## Commands` entries (Validation / Test / Format, plus extended slots) that skills reference in prose and launchers bind to `{{cmd*}}` placeholders
+3. That skills **self-activate** by `description` — there is no always-loaded skill to name here
 
 It is read by every agent CLI that supports the open standard (Claude Code, Codex, Cursor, Aider, Devin, Factory, Jules, Junie, Warp, Zed, opencode, and more — the standard is stewarded by the [Agentic AI Foundation](https://agents.md/) under the Linux Foundation).
 
@@ -29,7 +29,7 @@ Swarm adopts the standard verbatim: the `AGENTS.md` is the entry point; nesting 
 ```markdown
 # AGENTS.md
 
-> First action: read your task file at `.agents/tasks/<your-slug>.md`. The file names your persona, lists your skills, links your source doc, and binds the verification commands you'll need. Then proceed.
+> First action: read your task file at `.agents/tasks/<your-slug>.md`. It links your source doc, lists the skills worth loading, names a suggested persona, and binds the verification commands you'll need. Then proceed.
 
 ## Project conventions
 
@@ -38,39 +38,45 @@ Swarm adopts the standard verbatim: the `AGENTS.md` is the entry point; nesting 
 - Test runner: <e.g., vitest>
 - Package manager: <e.g., pnpm ≥ 9>
 
-## Verification gate bindings
+## Commands
 
-The framework defines named gate slots; this project binds them to commands.
+This is the **command contract**. Skills reference these entries by name in prose
+(e.g. "run the project's validation command, `AGENTS.md > Commands > Validation`")
+and degrade gracefully — if an entry is missing they ask before running anything.
+Launchers bind the `{{cmd*}}` placeholders in templates from the same entries.
 
-| Slot                  | Command                              | Notes                                   |
-| --------------------- | ------------------------------------ | --------------------------------------- |
-| `{{cmdInstall}}`      | `pnpm install`                       |                                         |
-| `{{cmdValidate}}`     | `pnpm run validate`                  | runs lint + format + typecheck          |
-| `{{cmdLint}}`         | `pnpm run lint`                      |                                         |
-| `{{cmdFormat}}`       | `pnpm run format:check`              |                                         |
-| `{{cmdTypecheck}}`    | `pnpm run typecheck`                 |                                         |
-| `{{cmdTest}}`         | `pnpm test`                          |                                         |
-| `{{cmdBuild}}`        | `pnpm run build`                     |                                         |
-| `{{cmdValidateDeps}}` | `pnpm run validate:deps`             | dependency-cruiser                      |
-| `{{cmdBenchmark}}`    | `pnpm run bench`                     | (only used by `performance` tasks)     |
-| `{{cmdMarkdownLint}}` | `pnpm run lint:md`                   |                                         |
-| `{{cmdLinkCheck}}`    | `pnpm run check:links`               |                                         |
-| `{{cmdCitationCheck}}` | n/a                                  | not enforced; manual citation check    |
+Required (skills rely on these):
 
-## Standing skill load
+| Command (referenced as `Commands > …`) | Template placeholder | Bind to                             |
+| -------------------------------------- | -------------------- | ----------------------------------- |
+| `Validation`                           | `{{cmdValidate}}`    | `pnpm typecheck && pnpm lint`       |
+| `Test`                                 | `{{cmdTest}}`        | `pnpm test`                         |
+| `Format`                               | `{{cmdFormat}}`      | `pnpm format`                       |
 
-Every session starts by loading two skills:
+Extended (bound when the relevant work occurs; mark `n/a` with a one-line reason if none):
 
-- `manage-task` — task-file lifecycle and the pre-close gate
-- `documentation-gatekeeper` — the framework's flow-graph enforcement
+| Command        | Template placeholder  | Bind to / `n/a`         | Used by                          |
+| -------------- | --------------------- | ----------------------- | -------------------------------- |
+| `Install`      | `{{cmdInstall}}`      | `pnpm install`          | most code tasks (worktree setup) |
+| `Typecheck`    | `{{cmdTypecheck}}`    | `pnpm typecheck` / `n/a` | refactor, standalone type checks |
+| `Build`        | `{{cmdBuild}}`        | `pnpm build` / `n/a`    | upgrade                          |
+| `ValidateDeps` | `{{cmdValidateDeps}}` | `pnpm validate:deps` / `n/a` | refactor / migration / review |
+| `Benchmark`    | `{{cmdBenchmark}}`    | `pnpm bench` / `n/a`    | performance                      |
 
-When your task file's `> **PERSONA:**` blockquote names a persona, also load `personas` and the named persona profile.
+## Skills
+
+Skills live in `.agents/skills/<name>/SKILL.md` and **self-activate**: each carries a
+directive `description` and loads when its triggers match the task. There is **no
+always-loaded skill** — keep only the skills your work needs and let each fire on its
+own description. (See `docs/skills/building/scope.md` for why a load-on-every-task
+"skill" is the wrong primitive — its content belongs here in AGENTS.md.)
 
 ## Repo structure
 
 - Source: `src/`
 - Tests: `tests/`
 - Agent docs / skills / templates: `.agents/`
+- Worktree-local task files (gitignored): `.agents/tasks/`
 - User-facing docs: `docs/`
 
 ## Constitution
@@ -80,6 +86,14 @@ The project's non-negotiable baselines live in `.agents/constitution.md`. Every 
 ## ADRs
 
 Architecturally significant decisions are recorded under `.agents/adrs/`.
+
+## Routing (recommended, not enforced)
+
+Swarm's flow graph maps a source doc → task type → suggested persona → skills worth
+loading. It is recommended routing: a launcher may apply it deterministically, and the
+directive skill `description`s reproduce it in-session. When the task doesn't match the
+suggested default, load the skill whose `description` fits and record the divergence in
+the task file's `## Decisions`.
 
 ## Subagent strategy
 
@@ -98,7 +112,7 @@ This file is repo-root. Subdirectories may have their own `AGENTS.md` (or `AGENT
 ## 🪞 What AGENTS.md is NOT
 
 - **Not a place to put domain rules.** Domain rules go in skills (`.agents/skills/domain/`). AGENTS.md is for *universal invariants* — what every agent in the repo must know.
-- **Not a substitute for the persona profile.** The persona's hard rules live in the persona file; AGENTS.md tells the agent *to load the persona*.
+- **Not a substitute for a persona skill.** A persona skill (`.agents/skills/persona-<slug>/SKILL.md`) self-activates on its own `description`; AGENTS.md only points to the recommended routing that suggests one.
 - **Not a substitute for the spec.** Per-task constraints live in the task's source doc; AGENTS.md tells the agent *to read its task file first*.
 - **Not where the agent stores state.** AGENTS.md is read; not written. State lives in the task file (per session) or in the source docs (durable).
 
@@ -125,7 +139,7 @@ Example monorepo:
 When an agent works in `packages/api/`, the `packages/api/AGENTS.md` is the active one. It can:
 
 - **Inherit** by referencing the root: `# packages/api/AGENTS.md` *— see the root `AGENTS.md` for shared conventions; this file overrides…*
-- **Override** specific bindings (e.g., `cmdTest` for the api package may be `vitest -c packages/api/vitest.config.ts`)
+- **Override** specific `## Commands` entries (e.g., the api package's `Test` may bind to `vitest -c packages/api/vitest.config.ts`)
 - **Add** workspace-specific constraints (e.g., a stricter typecheck flag)
 
 For OpenAI Codex compatibility, you can use `AGENTS.override.md` instead of `AGENTS.md` in subdirectories that should *only* override (not replace) the parent.
@@ -134,13 +148,13 @@ For OpenAI Codex compatibility, you can use `AGENTS.override.md` instead of `AGE
 
 ## 🪧 Session-start hook
 
-Skills don't apply themselves; the agent has to be told to load them. AGENTS.md is the natural place to enforce this — the first paragraph of the file is the session-start hook.
+The agent has to be told to read its task file before doing anything else. AGENTS.md is the natural place to do this — the first paragraph of the file is the session-start hook.
 
 The framework recommends:
 
-> First action: read your task file at `.agents/tasks/<your-slug>.md`. The file names your persona, lists your skills, links your source doc, and binds the verification commands you'll need. Then proceed.
+> First action: read your task file at `.agents/tasks/<your-slug>.md`. It links your source doc, lists the skills worth loading, names a suggested persona, and binds the verification commands you'll need. Then proceed.
 
-This is one paragraph but it's load-bearing. Without it, the agent may default to its own helpfulness instead of adopting the persona-conditioned task file.
+This is one paragraph but it's load-bearing. Without it, the agent may default to its own helpfulness instead of adopting the task file's conditioning. Skills then self-activate from their own `description`s once the work in front of the agent matches — AGENTS.md does not list a skill to load on every session, because there is no always-loaded skill.
 
 Some agent CLIs support hook mechanisms (Claude Code's session-start hooks, Codex's skill auto-loading) that can supplement the AGENTS.md instruction. The framework recommends both: the AGENTS.md instruction as the *content*, and the CLI's hook as the *delivery mechanism*.
 
@@ -152,11 +166,12 @@ A Swarm-conformant repo must have:
 
 - `AGENTS.md` at the repo root
 - The "first action" instruction (read your task file)
-- Bindings for every required `{{cmdX}}` placeholder (see [`template-placeholders.md`](template-placeholders.md))
-- A reference to the standing skill load convention
+- A `## Commands` section binding the required entries (`Validation`, `Test`, `Format`) — plus any extended entries the project's work needs — so skills can reference them in prose and launchers can bind the `{{cmd*}}` placeholders (see [`template-placeholders.md`](template-placeholders.md))
+- A `## Skills` section establishing that skills self-activate by `description` (no always-loaded skill)
 
 Optional but recommended:
 
+- A `## Routing` pointer (recommended, not enforced)
 - Subagent strategy section
 - Constitution / ADR pointers
 - Hierarchical AGENTS.md in monorepos

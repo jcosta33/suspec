@@ -89,13 +89,13 @@ These appear in task-file headers above the `> **PERSONA:**` blockquote.
 
 ## Persona blockquote
 
-Every conditioned task file includes:
+A conditioned task file may suggest a persona:
 
 ```markdown
-> **PERSONA:** Load `.agents/skills/personas/SKILL.md` and adopt **The <Name>** persona.
+> **PERSONA:** Suggested — **The <Name>**. Load `.agents/skills/persona-<slug>/SKILL.md` if one of the seven persona skills fits; otherwise the matching workflow skill carries this mindset.
 ```
 
-The agent's first action (after reading the task file) is to load this persona profile. The persona's hard constraints supersede default helpfulness for the entire session.
+After reading the task file, the agent loads the persona skill when one of the seven (`persona-architect`, `persona-auditor`, `persona-janitor`, `persona-migrator`, `persona-performance-surgeon`, `persona-skeptic`, `persona-surveyor`) matches. For the other mindsets — Builder, Bug Hunter, Documentarian, Lead Engineer, Researcher, Test Author — the matching workflow skill (`write-feature`, `write-bug-report`, `write-documentation`, `write-research`, `write-testing`; Lead Engineer is orchestration with no skill) carries the persona. The persona is a **suggested default**: when the work in front of you doesn't match, load the skill whose `description` fits and record the divergence in `## Decisions`. Whichever persona is in play, its hard constraints supersede default helpfulness for the entire session.
 
 ---
 
@@ -131,7 +131,7 @@ Every assumption in a task file's `## Assumptions` section is marked:
 - [pending] The `legacyTokenAdapter` shim can be removed in batch 6 — verify by `git grep -c 'legacyTokenAdapter' src/` before deletion.
 ```
 
-`manage-task` blocks task closure if any `[pending]` assumption remains unresolved (it must either be promoted to `[confirmed]` or surfaced as a `## Blocker`).
+The task file's `## Self-review` hard gate blocks closure if any `[pending]` assumption remains unresolved — it must either be promoted to `[confirmed]` or surfaced as a `## Blocker`. This is enforced by the task structure itself, not by a separate skill.
 
 ---
 
@@ -157,7 +157,7 @@ Verifications go stale fast. If the agent makes a change after the verification,
 
 ### Rule 5: Run yourself; do not trust upstream
 
-When the Skeptic reviews a worker's branch, the Skeptic runs `{{cmdValidate}}` and `{{cmdTest}}` *themselves*, in their own worktree, with the worker's branch checked out. The worker's pasted output is *evidence the worker ran the command at some past moment*; it is not evidence the command passes *now in your worktree*.
+When the Skeptic reviews a worker's branch, the Skeptic runs the project's validation and test commands (`AGENTS.md > Commands > Validation` and `> Test`) *themselves*, in their own worktree, with the worker's branch checked out. The worker's pasted output is *evidence the worker ran the command at some past moment*; it is not evidence the command passes *now in your worktree*.
 
 ### Rule 6: Paste, don't quote
 
@@ -240,6 +240,6 @@ See `.agents/skills/distillation-discipline/SKILL.md` for the full discipline.
 - `01-process.md` — the documentation-first workflow
 - `02-file-types.md` — what each document type contains
 - `03-workflow.md` — step-by-step session flow
-- `05-flow-graph.md` — the deterministic routing graph
+- `05-flow-graph.md` — the recommended routing graph
 - `.agents/skills/empirical-proof/SKILL.md` — Show-Don't-Tell discipline
 - `.agents/skills/distillation-discipline/SKILL.md` — Loss Statement protocol

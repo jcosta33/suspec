@@ -1,23 +1,23 @@
 ---
 name: distillation-discipline
-description: Load when transforming a high-verbosity document (research) into a lower-verbosity one (spec, audit, task), or when distilling a long-running investigation into a finalised doc. Enforces the Distillation Loss Statement protocol — drop conversational fluff, keep load-bearing constraints, and explicitly record what was dropped.
+description: Distil upstream docs accountably. ALWAYS apply this skill when transforming a high-verbosity document (research) into a lower-verbosity one (spec, audit, task), or when finalising a long-running investigation into a durable doc — append a `## Distillation Loss Statement` listing what was dropped and why downstream does not need it. Do not silently drop architectural constraints, API payload shapes, acceptance criteria, identified risks, or `[CRITICAL]` open questions during the distillation. Skip this skill for net-new authoring with no upstream document to distil from.
 ---
 
 # Skill: distillation-discipline
 
 ## Purpose
 
-Information in this framework flows along a verbosity gradient: research → spec/audit/bug-report → task → terminal output. Each transition drops something. Without discipline, the dropping is silent, and load-bearing context evaporates.
+Information flows along a verbosity gradient: research → spec/audit/bug-report → task → terminal output. Each transition drops something. Without discipline, the dropping is silent, and load-bearing context evaporates.
 
 Accountable distillation requires the agent to *explicitly state what was dropped and why the next stage doesn't need it*. The statement makes the loss visible to downstream readers and reviewers.
 
 ## Core rules
 
-### Rule 1: You are permitted to drop conversational fluff and examples
+### 1. You are permitted to drop conversational fluff and examples
 
 Narratives ("after exploring three options…"), historical context ("we briefly considered Y in 2024…"), and exploratory tangents are fair game. The downstream consumer needs the *contract*, not the *journey*.
 
-### Rule 2: You are forbidden from dropping load-bearing content
+### 2. You are forbidden from dropping load-bearing content
 
 Categories that *cannot* be dropped:
 
@@ -32,7 +32,7 @@ If a transition appears to drop one of these, halt and either:
 - Move the content to the new doc (it wasn't actually droppable), or
 - Mark it explicitly as deferred to a downstream artefact
 
-### Rule 3: The Distillation Loss Statement
+### 3. The Distillation Loss Statement
 
 At the end of every document distilled from upstream, append a `## Distillation Loss Statement`:
 
@@ -51,36 +51,40 @@ At the end of every document distilled from upstream, append a `## Distillation 
 
 The statement is real and complete. A reviewer can read upstream and downstream side by side and verify nothing load-bearing went missing.
 
-### Rule 4: The four tests
+### 4. The four tests (with forced visible output)
 
-Before considering a distillation complete, the agent runs four tests:
+Before considering a distillation complete, run four tests on every upstream load-bearing item and output the result table — one row per item:
 
-| Test            | Question                                                              |
-| --------------- | --------------------------------------------------------------------- |
-| 🎯 **Requirements** | Does every requirement in the upstream survive in some form?       |
-| 🧬 **Behavior**     | Does every behavioural constraint (API shape, error semantics) survive? |
-| 🔍 **Edge case**    | Does every edge case mentioned upstream get a treatment downstream? |
-| 🧪 **Empirical**    | Does every measurement, benchmark, or repro step survive in actionable form? |
+| Upstream item | 🎯 Requirements | 🧬 Behavior | 🔍 Edge case | 🧪 Empirical | Status |
+| --- | --- | --- | --- | --- | --- |
+| <item from upstream> | preserved / dropped (justified) / promoted to <doc> | preserved / dropped / promoted | preserved / dropped / promoted | preserved / dropped / promoted | ✅ / ❌ |
 
-A distillation that passes all four is *accountable*. A distillation that fails one is incomplete — the agent halts and revises.
+The four tests:
 
-### Rule 5: Per-transition loss budgets
+- 🎯 **Requirements** — Does this requirement from the upstream survive (in some form)?
+- 🧬 **Behavior** — Does the behavioural constraint (API shape, error semantics) survive?
+- 🔍 **Edge case** — Does every edge case mentioned upstream get a treatment downstream?
+- 🧪 **Empirical** — Does every measurement, benchmark, or repro step survive in actionable form?
 
-| Transition                             | Loss budget | Notes                                              |
-| -------------------------------------- | ----------- | -------------------------------------------------- |
-| `research → spec/audit/bug-report`     | 🟡 High     | Narratives, alternatives explored OK to drop      |
-| `spec → task`                          | 🟢 Zero     | Architectural constraints, data shapes preserved  |
-| `audit → task`                         | 🟡 Medium   | Suggestive language OK to drop; file:line stays  |
-| `bug-report → task`                    | 🟢 Zero     | Reproduction + root cause preserved verbatim     |
-| `task → code/docs`                     | 🟢 Zero     | Already minimal; findings *promote*, not drop    |
+**Pre-deliver visibility gate:** Do not finalise the distilled doc until you have output this table with one row per upstream load-bearing item. A row with any `dropped (without justification)` cell, or a row marked ❌, means the distillation is incomplete — halt and revise, do not finalise. The agent does not deliver the distilled doc to the user until the table is in the task file and every row is ✅.
 
-The `spec → task` transition is the critical one. The Lead Engineer parsing a specification into sub-tasks is forbidden from dropping any architectural constraints or data shapes.
+### 5. Per-transition loss budgets
+
+| Transition                         | Loss budget | Notes                                             |
+| ---------------------------------- | ----------- | ------------------------------------------------- |
+| `research → spec/audit/bug-report` | 🟡 High     | Narratives, alternatives explored OK to drop      |
+| `spec → task`                      | 🟢 Zero     | Architectural constraints, data shapes preserved  |
+| `audit → task`                     | 🟡 Medium   | Suggestive language OK to drop; file:line stays   |
+| `bug-report → task`                | 🟢 Zero     | Reproduction + root cause preserved verbatim      |
+| `task → code/docs`                 | 🟢 Zero     | Already minimal; findings *promote*, not drop     |
+
+The `spec → task` transition is the critical one. Parsing a specification into sub-tasks is forbidden from dropping any architectural constraints or data shapes.
 
 ## What does not belong
 
 - **A Loss Statement that says "nothing was dropped".** If nothing was dropped, you didn't distil — you copy-pasted. Either embrace the copy-paste (and remove the Loss Statement) or actually distil.
 - **A Loss Statement that lists *categories* without specifics.** "Dropped: implementation details" is not specific enough. "Dropped: comparison of three sorting algorithms (we picked merge-sort)" is.
-- **Silent dropping.** If a load-bearing item *was* dropped, the framework treats this as a gate failure; the agent halts.
+- **Silent dropping.** If a load-bearing item *was* dropped, treat this as a gate failure; halt.
 
 ## Anti-patterns
 
@@ -90,43 +94,28 @@ The `spec → task` transition is the critical one. The Lead Engineer parsing a 
 - Dropping `[CRITICAL]` open questions because they look like nuisance
 - Treating a Loss Statement as ceremony rather than discipline
 
-## Worked example
+## Worked example (one input / output pair)
 
-### Source content (high-verbosity research file)
+**Input (research file paragraph):** "We tested Stripe Payment Intents vs legacy Charges via `curl`. Payment Intents is required for European SCA. The flow is server-creates-intent → returns `client_secret` → client confirms via Stripe.js."
 
-> "After reviewing the Stripe documentation and testing the `/v1/charges` vs `/v1/payment_intents` endpoints via `curl`, it's clear we have to migrate to Payment Intents. Charges are legacy and don't support SCA (Strong Customer Authentication) well in Europe. The Payment Intents API requires a two-step process: create the intent on the server to get a `client_secret`, then confirm it on the frontend using Stripe.js."
-
-### Distilled content (medium-verbosity spec)
+**Output (spec excerpt):**
 
 ```markdown
-## Payment processing architecture
-
+## Payment processing
 - **Provider:** Stripe Payment Intents API
-- **Flow:**
-  1. Server creates `PaymentIntent` → returns `client_secret`
-  2. Client uses `Stripe.js` `confirmCardPayment` with `client_secret`
+- **Flow:** server creates `PaymentIntent` → returns `client_secret`; client confirms via `Stripe.js.confirmCardPayment(client_secret)`
 
 ## Distillation Loss Statement
-
-**Dropped from upstream:**
-
-- European SCA historical justification
-- Comparisons to legacy `/v1/charges` endpoint
-
-**Why the next stage does not need this:**
-
-- The flow enforces SCA by design; the historical motivation does not change the contract
-- The legacy comparison is closed — `/v1/charges` is not on the table
+**Dropped:** SCA historical justification, comparison to legacy `/v1/charges`.
+**Why next stage doesn't need it:** flow enforces SCA by design; legacy is closed.
 ```
 
-The historical justification vanishes by the spec stage. The load-bearing constraint (`Must return client_secret`) is preserved. The Loss Statement records what was dropped.
+The historical narrative drops; the contract stands. For the full walk-through (including the four-tests result table for this example), see [`references/worked-example.md`](./references/worked-example.md).
 
 ## The promotion protocol (sister discipline)
 
-Distillation flows downhill. The companion is *promotion*: when a task discovers something durable, the finding is promoted *upstream*, not silently dropped. See `.agents/skills/manage-task/SKILL.md`.
+Distillation flows downhill. The companion is *promotion*: when a task discovers something durable, the finding is promoted *upstream*, not silently dropped. Capture promoted findings in the upstream doc (audit, spec, research, bug-report) before the task closes.
 
-## See also
+## Bundled resources
 
-- `docs/agents/05-flow-graph.md` — the unidirectional flow rules
-- `.agents/skills/documentation-gatekeeper/SKILL.md` — sister skill (enforces direction)
-- `.agents/skills/personas/SKILL.md` — primary users (Architect, Researcher, Documentarian)
+- [`references/worked-example.md`](./references/worked-example.md) — the full Stripe research → spec walk-through, including the four-tests result table.

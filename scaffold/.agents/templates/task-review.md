@@ -15,7 +15,9 @@
 
 > 🔒 **REVIEW SESSION** — Reviewing another agent's branch (or your own work in a fresh session). You may NOT modify code. Output: a verdict (approve / kick back) and a findings list. Fixes happen in a downstream task.
 >
-> **PERSONA:** Load `.agents/skills/personas/SKILL.md` and adopt **The Skeptic** persona.
+> **PERSONA:** Load `.agents/skills/persona-skeptic/SKILL.md` and adopt the Skeptic mindset for the whole session. Load `.agents/skills/adversarial-review/SKILL.md` and `.agents/skills/empirical-proof/SKILL.md` for the review method and proof gate.
+>
+> **AGENTS.md:** `{{cmdValidate}}` / `{{cmdTest}}` / `{{cmdInstall}}` resolve from `AGENTS.md > Commands`. Non-contract value `{{cmdValidateDeps}}` (arch-boundary check) — ask the user. If `AGENTS.md` is missing, ask before substituting.
 
 ---
 

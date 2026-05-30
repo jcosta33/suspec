@@ -32,10 +32,10 @@ Each transition has a defined trigger and a defined effect on the task file. Not
 The launcher (CLI or human) creates the conditioned task file at `.agents/tasks/<slug>.md`. By the time the agent sees it:
 
 - Metadata is filled in (slug, branch, base, worktree path, created timestamp, status `active`)
-- Persona is named in the `> **PERSONA:**` blockquote
+- The suggested persona is named in the `> **PERSONA:**` blockquote
 - Source doc(s) are linked
-- Skills list is populated (`manage-task`, `documentation-gatekeeper`, persona skill, type-specific skills, project-specific skills matched by description)
-- Verification gate slots are bound to project commands
+- The skills worth loading are listed (workflow skill, quality-gate skills, the `persona-<slug>` skill for the 7 shipped personas, project-specific skills matched by description) — each self-activates by its directive `description`; there is no always-loaded skill
+- Verification gate slots are bound to project commands from `AGENTS.md > Commands`
 - Constraints include the persona's forbidden actions
 - Self-review checklist is pre-written with empty answer slots
 
@@ -53,7 +53,7 @@ The agent works. The framework's expectations during Active:
 - **Capture findings.** Codebase discoveries worth preserving go in `## Findings` — and durable ones get *promoted* to upstream docs.
 - **Surface assumptions.** Every assumption marked `[pending]` or `[confirmed]`. The framework pushes the agent to make assumptions visible rather than silent.
 - **Surface blockers.** Anything preventing confident progress goes in `## Blockers` immediately, not at the end.
-- **Run gates at checkpoints.** Periodic verifications (e.g., `{{cmdValidateDeps}}` every 10 files for refactors, `{{cmdValidate}}` after each wave for migrations) fire as the work proceeds and outputs paste into Self-review.
+- **Run gates at checkpoints.** Periodic verifications (e.g., `AGENTS.md > Commands > ValidateDeps` every 10 files for refactors, `Commands > Validation` after each wave for migrations) fire as the work proceeds and outputs paste into Self-review.
 
 The task file evolves continuously; it is not a single artefact written at the end. By design, the task file at any moment in time is a complete resumption record.
 
@@ -108,7 +108,7 @@ Three terminal outcomes from Self-review:
 
 After Self-review passes, the framework's standing convention:
 
-1. **Promote durable findings.** Anything in `## Findings` that should outlive the task gets edited into the relevant upstream doc (audit, spec, research, or bug-report). The `manage-task` skill checks this before allowing terminal status.
+1. **Promote durable findings.** Anything in `## Findings` that should outlive the task gets edited into the relevant upstream doc (audit, spec, research, or bug-report). The task template's pre-close checklist (see below) requires this before terminal status.
 2. **Hand off to downstream.** If the task ended with a Skeptic review needed (most code-producing tasks), the next task is a `review` task — created with the worker's branch as the source. If the task itself was the review, the verdict propagates back to the worker.
 3. **Close the worktree.** The branch is merged (or kicked back, or abandoned), the worktree is removed (`git worktree remove`), and the task file — still gitignored — is deleted along with it.
 
@@ -133,12 +133,12 @@ A fresh agent reading these four sections, plus the linked source docs, is in th
 
 ---
 
-## 🪜 The promotion protocol (lifecycle hook)
+## 🪜 The promotion protocol (lifecycle discipline)
 
-The `manage-task` skill defines a hook that fires before the task can move to `done`:
+Every task template embeds a pre-close checklist that the agent must complete before moving the task to `done` — there is no separate always-loaded skill enforcing it; the discipline lives in the template and the process docs:
 
 ```markdown
-## Pre-close checklist (manage-task skill)
+## Pre-close checklist
 
 - [ ] All `## Findings` are either promoted upstream or marked `[session-only]` with justification
 - [ ] All `[pending]` assumptions are either resolved (`[confirmed]`) or surfaced as a blocker
@@ -148,7 +148,7 @@ The `manage-task` skill defines a hook that fires before the task can move to `d
 - [ ] Status field updated from `active` to `done`
 ```
 
-The skill prevents the agent from closing the task with unpromoted findings or unresolved blockers. This is the structural defence against silent loss.
+The checklist keeps the agent from closing the task with unpromoted findings or unresolved blockers. This is the structural defence against silent loss — carried by the template, reinforced by the `empirical-proof` skill's refusal to accept an unproven Self-review.
 
 ---
 
@@ -158,11 +158,11 @@ Common ways the lifecycle goes wrong:
 
 | Boundary                | Anti-pattern                                                       | Defeated by                                                  |
 | ----------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------ |
-| Scaffolded → Active     | Agent skips reading the persona profile; defaults to "helpful"      | Persona profile is referenced from the task file's persona blockquote; `manage-task` prompts the load |
-| Active → Paused         | Agent doesn't update `## Next steps` before stopping               | `manage-task` skill enumerates a "before-pause" checklist    |
+| Scaffolded → Active     | Agent skips reading the persona profile; defaults to "helpful"      | The persona blockquote names the suggested persona and its skill; the persona/workflow skill self-activates on the matching work |
+| Active → Paused         | Agent doesn't update `## Next steps` before stopping               | The task template's before-pause checklist enumerates the step |
 | Paused → Active         | Fresh agent re-discovers context already captured                  | The fresh agent's first read is the task file (everything is in there) |
 | Active → Self-review    | Agent declares done without running gates                          | Self-review's hard gate refuses incomplete answers           |
-| Self-review → Done      | Findings stay in the task file (which is about to be deleted)      | `manage-task` blocks `done` status until promotion is complete |
+| Self-review → Done      | Findings stay in the task file (which is about to be deleted)      | The pre-close checklist blocks `done` status until promotion is complete |
 | Done → (worktree close) | Branch merged without Skeptic review                               | Task type's hand-off table requires the review task to be spawned |
 
 ---
@@ -184,11 +184,11 @@ These are real limits. They define what the framework promises and what it doesn
 
 ### Session 1 (Monday morning)
 
-- The Janitor reads `.agents/tasks/refactor-auth-module.md`. Source: `.agents/audits/auth-module-2026-q2.md`.
-- Plans the refactor: 6 batches of files, with `{{cmdValidateDeps}}` between each batch.
+- The Janitor (via the `persona-janitor` skill) reads `.agents/tasks/refactor-auth-module.md`. Source: `.agents/audits/auth-module-2026-q2.md`.
+- Plans the refactor: 6 batches of files, with the dependency-boundary check (`AGENTS.md > Commands > ValidateDeps`) between each batch.
 - Completes batches 1–3. Pastes outputs into Self-review's verification subsection.
 - Discovers that `tokenStore.legacy` has zero callers. Records in `## Findings`. Promotes to the audit as a recommendation for a separate cleanup task.
-- 6pm — out of time. Updates `## Next steps`: "Resume at batch 4. `src/auth/middleware/*`. The `legacyTokenAdapter` shim has been migrated; verify with `{{cmdValidateDeps}}` before continuing."
+- 6pm — out of time. Updates `## Next steps`: "Resume at batch 4. `src/auth/middleware/*`. The `legacyTokenAdapter` shim has been migrated; run `Commands > ValidateDeps` before continuing."
 
 ### Session 2 (Wednesday morning, fresh agent)
 
@@ -196,15 +196,15 @@ These are real limits. They define what the framework promises and what it doesn
 - Reads the task file.
 - Re-adopts The Janitor.
 - Reads `## Next steps`: knows where to resume.
-- Re-runs `{{cmdValidateDeps}}` to confirm the worktree is in the state the previous agent claimed. Pastes the output (matches the previous Self-review's checkpoint output — good).
+- Re-runs `Commands > ValidateDeps` to confirm the worktree is in the state the previous agent claimed. Pastes the output (matches the previous Self-review's checkpoint output — good).
 - Completes batches 4–6.
-- Self-review hard gate: pastes final `{{cmdValidateDeps}}` and `{{cmdTypecheck}}`. All green.
+- Self-review hard gate: pastes final `Commands > ValidateDeps` and `Commands > Typecheck` output. All green.
 - Status: `done`. The branch is ready for Skeptic review.
 
 ### Session 3 (Wednesday afternoon, Skeptic)
 
 - Skeptic-review task is spawned with the Janitor's branch as the source.
-- Skeptic adopts the persona, reads the diff, runs `{{cmdValidate}}` and `{{cmdTest}}` themselves (does not trust the Janitor's pasted output).
+- Skeptic (via the `persona-skeptic` skill) reads the diff, runs `Commands > Validation` and `Commands > Test` themselves (does not trust the Janitor's pasted output).
 - Finds two file:line issues — one BLOCKER, one MINOR.
 - Verdict: KICK BACK. Kickback task spawned with the original audit + the Skeptic's notes as `## Linked docs`.
 
@@ -223,6 +223,5 @@ This is the lifecycle working as designed: continuous progress, durable knowledg
 - [`03-distillation.md`](03-distillation.md) — the promotion protocol in detail
 - [`08-recursion-and-delegation.md`](08-recursion-and-delegation.md) — multi-session orchestration
 - [`09-empirical-proof.md`](09-empirical-proof.md) — the Self-review hard gate
-- [`skills/manage-task.md`](../skills/manage-task.md) — the lifecycle-managing skill
-- [`tasks/`](../tasks/) — every task template embeds the lifecycle structure
+- [`tasks/`](../tasks/) — every task template embeds the lifecycle structure and the pre-close checklist
 - [ADR 0004](../adrs/0004-task-files-are-gitignored.md) — why task files are gitignored

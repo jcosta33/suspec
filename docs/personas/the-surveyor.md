@@ -1,6 +1,6 @@
 # Persona (documentation): The Surveyor
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Surveyor**.
+> **Runtime profile:** [`scaffold/.agents/skills/persona-surveyor/SKILL.md`](../../scaffold/.agents/skills/persona-surveyor/SKILL.md) — the shipped persona skill carrying The Surveyor's constraints, forbiddances, proofs, and red flags.
 
 ---
 

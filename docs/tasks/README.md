@@ -1,8 +1,8 @@
 # 📋 Tasks
 
-> The 18 task types in Swarm. Each task type has a default lead persona, an attached skill set, named verification gate slots, and a template. Each one earns its place by being something agents do *constantly* across projects, languages, and stacks.
+> The 18 task types in Swarm. Each task type has a suggested lead persona, a recommended skill set, named verification gate slots, and a template. Each one earns its place by being something agents do *constantly* across projects, languages, and stacks.
 
-> 📦 **`/docs/tasks/` captures routing rationale, verification philosophy, delta notes (integration/upgrade/etc.) — not full templates.** Executable skeletons (`task-base.md`, `task-feature.md`, …) ship only inside [`/scaffold/.agents/templates/`](../../scaffold/.agents/templates/).
+> 📦 **`/docs/tasks/` captures routing rationale, verification philosophy, delta notes (integration/upgrade/etc.) — not full templates.** Executable skeletons ship inside the scaffold: the shared [`task-base.md`](../../scaffold/.agents/templates/task-base.md) plus the skill-less task templates (`task-orchestration.md`, `task-review.md`) live in [`/scaffold/.agents/templates/`](../../scaffold/.agents/templates/); every workflow skill carries its own `references/task-template.md` under [`/scaffold/.agents/skills/`](../../scaffold/.agents/skills/).
 
 For the conceptual frame, see [`concepts/06-task-types.md`](../concepts/06-task-types.md).
 
@@ -10,7 +10,7 @@ For the conceptual frame, see [`concepts/06-task-types.md`](../concepts/06-task-
 
 ## ⚡ TL;DR
 
-Pick a source document and the framework picks the task type. Pick a task type and the framework picks the persona. The agent reads one conditioned task file and proceeds. There are 18 types in three families — implementation, authoring, process.
+Pick a source document and the framework recommends the task type. Pick a task type and the framework suggests the persona. The agent reads one conditioned task file and proceeds — re-assessing the suggested defaults when the work in front of it disagrees. There are 18 types in three families — implementation, authoring, process.
 
 ---
 
@@ -71,6 +71,22 @@ Type-specific templates add sections — e.g., `<behavior_delta>` in rewrite, `<
 
 ---
 
+## Why these structural clusters exist
+
+Every task template shares the same structural clusters — this is the shared rationale each task page points back to here (rather than repeating it).
+
+| Cluster | Conditioning rationale |
+|---------|-------------------------|
+| Metadata & task `type` | Freezes the launcher's routing choice where chat context will evaporate. |
+| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
+| Banner + constraints | Restates the task's scope boundaries and the flow-graph's recommended routing as in-session guidance. |
+| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
+| Self-review | Converts "done?" into evidence-shaped questions aligned to persona proof obligations. |
+
+See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
+
+---
+
 ## 🚦 The flow graph (how task types route)
 
 ```mermaid
@@ -108,7 +124,7 @@ flowchart LR
     style H fill:#e0f2fe
 ```
 
-Full operational tables: [`reference/flow-graph.md`](../reference/flow-graph.md).
+This graph is **recommended routing**, not a gate: a launcher may apply it deterministically when scaffolding a task file, and the directive skill `description`s reproduce it in-session — but an agent re-assesses the suggested default when the work in front of it disagrees, and records the divergence in its task file. Full operational tables: [`reference/flow-graph.md`](../reference/flow-graph.md).
 
 ---
 
@@ -138,11 +154,11 @@ Full operational tables: [`reference/flow-graph.md`](../reference/flow-graph.md)
 
 ---
 
-## 🛠️ Auto-loaded skills per task type
+## 🛠️ Recommended skills per task type
 
-Two skills always: `manage-task` and `documentation-gatekeeper`. Plus:
+There is **no always-loaded skill**. Each skill self-activates when its directive `description` matches the work in front of you — the table below names the skills worth having available for each task type, not a framework-imposed attachment. The task-file lifecycle and promotion discipline (once carried by an always-on `manage-task` skill) now live in the task templates and the process docs; the routing and forbidden-flow guidance (once an always-on `documentation-gatekeeper`) is now recommended routing in the concept docs, not an enforced gate.
 
-| Task type          | Additional skills                                           |
+| Task type          | Recommended skills                                          |
 | ------------------ | ----------------------------------------------------------- |
 | feature            | `write-feature`, `empirical-proof`                          |
 | fix                | `write-fix`, `adversarial-review`, `empirical-proof`        |
@@ -152,15 +168,16 @@ Two skills always: `manage-task` and `documentation-gatekeeper`. Plus:
 | research-writing   | `write-research`, `distillation-discipline`                 |
 | audit-writing      | `write-audit`, `adversarial-review`                         |
 | bug-report-writing | `write-bug-report`, `adversarial-review`, `empirical-proof` |
-| migration          | `write-refactor` (overlap), `empirical-proof`               |
-| performance        | `empirical-proof`                                           |
-| testing            | `empirical-proof`                                           |
-| documentation      | `distillation-discipline`, `empirical-proof`                |
+| migration          | `write-migration`, `empirical-proof`                        |
+| upgrade            | `write-migration`, `empirical-proof`                        |
+| performance        | `write-performance`, `empirical-proof`                      |
+| testing            | `write-testing`, `empirical-proof`                          |
+| documentation      | `write-documentation`, `distillation-discipline`, `empirical-proof` |
 | review             | `adversarial-review`, `empirical-proof`                     |
 | deepen-audit       | `write-audit`, `adversarial-review`, `empirical-proof`      |
 | orchestration      | `adversarial-review`, `empirical-proof`                     |
 
-Project-specific skills attach in addition based on description-matching.
+A matching persona skill (`persona-{architect,auditor,janitor,migrator,performance-surgeon,skeptic,surveyor}`) self-activates alongside these for role-shaped work. Project-specific skills self-activate the same way when their `description` matches.
 
 ---
 

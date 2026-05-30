@@ -25,7 +25,7 @@ If the ask doesn't decompose into disjoint scopes, collapse to a single-agent ta
 | **Source docs**      | Multiple (one per worker)                          |
 | **Lead persona**     | [The Lead Engineer](../personas/the-lead-engineer.md), becoming [The Skeptic](../personas/the-skeptic.md) for each review |
 | **Output**           | Merged result + worker tracker + merge log         |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `adversarial-review` (for review pass), `empirical-proof` |
+| **Recommended skills** | `adversarial-review` (for review pass), `empirical-proof`, `persona-skeptic` (for each branch review) |
 | **Verification gate slots** | `cmdInstall` (pre), per-worker review (`cmdValidate`/`cmdTest` run by Lead Engineer), final merged-branch `cmdValidate`/`cmdTest` (post) |
 
 ---
@@ -36,16 +36,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 

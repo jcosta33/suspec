@@ -1,6 +1,6 @@
 # Persona (documentation): The Lead Engineer
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Lead Engineer**.
+> **Runtime profile:** ships no persona skill and no workflow skill. The Lead Engineer mindset is the orchestration stance itself — carried by the flat orchestration task template ([`scaffold/.agents/templates/task-orchestration.md`](../../scaffold/.agents/templates/task-orchestration.md)) rather than a loadable skill.
 
 ---
 

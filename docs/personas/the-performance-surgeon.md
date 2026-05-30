@@ -1,6 +1,6 @@
 # Persona (documentation): The Performance Surgeon
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Performance Surgeon**.
+> **Runtime profile:** [`scaffold/.agents/skills/persona-performance-surgeon/SKILL.md`](../../scaffold/.agents/skills/persona-performance-surgeon/SKILL.md) — the shipped persona skill carrying The Performance Surgeon's constraints, forbiddances, proofs, and red flags.
 
 ---
 

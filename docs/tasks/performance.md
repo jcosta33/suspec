@@ -2,7 +2,7 @@
 
 > **TL;DR.** Optimise a specific bottleneck under a measured target. Lead persona is The Performance Surgeon. Numbers, not vibes. Every change benchmarked before and after under the same protocol. Never regress correctness for speed.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-performance.md`](../../scaffold/.agents/templates/task-performance.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-performance/references/task-template.md`](../../scaffold/.agents/skills/write-performance/references/task-template.md).
 
 ---
 
@@ -26,7 +26,7 @@ If the perf issue isn't measured yet, do `audit-writing` (or a research-writing 
 | **Lead persona**     | [The Performance Surgeon](../personas/the-performance-surgeon.md) |
 | **Secondary**        | [The Skeptic](../personas/the-skeptic.md) (review) |
 | **Output**           | Faster code path, target hit, no correctness regression |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `empirical-proof` |
+| **Recommended skills** | `write-performance`, `empirical-proof`, `persona-performance-surgeon` |
 | **Verification gate slots** | `cmdInstall` + baseline `cmdBenchmark` (pre), `cmdTest` (after each change), target `cmdBenchmark` (post), `cmdTest` (post) |
 
 ---
@@ -37,16 +37,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 
@@ -65,4 +56,5 @@ See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-
 
 - [`personas/the-performance-surgeon.md`](../personas/the-performance-surgeon.md)
 - [`documents/extended.md`](../documents/extended.md) — benchmark report format
+- [`skills/write-performance.md`](../skills/write-performance.md) — the recommended skill
 - [`skills/empirical-proof.md`](../skills/empirical-proof.md)

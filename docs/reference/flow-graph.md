@@ -1,6 +1,8 @@
 # 📖 Reference: The flow graph
 
-> The deterministic mapping between source documents, task types, personas, skills, and verification commands. The operational form of [`concepts/07-flow-graph.md`](../concepts/07-flow-graph.md).
+> Swarm's **recommended routing**: the mapping from source documents to task types, suggested personas, the skills worth loading, and the verification commands. The operational form of [`concepts/07-flow-graph.md`](../concepts/07-flow-graph.md).
+>
+> This is guidance, not a gatekeeper. A launcher (the Swarm CLI or any compatible tool) **may** apply it deterministically when it scaffolds a task file, and the directive skill `description`s reproduce it in-session. But nothing forces the route: when the work in front of you doesn't match the suggested default, load the skill whose `description` fits and record the divergence in your task file's `## Decisions`. ADR 0002 (personas 1:1 with task types) is superseded — the mappings below are *suggested defaults*, and the agent may re-assess.
 
 ---
 
@@ -12,23 +14,23 @@
 └────────┬─────────┘
          │
          ▼
-┌──────────────────┐    Determined by document type
+┌──────────────────┐    Suggested by document type
 │    Task type     │
 └────────┬─────────┘
          │
          ▼
-┌──────────────────┐    Determined by task type
-│     Persona      │
+┌──────────────────┐    Suggested by task type
+│  Persona (mindset)│
 └────────┬─────────┘
          │
          ▼
-┌──────────────────┐    Skills + verification commands attached
+┌──────────────────┐    Skills worth loading + verification commands
 │  Conditioned     │
 │   task.md        │
 └──────────────────┘
 ```
 
-Information flows downhill: research → spec/audit/bug-report → task → terminal output.
+Information flows downhill: research → spec/audit/bug-report → task → terminal output. Each arrow above is a *suggested default*, not a forced edge.
 
 ---
 
@@ -50,78 +52,81 @@ Information flows downhill: research → spec/audit/bug-report → task → term
 | `cleanup list`                                 | `refactor`                                                           | Janitor proves deletion safety                                                  |
 | `test plan`                                    | `testing`                                                            | New test coverage from a structured plan                                         |
 
-### Forbidden edges
+### Discouraged edges
 
-| Forbidden                                       | Why                                                                    |
+These edges are **routing smells**, not hard blocks. No skill enforces them — instead, the relevant directive skill `description`s encode them ("Skip this skill for …", "Do not start … without …"), and a launcher may warn on them. When you take one of these edges anyway, name the reason in `## Decisions`.
+
+| Discouraged                                     | Why it's a smell                                                       |
 | ----------------------------------------------- | ---------------------------------------------------------------------- |
-| `research → fix` (skipping spec/audit)          | Research is input. Implementation requires a translating doc.          |
-| `spec → refactor`                               | Refactor tasks are driven by audits, not specs                        |
-| `bug-report → refactor`                         | Bug-report drives a fix, not a cleanup                                 |
-| `audit → feature`                               | Audits do not specify new features                                     |
-| `code → spec` (back-fill)                       | Specs are forward-looking; back-filling is documentation, not spec    |
-| `task with no source doc and no task scope`     | Every task is grounded                                                |
-| `one source doc → multiple task types`          | Mapping is rigid; split the work                                      |
-| `multiple source docs → one task`               | One source per task (or use orchestration)                            |
-| `task file authored after implementation begins` | Conditioning before action                                            |
-| `persona invented per session`                  | Personas are catalogued                                               |
-| `durable findings left only in the task file`   | Task files are gitignored                                             |
+| `research → fix` (skipping spec/audit)          | Research is input. Implementation usually wants a translating doc.     |
+| `spec → refactor`                               | Refactor work is normally driven by audits, not specs                  |
+| `bug-report → refactor`                         | A bug-report normally drives a fix, not a cleanup                      |
+| `audit → feature`                               | Audits describe current state; they don't usually specify new features |
+| `code → spec` (back-fill)                       | Specs are forward-looking; back-filling is documentation, not a spec   |
+| `task with no source doc and no task scope`     | Every task should be grounded (a one-paragraph scope is enough)        |
+| `one source doc → multiple task types`          | Prefer splitting the work, or routing through orchestration            |
+| `multiple source docs → one task`               | Prefer one source per task (or use orchestration)                      |
+| `task file authored after implementation begins` | Condition before you act                                              |
+| `durable findings left only in the task file`   | Task files are gitignored — promote findings upstream before close     |
 
 ---
 
-## 🎯 Task type → persona
+## 🎯 Task type → suggested persona
 
-| Task type                       | Primary persona                                                | Secondary (handoff)                                                  |
-| ------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `feature`                       | The Builder                                                    | The Skeptic (review)                                                 |
-| `fix`                           | The Skeptic                                                    | (kickback returns to original persona)                              |
-| `refactor`                      | The Janitor                                                    | The Skeptic (review)                                                 |
-| `rewrite`                       | The Builder                                                    | The Skeptic (review)                                                 |
-| `spec-writing`                  | The Architect                                                  | —                                                                    |
-| `research-writing` (technical)  | The Researcher                                                 | —                                                                    |
-| `research-writing` (UX/market)  | The Surveyor                                                   | —                                                                    |
-| `audit-writing`                 | The Auditor                                                    | —                                                                    |
-| `bug-report-writing`            | The Bug Hunter                                                 | —                                                                    |
-| `migration`                     | The Migrator                                                   | The Skeptic (review of each wave)                                    |
-| `upgrade`                       | The Migrator                                                   | The Skeptic (review of each wave)                                    |
-| `performance`                   | The Performance Surgeon                                        | The Skeptic (review)                                                 |
-| `testing`                       | The Test Author                                                | The Skeptic (review)                                                 |
-| `documentation`                 | The Documentarian                                              | The Skeptic (review)                                                 |
-| `review`                        | The Skeptic                                                    | —                                                                    |
-| `deepen-audit`                  | The Skeptic                                                    | —                                                                    |
-| `orchestration`                 | The Lead Engineer                                              | The Skeptic (the merge-gate review pass)                             |
-| `integration`                   | The Builder                                                    | The Skeptic (review)                                                 |
-| `kickback`                      | (Original persona, e.g., The Builder)                          | The Skeptic (re-review after fix)                                   |
+Each row is a **suggested default**, not a binding. The `docs/personas/` catalogue describes 13 mindsets, but only **7 ship as skills** (`persona-{architect,auditor,janitor,migrator,performance-surgeon,skeptic,surveyor}`). The other 6 mindsets are carried by the matching workflow skill: Builder → `write-feature`, Bug Hunter → `write-bug-report`, Documentarian → `write-documentation`, Test Author → `write-testing`, Researcher → `write-research`, and Lead Engineer = orchestration (no skill; flat `task-orchestration.md` template + mindset). The "Persona skill?" column says how the suggested mindset is delivered.
 
-The project's `swarm.config` (a CLI artefact) may override the primary persona for any task type. Common override: routing `fix` to a dedicated Fixer persona instead of the Skeptic.
+| Task type                       | Suggested persona       | Persona skill?                                          | Secondary (handoff)             |
+| ------------------------------- | ----------------------- | ------------------------------------------------------- | ------------------------------- |
+| `feature`                       | The Builder             | mindset in `write-feature`                              | The Skeptic (review)            |
+| `fix`                           | The Skeptic             | `persona-skeptic`                                       | (kickback returns to original)  |
+| `refactor`                      | The Janitor             | `persona-janitor`                                       | The Skeptic (review)            |
+| `rewrite`                       | The Builder             | mindset in `write-rewrite`                              | The Skeptic (review)            |
+| `spec-writing`                  | The Architect           | `persona-architect`                                     | —                               |
+| `research-writing` (technical)  | The Researcher          | mindset in `write-research`                             | —                               |
+| `research-writing` (UX/market)  | The Surveyor            | `persona-surveyor`                                      | —                               |
+| `audit-writing`                 | The Auditor             | `persona-auditor`                                       | —                               |
+| `bug-report-writing`            | The Bug Hunter          | mindset in `write-bug-report`                           | —                               |
+| `migration`                     | The Migrator            | `persona-migrator`                                      | The Skeptic (review per wave)   |
+| `upgrade`                       | The Migrator            | `persona-migrator`                                      | The Skeptic (review per wave)   |
+| `performance`                   | The Performance Surgeon | `persona-performance-surgeon`                           | The Skeptic (review)            |
+| `testing`                       | The Test Author         | mindset in `write-testing`                              | The Skeptic (review)            |
+| `documentation`                 | The Documentarian       | mindset in `write-documentation`                        | The Skeptic (review)            |
+| `review`                        | The Skeptic             | `persona-skeptic`                                       | —                               |
+| `deepen-audit`                  | The Skeptic             | `persona-skeptic`                                       | —                               |
+| `orchestration`                 | The Lead Engineer       | no skill (orchestration mindset; flat template)         | The Skeptic (merge-gate pass)   |
+| `integration`                   | The Builder             | mindset in `write-feature`                              | The Skeptic (review)            |
+| `kickback`                      | (original persona)      | (whichever delivered the original mindset)              | The Skeptic (re-review)         |
+
+The project may override the suggested persona for any task type (a launcher concern). The agent may also re-assess in-session — load the `persona-<slug>` skill whose `description` fits, or rely on the workflow skill's own mindset, and note the choice in `## Decisions`.
 
 ---
 
-## 🛠️ Task type → skills attached
+## 🛠️ Task type → skills worth loading
 
-Two skills always: `manage-task` and `documentation-gatekeeper` (per the framework's standing convention). Plus `personas` (loads on persona-blockquote presence). The table below lists the *additional* skills.
+There is **no always-loaded skill**. Each row lists the skills whose `description`s typically match the work; they self-activate when their triggers fire. The three quality gates (`empirical-proof`, `adversarial-review`, `distillation-discipline`) are cross-cutting — they surface inside whatever task is in play whenever their trigger is present (a verifiable claim, a review pass, an upstream-doc transformation). A suggested `persona-<slug>` skill loads on its own `description` for the 7 personas that ship as skills; the other mindsets ride along with their workflow skill.
 
-| Task type             | Additional skills                                            |
-| --------------------- | ------------------------------------------------------------ |
-| `feature`             | `write-feature`, `empirical-proof`                           |
-| `fix`                 | `write-fix`, `adversarial-review`, `empirical-proof`         |
-| `refactor`            | `write-refactor`, `empirical-proof`                          |
-| `rewrite`             | `write-rewrite`, `empirical-proof`                           |
-| `spec-writing`        | `write-spec`, `distillation-discipline`                      |
-| `research-writing`    | `write-research`, `distillation-discipline`                  |
-| `audit-writing`       | `write-audit`, `adversarial-review`                          |
-| `bug-report-writing`  | `write-bug-report`, `adversarial-review`, `empirical-proof`  |
-| `migration`           | `write-refactor` (overlap), `empirical-proof`                |
-| `upgrade`             | `write-refactor` (overlap), `empirical-proof`                |
-| `performance`         | `empirical-proof`                                            |
-| `testing`             | `empirical-proof`                                            |
-| `documentation`       | `distillation-discipline`, `empirical-proof`                 |
-| `review`              | `adversarial-review`, `empirical-proof`                      |
-| `deepen-audit`        | `write-audit`, `adversarial-review`, `empirical-proof`       |
-| `orchestration`       | `adversarial-review`, `empirical-proof`                      |
-| `integration`         | `write-feature`, `empirical-proof`                           |
-| `kickback`            | (same as the original task type) + `adversarial-review`      |
+| Task type             | Skills worth loading                                          |
+| --------------------- | ------------------------------------------------------------- |
+| `feature`             | `write-feature`, `empirical-proof`                            |
+| `fix`                 | `write-fix`, `adversarial-review`, `empirical-proof`          |
+| `refactor`            | `write-refactor`, `empirical-proof`                           |
+| `rewrite`             | `write-rewrite`, `empirical-proof`                            |
+| `spec-writing`        | `write-spec`, `distillation-discipline`                       |
+| `research-writing`    | `write-research`, `distillation-discipline`                   |
+| `audit-writing`       | `write-audit`, `adversarial-review`                           |
+| `bug-report-writing`  | `write-bug-report`, `adversarial-review`, `empirical-proof`   |
+| `migration`           | `write-migration`, `empirical-proof`                          |
+| `upgrade`             | `write-migration`, `empirical-proof`                          |
+| `performance`         | `write-performance`, `empirical-proof`                        |
+| `testing`             | `write-testing`, `empirical-proof` (+ `fix-flaky-test` if a test is flaky) |
+| `documentation`       | `write-documentation`, `distillation-discipline`, `empirical-proof` |
+| `review`              | `adversarial-review`, `empirical-proof`                       |
+| `deepen-audit`        | `write-audit`, `adversarial-review`, `empirical-proof`        |
+| `orchestration`       | `adversarial-review`, `empirical-proof` (no workflow skill; flat template) |
+| `integration`         | `write-feature`, `empirical-proof`                            |
+| `kickback`            | (same workflow skill as the original task type) + `adversarial-review` |
 
-Project-specific skills attach in addition based on description-matching to the task domain.
+Project-specific skills under `.agents/skills/domain/` self-activate in addition, by description-matching to the task domain.
 
 ---
 
@@ -214,7 +219,7 @@ See [`tasks/kickback.md`](../tasks/kickback.md).
 | No source document                   | Authoring task (research-writing / spec-writing / audit-writing / bug-report-writing) |
 | Multiple source documents            | Either orchestration (decompose) or one primary source + others as context     |
 | Trivial task with no source doc      | Allowed — task scope captures the ask in the task file's `## Objective`        |
-| "Research is sufficient without spec" | Forbidden — write the spec first                                              |
+| "Research is sufficient without spec" | Discouraged — write the spec first (the directive `description`s steer you there) |
 
 ---
 
@@ -232,14 +237,14 @@ Does a source document exist?
 │
 └── Yes → look up the source doc type in "Document → task type" above
               │
-              └── Route to the default task type
+              └── Suggest the default task type
                        │
-                       └── Look up persona in "Task type → persona"
+                       └── Look up the suggested persona in "Task type → suggested persona"
                                 │
-                                └── Attach skills, inject commands, scaffold task file
+                                └── List skills worth loading, bind commands, scaffold task file
 ```
 
-The launcher does this. The agent does not need to think about it — the agent reads the conditioned task file and adopts the persona named in the `> **PERSONA:**` blockquote.
+A launcher may pre-compute this when it scaffolds the task file, or the agent may walk it in-session from the directive skill `description`s. Either way it is a recommendation: the agent reads the task file, loads the skill whose `description` fits the work (and the suggested `persona-<slug>` skill if one matches), and records any divergence from the suggested route in `## Decisions`.
 
 ---
 
@@ -248,5 +253,5 @@ The launcher does this. The agent does not need to think about it — the agent 
 - [`concepts/07-flow-graph.md`](../concepts/07-flow-graph.md) — the conceptual frame
 - [`compatibility-matrix.md`](compatibility-matrix.md) — the persona × doc × task matrices
 - [`template-placeholders.md`](template-placeholders.md) — the placeholder contract
-- [`skills/documentation-gatekeeper.md`](../skills/documentation-gatekeeper.md) — the enforcement skill
+- [`reference/agents-md.md`](agents-md.md) — the `## Routing` pointer and `## Commands` contract
 - [`personas/`](../personas/), [`tasks/`](../tasks/), [`documents/`](../documents/), [`skills/`](../skills/)

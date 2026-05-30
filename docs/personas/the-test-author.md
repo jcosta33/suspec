@@ -1,6 +1,6 @@
 # Persona (documentation): The Test Author
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — **The Test Author**.
+> **Runtime profile:** ships no standalone persona skill. The Test Author mindset — its constraints, forbiddances, proofs, and red flags — is carried by the matching workflow skill [`scaffold/.agents/skills/write-testing/SKILL.md`](../../scaffold/.agents/skills/write-testing/SKILL.md).
 
 ---
 

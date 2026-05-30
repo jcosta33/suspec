@@ -89,7 +89,7 @@ Write-side work is forbidden in parallel. The Lead Engineer pattern *serialises*
 
 1. **Disjoint scopes** — each worker's branch touches a non-overlapping set of files.
 2. **Sequential merges** — the Lead Engineer merges branches one at a time, never in parallel.
-3. **Per-merge validation** — `{{cmdValidate}}` and `{{cmdTest}}` after every merge.
+3. **Per-merge validation** — the project's validation and test commands (`AGENTS.md > Commands > Validation` and `> Test`) after every merge.
 
 Even when scopes appear disjoint, the Lead Engineer assumes they aren't until validation says so. The merge order matters; the per-merge validation catches the cases where "appears disjoint" was wrong.
 
@@ -149,7 +149,7 @@ The clearest anti-pattern. Two Builders, both editing `src/auth/oauth.ts`, in se
 What goes wrong:
 
 1. Builder A adds `validateSCA()` between lines 42–60. Builder B adds `validatePKCE()` between lines 42–60 (different logic, same range).
-2. Both branches pass `{{cmdValidate}}` and `{{cmdTest}}` independently.
+2. Both branches pass validation and tests (`AGENTS.md > Commands > Validation` and `> Test`) independently.
 3. Merge: Builder A's branch merges first. Now Builder B's branch has a conflict in lines 42–60.
 4. The Lead Engineer (or worse, a third agent) tries to resolve the conflict by combining both helpers. The resolution is plausible but introduces a subtle ordering bug — `validateSCA()` runs before `validatePKCE()` instead of the spec's required order.
 5. Tests pass on the merged branch (the test suite doesn't cover this ordering). The bug ships.

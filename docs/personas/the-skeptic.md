@@ -1,6 +1,6 @@
 # Persona (documentation): The Skeptic
 
-> **Runtime profile:** [`/scaffold/.agents/skills/personas/SKILL.md`](../../scaffold/.agents/skills/personas/SKILL.md) — section **The Skeptic**.
+> **Runtime profile:** [`scaffold/.agents/skills/persona-skeptic/SKILL.md`](../../scaffold/.agents/skills/persona-skeptic/SKILL.md) — the shipped persona skill carrying The Skeptic's constraints, forbiddances, proofs, and red flags.
 
 ---
 

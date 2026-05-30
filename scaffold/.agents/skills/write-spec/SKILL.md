@@ -1,26 +1,26 @@
 ---
 name: write-spec
-description: Load when authoring a spec.md file. Encodes the spec's discipline — every requirement testable, every design decision shows its alternatives, no implementation details, halt on `[CRITICAL]` open questions.
+description: Author a forward-looking spec. ALWAYS apply this skill when the user asks for a spec, requirements doc, design doc, or acceptance criteria for a feature or rewrite — even if they say "just write up what we want". Do not include implementation details, present-state observations, or proceed past a `[CRITICAL]` open question. Skip this skill for present-state observations of existing code, defect records, or research write-ups that inform a future decision — specs are forward-looking contracts, not surveys of what is.
 ---
 
 # Skill: write-spec
 
 ## Purpose
 
-A spec is the contract between The Architect (who specifies) and The Builder (who implements). A Builder reading the spec should be able to implement without follow-up questions. This skill is the discipline that gets the spec there.
+A spec is the contract between the spec author (who specifies) and the implementer (who builds). An implementer reading the spec should be able to implement without follow-up questions. This skill is the discipline that gets the spec there.
 
 ## Core rules
 
 ### 1. Every requirement is testable
 
-A requirement that can't be tested is a wish. The Test Author can derive a test from each acceptance criterion. If you can't write the test in your head, the requirement is too vague.
+A requirement that can't be tested is a wish. A test author must be able to derive a test from each acceptance criterion. If you can't write the test in your head, the requirement is too vague.
 
 - ✅ "GET /api/login redirects to the IdP with a valid S256 code_challenge derived from a cryptographically-secure verifier (≥ 32 bytes entropy)."
 - ❌ "The login endpoint should be secure."
 
 ### 2. State requirements, not implementations
 
-The Builder picks the implementation. The spec states the *requirement*, not the mechanism.
+The implementer picks the implementation. The spec states the *requirement*, not the mechanism.
 
 - ✅ "Lookup must be O(1) per key."
 - ❌ "Use a `Map<string, X>`."
@@ -59,11 +59,27 @@ A decision without alternatives is incomplete — the reader can't tell if the a
 
 ### 6. Distillation Loss Statement when distilling from research
 
-When the spec is distilled from a research file, append a `## Distillation Loss Statement`. State what was dropped and why the next stage doesn't need it. See `.agents/skills/distillation-discipline/SKILL.md`.
+When the spec is distilled from a research file, append a `## Distillation Loss Statement` stating what was dropped (e.g. narratives, alternatives explored) and why the next stage does not need it. Architectural constraints, API payload shapes, and acceptance criteria are *never* droppable.
+
+### 7. Pre-deliver visibility gate (forced visible output)
+
+Before delivering the spec, output the `[CRITICAL]` open-question list verbatim and confirm none remain:
+
+```markdown
+## [CRITICAL] open questions outstanding
+
+- (none — spec is finalisable)
+
+— or —
+
+- <question> — blocking because <reason>; resolution path: <task / decision required>
+```
+
+If any `[CRITICAL]` remains, the spec is not finalisable. Halt, route to the resolution path (research, ADR, audit, or downgrade with a recorded design decision), then re-output the list. The agent does not deliver the spec to the user until the list is in the task file and shows `(none — spec is finalisable)`.
 
 ## What does not belong
 
-- **In a spec:** present-state observations (those go in an audit), implementation step-by-step (the Builder's concern), narrative storytelling (the research file's concern).
+- **In a spec:** present-state observations (those go in an audit), implementation step-by-step (the implementer's concern), narrative storytelling (the research file's concern).
 - **In `## Acceptance criteria`:** unmeasurable language ("should be intuitive", "should be performant").
 - **In `## Open questions`:** decisions that have been made but not recorded (move to Decisions); rhetorical questions (be specific).
 
@@ -76,9 +92,8 @@ When the spec is distilled from a research file, append a `## Distillation Loss 
 - Decisions buried in prose without named alternatives
 - Acceptance criteria that pass any reasonable implementation (i.e., not actually constraining)
 
-## See also
+## Bundled resources
 
-- `.agents/templates/spec.md` — the spec doc template
-- `.agents/templates/task-research.md` — the upstream task that produces the research input
-- `.agents/skills/distillation-discipline/SKILL.md` — sister skill for distilling
-- `.agents/skills/personas/SKILL.md` — The Architect persona
+- `references/task-template.md` — a fillable spec-writing task template combining the workflow scaffold (metadata, AGENTS.md contract, constraints, progress checklist, decisions, self-review) with the deliverable structure inlined as a `## Deliverable` block (goal, scope, user-visible behaviour, acceptance criteria, design decisions with alternatives, architectural constraints, pattern survey, open questions, tradeoffs/risks, Distillation Loss Statement). At session close, copy the `## Deliverable` block to its final home (`<your-specs-dir>/{{slug}}.md`).
+
+Substitute the `{{...}}` placeholders and fill in as you work.

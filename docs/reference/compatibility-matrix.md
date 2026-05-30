@@ -28,9 +28,9 @@ Who authors what, who reviews what.
 
 ## Table 2: Personas × Task types
 
-The 1-to-1 mapping. Each task type has exactly one default lead persona.
+The **suggested** default lead persona per task type. ADR 0002's strict 1-to-1 mapping is superseded — these are suggested defaults the agent may re-assess (see the note below the table).
 
-| Task type                       | Lead persona                  | Secondary (handoff)                       |
+| Task type                       | Suggested lead persona        | Secondary (handoff)                       |
 | ------------------------------- | ----------------------------- | ----------------------------------------- |
 | `feature`                       | The Builder                   | The Skeptic                               |
 | `fix`                           | The Skeptic                   | (kickback returns to original)            |
@@ -52,7 +52,7 @@ The 1-to-1 mapping. Each task type has exactly one default lead persona.
 | `orchestration`                 | The Lead Engineer             | The Skeptic (merge-gate)                  |
 | `documentation`                 | The Documentarian             | The Skeptic                               |
 
-The 1-to-1 mapping is the value: the agent never picks a persona; the framework picks. See [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md).
+These are **suggested defaults**, not bindings. Of the 13 catalogued mindsets, only **7 ship as skills** — `persona-{architect,auditor,janitor,migrator,performance-surgeon,skeptic,surveyor}` (each at `.agents/skills/persona-<slug>/SKILL.md`). The other 6 mindsets (Builder, Bug Hunter, Documentarian, Lead Engineer, Researcher, Test Author) are carried by the matching workflow skill (Builder → `write-feature`, Bug Hunter → `write-bug-report`, Documentarian → `write-documentation`, Test Author → `write-testing`, Researcher → `write-research`; Lead Engineer = orchestration, no skill). The agent loads the `persona-<slug>` skill whose `description` fits, or relies on the workflow skill's own mindset, and records any divergence in `## Decisions`. ADR 0002 (strict 1-to-1) is superseded to "suggested defaults; agent may re-assess".
 
 ---
 
@@ -83,10 +83,10 @@ The "information loss budget" column is the *maximum* loss permitted at the tran
 
 ## 🛡️ How to use these matrices
 
-- **As a routing oracle.** "I have an `audit.md` — what's the task type?" Look at Table 3.
-- **As a persona oracle.** "I have a `feature` task — what's the persona?" Look at Table 2.
+- **As a routing oracle.** "I have an `audit.md` — what's the suggested task type?" Look at Table 3.
+- **As a persona oracle.** "I have a `feature` task — what's the suggested persona, and does it ship as a skill?" Look at Table 2.
 - **As an authorship guide.** "Who should write the ADR?" Look at Table 1.
-- **As a conformance reference.** Every cell of these tables is enforced by `documentation-gatekeeper`. Violations are blocked.
+- **As recommended routing.** These tables are *guidance, not gatekeeper-enforced* — no always-loaded skill blocks a divergent cell. The directive skill `description`s reproduce the routing in-session, and a launcher may apply it deterministically. Diverge by naming the reason in the task file's `## Decisions`.
 
 ---
 
@@ -96,4 +96,4 @@ The "information loss budget" column is the *maximum* loss permitted at the tran
 - [`personas/`](../personas/) — per-persona pages
 - [`tasks/`](../tasks/) — per-task pages
 - [`documents/`](../documents/) — per-doc pages
-- [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md) — why 1-to-1
+- [ADR 0002](../adrs/0002-personas-1-to-1-with-task-types.md) — the (now superseded) 1-to-1 mapping; today: suggested defaults

@@ -13,7 +13,7 @@ Agents tend to fail in predictable ways:
 - **Hallucinated “done”** — confident summaries without evidence from your toolchain.
 - **No durable trail** — the next session re-discovers the same facts because nothing was captured where it belongs.
 
-Swarm addresses that by tying **upstream documents** to **task types**, **personas**, **skills**, and **verification gates** in a deterministic way, then folding that into **one task file** the agent is meant to read before it edits code. The aim is repeatable conditioning—not autonomous magic.
+Swarm addresses that by tying **upstream documents** to a recommended **task type**, **persona mindset**, **skills**, and **verification gates**, then folding that into **one task file** the agent is meant to read before it edits code. The routing is a recommended default—a launcher may apply it deterministically, the agent may re-assess and record why. The aim is repeatable conditioning—not autonomous magic.
 
 ---
 
@@ -36,8 +36,9 @@ Skim [`docs/`](docs/README.md), then take only what lowers your risk:
 | Need                       | Entry                                                                                                                                        |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Shared vocabulary          | [`docs/concepts/`](docs/concepts/README.md), [`docs/reference/glossary.md`](docs/reference/glossary.md)                                      |
-| Routing & attachment rules | [`docs/reference/flow-graph.md`](docs/reference/flow-graph.md)                                                                               |
+| Routing & attachment rules | [`docs/reference/flow-graph.md`](docs/reference/flow-graph.md) — recommended routing, not gatekeeper-enforced                                |
 | One skill’s behaviour      | A folder under [`scaffold/.agents/skills/`](scaffold/.agents/skills/), with [`docs/guides/writing-skills.md`](docs/guides/writing-skills.md) |
+| Why the skills are shaped this way | [`docs/skills/building/`](docs/skills/building/README.md) — the empirical science behind the skill layer                              |
 | Task / doc blanks          | [`scaffold/.agents/templates/`](scaffold/.agents/templates/)                                                                                 |
 
 You are not obliged to adopt worktrees, every task type, or the full persona set. Ship the smallest slice that fixes a real gap.

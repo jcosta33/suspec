@@ -2,7 +2,7 @@
 
 > **TL;DR.** Translate research / audit / human ask into a verifiable spec a Builder can implement from. Lead persona is The Architect. Read-only on source code; only the spec doc changes. Halt on `[CRITICAL]` open questions before they block downstream implementation.
 
-> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/templates/task-spec-writing.md`](../../scaffold/.agents/templates/task-spec-writing.md). The doc-template the spec-writing task produces lives at [`/scaffold/.agents/templates/spec.md`](../../scaffold/.agents/templates/spec.md).
+> 📦 **This page is documentation.** The actual task template lives at [`/scaffold/.agents/skills/write-spec/references/task-template.md`](../../scaffold/.agents/skills/write-spec/references/task-template.md). The doc-template the spec-writing task produces lives at [`/scaffold/.agents/templates/spec.md`](../../scaffold/.agents/templates/spec.md).
 
 ---
 
@@ -25,7 +25,7 @@ If you're documenting *what was built*, that's `documentation`, not `spec-writin
 | **Source doc(s)**    | `research.md` and/or `audit.md` (optional); human ask |
 | **Lead persona**     | [The Architect](../personas/the-architect.md)     |
 | **Output**           | `spec.md` at `.agents/specs/{{slug}}.md`           |
-| **Auto-loaded skills** | `manage-task`, `documentation-gatekeeper`, `personas`, `write-spec`, `distillation-discipline` |
+| **Recommended skills** | `write-spec`, `distillation-discipline`, `persona-architect` |
 | **Verification gate slots** | post: `git status` (clean on source — must show no source/config changes) |
 
 ---
@@ -36,16 +36,7 @@ The verbatim Markdown template (persona directive, placeholders, gated `Self-rev
 
 ### Why these structural clusters exist
 
-| Cluster | Conditioning rationale |
-|---------|-------------------------|
-| Metadata & task `type` | Freezes the launcher’s routing choice where chat context will evaporate. |
-| Linked docs | Anchors primary upstream doctrine; ancillary docs remain read-only grounding. |
-| Banner + constraints | Imports flow-graph forbiddances as non-negotiable session text. |
-| Plan vs checklist vs decisions | Separates forecast, execution telemetry, and post-hoc rationale for audits. |
-| Self-review | Converts “done?” into evidence-shaped questions aligned to persona proof obligations. |
-
-See [`reference/task-base.md`](../reference/task-base.md), [`reference/template-placeholders.md`](../reference/template-placeholders.md), and [`reference/verification-gates.md`](../reference/verification-gates.md).
-
+Every task template shares the same structural clusters; see [Why these structural clusters exist](README.md#why-these-structural-clusters-exist) in the task-type overview for the shared rationale.
 
 ---
 
