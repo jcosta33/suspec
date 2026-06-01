@@ -50,7 +50,7 @@ A newcomer who reads only §1–§4 should be able to hold the whole framework i
 Swarm carries **two independent version numbers**, and this document is versioned on the first of them. This convention is normative throughout and specified in full in §25.
 
 - **Language version** — the SOL+APS grammar, block set, modal set, clause keywords, and lint codes. Slow-moving: `0.1` (this document), then `0.2`, `1.0`. Carried in `*.swarm.md` frontmatter as the discriminator `swarm_language: SOL/0.1` and in the IR as `meta.language`.
-- **Framework / package version** — the scaffold, templates, pass guides, and profiles, versioned as semver in `.agents/.swarm-version`. Fast-moving and independent.
+- **Framework / package version** — the scaffold, templates, pass guides, and profiles, versioned as semver in `scaffold/.agents/.swarm-version` (an adopted project mirrors it as `.swarm/VERSION`, §20.5.1). Fast-moving and independent.
 
 This document is **language v0.1**. The framework package that delivers it carries its own semver. The one-way trigger (§25): any language change forces at least a framework MINOR release; the framework MAY release many versions without changing the language version.
 
@@ -500,7 +500,7 @@ Surface = English-shaped UPPERCASE space-separated keywords. IR = snake_case. Lo
 | Axis | What it versions | Where it lives | Cadence |
 |------|------------------|----------------|---------|
 | **Language** | SOL+APS grammar, blocks, modals, lint codes | frontmatter `swarm_language: SOL/0.1` (+ `aps_version`); IR `meta.language` | Slow: `0.1`, `0.2`, `1.0` |
-| **Framework / package** | scaffold, templates, pass guides, profiles | `.agents/.swarm-version` (semver) | Fast |
+| **Framework / package** | scaffold, templates, pass guides, profiles | `scaffold/.agents/.swarm-version` → `.swarm/VERSION` (semver) | Fast |
 
 **One-way trigger:** any language change forces at least a framework MINOR release; the framework MAY release many versions without touching the language version. *See §25.*
 

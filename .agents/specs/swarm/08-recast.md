@@ -12,7 +12,7 @@ This section recasts the framework's 24 shipped skills onto the compiler model. 
 
 A conformant Swarm repo MUST satisfy all of the following:
 
-- No skill file defines a block type, a modal, a clause keyword, a verdict value, a proof type, a lint code, or any IR field. These live exclusively in the language reference (`docs/language/`) and the typed IR (§12), per the binding invariant that all load-bearing meaning lives in SOL + IR (this specification Q-semantics-1).
+- No skill file defines a block type, a modal, a clause keyword, a verdict value, a proof type, a lint code, or any IR field. These live exclusively in the language reference (`docs/language/`) and the typed IR (§12), per the binding invariant that all load-bearing meaning lives in SOL + IR (§7.1).
 - A correctly written `*.swarm.md` file MUST be understandable to a strong model *without* any skill loaded, because it uses controlled natural language (§5–§7) and stable formal blocks (§6).
 - A skill MAY cite, link to, or quote the language reference, but the citation is non-authoritative delivery; the authoritative text is the language reference itself.
 
@@ -78,7 +78,7 @@ ADR 0020's self-activating `description` field is **retained but reframed**. The
 
 Normatively:
 
-- A `task.md` (§28) SHOULD name, in its frontmatter or assignment block, the pass guide(s) and profile(s) it activates for the pass it frames. When named, the agent MUST load exactly those, and SHOULD NOT load others. BECAUSE always-on density harms adherence and cost (§31, this specification Q-density-1).
+- A `task.md` (§28) SHOULD name, in its frontmatter or assignment block, the pass guide(s) and profile(s) it activates for the pass it frames. When named, the agent MUST load exactly those, and SHOULD NOT load others. BECAUSE always-on density harms adherence and cost (§31).
 - When no launcher and no explicit naming is present, an agent MAY fall back to matching a guide's self-activating `description` against the task. This is a degraded mode, not the contract.
 - A skill MUST NOT be always-loaded (ADR 0017, kept verbatim). Pass guides and profiles are lazily loaded.
 
@@ -511,7 +511,7 @@ The last two are explicitly added because the lint-namespace unification and the
 
 > **Normative.** `AGENTS.md` (and any always-loaded kernel bootloader prose) MUST NOT exceed a **hard cap of 200 lines / 25 KB**. It SHOULD target **~50–150 lines**. It MUST contain only persistent facts and gap-filling content; everything procedural or conditional MUST move to lazily-loaded pass guides (§26), profiles (§27), or reference docs.
 
-Rationale (this specification Q-density-1): **minimize always-on density to protect adherence and control cost.** The cap is *not* anchored on a claim that models cannot follow many instructions — the IFScale "68%@500" figure is real but MUST NOT be cited as a capability *ceiling* — its actual finding (accuracy degrades with density, primacy bias toward earlier instructions `[IFSCALE]`) *supports* the cap; a 2026 vendor re-run on a keyword-inclusion proxy reports higher counts `[ARIZE26]` but is preliminary, non-peer-reviewed evidence and is not the load-bearing rationale. The durable mechanism is the bloat-versus-gap-filling tradeoff: bloat costs success rate and tokens; gap-filling content (facts the model genuinely lacks) earns its place.
+Rationale: **minimize always-on density to protect adherence and control cost.** The cap is *not* anchored on a claim that models cannot follow many instructions — the IFScale "68%@500" figure is real but MUST NOT be cited as a capability *ceiling* — its actual finding (accuracy degrades with density, primacy bias toward earlier instructions `[IFSCALE]`) *supports* the cap; a 2026 vendor re-run on a keyword-inclusion proxy reports higher counts `[ARIZE26]` but is preliminary, non-peer-reviewed evidence and is not the load-bearing rationale. The durable mechanism is the bloat-versus-gap-filling tradeoff: bloat costs success rate and tokens; gap-filling content (facts the model genuinely lacks) earns its place.
 
 A conformant repo MUST include a regression check that fails when `AGENTS.md` exceeds the hard cap.
 

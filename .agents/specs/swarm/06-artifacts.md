@@ -33,7 +33,7 @@ docs/                              # explains Swarm (prose + tables; not install
   library/                         # the parameterizing layers
     pass-guides.md                 # the skill/pass-guide model (§26)
     heuristic-profiles.md          # the 6 stdlib profile files (the full 13-persona set maps to passes, §27)
-    overlays.md                    # project rule bundles (§27)
+    overlays.md                    # project rule bundles (§26.6)
   reference/                       # cross-cutting reference pages
     glossary.md                    # one-word-one-meaning term store
     proof-types.md                 # the 9 proof types (§15)
@@ -69,7 +69,7 @@ scaffold/                         # the installable payload root (see note below
       pass-verify-trace/  pass-review-trace/  pass-promote-findings/
     profiles/                      # the 6 heuristic profiles (§27)
       builder.md  skeptic.md  architect.md  researcher.md  reviewer.md  janitor.md
-    overlays/                      # project rule bundles (§27)
+    overlays/                      # project rule bundles (§26.6)
       README.md
     memory/                        # the recall layer (§23)
       INDEX.md                     # Tier-1 recall map
@@ -234,7 +234,7 @@ project/
       passes/                        # one page per pass (§26); the 9 passes
       skills/                        # pass guides + companion guides (§26); 1 dir per skill
       profiles/                      # the 6 heuristic profiles (§27)
-      overlays/                      # project rule bundles (§27)
+      overlays/                      # project rule bundles (§26.6)
 
     sources/                         # DESIRED truth + durable source artifacts (the obligation source)
       specs/                         # *.swarm.md source specs (compiler-visible; §20.1)

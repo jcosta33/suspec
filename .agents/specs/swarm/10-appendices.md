@@ -104,7 +104,7 @@ property          = ? noun phrase naming the invariant property/state ?;
 inv_modal         = "MUST" | "MUST NOT";                       (* only these two for INVARIANT *)
 hold_text         = ? verb phrase asserting the held property ?;
 
-(* ===== INTERFACE: RETURNS, ACCEPTS, ERRORS, OWNED BY; requires VERIFY BY contract (Theme-5 gap-fill) ===== *)
+(* ===== INTERFACE: RETURNS, ACCEPTS, ERRORS, OWNED BY; requires VERIFY BY contract ===== *)
 interface_body    = signature, ws, "RETURNS", ws, type_ref, nl,
                     [ accepts_block ]
                     [ errors_block ]
@@ -216,7 +216,7 @@ Each grammar production carries one or more well-formedness checks from the unif
 | `SOL-V001` | VERIFICATION | BLOCKING | binding obligation (`REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`) with no `verify_line` (was `SOL-S007`) | Missing `VERIFY BY` for a binding obligation. |
 | `SOL-V009` | VERIFICATION | BLOCKING | `verify_ref` whose `proof_type` is outside the closed 9-set | Unknown proof type; use one of `static, test, contract, property, model, perf, security, manual, monitor`. |
 | `SOL-V005` | VERIFICATION | BLOCKING | `verdict_value` `verdict_core` outside the four core values, or `verdict_lifecycle` missing a mandatory field (was `SOL-S010`) | `VERDICT` value outside `PASS`/`FAIL`/`BLOCKED`/`UNVERIFIED`, or a lifecycle decorator missing authority/reason (`WAIVED` also requires expiry). |
-| `SOL-V006` | VERIFICATION | BLOCKING | `INTERFACE` `verify_line` whose `proof_type` ≠ `contract` (Theme-5 gap-fill) | `INTERFACE` MUST be verified by a `contract:` binding. |
+| `SOL-V006` | VERIFICATION | BLOCKING | `INTERFACE` `verify_line` whose `proof_type` ≠ `contract` | `INTERFACE` MUST be verified by a `contract:` binding. |
 
 Notes on opacity and deferral (normative for v0.1):
 
@@ -364,7 +364,7 @@ V-layer rules fire at `VERIFY`; they gate the merge gate (§14). The `VERIFY BY 
 | `SOL-V001` | BLOCKING | no-verification-path | An obligation block (REQ/CONSTRAINT/INVARIANT) or an INTERFACE has no `VERIFY BY` binding. | `BIND`: attach a `VERIFY BY` (was `APS-V001` / `SOL204` / `SOL-V401` / `SOL-M203`). |
 | `SOL-V002` | BLOCKING | proof-not-executable | The bound adapter does not resolve through AGENTS.md > Commands, or the artifact is missing. | `BIND`: point at a resolvable cmd* adapter (§15). |
 | `SOL-V003` | ADVISORY / BLOCKING | non-observable-proof | The bound proof is non-observable (e.g. an INVARIANT bound only to a non-observable unit `test`). ADVISORY by default; BLOCKING under strict mode. | `BIND`: prefer `property`/`model`/`static` for INVARIANT; `contract` for INTERFACE (was `SOL-V403`). |
-| `SOL-V004` | BLOCKING | stale-proof | A prior `PASS` whose evidence no longer matches the current source content-hash or a changed write-surface; surfaces as the `STALE` verdict (§16). | 3-way reconcile (re-run / amend / fix code) — never silent re-bless (was `SOL-V402` / `SOL-S007`-staleness). |
+| `SOL-V004` | BLOCKING | stale-proof | A prior `PASS` whose evidence no longer matches: the current source content-hash, a changed write surface, a changed proof-exercised read surface (§16.5(c)), or a rebound adapter (§16.5(d)); surfaces as the `STALE` verdict (§16). | 3-way reconcile (re-run / amend / fix code) — never silent re-bless (was `SOL-V402` / `SOL-S007`-staleness). |
 | `SOL-V005` | BLOCKING | bad-verdict-value | A `VERDICT` core value is not one of `PASS`/`FAIL`/`BLOCKED`/`UNVERIFIED`, OR a lifecycle decorator is missing its mandatory fields (WAIVED→authority+reason+expiry; STALE→prior-verdict ref+changed-surface; CONTRADICTED→two conflicting evidence refs). (was `SOL-S010`) | Edit: use a valid verdict line (§14) (was `SOL-S010`). |
 | `SOL-V006` | BLOCKING | interface-without-contract | An `INTERFACE` whose `VERIFY BY` proof_type is not `contract`. | `BIND`: use `contract:` as the proof type for INTERFACE bindings (was `SOL-V403`-family). |
 | `SOL-V007` | BLOCKING | invalid-lifecycle-decoration | A lifecycle decorator applied to the wrong core value (e.g. `WAIVED` on a `PASS`/`BLOCKED`, or `STALE` on anything other than a prior `PASS`). | Edit: remove or correct the lifecycle decorator per §14.1.2. |

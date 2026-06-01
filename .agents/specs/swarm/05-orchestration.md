@@ -182,7 +182,7 @@ Two ORCHESTRATION-layer lint codes (`SOL-O001` write-surface conflict marked par
 | `SOL-O001` | ORCHESTRATION | **ERROR** | Two obligations sharing a write surface (a conflict edge in the write-surface graph) are marked for, or scheduled into, the same parallel batch. |
 | `SOL-O005` | ORCHESTRATION | **ERROR** | A worker's OWNED path in `task-orchestration.md` falls outside the union of that worker's assigned obligations' declared `WRITES` surfaces (the two-tier lowering check, §19.7). |
 
-`SOL-O001` is raised from Warning to **ERROR** in this kernel (this specification Theme 6): a write-conflict marked parallel is the precise failure that produces silent, hard-to-review merge corruption, so it MUST block. `SOL-O005` is the new code that enforces the disjoint-scope invariant between the source tier and the execution tier (§19).
+`SOL-O001` is raised from Warning to **ERROR** in this kernel: a write-conflict marked parallel is the precise failure that produces silent, hard-to-review merge corruption, so it MUST block. `SOL-O005` is the new code that enforces the disjoint-scope invariant between the source tier and the execution tier (§19).
 
 ```text
 SOL-O001  ERROR  AC-014 and AC-031 both WRITES auth.config but share parallel_group "g1"
