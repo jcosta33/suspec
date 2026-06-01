@@ -152,3 +152,15 @@ A second 29-agent skeptic pass was run against the reconciled spec (independent 
 **Verification (post-R4):** every `[KEY]` resolves to `sources.md`; all fences balanced; all 23 normative Appendix C/D JSON schema/example blocks parse (the two `02`/`05` illustrative *fragments* are partial records, not schemas). The convergence signal: pass 2's BLOCKERs were narrower than pass 1's and the seam set is shrinking; a third pass would find fewer still.
 
 *Pass-2 findings are traceable to `…/subagents/workflows/wf_8341d9f7-e38/`.*
+
+---
+
+## Pass 3 — convergence (2026-06-02)
+
+A third full 29-agent pass (`wf_f7b7252d-70c`) was clipped entirely by a session-limit (all agents returned the limit error — a tooling failure, not a clean bill). It was re-run as a **lean 5-cross-cut review** (`wf_45dd9631-576`) once the limit reset, backstopped by a deterministic in-loop check (citations, code-catalogue coverage, fences, JSON, severity-vocabulary uniformity — all clean).
+
+**Result: converged.** The citations cross-cut returned **NO FINDINGS** ("sourcing integrity extremely strong; the rejected/corrected figures are all handled correctly"); there were **zero architecture issues**. The ~20 findings were localized and concentrated in three themes — (1) the Appendix D worked example + §33 fixtures not conforming to their own rules (sub-id split, INVARIANT subject, structured STALE fields, headings, body indentation, `#` annotations); (2) the drift-provenance schema's `exercised`/`evidence_path` under-specification; (3) the §23.4.2 enum line + a few cross-ref nits. All remediated across increments R1–R4 (`e751ee4`…`0361243`), a per-file nit sweep (`21fe805`), and a final per-file army with shared cross-file decisions (`cb0eb67`): each `per_surface_hash[]` entry gained an `exercised` flag; the promotion enum is the seven values everywhere; the Appendix D worked example now obeys §11.1.1/§12.4.2/§14/§21; Appendix A gained body-indentation / no-comment-token / line-continuation notes that legitimize the golden-corpus fixtures.
+
+**Convergence signal:** finding count fell 45 → ~45 → ~20, citations went from defects to clean, and the BLOCKER class shrank to zero then stayed zero. The spec is implementation-ready; the rework plan is at `.agents/rework-plan.md`.
+
+*Pass-3 findings are traceable to `…/subagents/workflows/wf_45dd9631-576/`.*
