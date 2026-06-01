@@ -14,7 +14,7 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
 
 - **[EARS]** Mavin, A., Wilkinson, P., Harwood, A., & Novak, M. "Easy Approach to Requirements Syntax (EARS)." Proc. 2009 17th IEEE International Requirements Engineering Conference (RE'09), Atlanta GA, IEEE, 2009, pp. 317–322. DOI 10.1109/RE.2009.9. Official guide: https://alistairmavin.com/ears/
   *Grounds:* The spec's adoption of EARS patterns — specifically that ubiquitous requirements use no keyword and that `Where` gates a requirement on optional-feature inclusion.
-  *Finding:* Ubiquitous: "The <system> shall <response>" — "always active (so there is no EARS keyword)." While (state-driven), When (event-driven). Where = optional feature: "Where <feature is included>, the <system> shall…"; applies in products that include the specified feature. If/Then = unwanted behaviour.
+  *Finding:* Ubiquitous: "The <system> shall <response>" — "always active (so there is no EARS keyword)." While (state-driven), When (event-driven). Where = optional feature: "Where <feature is included>, the <system> shall…"; applies in products that include the specified feature. If/Then = unwanted behaviour. **Quantified reduction** (Rolls-Royce CS-E airworthiness case study, Mavin & Wilkinson): average words/requirement 36.9→25.6; individual/atomic requirements 36→47; "a significant reduction in all eight problem types" (5 of 8 eliminated; 3 — ambiguity/vagueness/wordiness — reduced not eliminated). Small-sample caveat: n=36 original requirements.
 
 - **[FRET]** Giannakopoulou, D., Pressburger, T., Mavridou, A., Schumann, J. "Formal Requirements Elicitation with FRET." NASA Ames; NTRS 20200001989 (REFSQ 2020). Tool: NASA Software Catalog ARC-18066-1, https://software.nasa.gov/software/ARC-18066-1 ; GitHub: NASA/fret
   *Grounds:* The spec's precedent that constrained/structured natural-language requirements can be deterministically translated to formal (temporal) logic — controlled English as a real, tooled engineering practice, not aspiration.
@@ -26,7 +26,11 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
 
 - **[SMELLS]** Femmer, H., Méndez Fernández, D., Wagner, S., Eder, S. "Rapid Quality Assurance with Requirements Smells." Journal of Systems and Software 123 (2017): 190–213. DOI 10.1016/j.jss.2016.02.047.
   *Grounds:* The APS high-risk-word list and the `SOL-P` prose-defect families (ambiguity loopholes, comparatives, vague quantifiers) — requirement "smells" as lightweight, detectable indicators of requirement-quality violations.
-  *Finding:* Defines requirement smells (e.g. subjective language, ambiguous adverbs/adjectives, loopholes, non-verifiable terms, comparatives without a reference) as quality-violation indicators with a light-weight detection method; ambiguity and verifiability are the most consequential smell families. (Berry & Kamsties ambiguity work and Tjong & Berry quantifier/connective lists are the companion lexicon.)
+  *Finding:* Defines requirement smells (e.g. subjective language, ambiguous adverbs/adjectives, loopholes, non-verifiable terms, comparatives without a reference) as quality-violation indicators with a light-weight detection method; ambiguity and verifiability are the most consequential smell families. (Berry & Kamsties ambiguity work and Tjong & Berry quantifier/connective lists are the companion lexicon.) Field-measured detection accuracy (prototype **Smella**, three industrial + one university context): "average precision of 59% at an average recall of 82% with high variation" — the honest accuracy ceiling for lightweight automated smell detection (cite both numbers with the "high variation" qualifier).
+
+- **[FRETMON]** Perez, I., Mavridou, A., Pressburger, T., Goodloe, A., Giannakopoulou, D. "Automated Translation of Natural Language Requirements to Runtime Monitors." TACAS 2022 (part of ETAPS 2022), LNCS 13243, Springer, pp. 387–395. DOI 10.1007/978-3-030-99524-9_21 (open access; NASA NTRS 20220000049).
+  *Grounds:* §6 (FRETish leading-keyword precedent), §15 VERIFY BY (the future `monitor`/temporal-logic direction), and §34 deferral D1 ("FRETish-style temporal logic binding to proofs").
+  *Finding:* End-to-end framework that "captures requirements in structured natural language and generates monitors that capture their semantics faithfully," bridging NASA FRET to the Copilot runtime-verification framework via a new tool, **Ogma**, producing real-time C monitors. **Venue:** TACAS 2022 (NOT "RV 2022"). Grounds the further step of structured NL → executable runtime monitor (distinct from base-FRET [FRET]).
 
 ## Versioning & format standards
 
@@ -76,6 +80,72 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
   *Grounds:* The claim that prose-delivered meaning degrades across multi-turn interaction — motivating binding load-bearing semantics in SOL/IR rather than relying on conversational prose.
   *Finding:* Across six generation tasks, sharded multi-turn conversation causes "an average drop of 39%" vs single-turn — decomposed as a small loss of aptitude plus a large increase in **unreliability**. Cite the ~39% only with the multi-turn/sharded-protocol qualifier; do not present it as a single-turn capability figure.
 
+- **[SCLAR]** Sclar, M., Choi, Y., Tsvetkov, Y., Suhr, A. "Quantifying Language Models' Sensitivity to Spurious Features in Prompt Design." ICLR 2024. arXiv:2310.11324. https://arxiv.org/abs/2310.11324
+  *Grounds:* §7.1 / §7.6 prompt-format-sensitivity rationale — the stronger, broader-scoped basis for "bind on SOL/IR, not prose" (the model-specific [FORMAT] 40% figure is the older, narrower datum).
+  *Finding:* Meaning-preserving format choices change few-shot accuracy by "up to 76 accuracy points" (LLaMA-2-13B) and "~10 accuracy points on average across 50+ tasks" (median spread 6.4 pts, GPT-3.5, 320 formats × 53 tasks); sensitivity persists across model size / few-shot count / instruction tuning, and "format performance only weakly correlates between models" (grounds the warning against overfitting SOL to one provider).
+
+- **[PROMPTORDER]** Lu, Y., Bartolo, M., Moore, A., Riedel, S., Stenetorp, P. "Fantastically Ordered Prompts and Where to Find Them: Overcoming Few-Shot Prompt Order Sensitivity." ACL 2022. arXiv:2104.08786. https://aclanthology.org/2022.acl-long.556/
+  *Grounds:* §7.1 / §7.6 — a third, independent prose-fragility mode (input/example order) complementing format ([SCLAR]) and template ([FORMAT]) sensitivity.
+  *Finding:* "the order in which the samples are provided can make the difference between near state-of-the-art and random guess performance," with good permutations not transferring across models; an entropy-based ordering yields "a 13% relative improvement for GPT-family models across eleven … text classification tasks."
+
+## Requirements engineering & ambiguity
+
+- **[AMBIGCODE]** Larbi, M., Akli, A., Papadakis, M., Bouyousfi, R., Cordy, M., Sarro, F., Le Traon, Y. "When Prompts Go Wrong: Evaluating Code Model Robustness to Ambiguous, Contradictory, and Incomplete Task Descriptions." arXiv:2507.20439, 2025.
+  *Grounds:* §7.6 (the direct "ambiguity/contradiction harms code generation" mechanism), the APS BLOCKING rule (§8.2), and the CLARIFY gate (§11.6.1).
+  *Finding:* Ambiguous descriptions cut Pass@1 "25–30%"; incomplete "20–25%"; contradictory "up to 40%"; GPT-4 on HumanEval falls 73.8%→6.7% on contradictory; "60–90% of the code that compiles is semantically incorrect." Models barely recognize the defects (MCC ≈ −0.1 to 0.47 — **not** "0.55").
+
+- **[ORCHID]** Yang, D., Xie, X., Yang, X., Hu, M., Huang, Y., Zhang, Y., Miao, W., Su, T., Wan, C., Pu, G. "Assessing the Impact of Requirement Ambiguity on LLM-based Function-Level Code Generation" (Orchid benchmark). arXiv:2604.21505, 2026.
+  *Grounds:* §7.6 ambiguity mechanism at benchmark scale; the QUESTION block (§6.5) and CLARIFY op/gate (§10.2, §11.6).
+  *Finding:* "1,304 tasks and 5,216 ambiguous requirement variants" across lexical/syntactic/semantic/vagueness ambiguity; SOTA models (e.g. GPT-4) show ">30%" degradation and "frequently produce functionally divergent implementations for the same ambiguous requirement," unable to autonomously resolve ambiguity.
+
+- **[SPECVALIDATOR]** Akli, A., Papadakis, M., Cordy, M., Le Traon, Y. "Defective Task Descriptions in LLM-Based Code Generation: Detection and Analysis." arXiv:2604.24703, 2026.
+  *Grounds:* "Lint before you generate" — the APS lint taxonomy (§7–§8), the pre-lowering CLARIFY gate (§11.6), and BLOCKING status for SOL-M001 / SOL-P008.
+  *Finding:* SpecValidator (a small parameter-efficiently-finetuned classifier) detects task-description defects at F1 0.804 / MCC 0.745, beating GPT-5-mini (0.469 / 0.281) and Claude Sonnet 4 (0.518 / 0.359); under-specification is the most severe defect. A small finetuned detector beats frontier LLMs at defect detection.
+
+- **[CLARIFYGPT]** Mu, F., Shi, L., Wang, S., Yu, Z., Zhang, B., Wang, C., Liu, S., Wang, Q. "ClarifyGPT: A Framework for Enhancing LLM-Based Code Generation via Requirements Clarification." PACMSE (FSE 2024). DOI 10.1145/3660810. Preprint arXiv:2310.10996.
+  *Grounds:* The QUESTION block (§6.5), the CLARIFY improve op (§10.2), and the CLARIFY gate (§11.6.1) — the positively-grounded gain for "detect ambiguity → ask → resolve → then generate."
+  *Finding:* GPT-4 Pass@1 on MBPP-sanitized improves 70.96%→80.80% (+9.84 pt); four-benchmark averages improve GPT-4 68.02%→75.75% and ChatGPT 58.55%→67.22%.
+
+## Grounding & structured intermediates (RACG / structured CoT)
+
+- **[DOCPROMPTING]** Zhou, S., Alon, U., Xu, F. F., Wang, Z., Jiang, Z., Neubig, G. "DocPrompting: Generating Code by Retrieving the Docs." ICLR 2023. arXiv:2207.05987.
+  *Grounds:* The empirical "ground in authoritative docs, not free prose" leg behind §22 source authority, §17.5 untrusted-source boundary, and the §7.1 APS doctrine.
+  *Finding:* Retrieving relevant docs improves CodeT5 by "2.85% in pass@1 (52% relative gain)" and 4.39% pass@10 (CoNaLa; plus a Bash `tldr` set). **Gain is over the CodeT5 base, NOT "over Codex."**
+
+- **[RACG]** Gu, W., Chen, J., et al. "What to Retrieve for Effective Retrieval-Augmented Code Generation? An Empirical Study and Beyond" (AllianceCoder). ICSE 2026. arXiv:2503.20589.
+  *Grounds:* The source-authority / retrieval-discipline rationale (§22; §17.5.2 ranking externally-authored sources lowest) — "rank by authority; don't treat all retrieved content equally."
+  *Finding:* In-context code and potential-API information help, but "retrieved similar code often introduces noise, degrading results by up to 15%"; the proposed method improves "Pass@1 by up to 20%." Measured cost of the wrong artifact (−15%); measured benefit of the right one (+20%).
+
+- **[REPOCODER]** Zhang, F., Chen, B., et al. "RepoCoder: Repository-Level Code Completion Through Iterative Retrieval and Generation." EMNLP 2023, pp. 2471–2484. arXiv:2303.12570.
+  *Grounds:* Supporting evidence that repository-level (not just in-file) context improves generation — relevant to §22 (the obligation graph spans repo-wide artifacts) and §12 (a tool reasoning over the whole graph beats local free context).
+  *Finding:* "improves the In-File completion baseline by over 10% in all settings and consistently outperforms the vanilla retrieval-augmented" approach (introduces the RepoEval benchmark).
+
+- **[SCOT]** Li, J., Li, G., Li, Y., Jin, Z. "Structured Chain-of-Thought Prompting for Code Generation." ACM TOSEM 34(2), Article 37, 2025. DOI 10.1145/3690635. Preprint arXiv:2305.06599.
+  *Grounds:* The strongest support for the typed-IR / structured-intermediate argument: §12 ("the IR is what a tool would reason over"), §3 surface-vs-IR layering, §7.1 ("load-bearing meaning lives in SOL and the typed IR").
+  *Finding:* "SCoT prompting outperforms … CoT prompting by up to 13.79% in Pass@1" by replacing free-form reasoning with a program-structure-oriented (sequence/branch/loop) intermediate; developers prefer SCoT-produced programs. Empirical analogue of "structured IR > free prose."
+
+## Spec-as-primary precedents (industry IDLs / desired-vs-observed state)
+
+- **[OPENAPI]** OpenAPI Initiative. "OpenAPI Specification" (v3.1.x). https://spec.openapis.org/oas/latest.html
+  *Grounds:* §1.1 "specification as source code" thesis, §29 spec-as-source-of-truth, and the `generated`-surface example in §16.6.2.
+  *Finding:* OAS "defines a standard, language-agnostic interface to HTTP APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code"; descriptions drive documentation generation, server/client code generation, and testing tools. The description, not the code, is the artifact tooling consumes.
+
+- **[TERRAFORM]** HashiCorp. "Terraform Language Documentation." https://developer.hashicorp.com/terraform/language
+  *Grounds:* §1.1 thesis and §29 (a declarative configuration language as the primary authoring/coordination interface).
+  *Finding:* "Terraform's language is its primary user interface"; the JSON-syntax variant is "primarily intended for programmatic generation and consumption" — a primary human language plus a machine-generated variant.
+
+- **[SMITHY]** Amazon Web Services. "Smithy 2.0." https://smithy.io/2.0/index.html
+  *Grounds:* §1.1 thesis and §29 (an IDL is authoritative; clients/servers/docs are generated; validation is first-class).
+  *Finding:* "Smithy is a language for defining services and SDKs … built for code generation and tools"; models drive multi-language code generation, and "Validation rules can be shared and applied to all APIs in an organization."
+
+- **[K8S-SPECSTATUS]** The Kubernetes Authors. "Objects In Kubernetes — Object Spec and Status." https://kubernetes.io/docs/concepts/overview/working-with-objects/
+  *Grounds:* §20.5 sources/status/generated split and §21.11 status artifact (observed state) — both currently labelled design rationale.
+  *Finding:* "Almost every Kubernetes object includes two nested object fields": the `spec` provides "its desired state," the `status` "describes the current state of the object, supplied and updated by the Kubernetes system," which "responds to the difference between spec and status by making a correction" (reconciliation). A mature precedent for the desired-vs-observed separation.
+
+- **[ROUNDTRIP]** Sendall, S., Küster, J. "Taming Model Round-Trip Engineering." OOPSLA 2004 Workshop on Best Practices for MDSD. (Position paper.) https://s23m.com/oopsla2004/sendall.pdf
+  *Grounds:* §2.9 "specs own intent; code owns realization" and §16.6.1 "code is reconciled implementation reality, not a minified build product of the spec."
+  *Finding:* Round-trip engineering = "synchronizing models by keeping them consistent" — reconciliation of multiple changing artefacts, not one-way regeneration; full round-tripping "proves to be a very difficult problem to solve in general." Supports reconcile-not-regenerate (design prior art, not empirical proof).
+
 ## Multi-agent systems
 
 - **[MAST]** Cemri, M., Pan, M. Z., Yang, S., Agrawal, L. A., Chopra, B., Tiwari, R., Keutzer, K., Parameswaran, A., Klein, D., Ramchandran, K., Zaharia, M., Gonzalez, J. E., Stoica, I. "Why Do Multi-Agent LLM Systems Fail?" NeurIPS 2025 (Datasets and Benchmarks Track); arXiv:2503.13657. https://arxiv.org/abs/2503.13657
@@ -97,6 +167,10 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
 - **[ANTHROPIC-MEM]** Anthropic. "Manage Claude's memory" (Claude Code / Claude Docs). https://code.claude.com/docs/en/memory (also docs.claude.com).
   *Grounds:* The soft/hard control boundary (§17) and the claim that always-loaded instruction/memory files are context, not enforcement — so a model is an unsound enforcement substrate and hard guarantees need a deterministic check outside the model.
   *Finding:* Project/user memory (CLAUDE.md and instruction files) is loaded as **context, not enforced configuration**; Anthropic directs anything that must hold regardless of the model to a deterministic mechanism (e.g. a PreToolUse hook), i.e. there is no guarantee of strict compliance from instruction text alone. (Anthropic docs; not a quantitative study.)
+
+- **[AGENTLESS]** Xia, C. S., Deng, Y., Dunn, S., Zhang, L. "Agentless: Demystifying LLM-based Software Engineering Agents." arXiv:2407.01489, 2024.
+  *Grounds:* §18.8 "Out of the kernel" (deferring live multi-agent scheduling) and the "not multi-agent by default" stance (§19, §32.7), previously grounded only by [ANTHROPIC-MA]/[COGNITION].
+  *Finding:* A three-phase localize→repair→validate pipeline reaches "32.00%" on SWE-bench Lite at "$0.70," and "is able to achieve both the highest performance … compared with all existing open-source software agents." A simple, disciplined staged pipeline beats elaborate multi-agent systems — a concrete benchmark number for the stance.
 
 ## Spec-driven development
 
@@ -129,6 +203,10 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
 - **[ORACLE]** Barr, E. T., Harman, M., McMinn, P., Shahbaz, M., Yoo, S. "The Oracle Problem in Software Testing: A Survey." IEEE Transactions on Software Engineering, 41(5):507–525, May 2015. DOI 10.1109/TSE.2014.2372785. http://www0.cs.ucl.ac.uk/staff/m.harman/tse-oracle.pdf
   *Grounds:* Primary, peer-reviewed grounding for the "test-oracle problem" and property-based/metamorphic testing as the principled response — why Swarm cannot rely on a single concrete-test oracle.
   *Finding:* Canonical survey defining the test-oracle problem and cataloguing oracle types — specified, derived, implicit, and metamorphic-testing pseudo-oracles — for cases where a precise oracle is unavailable. (Strongest available primary source; prefer over blogs/preprints.)
+
+- **[UTBOOST]** Yu, B., Zhu, Y., He, P., Kang, D. "UTBoost: Rigorous Evaluation of Coding Agents on SWE-Bench." ACL 2025. arXiv:2506.09289.
+  *Grounds:* §15.10 oracle adequacy — an independent corroboration of SWE-bench oracle inadequacy alongside [SWEBENCH-ADQ]/[ORACLE].
+  *Finding:* UTBoost "uncovered 345 erroneous patches incorrectly labeled as passed," "impacting 40.9% of SWE-Bench Lite and 24.4% of SWE-Bench Verified leaderboard entries" (18 and 11 ranking changes). A distinct dataset/metric for the same test-insufficiency problem.
 
 ## LLM-as-judge & evaluation
 

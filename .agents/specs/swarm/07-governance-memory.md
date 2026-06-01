@@ -8,6 +8,8 @@ Source authority is the deterministic procedure a conformant Swarm repo MUST use
 
 The model has **two orthogonal axes** that MUST be applied **lexicographically — domain first, then artifact**. Rationale: a security obligation and a product obligation may share artifact rank yet must not share governing force; the two questions ("how authoritative is the *container*" and "how authoritative is the *domain*") are genuinely independent, so they MUST be ranked independently and combined in a fixed order rather than collapsed into one ladder.
 
+*Supporting evidence (why authority-ranking rather than flat retrieval).* Treating every source as equally bindable is empirically costly for downstream generation: grounding on authoritative docs/API context improves code generation (CodeT5 +2.85pp pass@1, a ~52% relative gain [DOCPROMPTING]; up to +20% Pass@1 from targeted API/context retrieval [RACG]), whereas superficially-similar non-authoritative content *degrades* it by up to 15% [RACG], and repository-level context beats in-file context by over 10% [REPOCODER]. Source authority is the governance encoding of that finding — rank by provenance; do not treat every retrieved span as equally authoritative.
+
 ### 22.1 The two axes
 
 #### 22.1.1 Axis A — artifact authority (backward trace)

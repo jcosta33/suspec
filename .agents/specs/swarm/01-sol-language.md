@@ -368,7 +368,7 @@ blocking_tag = "[blocking]" | "[non-blocking]";
 
 The `[blocking|non-blocking]` tag is REQUIRED. `AFFECTS` names the obligation ids or surfaces the answer would change.
 
-**Semantics.** A **blocking** QUESTION prevents lowering of any obligation it `AFFECTS`. A blocking QUESTION that reaches the lower pass (§11) is an **orchestration error** (`SOL-O`-class): it means an unresolved decision is being compiled into tasks. A **non-blocking** QUESTION may remain open if it does not affect assigned obligations. Behavioral uncertainty MUST be lifted into a QUESTION rather than left as hedged prose (`SOL-P008`).
+**Semantics.** A **blocking** QUESTION prevents lowering of any obligation it `AFFECTS`. A blocking QUESTION that reaches the lower pass (§11) is an **orchestration error** (`SOL-O`-class): it means an unresolved decision is being compiled into tasks. A **non-blocking** QUESTION may remain open if it does not affect assigned obligations. Behavioral uncertainty MUST be lifted into a QUESTION rather than left as hedged prose (`SOL-P008`): the same ambiguous requirement otherwise yields functionally divergent implementations across runs [ORCHID], whereas resolving it before generation raises GPT-4 Pass@1 (70.96%→80.80% on MBPP-sanitized) [CLARIFYGPT].
 
 **Worked example:**
 

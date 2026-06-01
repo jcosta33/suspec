@@ -14,7 +14,7 @@ All **load-bearing meaning** in a Swarm repo — modality, actor, trigger/state,
 
 A Swarm tool, author, or downstream agent MUST NOT treat any prose span as a source of an obligation, a verdict, a verification requirement, an authority ranking, or any other load-bearing fact. If a fact is load-bearing, it MUST be expressed as (or promoted into) a typed SOL block; until it is, it has no force.
 
-*Rationale (terse):* prompt-format sensitivity (up to ~40% on identical content for weaker models such as GPT-3.5-turbo; larger models are more robust `[FORMAT]`), multi-turn reliability decay, and lost-in-the-middle / context-rot degradation — relevant information in the middle of a long context is used markedly worse than at the ends `[LOSTMID]` — make prose an unreliable carrier of meaning across turns and agents; only the typed surface and its IR are stable enough to bind on (see §7.6).
+*Rationale (terse):* prompt-format sensitivity (up to ~40% on identical content for weaker models such as GPT-3.5-turbo; larger models are more robust `[FORMAT]`; more broadly, meaning-preserving format choices alone swing few-shot accuracy by up to 76 points with only weak cross-model transfer `[SCLAR]`, and example/prompt order can swing results between near-SOTA and random `[PROMPTORDER]`), multi-turn reliability decay, and lost-in-the-middle / context-rot degradation — relevant information in the middle of a long context is used markedly worse than at the ends `[LOSTMID]` — make prose an unreliable carrier of meaning across turns and agents; only the typed surface and its IR are stable enough to bind on (see §7.6).
 
 #### 7.1.2 The word-economy rule (normative)
 
@@ -141,12 +141,13 @@ Cross-layer companions an APS reviewer commonly meets (defined in §8): `SOL-M00
 
 ### 7.6 Rationale anchor (normative framing) and the superseded figure
 
-APS exists because of a **durable mechanism**, not a transient capability ceiling. Specifications, refs, and ADRs that justify APS MUST anchor on the following four properties, and MUST NOT anchor on any dated model-accuracy number:
+APS exists because of a **durable mechanism**, not a transient capability ceiling. Specifications, refs, and ADRs that justify APS MUST anchor on the following five properties, and MUST NOT anchor on any dated model-accuracy number:
 
-1. **Format sensitivity** — identical content reformatted can change model output by up to ~40% for weaker models (GPT-3.5-turbo on code translation; larger/newer models are more format-robust) `[FORMAT]`; controlled, predictable prose shape reduces this variance.
+1. **Format and order sensitivity** — meaning-preserving reformatting alone changes few-shot accuracy by up to 76 points (LLaMA-2-13B) and ~10 points on average across 50+ tasks, with format performance only weakly correlated between models `[SCLAR]` (cf. the older model-specific ~40% figure for GPT-3.5-turbo on code translation `[FORMAT]`); example/prompt ordering can independently swing results between near-SOTA and random `[PROMPTORDER]`; controlled, predictable prose shape reduces this variance.
 2. **Multi-turn decay** — reliability drops ≈39% across multi-turn generation `[MULTITURN]` as early loose assumptions compound; stable artifacts beat accumulating chat.
 3. **Context rot / lost-in-the-middle** — relevant content buried in long inputs is used 20–50% less reliably; low-entropy prose keeps the load-bearing signal legible.
 4. **Minimize always-on density to protect adherence and control cost** — every always-loaded normative line competes for adherence and is paid for on every turn; APS removes non-load-bearing words so the surviving instructions are followed and cheap.
+5. **Requirement ambiguity degrades generated code** — ambiguous task descriptions drop Pass@1 by 25–30% and contradictory ones by up to 40% (GPT-4 falls from 73.8% to 6.7% on contradictory HumanEval descriptions) `[AMBIGCODE]`, with >30% degradation on frontier models across a 1,304-task ambiguity benchmark `[ORCHID]`; APS lints buried ambiguity (`SOL-P008`) and lifts it into a `QUESTION` (§6.5) before lowering, removing the defect at its source.
 
 **Superseded figure (MUST NOT cite as a ceiling).** The IFScale "68% accuracy at 500 instructions" figure MUST NOT be cited as a capability ceiling or as the justification for APS density limits. The real finding is that instruction-following accuracy *degrades* with density — even the best frontier models reach only ~68% at 500 instructions, with a primacy bias toward earlier instructions `[IFSCALE]` — which *supports* a density cap rather than refuting it. (A non-peer-reviewed 2026 vendor re-run reports much higher counts on a keyword-inclusion proxy task `[ARIZE26]`; it is preliminary evidence only and MUST NOT be cited as an established capability ceiling.) Any numeric capability claim that survives MUST carry an "evidence as of <date>" caveat. The density discipline rests on adherence-and-cost economics (#4), not on a claim that models cannot follow many instructions.
 
@@ -196,7 +197,7 @@ Every emitted diagnostic MUST be the object `{ code, severity, layer, span, mess
 
 ### 8.2 BLOCKING vs ADVISORY (normative)
 
-A rule is **BLOCKING** if and only if its defect changes **what gets built** — the obligation is incomplete, non-binding, untestable, ambiguous, contradictory, or unsafe to parallelize. A blocking diagnostic carries `severity: error`, and the merge gate (§14) MUST NOT pass an artifact while any blocking diagnostic is unresolved (unless waived, §8.6).
+A rule is **BLOCKING** if and only if its defect changes **what gets built** — the obligation is incomplete, non-binding, untestable, ambiguous, contradictory, or unsafe to parallelize. A blocking diagnostic carries `severity: error`, and the merge gate (§14) MUST NOT pass an artifact while any blocking diagnostic is unresolved (unless waived, §8.6). That a defect changes what gets built is detectable cheaply *before* generation: a small parameter-efficiently-finetuned classifier reaches F1 0.804 / MCC 0.745, beating frontier LLMs (≈0.47–0.52 F1), and finds under-specification the highest-severity defect class [SPECVALIDATOR] — supporting BLOCKING status for actor/object incompleteness (`SOL-M001`) and uncaptured ambiguity (`SOL-P008`).
 
 A rule is **ADVISORY** if and only if its defect affects only **how it reads** — style, length, voice, redundancy — without changing the built behavior. An advisory diagnostic carries `severity: warning` and does not block on its own.
 

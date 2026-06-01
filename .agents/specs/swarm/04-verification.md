@@ -327,7 +327,7 @@ The following MUST be rejected as invalid proofs and MUST NOT yield `PASS`:
 
 ### 15.10 Oracle adequacy
 
-A `PASS` is only as trustworthy as the **oracle** that produced it — the decision procedure that says whether the observed behaviour satisfies the obligation. A bound proof can pass against a *weak* oracle and still be wrong about the obligation. This is not a corner case: on SWE-bench Verified, 7.8% of patches that pass the official developer-written test suite are in fact incorrect, and the bundled tests inflate reported resolution rates by 6.2 absolute percentage points [SWEBENCH-ADQ]. The underlying issue is the **test-oracle problem** — when a precise oracle is unavailable, a single concrete example cannot stand in for the obligation's predicate, and metamorphic/property-based pseudo-oracles are the principled response [ORACLE]. Swarm therefore treats "the proof passed" as **necessary but not sufficient**: a proof MUST also record *what it exercised* relative to the obligation, and stronger obligations demand stronger oracles.
+A `PASS` is only as trustworthy as the **oracle** that produced it — the decision procedure that says whether the observed behaviour satisfies the obligation. A bound proof can pass against a *weak* oracle and still be wrong about the obligation. This is not a corner case: on SWE-bench Verified, 7.8% of patches that pass the official developer-written test suite are in fact incorrect, and the bundled tests inflate reported resolution rates by 6.2 absolute percentage points [SWEBENCH-ADQ]; an independent audit similarly found 345 patches mislabeled as passing, affecting 40.9% of SWE-bench Lite and 24.4% of SWE-bench Verified leaderboard entries (18 and 11 ranking changes) [UTBOOST]. The underlying issue is the **test-oracle problem** — when a precise oracle is unavailable, a single concrete example cannot stand in for the obligation's predicate, and metamorphic/property-based pseudo-oracles are the principled response [ORACLE]. Swarm therefore treats "the proof passed" as **necessary but not sufficient**: a proof MUST also record *what it exercised* relative to the obligation, and stronger obligations demand stronger oracles.
 
 This section is a **contract, not shipped tooling** (§2, §17.1): the adequacy record below is a field a future harness reads, and the `SOL-V011` check is manual-today.
 
@@ -501,7 +501,7 @@ A surface-policy model is *not* a licence to treat the codebase as regenerable. 
 
 > code is disposable; all source SHOULD be regenerated from specs; manual code edits are forbidden; specs contain every implementation detail; the model MAY rewrite the codebase from specs.
 
-Code is reconciled implementation reality, not a minified build product of the spec. Only a surface explicitly marked `generated` (below) is regenerated, and even then only from a *named source artifact* — never from prose intent at large. Every other surface preserves hand-written reality; the spec governs whether and how that reality may change, not whether it gets to exist.
+Code is reconciled implementation reality, not a minified build product of the spec. Only a surface explicitly marked `generated` (below) is regenerated, and even then only from a *named source artifact* — never from prose intent at large. Every other surface preserves hand-written reality; the spec governs whether and how that reality may change, not whether it gets to exist. This reconcile-not-regenerate doctrine echoes model-driven-engineering round-trip engineering, where round-tripping keeps artefacts consistent rather than performing a one-way transformation [ROUNDTRIP] — prior art for the design decision, not empirical proof of it.
 
 #### 16.6.2 The five surface policies (closed set)
 
@@ -509,7 +509,7 @@ A code region declares exactly one policy. The set is closed: a surface that fit
 
 | Policy | Meaning | Manual edits |
 | --- | --- | --- |
-| `generated` | Regenerated from a named source artifact (an OpenAPI doc, a schema, an interface spec). The artifact is the truth; the file is its emission. | **Forbidden** — edit the source artifact and regenerate; a hand-edit is overwritten and is a finding. |
+| `generated` | Regenerated from a named source artifact (an OpenAPI doc [OPENAPI], a schema, an interface spec). The artifact is the truth; the file is its emission. | **Forbidden** — edit the source artifact and regenerate; a hand-edit is overwritten and is a finding. |
 | `governed` | Reconciled implementation reality under an obligation. A spec owns intent; the code owns realization; trace/review reconcile them. | **Allowed only with an obligation trace** (`allowed_with_trace`) — every change carries an obligation id and emits a trace. |
 | `observed` | Existing code not yet governed by Swarm — pre-existing reality with no obligation behind it. | Allowed, but the surface needs an audit and a spec before it can become `governed`. |
 | `external` | Vendor or third-party code (dependencies, generated SDKs you do not own, copied upstream). | **Do not modify** — changes belong upstream or in an owned wrapper, not here. |

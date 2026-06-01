@@ -412,6 +412,8 @@ The `SOL-P` prose rules are heuristic and so carry a measurable false-positive r
 | precision | ≥ 0.90 | of spans a `SOL-P` rule flags, ≥90% are true defects (few false positives) |
 | recall | ≥ 0.85 | of true prose defects present, ≥85% are flagged (few misses) |
 
+For honest calibration: field deployments of lightweight requirement-smell detection report only ≈59% average precision at ≈82% average recall, with high variation (prototype Smella, three industrial contexts [SMELLS]). The ≥0.90/≥0.85 figures above are **gold-corpus** targets — a curated, labeled fixture is a more controlled setting than open field text — so the corpus MUST be curated to that standard rather than assuming a generic heuristic run reaches it.
+
 ```yaml
 # fixtures/prose/labels.yaml — labeled SOL-P corpus (inert data)
 - id: P-001
@@ -613,7 +615,7 @@ These features are explicitly deferred. v0.1 conformance MUST NOT depend on them
 
 | # | Deferred feature | Why deferred | v0.2 direction |
 |---|---|---|---|
-| D1 | **Timing semantics** — `WITHIN`, `BEFORE`, `UNTIL`, `IMMEDIATELY`, `EVENTUALLY` | sound timing needs real temporal-logic semantics, not opaque keywords | FRETish-style temporal logic binding to proofs (needs the §15 proof model) |
+| D1 | **Timing semantics** — `WITHIN`, `BEFORE`, `UNTIL`, `IMMEDIATELY`, `EVENTUALLY` | sound timing needs real temporal-logic semantics, not opaque keywords | FRETish-style temporal logic binding to proofs (needs the §15 proof model); established precedent: FRET→Ogma→Copilot generates real-time C runtime monitors from structured natural language [FRETMON] |
 | D2 | **Expression sublanguage for conditions** | v0.1 treats the `WHERE`/`WHILE`/`WHEN`/`IF` condition body as opaque text | a typed expression grammar so conditions are machine-evaluable |
 | D3 | **Cross-spec ID import syntax** | v0.1 qualifies a cross-spec reference inline as `spec-id#AC-001` but has no import declaration | a declared import/namespace mechanism |
 | D4 | **The fenced `:::TYPE` editor alias** | bare-header `TYPE PREFIX-NNN:` is the only normative form; fenced blocks are fragile to parse | an OPTIONAL editor-robustness alias that lowers to the bare form |

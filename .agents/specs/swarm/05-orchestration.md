@@ -191,7 +191,7 @@ The following are explicitly OUT of the kernel and MUST be documented, where the
 | Inter-agent wire protocols (A2A / MCP) | Transport between running agents; no markdown artifact, no kernel surface. |
 | SDK delegation primitives | Spawning/handing off live agents; agents are not yet reliable at real-time coordination, so the kernel records the *contract*, not the call. |
 
-A conformant Swarm repo MUST NOT claim any of the above exists. It MUST present the dependency DAG, conflict graph, and predicate as *inputs a launcher could one day consume*, and the coordination artifact (§19) as the recorded contract a human (or eventual checker) reads.
+A conformant Swarm repo MUST NOT claim any of the above exists. It MUST present the dependency DAG, conflict graph, and predicate as *inputs a launcher could one day consume*, and the coordination artifact (§19) as the recorded contract a human (or eventual checker) reads. This staged-contract stance — recording the contract rather than running live multi-agent orchestration — has empirical support: a simple localize→repair→validate pipeline reaches 32.00% on SWE-bench Lite at $0.70, outperforming the elaborate open-source multi-agent systems of its time [AGENTLESS].
 
 ---
 

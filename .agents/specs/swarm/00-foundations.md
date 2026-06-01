@@ -77,7 +77,7 @@ This specification holds itself to the same standard it imposes on agents: **rea
 
 ### 1.1 The thesis
 
-Swarm treats a **specification as source code** and a **fleet of agents as the compiler**. Human intent is written as a controlled-markdown specification; that specification is compiled — through an ordered, named sequence of transformations — into work that is implemented, verified against the original obligations, and promoted into durable project knowledge, at an extremely high and *evidenced* level of confidence.
+Swarm treats a **specification as source code** and a **fleet of agents as the compiler**. Human intent is written as a controlled-markdown specification; that specification is compiled — through an ordered, named sequence of transformations — into work that is implemented, verified against the original obligations, and promoted into durable project knowledge, at an extremely high and *evidenced* level of confidence. Treating the written specification — not the code — as the artifact tooling consumes is the established pattern of industry interface and configuration languages: OpenAPI [OPENAPI], Terraform [TERRAFORM], and Smithy [SMITHY] each make a written spec the authoritative source from which servers, clients, SDKs, and documentation are generated, and Kubernetes objects carry a desired-state `spec` reconciled against an observed-state `status` [K8S-SPECSTATUS].
 
 > **Swarm is an obligation-centered specification compiler framework for agentic software engineering. It turns human intent into verifiable obligations, lowers those obligations into bounded agent tasks, verifies traces against obligations, and promotes durable discoveries back into project memory.**
 
@@ -233,14 +233,14 @@ In an adopted project, Swarm's artifacts live under `.swarm/` by default; `.agen
 
 ### 2.8 Source, status, and generated are separate categories
 
-Desired state (`sources/`), observed state (`status/`), and generated execution material (`generated/`) are **distinct artifact categories** in the workspace; a spec is the desired-state artifact and is never edited to record pass/fail. (Design rationale.)
+Desired state (`sources/`), observed state (`status/`), and generated execution material (`generated/`) are **distinct artifact categories** in the workspace; a spec is the desired-state artifact and is never edited to record pass/fail. (Design rationale; precedent: Kubernetes objects separate a desired-state `spec` from an observed-state `status` and reconcile the difference between them [K8S-SPECSTATUS].)
 
 - *Rationale:* recording observed satisfaction back into the intent artifact destroys the boundary between *what is required* and *what was observed*, the same conflation Invariant 4 forbids between obligation and evidence.
 - *Consequence:* desired behavioral intent lives in `sources/` (`*.swarm.md`), observed satisfaction and drift live in `status/`, and derived task frames, traces, and reviews live in `generated/`; a `VERDICT`/`STALE`/`CONTRADICTED` result MUST be recorded as a status/verdict artifact, never folded into the source spec's obligation text (§16, §20).
 
 ### 2.9 Specs own intent; code owns realization
 
-A `spec.swarm.md` owns desired behavioral **intent**; code owns implementation **reality**; and the trace/review/status layer reconciles the two. Code is NOT a disposable bundle regenerated from the spec. (Design rationale; this **strengthens** Invariant 4 — "code is reality," §2.1.4 — by stating the converse: just as code may not silently amend intent, the spec may not silently overwrite code as though code were a derived output.)
+A `spec.swarm.md` owns desired behavioral **intent**; code owns implementation **reality**; and the trace/review/status layer reconciles the two. Code is NOT a disposable bundle regenerated from the spec. (Design rationale; this **strengthens** Invariant 4 — "code is reality," §2.1.4 — by stating the converse: just as code may not silently amend intent, the spec may not silently overwrite code as though code were a derived output. The spec-owns-intent / code-owns-reality split has documented prior art in model-driven-engineering round-trip work, where round-tripping keeps multiple artefacts consistent rather than regenerating one from another [ROUNDTRIP].)
 
 - *Rationale:* treating code as regenerable-from-spec output would license a model to rewrite an existing codebase from intent alone, discarding the implementation reality that Invariant 4 makes load-bearing evidence.
 - *Consequence:* manual and agent edits to governed code are legitimate and reconcile through trace/review/status; no canonical text MAY claim application code is disposable, must always be regenerated, or that manual edits are forbidden, except where a per-surface policy explicitly declares it `generated` (§8 surface policies, §16, §22).

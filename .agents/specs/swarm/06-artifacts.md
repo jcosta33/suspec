@@ -1034,7 +1034,7 @@ The workspace separates **desired state** from **observed state** as two distinc
 
 A spec MUST NOT be continuously edited to add pass/fail annotations, per-obligation verdicts, or drift notes. Doing so would (a) churn the `source_hash` of every obligation on each verification cycle — falsely tripping the staleness rule (§16.2 condition (a)) for obligations whose *intent* never moved — and (b) blur the source-authority line by letting observed reality masquerade as authored intent. Observed satisfaction and drift therefore live in a separate **status artifact**: `status/specs/<ctx>/<slug>.status.md`, which observes exactly one spec.
 
-> *Design rationale.* This mirrors the spec/status separation already fixed for the workspace (`sources/specs/` holds desired behavioral state; `status/specs/` holds observed satisfaction of that behavior). The status artifact is the workspace's persisted projection of the judged obligation graph — the read-model the merge gate (§14) and drift detection (§16) consult, never a second place where intent is authored.
+> *Design rationale.* This mirrors the spec/status separation already fixed for the workspace (`sources/specs/` holds desired behavioral state; `status/specs/` holds observed satisfaction of that behavior). The status artifact is the workspace's persisted projection of the judged obligation graph — the read-model the merge gate (§14) and drift detection (§16) consult, never a second place where intent is authored. The desired-state/observed-state split is itself an established pattern: Kubernetes objects carry a desired-state `spec` and an observed-state `status`, and the system reconciles the difference between the two [K8S-SPECSTATUS].
 
 #### 21.11.2 Contract
 
