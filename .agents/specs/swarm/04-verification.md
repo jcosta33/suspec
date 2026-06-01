@@ -584,7 +584,7 @@ Three corollaries, each normative:
 - **Every completion claim maps to independent verification.** No obligation is `PASS` on the model's say-so; it is `PASS` only against an independent deterministic or evidentiary oracle (§14, §15).
 - **A SOFT-control artifact MUST NOT define hard semantics.** No skill, persona/profile, or `AGENTS.md` section may define modality, authority order, or verification semantics — those live in SOL and the typed IR (Q-semantics-1, §2). A regression check MUST confirm this (§34).
 
-> Rationale (Q-enforcement-1): Anthropic's own guidance frames memory/instructions as "context, not enforced configuration" and points to a PreToolUse hook for anything that must hold. Multi-turn reliability decay and prompt-format sensitivity make a model an unsound enforcement substrate. Honesty about this boundary is what lets Swarm be trusted.
+> Rationale (Q-enforcement-1): Anthropic's own guidance frames memory/instructions as context, not enforced configuration, and points to a PreToolUse hook for anything that must hold `[ANTHROPIC-MEM]`. Multi-turn reliability decay and prompt-format sensitivity make a model an unsound enforcement substrate. Honesty about this boundary is what lets Swarm be trusted.
 
 ### 17.2 The enforcement-lane artifact (G4)
 
@@ -667,7 +667,7 @@ For any change whose domain is `security` (Axis B rank 3, §22) or that touches 
 
 ### 17.6 When the oracle is a model judge (the soft-oracle complement to §17.4)
 
-§14.4 is candid that Swarm ships no runtime, so **every verdict today is recorded by a human or agent** in `review.md`; and the `review` task kind's default suite is `manual @ REVIEW` over the recorded evidence (§15.8). Taken together, this means the de-facto oracle for a large share of obligations is **an LLM judge** rendering a `manual` verdict (§15.1). The proof-strength order already ranks `manual`/`monitor` at the bottom (§15.6) precisely because such a judgment is fallible; this subsection makes the *why* normative and gives the **soft-oracle** discipline that complements the hard-oracle tie-break of §17.4. Where §17.4 governs what to do when an executable proof and a judgment *disagree*, §17.5 governs how a judgment is *rendered* in the first place, so it is trustworthy enough to enter that contest.
+§14.4 is candid that Swarm ships no runtime, so **every verdict today is recorded by a human or agent** in `review.md`; and the `review` task kind's default suite is `manual @ REVIEW` over the recorded evidence (§15.8). Taken together, this means the de-facto oracle for a large share of obligations is **an LLM judge** rendering a `manual` verdict (§15.1). The proof-strength order already ranks `manual`/`monitor` at the bottom (§15.6) precisely because such a judgment is fallible; this subsection makes the *why* normative and gives the **soft-oracle** discipline that complements the hard-oracle tie-break of §17.4. Where §17.4 governs what to do when an executable proof and a judgment *disagree*, §17.6 governs how a judgment is *rendered* in the first place, so it is trustworthy enough to enter that contest.
 
 The empirical case for distrusting a bare single-judge `manual` verdict is threefold:
 
@@ -690,9 +690,9 @@ These requirements extend the `SOL-V` (VERIFICATION) layer and are enforced by h
 
 | Condition | Disposition |
 | --- | --- |
-| `manual` verdict with no recorded judge identity (§17.5.1.1) | Treated as `UNVERIFIED` at the gate (§15.9); raise a `SOL-V` judge-provenance smell. |
-| Judge shares lineage/family with the implementer/generator (§17.5.1.2) | Verdict does not count; re-judge by an unrelated oracle. BLOCKING. |
-| Implementer rendered its own `manual` verdict (§17.5.1.3) | Treated as `UNVERIFIED`; require an independent reviewer. BLOCKING. |
-| `RISK high`/`critical` obligation with only one `manual` judgment (§17.5.1.4) | Treated as `UNVERIFIED` (dual judgment owed); judges that disagree → `CONTRADICTED` → §17.4. |
+| `manual` verdict with no recorded judge identity (§17.6.1 req 1) | Treated as `UNVERIFIED` at the gate (§15.9); raise a `SOL-V` judge-provenance smell. |
+| Judge shares lineage/family with the implementer/generator (§17.6.1 req 2) | Verdict does not count; re-judge by an unrelated oracle. BLOCKING. |
+| Implementer rendered its own `manual` verdict (§17.6.1 req 3) | Treated as `UNVERIFIED`; require an independent reviewer. BLOCKING. |
+| `RISK high`/`critical` obligation with only one `manual` judgment (§17.6.1 req 4) | Treated as `UNVERIFIED` (dual judgment owed); judges that disagree → `CONTRADICTED` → §17.4. |
 
-> Rationale (soft-oracle complement to G6): §17.4 keeps the gate honest when proofs *disagree* by ranking the stronger executable oracle above an LLM-judge `manual` verdict (§15.6). But ranking a judgment last does nothing if the judgment itself is silently biased — a self-judged, same-family, single-shot `manual` `PASS` can sail through whenever no executable proof contests it. §17.5 closes that hole: judge identity is recorded (§16.1), the judge is structurally independent of the generator [PREFLEAK][MTBENCH], and high-risk judgments are replicated so that an unreliable single call surfaces as `CONTRADICTED` rather than as false confidence [TRUSTJUDGE]. This is the "no astrology for agents" discipline applied to the one oracle Swarm cannot make executable: when the oracle is a model, name it, isolate it, and double it where the risk is highest.
+> Rationale (soft-oracle complement to G6): §17.4 keeps the gate honest when proofs *disagree* by ranking the stronger executable oracle above an LLM-judge `manual` verdict (§15.6). But ranking a judgment last does nothing if the judgment itself is silently biased — a self-judged, same-family, single-shot `manual` `PASS` can sail through whenever no executable proof contests it. §17.6 closes that hole: judge identity is recorded (§16.1), the judge is structurally independent of the generator [PREFLEAK][MTBENCH], and high-risk judgments are replicated so that an unreliable single call surfaces as `CONTRADICTED` rather than as false confidence [TRUSTJUDGE]. This is the "no astrology for agents" discipline applied to the one oracle Swarm cannot make executable: when the oracle is a model, name it, isolate it, and double it where the risk is highest.

@@ -21,7 +21,7 @@ docs/                              # explains Swarm (prose + tables; not install
     versioning.md                  # the three version axes (§25)
   model/                           # the no-runtime mental model
     compiler-pipeline.md           # 7 phases / 9 passes (§9, §26)
-    source-artifacts.md            # the.swarm. infix partition (§20.1)
+    source-artifacts.md            # the `.swarm.` infix partition (§20.1)
     source-authority.md            # the two-axis authority model + tie-break (§22)
     conformance.md                 # the conformance definition, in prose (§20.4, §32)
   artifacts/                       # one page per artifact contract (§21)
@@ -76,18 +76,7 @@ scaffold/                         # the installable payload root (see note below
       conformance.yaml             # the manifest (data); checker is deferred (§32.7)
       README.md                    # states inertness + "checker is deferred"
       fixtures/                    # the SHIPPED conformance suite — the golden corpus (§33)
-.swarm-version                 # the framework/package version, semver (§25, §20.4)
-    specs/                         # *.swarm.md source specs (the obligation source)
-    tasks/                         # task.md work packets
-    traces/                        # trace.md implementation/preservation claims
-    reviews/                       # review.md verdict records
-    findings/                      # finding.md durable facts
-    adrs/                          # adr.md immutable decisions
-    audits/                        # audit.md observation-only source docs
-    research/                      # research.md investigation source docs
-    prds/                          # prd.md product-requirement source docs
-    rfcs/                          # rfc.md proposal source docs
-    bugs/                          # bug-report.md diagnosis-only source docs
+    .swarm-version                 # framework/package version, semver (§25, §20.4) — adopted project mirrors this as .swarm/VERSION
 ```
 
 **Note — the installable payload directory.** The installable payload directory is `scaffold/.agents/`; it is conceptually "the kernel" — the unitary framework a consuming repository adopts wholesale (§2). A consumer copies the contents of `scaffold/.agents/` to its own `.agents/` and adopts `scaffold/AGENTS.md` as `AGENTS.md`. The framework-dev repo's `scaffold/` is therefore the **shipping location of the installable payload** (the kernel) — *this* repository's authoring-side directory — and is a different artifact from the **adopted-project workspace** the payload installs *into*: in a consuming repo the kernel installs to `.swarm/kernel/`, under which `.swarm/` is the canonical Swarm workspace and `.agents/` is only an agent-tool compatibility surface (the workspace model is specified in §20.5; the framework-dev vs adopted-project distinction is design rationale, not an empirical claim). A v0.2 ADR MAY rename `scaffold/` → `kernel/` to make the conceptual name literal; if it does, `scaffold/` MUST be kept as a one-cycle compatibility alias so in-flight adopters do not break, and the alias MUST be removed no later than the following MINOR release. The rename is cosmetic: it changes the payload's directory name, never the `.agents/` interior, the artifact filenames (§20.2), or the conformance definition (§20.4).
@@ -211,7 +200,7 @@ A repository is **Swarm-conformant** if and only if all of the following hold:
 1. It contains a self-contained copy of all six **Tier-2 language/reference docs** (§20.3.2).
 2. It contains a copyable template for each of the seven **Tier-1 core artifacts** (§20.3.1), and each template satisfies its §21 contract.
 3. It contains a **populated `AGENTS.md` bootloader** (§31) — not an empty placeholder — within the ≤200-line / ≤25 KB density cap (§2, §17).
-4. It contains the framework version file **`.agents/.swarm-version`** (§25), carrying a valid semver.
+4. It contains the framework/package version file — `scaffold/.agents/.swarm-version` in the framework-dev repo, or `.swarm/VERSION` in an adopted project (§20.5.1, §25) — carrying a valid semver.
 
 A repository that omits any of the four MUST NOT be described as Swarm-conformant. Conditional artifacts (Tier 3) and the reserved `.swarm.*.json` contract files are **not** required for conformance. The full mechanically-checkable conformance contract — the exact checks, their inputs, and the deferral of an automated checker to a future CLI — is given in §32; the golden corpus that exercises it is given in §33.
 

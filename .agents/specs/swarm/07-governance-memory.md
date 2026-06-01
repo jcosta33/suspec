@@ -294,10 +294,10 @@ Promotion is **mandatory before task closure** (§23.4): every discovery a task 
 | Discovery | Promote to |
 | --------- | ---------- |
 | New intended behaviour (a real obligation/constraint to build against) | `spec.swarm.md` (a new or amended `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`), or an ADR when the behaviour is gated on an undecided architectural/product choice. |
-| Durable architectural or product decision (a choice with consequences, alternatives, trade-offs) | An ADR (`.agents/adrs/<nnnn>-<slug>.md`). |
-| Present-state risk or debt (what *is*, observed but not yet a chosen change) | An audit (`.agents/audits/<slug>.md`) — observation-only, never prescriptive (§20.3.3). |
-| Reproduced defect evidence (root cause + expected vs actual, reproducible) | A bug-report (`.agents/bug-reports/<slug>.md`) — diagnosis-only; the fix promotes onward to a `task_kind: fix` task (§20.3.3). |
-| Reusable project fact (a durable claim learned during work, with evidence) | A finding (`.agents/findings/<slug>.md`), indexed in `memory/INDEX.md` with a `Load when` (§23.1.1) and full provenance (§23.3). |
+| Durable architectural or product decision (a choice with consequences, alternatives, trade-offs) | An ADR (`.swarm/sources/adrs/<nnnn>-<slug>.md`). |
+| Present-state risk or debt (what *is*, observed but not yet a chosen change) | An audit (`.swarm/sources/audits/<slug>.md`) — observation-only, never prescriptive (§20.3.3). |
+| Reproduced defect evidence (root cause + expected vs actual, reproducible) | A bug-report (`.swarm/sources/bugs/<slug>.md`) — diagnosis-only; the fix promotes onward to a `task_kind: fix` task (§20.3.3). |
+| Reusable project fact (a durable claim learned during work, with evidence) | A finding (`.swarm/sources/findings/<slug>.md`), indexed in `memory/INDEX.md` with a `Load when` (§23.1.1) and full provenance (§23.3). |
 | Repeated cross-task pattern (a recurring solution shape seen across more than one task) | `memory/patterns/*.md`. |
 | Terminology clarification (a term whose meaning was ambiguous or drifted) | `memory/glossary.md` (the canonical lexicon; resolves `SOL-V`-layer terminology drift at the source). |
 | Universal workflow rule (a procedure that should apply to every future task) | A pass-guide edit (the procedure) **plus at most a one-line `AGENTS.md` pointer** — NEVER inline procedure in `AGENTS.md`; the bootloader holds persistent facts, not steps (§23.4.1). |

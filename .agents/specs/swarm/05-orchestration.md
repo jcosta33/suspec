@@ -223,7 +223,7 @@ Status values MUST be drawn from: `not-started`, `in-progress`, `stalled`, `awai
 
 ### 19.3 The hand-off contract (per worker)
 
-Each worker row carries a **hand-off contract** — the four fields below. This is what defeats "vague subtask descriptions," the field's named #1 multi-agent failure mode (MAST: specification issues 41.8% + inter-agent coordination 36.9% together ≈ 79% of multi-agent failures — and a recorded hand-off contract attacks both `[MAST]`), so it MUST be recorded, not left to prose.
+Each worker row carries a **hand-off contract** — the four fields below. This is what defeats "vague subtask descriptions," the field's named #1 multi-agent failure mode (MAST: specification issues 41.77% + inter-agent misalignment 36.94% together ≈ 79% of multi-agent failures — and a recorded hand-off contract attacks both `[MAST]`), so it MUST be recorded, not left to prose.
 
 | Hand-off field | Meaning |
 |---|---|
@@ -309,22 +309,22 @@ This subsection specifies the **task lifecycle** an orchestration run follows, t
 
 #### 19.8.1 The task lifecycle (four phases)
 
-A task moves through four recorded phases. Each phase names the artifacts it reads and the artifacts it writes; the durable record at the end is the ledger entry (§23.x), the updated status artifact (§21.x), and any promoted findings — never the generated execution files, which are disposable (§20, Principle 7 of the workspace doctrine).
+A task moves through four recorded phases. Each phase names the artifacts it reads and the artifacts it writes; the durable record at the end is the ledger entry (§23.7), the updated status artifact (§21.11), and any promoted findings — never the generated execution files, which are disposable (§20, Principle 7 of the workspace doctrine).
 
 | Phase | What is read | What is produced | Where |
 |---|---|---|---|
 | **1. Creation** | the source artifact (`spec.swarm.md`, §21.2) | the lowered chain `source artifact → obligation graph → task graph → generated task frame` | task frame under `.swarm/generated/tasks/<task-slug>.md` |
-| **2. Execution** | the task frame + the source spec | the toolchain prepares the task frame, a worktree, a branch, agent startup context, the verification matrix (§21.2), and the promotion queue (§23.x) | worktree at `.worktrees/swarm/<spec-slug>/<task-slug>`, branch `swarm/<spec-slug>/<task-slug>` |
+| **2. Execution** | the task frame + the source spec | the toolchain prepares the task frame, a worktree, a branch, agent startup context, the verification matrix (§21.2), and the promotion queue (§23.4) | worktree at `.worktrees/swarm/<spec-slug>/<task-slug>`, branch `swarm/<spec-slug>/<task-slug>` |
 | **3. Completion** | the worktree diff + proof evidence | the agent emits a **trace**; review emits a **review** with per-obligation `VERDICT` blocks (§14, §21.5) | trace under `.swarm/generated/traces/`, review under `.swarm/generated/reviews/` |
-| **4. Reconciliation** | the trace + review | compact trace/review into the ledger; promote durable findings; update the status artifact; remove or archive the generated files; remove the worktree | ledger under `.swarm/ledger/` (§23.x), status under `.swarm/status/` (§21.x), worktree removed |
+| **4. Reconciliation** | the trace + review | compact trace/review into the ledger; promote durable findings; update the status artifact; remove or archive the generated files; remove the worktree | ledger under `.swarm/ledger/` (§23.7), status under `.swarm/status/` (§21.11), worktree removed |
 
 Creation is the lowering chain of §11 and §18.4: the `lower` pass emits the obligation graph and the two derived graphs (dependency DAG + write-surface conflict graph, §18.4); the `decompose` pass projects those onto a task graph; each task graph node materializes as one **generated task frame** under `.swarm/generated/tasks/`. The task frame is a *generated execution packet*, not a durable source-of-truth document — it MAY be recreated from the source artifact and MUST NOT be relied on as authority after the task closes.
 
-Execution is the toolchain's preparation step. The toolchain prepares exactly six things and dispatches nothing the kernel owns: the task frame, the worktree, the branch, the agent startup context (the `## Parent contract` of §19.4 carried verbatim into the child task), the verification matrix the task must satisfy, and the promotion queue the task must drain before close (§23.x). Dispatching the agent that fills the worktree is a launcher concern (§18.8), out of the kernel.
+Execution is the toolchain's preparation step. The toolchain prepares exactly six things and dispatches nothing the kernel owns: the task frame, the worktree, the branch, the agent startup context (the `## Parent contract` of §19.4 carried verbatim into the child task), the verification matrix the task must satisfy, and the promotion queue the task must drain before close (§23.4). Dispatching the agent that fills the worktree is a launcher concern (§18.8), out of the kernel.
 
 Completion is the trace/review pair. The agent emits its implementation claims as a **trace** (`.swarm/generated/traces/`, §21.4); the `review` pass judges those claims against the source spec, the diff, and the proof evidence — never against the trace's self-report (§14, §32) — and emits a **review** (`.swarm/generated/reviews/`, §21.5) carrying one `VERDICT` per required `VERIFY BY` binding (§15.7).
 
-Reconciliation is the only phase that produces durable record. After the merge gate (§19.8.3) passes and the branch merges — or the task is abandoned — the toolchain MUST: (1) compact the trace and review into a ledger entry (§23.x) preserving covered obligations, changed surfaces, proof, verdicts, and promotion results; (2) drain the promotion queue, promoting durable findings to their typed homes (§23.4.2); (3) update the status artifact (§21.x) so observed satisfaction reflects the merge; (4) remove or archive the generated task/trace/review files; and (5) remove the worktree (§19.8.2). A task MUST NOT be treated as closed while any promotion-queue item is still `pending` (§23.4).
+Reconciliation is the only phase that produces durable record. After the merge gate (§19.8.3) passes and the branch merges — or the task is abandoned — the toolchain MUST: (1) compact the trace and review into a ledger entry (§23.7) preserving covered obligations, changed surfaces, proof, verdicts, and promotion results; (2) drain the promotion queue, promoting durable findings to their typed homes (§23.4.2); (3) update the status artifact (§21.11) so observed satisfaction reflects the merge; (4) remove or archive the generated task/trace/review files; and (5) remove the worktree (§19.8.2). A task MUST NOT be treated as closed while any promotion-queue item is still `pending` (§23.4).
 
 #### 19.8.2 Worktree and git etiquette (the contract)
 
@@ -369,6 +369,7 @@ A task **MUST NOT merge** if any of the following holds:
 | 3 | A **blocking `QUESTION` affects assigned work** — an unresolved `[blocking]` `QUESTION` (§6.5) whose `AFFECTS` set reaches an obligation the task covers. | §6.5, §11.1.2 (R-BLOCKING-Q) |
 | 4 | The **promotion queue is unhandled** — any promotion-queue item for the task is still `pending`. | §23.4 |
 | 5 | A **write-surface conflict remains** — a worker's OWNED path overlaps another's (`SOL-O001`), or a worker owns a path outside its obligations' declared `WRITES` (`SOL-O005`, §19.7), or an unmerged dependency in the `DEPENDS ON` merge-order remains. | §18.5, §18.7, §19.7 |
+| 6 | The **base branch is dirty or out of policy** — uncommitted changes on the base, or the base violates a branch-protection / merge policy. | git etiquette (design rationale) |
 
 Conditions 1–4 are the §14 merge gate read at task scope — a missing trace/review is a verification gap, a `FAIL`/`UNVERIFIED` verdict is a failed gate, a blocking `QUESTION` is an unresolved precondition, and an unhandled promotion queue blocks task close (§23.4). Condition 5 is the orchestration overlay: the per-task gate additionally requires that the §18 write-disjoint invariant still holds at merge time, because two tasks that have silently drifted into the same surface produce exactly the hard-to-review merge corruption that `SOL-O001` was raised to ERROR to prevent (§18.7). When all conditions clear, the branch merges, its resolution is recorded in the §19.6 merge log (with an INTENT-PRESERVED-PROOF for every non-trivial conflict), and the task advances to reconciliation (§19.8.1 phase 4).
 

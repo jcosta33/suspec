@@ -27,7 +27,7 @@ A repository is **Swarm-conformant** if and only if it satisfies all four clause
 | (a) | **Language references present** | the kernel-required language/reference docs exist: SOL ref, APS ref, the lint/error taxonomy (`SOL-<LAYER>NNN`), source-authority, promotion-protocol, distillation-loss-budget |
 | (b) | **The 7 core templates exist** | `spec.swarm.md`, `task.md`, `trace.md`, `review.md`, `finding.md`, `adr.md`, `memory/INDEX.md` are present as copyable templates |
 | (c) | **Populated `AGENTS.md` bootloader** | `AGENTS.md` exists, is ≤200 lines / ≤25 KB, and its `Commands` table binds at least the required command rows (§32.4) |
-| (d) | **`.agents/.swarm-version` present** | the framework/package version file exists and holds a semver string (ADR 0015) |
+| (d) | **version file present** | the framework/package version file exists with a valid semver — `scaffold/.agents/.swarm-version` (framework-dev) or `.swarm/VERSION` (adopted project, §20.5.1) (ADR 0015) |
 
 A repo that fails any clause is **non-conformant**. The checker (§32.7) consumes this definition; the `conformance.yaml` manifest encodes the mechanically-checkable parts of (b)–(d).
 
@@ -242,21 +242,6 @@ Swarm validates trace / review / promotion.    (trace validation/review prep/mer
 
 This "prepare → delegate → reconcile" split is the toolchain projection of the kernel's static coordination contract (§18.1, §19): the orchestrator coordinates workers but does not perform their work `[ANTHROPIC-MA]`, and each worker runs single-threaded with full context for its packet `[COGNITION]`. Because the worker performs the actual coding loop, **Swarm MUST NOT become an agent CLI**; it remains a toolchain that prepares and reconciles obligation-bounded work, and the entire surface of this subsection is a documented contract a future tool builds against, never shipped here (Invariant 1).
 
----
-
-Now the §35.1 cross-ref note. The existing N1 row already points to §32.7. I'll add a one-line cross-ref tying the no-CLI/runtime non-goal to the toolchain↔agent-CLI boundary specifically.
-
-# Tooling contract (NOT SHIPPED). Swarm is markdown-only (Invariant 1).
-# This is the surface a future launcher would build against, not a tool Swarm provides.
-swarm lint      <spec>.swarm.md            -> diagnostics[] (SOL-<LAYER>NNN)
-swarm build-ir  <spec>.swarm.md            -> <spec>.swarm.ir.json
-swarm plan      <spec>.swarm.ir.json       -> <spec>.swarm.plan.json
-swarm verify    <task>.md                  -> verdicts (core + lifecycle)
-swarm promote   <finding>.md               -> memory/INDEX.md update
-```
-
-The checker that would consume `conformance.yaml` is itself part of this deferred surface (a `swarm conform`-class verb). Until a launcher exists, the contract still serves: a human validates a repo against it by hand, and the fixtures (§33) pin the expected verdicts independently of any tool.
-
 ### 32.8 Conformance maturity ladder
 
 §32.2 / §20.4 give conformance as a single binary predicate. That predicate is the *terminal* judgement, but a repository adopting Swarm passes through observable intermediate states, and the incremental-adoption stance (a repo MAY install the kernel incrementally) needs a vocabulary for "how far in" a repository is without overloading the word *conformant*. This subsection defines a five-tier ladder. Each tier is named, each is BOUND to checkable clauses already specified elsewhere in this document (so the ladder introduces no new obligations), and each is a strict superset of the tier below it — a repository at tier *n* satisfies tiers `1..n`. The tiers are diagnostic labels for adoption progress; the only tier that coincides with the normative `Swarm-conformant` predicate is **Swarm-verifiable** (tier 4), stated explicitly below.
@@ -470,7 +455,6 @@ Four predicates are not owned by a single pass but are scored wherever the relev
 
 Drift-detection is defined without a runtime: drift is found by the `review` and `promote` passes comparing the approved obligation set against the recorded evidence and the higher-authority sources, never by observing a running system. A pass that fails to flag a drift class present in its fixture fails the drift-detection predicate even if every other predicate holds.
 
-
 ### 33.7 Evaluation hygiene: contamination and held-out fixtures
 
 A golden corpus that ships only the canonical fixtures of §33.1–§33.6 has a latent failure mode of its own: once the fixtures and their expected verdicts are public (they live in `scaffold/.agents/conformance/fixtures/` and are read by every adopter), an agent-as-compiler can be tuned — by training, by an over-stuffed instruction file, or simply by an author copying the corpus — to reproduce the *labels* without performing the *passes*. This is benchmark data contamination: training on (or memorizing) the evaluation data yields "inaccurate or unreliable performance" rather than a measurement of capability [BDCSURVEY]. The risk is not hypothetical for this corpus specifically — benchmark-building rigor is broadly deficient: the HOW2BENCH survey finds that roughly 70% of code benchmarks took no data-quality-assurance measures, and applies a 55-item lifecycle checklist precisely because contamination, duplicated samples, and unreproducible provenance are the norm, not the exception [HOW2BENCH]. The corpus must therefore be designed so that a passing verdict evidences a correctly executed pass, not a recognized string.
@@ -502,7 +486,7 @@ This section is the checkable acceptance checklist for when this specification d
 
 ### 34.0 Migration waves
 
-The rework proceeds as seven ordered waves. Each wave has a single goal and a fixed set of mandatory outputs; a wave MUST NOT begin until the prior wave's outputs exist, because every later wave reads the artifacts the earlier one froze (the canonical docs gate the payload, the payload gates the doc reframe, and so on). The A1–A28 acceptance gate (§34.7) is the per-wave *and* final acceptance check: each wave MUST satisfy the subset of A1–A28 that its outputs touch before the next wave starts, and all of A1–A28 MUST pass once Wave 7 completes. The order below is normative.
+The rework proceeds as seven ordered waves. Each wave has a single goal and a fixed set of mandatory outputs; a wave MUST NOT begin until the prior wave's outputs exist, because every later wave reads the artifacts the earlier one froze (the canonical docs gate the payload, the payload gates the doc reframe, and so on). The A1–A28 acceptance gate (§34.7) is the per-wave *and* final acceptance check: each wave MUST satisfy the subset of A1–A28 that its outputs touch before the next wave starts, and all of A1–A28 — plus the AW1–AW9 workspace checks (§34.8) — MUST pass once Wave 7 completes. The order below is normative.
 
 | Wave | Goal | Mandatory outputs |
 |---|---|---|
@@ -514,14 +498,13 @@ The rework proceeds as seven ordered waves. Each wave has a single goal and a fi
 | 6 | **Add examples and evals** — ship the conformance evidence | the golden corpus and fixtures under `scaffold/.agents/conformance/fixtures/` (§33), the three pipeline-complete walkthroughs under `docs/examples/` (§34.3), and the review/profile rubrics |
 | 7 | **Remove deprecated aliases** — drive the surviving-construct count to zero | no canonical `SHALL`, `VERIFY_BY` (underscore), `TASK-MAP`, or fenced `:::`-delimited SOL anywhere in shipped files; each removal is one of the §34.6 regression greps (A19–A28) returning no matches |
 
-
 ### 34.8 Workspace-model migration
 
 These acceptance checks fix the adopted-project workspace model (§20.5, §31): that `.swarm/` is the canonical Swarm workspace, `.agents/` is only an agent-tool compatibility surface, and `AGENTS.md` is a short bootloader. They are the regression searches of the approved workspace spec, reframed as binary A-checks (each is a search, a file-existence test, or a doc-presence test); they carry the same per-wave-and-final force as A1–A28 (§34.7). All are **design rationale** — the workspace/compatibility/bootloader split is a layout decision — and introduce **no new empirical claim**.
 
 | # | Check | How to verify |
 |---|---|---|
-| AW1 | No canonical reference to `.agents/specs`, `.agents/tasks`, or `.agents/memory` | `grep -R "\.agents/\(specs\|tasks\|memory\)"` returns no match in any shipped canonical file; the only permitted matches are lines explicitly marked **compatibility** or **migration** |
+| AW1 | No canonical reference to `.agents/specs`, `.agents/tasks`, or `.agents/memory` | `grep -R "\.agents/\(specs\|tasks\|memory\|sources\|findings\|adrs\|audits\|bugs\|research\|nfrs\|interfaces\)"` returns no match in any shipped canonical file; the only permitted matches are lines explicitly marked **compatibility** or **migration** |
 | AW2 | `.swarm/` is named as the canonical Swarm workspace | a canonical page states `.swarm/` is the workspace and partitions `sources/ status/ generated/ memory/ ledger/ archive/ kernel/ tmp/` as distinct categories (§20.5) |
 | AW3 | `.agents/` is named as a compatibility surface | a canonical page states `.agents/` is an agent-tool compatibility surface, never the Swarm source-of-truth root; mirrored skills/profiles point back to `.swarm/kernel/` |
 | AW4 | `AGENTS.md` is short and inlines no SOL/APS manual | `AGENTS.md` is within the §31.1 density cap and a search for an inlined `SOL`/`APS` manual (`AGENTS\.md` against the §31.1 forbidden-inline rule) returns nothing; at most a one-line language pointer to `.swarm/kernel/language/` survives |
@@ -599,7 +582,7 @@ Each retired construct MUST have zero surviving instances. Each row is a search 
 
 ### 34.7 Acceptance gate
 
-The rework MUST satisfy A1–A28. The gate is the merge-gate analogue (§14): every check is the conformance equivalent of a required obligation, and the rework promotes only when all are satisfied. **Conformance is binary *within* a tier** — at any one tier of the §32.8 maturity ladder there is no partial-conformance state: a single failing check for that tier blocks acceptance at it. Across tiers, conformance is graduated: **a repository's conformance level is its highest fully-satisfied tier** (§32.8), and a repo MAY deliberately target a tier below Swarm-orchestratable. The acceptance gate therefore applies *at the tier a repository targets*: a repo targeting tier *n* MUST pass every A-check that the clauses of tiers 1..*n* bind, and is accepted at tier *n* iff all pass; the unmet checks of higher tiers are out of scope for that repo, not failures. *Swarm-conformant* (§20.4, §32.2) remains reserved for tier 4 (Swarm-verifiable).
+The rework MUST satisfy A1–A28 and the workspace checks AW1–AW9 (§34.8). The gate is the merge-gate analogue (§14): every check is the conformance equivalent of a required obligation, and the rework promotes only when all are satisfied. **Conformance is binary *within* a tier** — at any one tier of the §32.8 maturity ladder there is no partial-conformance state: a single failing check for that tier blocks acceptance at it. Across tiers, conformance is graduated: **a repository's conformance level is its highest fully-satisfied tier** (§32.8), and a repo MAY deliberately target a tier below Swarm-orchestratable. The acceptance gate therefore applies *at the tier a repository targets*: a repo targeting tier *n* MUST pass every A-check that the clauses of tiers 1..*n* bind, and is accepted at tier *n* iff all pass; the unmet checks of higher tiers are out of scope for that repo, not failures. *Swarm-conformant* (§20.4, §32.2) remains reserved for tier 4 (Swarm-verifiable).
 
 ## 35. Non-goals and deferred-to-v0.2
 
@@ -610,15 +593,6 @@ These are not omissions to be filled later; they are deliberate boundaries that 
 | # | Non-goal | Rationale |
 |---|---|---|
 | N1 | **No shipped CLI, runtime, scheduler, differ, or parser** | Invariant 1 (NO RUNTIME). Everything that "runs" is documented as a contract a future tool builds against (§32.7), never shipped by this repo. The toolchain↔agent-CLI boundary (§32.7.2–§32.7.4) is part of this non-goal: a future Swarm toolchain would *prepare and reconcile* obligation-bounded work and *coordinate* agent-CLI workers via adapters, but MUST NOT itself become an agent CLI (own the model loop, chat UI, file-editing, provider auth, or the MCP/tool-calling runtime) `[ANTHROPIC-MA]`, `[COGNITION]` |
-
----
-
-Summary of what I authored and where it goes:
-
-- Edit 1 (`REPLACE-NEAR` the §32.7 heading at line 131): replaces the old 5-verb §32.7 with an expanded §32.7 split into §32.7.1 (the verb table — now 10 verbs incl. `init`, `format`, `improve`, `lower`, `decompose`, `review`), §32.7.2 (toolchain OWNS — all 16 owned concerns), §32.7.3 (does NOT own — the 7 agent-CLI concerns), and §32.7.4 (agent CLIs as worker backends + the 4-agent `yaml` adapter shape with `command`/`working_directory: task_worktree`/`startup_instruction`, plus the prepare→delegate→reconcile rule and the "Swarm MUST NOT become an agent CLI" rule).
-- Edit 2 (`REPLACE-NEAR` the §35.1 N1 row at line 488): extends the existing "no CLI/runtime" non-goal with a one-line cross-ref to §32.7.2–§32.7.4.
-
-Grounding discipline observed: empirical claims (orchestrator coordinates workers / coding parallelizes poorly / single-threaded full-context) cite `[ANTHROPIC-MA]` and `[COGNITION]` inline; the OWNS/does-NOT-own/adapter-shape/naming/path choices are stated as design rationale with no fabricated citation. NO-RUNTIME (Invariant 1) is preserved throughout — every verb, the adapter `yaml`, and the boundary are framed as a documented contract a future toolchain builds against, never shipped. Canonical vocabulary preserved (the passes, `SOL-<LAYER>NNN`, `.swarm/` canonical workspace, `scaffold/`→`.swarm/kernel/` install, §14 merge gate, §18 disjoint write surfaces). Framework-dev repo (`scaffold/`) vs adopted-project workspace (`.swarm/kernel/`) kept distinct: `init` is documented as installing the `scaffold/`-shipped payload to `.swarm/kernel/`.
 | N2 | **No checker shipped** | the conformance contract (§32) and corpus (§33) are inert data; the checker is a deferred launcher concern |
 | N3 | **Provider-neutral** | the spec makes no assumption about which model or agent runs it; SOFT control is context, not enforcement (Invariant 2). No section names a vendor as load-bearing |
 | N4 | **Generative reproducibility is a non-goal; verdict stability is an obligation** | Two layers, deliberately split. **(a) Generative reproducibility** — identical token streams from the model on identical inputs — remains a NON-GOAL: sampling, temperature, and inference determinism are launcher concerns, and current evidence holds that this nondeterminism is an *engineering choice* (it stems from lack of batch-invariance, not inherent randomness; batch-invariant kernels gave 1 unique output across 1,000 completions vs 80 for standard inference) `[DETERMINISM]` (lab blog, not peer-reviewed) — so Swarm specifies obligations and proofs, not the generative process that satisfies them. **(b) Verdict stability**, by contrast, *is* in scope, because the merge gate (§14.4) is the one normative predicate and it can flip on agent-rendered passes: `verify`/`review` render verdicts, and a `manual` proof is recorded agent/human judgment with no executable oracle (§15.1). Normative clarification: a `verify`/`review`/`manual` verdict on **unchanged inputs** (same obligation surface-text, same evidence refs, same source/surface hashes — §16) SHOULD be **stable** across runs; a verdict that **flips across runs on identical inputs** is itself a `CONTRADICTED` condition (§14.1.2), routed through the existing §14 machinery — the two conflicting run results are recorded as the two mandatory conflicting evidence refs, and the gate blocks per §14.4 / §17.4. This adds **no runtime requirement**: like every gate disposition it is a contract, enforced by a deterministic check outside the model where one exists and manual today (§14.4, §17.1). |
@@ -637,8 +611,6 @@ These features are explicitly deferred. v0.1 conformance MUST NOT depend on them
 | D4 | **The fenced `:::TYPE` editor alias** | bare-header `TYPE PREFIX-NNN:` is the only normative form; fenced blocks are fragile to parse | an OPTIONAL editor-robustness alias that lowers to the bare form |
 | D5 | **Memory automation** — embedding/dense retrieval, LRU eviction, automatic staleness hashing, cross-session identity, dashboards | Invariant 1 (NO RUNTIME); the kernel ships the provenance/staleness *fields* (§23), automation needs a runtime | a launcher that computes hashes, evicts, and retrieves against the shipped fields |
 
-```sol
-
 The following deferred rows EXTEND the D1–D5 table above. They are recorded for the same reason: v0.1 conformance MUST NOT depend on them, and a v0.1 spec MUST NOT use any deferred surface they imply.
 
 | # | Deferred feature | Why deferred | v0.2 direction |
@@ -653,6 +625,7 @@ The following deferred rows EXTEND the D1–D5 table above. They are recorded fo
 
 Each row obeys the §25 one-way trigger: any deferred surface that adds language, verdict-model, or lint-namespace structure (D7–D11 as applicable) forces at least a framework MINOR release when specified. D8's drift signal in particular MUST NOT be specified until a verified `sources.md` entry grounds it — the same "no astrology for agents" discipline that governs every empirical claim in this spec (§0, Evidence base).
 
+```sol
 # v0.2-DEFERRED syntax — REJECTED in a v0.1 spec (illustrative)
 REQ AC-099:
   WHEN a 503 is returned

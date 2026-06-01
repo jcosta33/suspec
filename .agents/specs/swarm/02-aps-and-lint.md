@@ -144,7 +144,7 @@ Cross-layer companions an APS reviewer commonly meets (defined in §8): `SOL-M00
 APS exists because of a **durable mechanism**, not a transient capability ceiling. Specifications, refs, and ADRs that justify APS MUST anchor on the following four properties, and MUST NOT anchor on any dated model-accuracy number:
 
 1. **Format sensitivity** — identical content reformatted can change model output by up to ~40% for weaker models (GPT-3.5-turbo on code translation; larger/newer models are more format-robust) `[FORMAT]`; controlled, predictable prose shape reduces this variance.
-2. **Multi-turn decay** — reliability drops ≈39% across multi-turn generation as early loose assumptions compound; stable artifacts beat accumulating chat.
+2. **Multi-turn decay** — reliability drops ≈39% across multi-turn generation `[MULTITURN]` as early loose assumptions compound; stable artifacts beat accumulating chat.
 3. **Context rot / lost-in-the-middle** — relevant content buried in long inputs is used 20–50% less reliably; low-entropy prose keeps the load-bearing signal legible.
 4. **Minimize always-on density to protect adherence and control cost** — every always-loaded normative line competes for adherence and is paid for on every turn; APS removes non-load-bearing words so the surviving instructions are followed and cheap.
 

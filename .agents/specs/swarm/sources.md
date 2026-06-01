@@ -24,6 +24,10 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
   *Grounds:* The spec's "one term = one meaning" controlled-vocabulary discipline — citing a mature, published controlled-language standard as precedent.
   *Finding:* Controlled natural language for technical documentation: writing rules (Issue 9 = 53 rules) + controlled dictionary (~900 approved words) enforcing "One word, one part of speech, one meaning" (e.g., "test" approved only as a noun). (Publisher is ASD, not its former name AECMA.)
 
+- **[SMELLS]** Femmer, H., Méndez Fernández, D., Wagner, S., Eder, S. "Rapid Quality Assurance with Requirements Smells." Journal of Systems and Software 123 (2017): 190–213. DOI 10.1016/j.jss.2016.02.047.
+  *Grounds:* The APS high-risk-word list and the `SOL-P` prose-defect families (ambiguity loopholes, comparatives, vague quantifiers) — requirement "smells" as lightweight, detectable indicators of requirement-quality violations.
+  *Finding:* Defines requirement smells (e.g. subjective language, ambiguous adverbs/adjectives, loopholes, non-verifiable terms, comparatives without a reference) as quality-violation indicators with a light-weight detection method; ambiguity and verifiability are the most consequential smell families. (Berry & Kamsties ambiguity work and Tjong & Berry quantifier/connective lists are the companion lexicon.)
+
 ## Versioning & format standards
 
 - **[SEMVER]** Preston-Werner, T. "Semantic Versioning 2.0.0." semver.org. https://semver.org/
@@ -68,11 +72,15 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
   *Grounds:* The origin of the "≈5,000 instructions / ≈99% / inflection ≈2,000" figures, IF the spec cites them to justify large skill/instruction files. **Must be cited only as preliminary, non-peer-reviewed evidence — never as an established finding.**
   *Finding:* A 2026 re-run/extension of IFScale claims the degradation boundary moved from ~200–300 to "closer to 2,000 instructions," and "GPT 5.5 achieves 99% accuracy through N=5,000" ("~10X better in 12 months"). **Self-described as not-yet-a-formal-paper, measuring only keyword/named-item inclusion**; the authors caveat it is "evidence that long skills files are viable, not proof that every kind of instruction in them is followed." WEAK evidence — company blog, narrow proxy task. The "99% at N=5,000" must never be presented as a robust capability result.
 
+- **[MULTITURN]** Laban, P., Hayashi, H., Zhou, Y., Neville, J. "LLMs Get Lost In Multi-Turn Conversation." arXiv:2505.06120, 2025 (Microsoft Research; ICLR 2026). https://arxiv.org/abs/2505.06120
+  *Grounds:* The claim that prose-delivered meaning degrades across multi-turn interaction — motivating binding load-bearing semantics in SOL/IR rather than relying on conversational prose.
+  *Finding:* Across six generation tasks, sharded multi-turn conversation causes "an average drop of 39%" vs single-turn — decomposed as a small loss of aptitude plus a large increase in **unreliability**. Cite the ~39% only with the multi-turn/sharded-protocol qualifier; do not present it as a single-turn capability figure.
+
 ## Multi-agent systems
 
 - **[MAST]** Cemri, M., Pan, M. Z., Yang, S., Agrawal, L. A., Chopra, B., Tiwari, R., Keutzer, K., Parameswaran, A., Klein, D., Ramchandran, K., Zaharia, M., Gonzalez, J. E., Stoica, I. "Why Do Multi-Agent LLM Systems Fail?" NeurIPS 2025 (Datasets and Benchmarks Track); arXiv:2503.13657. https://arxiv.org/abs/2503.13657
   *Grounds:* The spec's central claim that specification/system-design and verification failures dominate multi-agent failure (spec+verification ≈ 63.07%; spec+coordination ≈ 78.71%) — motivating spec-driven + verification-first design.
-  *Finding (corrected):* MAST taxonomy over 200+ traces, 7 frameworks, 6 annotators, Cohen's κ 0.88; 14 failure modes in 3 categories. Distribution (Fig. 2): FC1 "Specification Issues" 41.77%, FC2 "Inter-Agent Misalignment" 36.94%, FC3 "Task Verification" 21.30%. **Corrections:** FC1 is "Specification Issues" (not "Specification and System Design"); use exact percentages (41.77 / 36.94 / 21.30). Derived sums hold: spec+verification = 63.07%, spec+coordination = 78.71%.
+  *Finding (corrected):* MAST taxonomy over 1600+ traces (1642), 7 frameworks, 6 annotators, Cohen's κ 0.88; 14 failure modes in 3 categories. Distribution (Fig. 2): FC1 "Specification Issues" 41.77%, FC2 "Inter-Agent Misalignment" 36.94%, FC3 "Task Verification" 21.30%. **Corrections:** FC1 is "System Design Issues" (abstract: "specification and system design"); use exact percentages (41.77 / 36.94 / 21.30). Derived sums hold: spec+verification = 63.07%, spec+coordination = 78.71%.
 
 - **[ANTHROPIC-MA]** Anthropic. "How we built our multi-agent research system." Anthropic Engineering blog, June 13, 2025. https://www.anthropic.com/engineering/multi-agent-research-system
   *Grounds:* The orchestrator-worker pattern as the design, and the claim that coding/shared-context tasks are poor multi-agent fits (favoring spec-driven coordination over naive parallel subagents in coding).
@@ -85,6 +93,10 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
 - **[PLANCODER]** Lyu, Z., Chen, S., Ji, Z., Wang, L., Wang, S., Wu, D., Wang, W., Cheung, S.-C. "Understanding and Bridging the Planner-Coder Gap: A Systematic Study on the Robustness of Multi-Agent Systems for Code Generation." arXiv:2510.10460, Oct 2025. https://arxiv.org/abs/2510.10460
   *Grounds:* The spec's ~75%-of-failures claim about the planner→coder handoff, motivating an explicit interface/monitor (or spec artifact) between planning and coding agents.
   *Finding:* "the planner-coder gap … accounts for 75.3% of failures." Underspecified plans + coder misinterpretation; semantic-preserving input mutations break 7.9%–83.3% of previously-solved problems; a monitor agent repairs 40.0%–88.9% of failures.
+
+- **[ANTHROPIC-MEM]** Anthropic. "Manage Claude's memory" (Claude Code / Claude Docs). https://code.claude.com/docs/en/memory (also docs.claude.com).
+  *Grounds:* The soft/hard control boundary (§17) and the claim that always-loaded instruction/memory files are context, not enforcement — so a model is an unsound enforcement substrate and hard guarantees need a deterministic check outside the model.
+  *Finding:* Project/user memory (CLAUDE.md and instruction files) is loaded as **context, not enforced configuration**; Anthropic directs anything that must hold regardless of the model to a deterministic mechanism (e.g. a PreToolUse hook), i.e. there is no guarantee of strict compliance from instruction text alone. (Anthropic docs; not a quantitative study.)
 
 ## Spec-driven development
 

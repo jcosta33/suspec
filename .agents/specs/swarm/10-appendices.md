@@ -973,7 +973,7 @@ The `review` pass (run under the `skeptic` profile, §27) consumes the trace and
 ---
 type: review
 id: auth-refresh-client-review
-source_trace:.agents/traces/auth-refresh-client-trace.md
+source_trace: .swarm/generated/traces/auth-refresh-client-trace.md
 source_spec: .swarm/sources/specs/auth-refresh.swarm.md
 ---
 
@@ -1073,7 +1073,7 @@ One crisp definition per term, consistent with the body. Each entry cross-refere
 | **AGENTS.md** | The always-loaded bootloader of persistent facts and pointers, hard-capped at ≤200 lines / ≤25 KB; carries the Commands table the adapters resolve through but never defines modality, authority, or verification semantics (§31). |
 | **APS** | Agent Prose Semantics — the controlled-prose standard governing the readable prose around SOL blocks; the name survives, but `APS-` is retired as a lint-code prefix (the rules now live under `SOL-P###`) (§7). |
 | **block type** | One of the seven SOL block kinds (`REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`, `TRACE`, `VERDICT`), each with a fixed id prefix and clause grammar (§4, §6). |
-| **conformance** | The property of a repository that ships the language reference docs, the seven core templates, a populated `AGENTS.md` bootloader, and `.agents/.swarm-version` (§20, §32). |
+| **conformance** | The property of a repository that ships the language reference docs, the seven core templates, a populated `AGENTS.md` bootloader, and the version file (`scaffold/.agents/.swarm-version`, or `.swarm/VERSION` in an adopted project) (§20, §32). |
 | **CONSTRAINT** | An obligation block (id `C-NNN`) that restricts *how* obligations may be satisfied rather than requesting behavior; carries binding force (§6). |
 | **decompose** | The pass that projects the IR into work packets (`task.md`), enforcing that owned write surfaces are a subset of assigned obligations' `WRITES`; a pass, not an improve op (§9, §11). |
 | **distillation loss budget** | The discipline that names what each compilation step Preserved, Dropped, and left Still-uncertain, bounding the meaning lost when prose intent is lowered toward code (§24). |
@@ -1124,7 +1124,7 @@ OBJECTIVE
   templates, fixtures, and inert data files.
 
 AUTHORITY ORDER (highest first)
-  1. This specification (the `.agents/specs/swarm/` folder) — the single source of truth.
+  1. This specification (the `.agents/specs/swarm/` folder in this framework-dev repo; *not* an adopted-project path) — the single source of truth.
   2. Explicit user instructions for this rework.
   3. Existing repo content, only where it does not contradict (1) or (2).
   Resolve every conflict in favor of (1). Do not import authority from any
@@ -1162,15 +1162,15 @@ CANONICAL CONTENT (one line each — the spec is authoritative)
     audit/research/bug-report are plain.md.
 
 POINTERS (read before producing each part)
-  - §20.0 — the full artifact layout and the.swarm. infix rule. Do NOT
+  - §20.0 — the full artifact layout and the `.swarm.` infix rule. Do NOT
     re-derive or duplicate the tree; follow §20.0 exactly.
-  - §34 — the acceptance gate A1–A28; the rework promotes only when every
+  - §34 — the acceptance gate A1–A28 and AW1–AW9; the rework promotes only when every
     check passes (§34.7). Run the gate per migration wave (§34.0) and once
     at the end.
   - §34.6 — the regression greps: each retired construct (A19–A28) is a
     search that MUST return zero matches in shipped files.
 
 DONE WHEN
-  All of A1–A28 (§34) pass, every §34.6 grep returns nothing, and the
+  All of A1–A28 and AW1–AW9 (§34) pass, every §34.6 grep returns nothing, and the
   seven migration waves (§34.0) have each produced their mandatory outputs.
 ```

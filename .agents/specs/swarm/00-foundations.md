@@ -39,7 +39,7 @@ This document is exhaustive and may be read front to back, but the following ord
 3. **§5–§8** — the surface: SOL syntax, the seven block types, the APS prose standard, and the unified lint taxonomy.
 4. **§9–§13** — the machinery: phases, passes, the improve operation set, lowering/decomposition, the IR, and the plan.
 5. **§14–§17** — truth and control: verdicts, the proof taxonomy, drift, and the soft/hard control boundary.
-6. **§18–§24** — orchestration, the artifact set, conformance, source authority, memory, and the distillation loss budget.
+6. **§18–§24** — orchestration, the artifact set, source authority, memory, and the distillation loss budget.
 7. **§25–§35** — versioning, the recast subsystems (skills, personas, task types, documents, ADRs, the bootloader), the conformance contract, the golden corpus, acceptance criteria, and non-goals.
 8. **Appendices A–G** — the consolidated grammar, the full lint catalogue, the IR schema, the auth-refresh worked example, the residual-gap judgment calls, the glossary, and the copy-paste rework brief.
 
@@ -220,7 +220,7 @@ Meaning MUST be **preserved across every lowering**. Each downstream transformat
 
 **All load-bearing meaning** — modality, actor, trigger/state, verification binding, authority order, conflict resolution, trace schema — lives in **SOL and the typed IR**, and never in prose, skills, personas, or `AGENTS.md`.
 
-- *Rationale:* prose-delivered semantics are unreliable under **prompt-format sensitivity** (±40% on identical content), **multi-turn reliability decay** (~−39%), and **lost-in-the-middle / context-rot** (20–50% degradation); Anthropic gives "no guarantee of strict compliance" for always-loaded prose.
+- *Rationale:* prose-delivered semantics are unreliable under **prompt-format sensitivity** (up to ~40% for weaker models such as GPT-3.5-turbo; larger models are more robust `[FORMAT]`), **multi-turn reliability decay** (an average ~39% drop across generation tasks under a multi-turn protocol `[MULTITURN]`), and **lost-in-the-middle / context-rot** (information mid-context is used markedly worse than at the ends `[LOSTMID]`); Anthropic's own guidance treats always-loaded instruction files as context, not enforced configuration `[ANTHROPIC-MEM]`.
 - *Consequence:* prose and skills are non-authoritative *delivery* layers; a regression check (§32) MUST confirm that **no skill, persona, or `AGENTS.md` section defines modality, authority order, or verification semantics**. Always-loaded normative prose is capped (≤200 lines / ≤25 KB; §17, §31), with everything procedural moved to lazily-loaded pass guides and profiles — to minimize always-on density and protect adherence and cost, *not* because models "cannot follow many instructions."
 
 
