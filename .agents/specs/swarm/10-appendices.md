@@ -136,7 +136,9 @@ verdict_body      = "REASON", ws, prose_text, nl,
                     "EVIDENCE", ws, evidence_ref, nl, { "EVIDENCE", ws, evidence_ref, nl };
 verdict_value     = verdict_core, [ ws, verdict_lifecycle ];
 verdict_core      = "PASS" | "FAIL" | "BLOCKED" | "UNVERIFIED";
-verdict_lifecycle = "(", lifecycle, " by ", authority, ": ", reason, ")";
+verdict_lifecycle = "(", lifecycle, " by ", authority, ": ", reason, [ ";", ws, lifecycle_fields ], ")";
+lifecycle_fields  = field, { ";", ws, field };          (* WAIVED→expiry; STALE→prior-verdict + changed-surface; CONTRADICTED→evidence ×2 (SOL-V005) *)
+field             = field_key, ws, field_value;         (* e.g. "expiry 2026-07-01" *)
 lifecycle         = "WAIVED" | "STALE" | "CONTRADICTED";
 
 (* ===== VERIFY BY binding : typed, closed 9-set ===== *)
@@ -210,7 +212,7 @@ Each grammar production carries one or more well-formedness checks from the unif
 | `SOL-S011` | SYNTAX | BLOCKING | `block_header` with no `*_id` | Missing obligation ID after the block type; add `PREFIX-NNN:`. |
 | `SOL-S005` | SYNTAX | BLOCKING | `*_id` prefix does not match `block_header` type (e.g. `CONSTRAINT AC-001:`) | ID prefix/block-type mismatch; `REQ→AC-`, `CONSTRAINT→C-`, `INVARIANT→I-`, `INTERFACE→IF-`, `QUESTION→Q-`, `TRACE→T-`. |
 | `SOL-S006` | SYNTAX | BLOCKING | `actor_clause` modal is `SHOULD`/`SHOULD NOT` with no `because_clause` or `except_clause` in the same block | `SHOULD`/`SHOULD NOT` used without `BECAUSE` or `EXCEPT`. |
-| `SOL-S009` | SYNTAX | BLOCKING | `trace_body` `IMPLEMENTS`/`PRESERVES` `ref` resolving to no known obligation | `TRACE` references an unknown obligation ID. |
+| ~~`SOL-S009`~~ | (retired) | — | A `trace_body` `IMPLEMENTS`/`PRESERVES` `ref` resolving to no known obligation **re-layers to `SOL-M003`** (unbound-cross-reference) — a cross-obligation resolution check at `NORMALIZE`, not a parse check. | use `SOL-M003`. |
 | `SOL-P003` | PROSE | BLOCKING | `modal` slot filled by `CAN`/`WILL` or a lowercase/informal modal in a binding clause | Missing or informal modality in a binding clause; use a real uppercase modal. |
 | `SOL-P004` | PROSE | ADVISORY (warning) | `req_body`/`constraint_body` with more than two chained `and_actor_clause` (per G3) | Bundled/overloaded obligation; `AND THE` chaining beyond two — consider `ATOMIZE` into separate obligations (permitted, lowered to multiple IR obligations). |
 | `SOL-V001` | VERIFICATION | BLOCKING | binding obligation (`REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`) with no `verify_line` (was `SOL-S007`) | Missing `VERIFY BY` for a binding obligation. |
@@ -753,6 +755,7 @@ The `*.swarm.plan.json` envelope (§13.3) — the schedulable projection of the 
       "properties": {
         "id":           { "type": "string", "description": "Plan id (slug); typically the source spec id." },
         "derived_from": { "type": "string", "description": "The *.swarm.ir.json / spec id this plan was derived from." },
+        "max_parallel": { "type": ["integer", "null"], "default": null, "description": "Advisory parallelism hint for a launcher (§13.4)." },
         "language":     { "const": "SOL/0.1", "description": "SOL language discriminator; never merged with version." },
         "version":      { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$", "description": "Spec content SemVer; never merged with language." }
       }

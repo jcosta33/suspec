@@ -386,13 +386,13 @@ Header form: `TYPE PREFIX-NNN:` — the trailing colon is **mandatory**. The **o
 | `SHOULD NOT` | Strong prohibition | Requires an accompanying `BECAUSE` or `EXCEPT` |
 | `MAY` | Optional | — |
 
-Uppercase only. **Removed:** `SHALL`, `SHALL NOT` (redundant with `MUST`/`MUST NOT`). **Forbidden in binding clauses** (lint warning): `CAN`, `WILL` (non-modal). Lowercase `must`/`should`/`may` carry no force (plain prose). *See §5.4, §6.*
+Uppercase only. **Deprecated aliases** (recognized on input, flagged advisory `SOL-P058`, `NORMALIZE`d to canonical): `SHALL`→`MUST`, `SHALL NOT`→`MUST NOT`. **Forbidden in binding clauses** (lint warning): `CAN`, `WILL` (non-modal). Lowercase `must`/`should`/`may` carry no force (plain prose). *See §5.4, §6.*
 
 ### 4.3 Clause keywords by block (uppercase, case-sensitive)
 
 | Block | Ordered clause keywords |
 |-------|-------------------------|
-| `REQ` | `WHERE` → `WHILE` → `WHEN` → `IF [THEN]` → `THE <actor> <MODAL> <response>` → `[AND THE <actor> <MODAL> <response>]*` → `[BECAUSE]` → `[EXCEPT]` → `VERIFY BY` → trailing metadata `DEPENDS ON / TOUCHES / WRITES / READS / AFFECTS / RISK <low\|medium\|high\|critical>` |
+| `REQ` | `WHERE` → `WHILE` → `WHEN` → `IF [THEN]` → `THE <actor> <MODAL> <response>` → `[AND THE <actor> <MODAL> <response>]*` → `[BECAUSE]` → `[EXCEPT]` → `VERIFY BY` → trailing metadata `DEPENDS ON / TOUCHES / WRITES / READS / AFFECTS / RISK <low\|medium\|high\|critical> / DOMAIN <domain>` |
 | `INVARIANT` | `<property> MUST\|MUST NOT <hold>` (no `ALWAYS`/`NEVER`) |
 | `INTERFACE` | `RETURNS`, `ACCEPTS`, `ERRORS`, `OWNED BY` |
 | `QUESTION` | `[blocking\|non-blocking]` tag, `AFFECTS` |

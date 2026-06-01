@@ -220,7 +220,7 @@ THE client MUST clear the local session
 AND THE client MUST redirect to `/login`
 VERIFY BY test:cmdTest:auth-refresh-expired-token
 ```
-lowers to two IR obligations (`AC-001.a` "clear the local session", `AC-001.b` "redirect to /login"), both carrying the `verified_by` edge to the named test. Two chained clauses → no warning. A third `AND THE …` would trip the `SOL-P004`-adjacent warning.
+lowers to two IR obligations (`AC-001.1` "clear the local session", `AC-001.2` "redirect to /login"), both carrying the `verified_by` edge to the named test. Two chained clauses → no warning. A third `AND THE …` would trip the `SOL-P004`-adjacent warning.
 
 #### 11.1.2 Blocking QUESTION reaching `lower`
 

@@ -399,7 +399,7 @@ trace_block = "TRACE", ws, t_id, ":", nl,
               { "PROOF", ws, verify_ref, ws, proof_result, nl };
 ```
 
-**Semantics.** `IMPLEMENTS` lists the REQ ids the change satisfies; `PRESERVES` lists the CONSTRAINT/INVARIANT ids the change must not violate; `CHANGED` names the modified surfaces (the basis for staleness detection, §16); each `PROOF` line names a verification reference (`verify_ref`, §15) and its observed `proof_result` — one of `passed | failed | blocked | unverified` (Appendix A; the lowercase `proof_result` is the observed run outcome, mapped by case-fold to the uppercase VERDICT `core_value` at the `verify`/`review` step, §14); `manual` is a proof *type* (§15), never a result. A TRACE referencing an unknown obligation is `SOL-S009`; a TRACE that claims `IMPLEMENTS` MUST carry at least one `PROOF` line — the grammar (Appendix A) makes `PROOF` mandatory in a trace body, so a no-`PROOF` trace is a structural parse error (`SOL-S014`, missing-required-clause), not a missing-evidence lint. A `PROOF` line MUST reference real output — an unqualified "tests passed" is not an admissible proof (§15, §17).
+**Semantics.** `IMPLEMENTS` lists the REQ ids the change satisfies; `PRESERVES` lists the CONSTRAINT/INVARIANT ids the change must not violate; `CHANGED` names the modified surfaces (the basis for staleness detection, §16); each `PROOF` line names a verification reference (`verify_ref`, §15) and its observed `proof_result` — one of `passed | failed | blocked | unverified` (Appendix A; the lowercase `proof_result` is the observed run outcome, mapped 1:1 to the uppercase VERDICT `core_value` — `passed`→`PASS`, `failed`→`FAIL`, `blocked`→`BLOCKED`, `unverified`→`UNVERIFIED` — at the `verify`/`review` step, §14); `manual` is a proof *type* (§15), never a result. A TRACE whose `IMPLEMENTS`/`PRESERVES` names an unknown obligation is `SOL-M003` (unbound-cross-reference, §8 / Appendix B.4 — a cross-obligation resolution check at `NORMALIZE`); a TRACE that claims `IMPLEMENTS` MUST carry at least one `PROOF` line — the grammar (Appendix A) makes `PROOF` mandatory in a trace body, so a no-`PROOF` trace is a structural parse error (`SOL-S014`, missing-required-clause), not a missing-evidence lint. A `PROOF` line MUST reference real output — an unqualified "tests passed" is not an admissible proof (§15, §17).
 
 **Worked example:**
 
@@ -421,11 +421,12 @@ PROOF static:cmdLint:dependency-boundary-check passed
 
 ```ebnf
 verdict_block = "VERDICT", ws, judged_id, ":", ws, core_value,
-                [ ws, "(", lifecycle, " by ", authority, ": ", reason_txt, ")" ], nl,
+                [ ws, "(", lifecycle, " by ", authority, ": ", reason_txt, [ ";", ws, lifecycle_fields ], ")" ], nl,
                 "REASON", ws, prose, nl,
                 "EVIDENCE", ws, reference, nl, { "EVIDENCE", ws, reference, nl };
 core_value = "PASS" | "FAIL" | "BLOCKED" | "UNVERIFIED";
 lifecycle  = "WAIVED" | "STALE" | "CONTRADICTED";
+lifecycle_fields = field, { ";", ws, field };   (* per-decorator required fields (§14.2, SOL-V005): WAIVED→expiry; STALE→prior-verdict + changed-surface; CONTRADICTED→evidence ×2 *)
 ```
 
 **Semantics.** A VERDICT carries exactly one **core** value plus an optional **lifecycle decorator** in parentheses (the full 7-value model and the merge gate are specified in §14). The four core values:
@@ -450,7 +451,7 @@ EVIDENCE test:cmdTest:auth-refresh-expired-token output in review log
 **Worked example — waived FAIL (lifecycle decorator):**
 
 ```sol
-VERDICT AC-002: FAIL (WAIVED by auth-team: flaky e2e env, expires 2026-07-01)
+VERDICT AC-002: FAIL (WAIVED by auth-team: flaky e2e env; expiry 2026-07-01)
 REASON The e2e proof could not be stabilized this cycle.
 EVIDENCE test:cmdTest:auth-refresh-no-loop intermittent failure log
 ```
