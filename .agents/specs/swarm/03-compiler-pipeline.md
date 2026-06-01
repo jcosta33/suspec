@@ -292,7 +292,7 @@ After `decompose` emits work packets (§11.2) and before any `implement` pass ru
 > 1. **Total coverage.** Every lowered obligation node (every `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`, including each `AND THE`-split sub-obligation, §11.1.1) is assigned to **exactly one `implement` packet** (`packets[].inputs`, §13.5) — no obligation is unassigned (uncovered) and none is assigned to two `implement` packets (double-owned). (An obligation legitimately appears in its `implement`, `verify`, and `review` packets across passes; the coverage count is per `implement` packet.)
 > 2. **No orphan targets.** Every `verified_by` edge and every TRACE `implements`/`preserves` edge (§12.5) resolves to a real obligation node id present in `nodes[]`. A TRACE or VERDICT whose target id does not resolve is an orphan and MUST NOT be admitted.
 
-An obligation that satisfies neither (1) — i.e. an obligation no packet covers — is lint code **`SOL-O007`** ("uncovered obligation: a lowered obligation assigned to no task packet"), the next free code in the orchestration layer (the O-block currently runs `SOL-O001`–`SOL-O006`, §8.3, Appendix B.6). `SOL-O007` is **BLOCKING** and resolves by `SCOPE` (assign the obligation to a packet, or record it as an explicit non-goal). A double-owned obligation (assigned to two `implement` packets) is `SOL-O008` (double-owned-obligation, Appendix B.6); an orphan TRACE/VERDICT target is the unbound-reference surface owned by the M layer (`SOL-M003`, unbound-cross-reference, surfaced at `review`, §9.3). The COVERAGE gate aggregates these into one pre-`implement` checkpoint.
+An obligation that satisfies neither (1) — i.e. an obligation no packet covers — is lint code **`SOL-O007`** ("uncovered obligation: a lowered obligation assigned to no task packet") in the orchestration layer (the O-block previously ran `SOL-O001`–`SOL-O006`; this reconciliation adds `SOL-O007` and `SOL-O008`, §8.3, Appendix B.6). `SOL-O007` is **BLOCKING** and resolves by `SCOPE` (assign the obligation to a packet, or record it as an explicit non-goal). A double-owned obligation (assigned to two `implement` packets) is `SOL-O008` (double-owned-obligation, Appendix B.6); an orphan TRACE/VERDICT target is the unbound-reference surface owned by the M layer (`SOL-M003`, unbound-cross-reference, surfaced at `review`, §9.3). The COVERAGE gate aggregates these into one pre-`implement` checkpoint.
 
 ```text
 COVERAGE gate (manual today, tool-enforced later):
@@ -313,7 +313,7 @@ This gate is the structural complement of the distillation-loss discipline (§11
 | CLARIFY gate | `NORMALIZE` → `LOWER` (before `lower`) | No open `[blocking]` `QUESTION`, no blocking `SOL-M002`, no unresolved `SOL-P008` on an in-scope obligation | `SOL-O003` / `SOL-M002` / `SOL-P008` (existing codes) | `lint` (Skeptic, §9.4) |
 | COVERAGE gate | `LOWER` → `EXECUTE` (after `decompose`, before `implement`) | Every obligation covered by exactly one packet; every TRACE/verdict target resolves | `SOL-O007` (uncovered), `SOL-O008` (double-owned), `SOL-M003` (orphan target) | `decompose` (Lead Engineer, §9.4) |
 
-Neither gate is a new pass; both reuse the existing pass surface (`lint` decides the CLARIFY predicate, `decompose` decides the COVERAGE predicate) and the existing `SOL-<LAYER><NNN>` namespace, adding only the single new orchestration code `SOL-O007`. A future tool MUST compute both predicates mechanically from the IR and plan; until one ships, a conformant repository MUST state both gates as review-checkable contracts and MUST NOT claim either is enforced by shipped tooling (Principle 1, §2; §12.1, §13.1).
+Neither gate is a new pass; both reuse the existing pass surface (`lint` decides the CLARIFY predicate, `decompose` decides the COVERAGE predicate) and the existing `SOL-<LAYER><NNN>` namespace, adding two new orchestration codes `SOL-O007` and `SOL-O008`. A future tool MUST compute both predicates mechanically from the IR and plan; until one ships, a conformant repository MUST state both gates as review-checkable contracts and MUST NOT claim either is enforced by shipped tooling (Principle 1, §2; §12.1, §13.1).
 
 ## 12. The intermediate representation (IR)
 
@@ -725,7 +725,7 @@ For the auth-refresh spec (one INTERFACE, one REQ depending on it, one INVARIANT
       "writes": ["api.auth.contract"], "reads": [], "depends_on": [],
       "lane": "shared", "batch": 0, "merge_safe": false },
     { "id": "WP-002", "pass": "implement", "profile": "default",
-      "inputs": ["REQ.auth-refresh.AC-001"], "outputs": ["web/src/http/client.ts"],
+      "inputs": ["REQ.auth-refresh.AC-001", "INVARIANT.auth-refresh.I-001"], "outputs": ["web/src/http/client.ts"],
       "writes": ["web.http.client"], "reads": ["api.auth.contract"],
       "depends_on": ["WP-001"], "lane": "agent-a", "batch": 1, "merge_safe": true },
     { "id": "WP-003", "pass": "verify", "profile": "default",

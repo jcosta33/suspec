@@ -206,7 +206,7 @@ Each grammar production carries one or more well-formedness checks from the unif
 | Code | Layer | Severity | Production / trigger | Diagnostic |
 |------|-------|----------|----------------------|------------|
 | `SOL-S001` | SYNTAX | BLOCKING | `where_clause`/`while_clause`/`when_clause`/`if_clause` present with no following `actor_clause` | Precondition (`WHERE`/`WHILE`/`WHEN`/`IF`) with no actor clause; add `THE <actor> <MODAL> <response>`. |
-| `SOL-S002` | SYNTAX | BLOCKING | `actor_clause` missing the `THE <actor>` head after a trigger | Missing actor after trigger; use `THE <actor>`. |
+| `SOL-S002` | SYNTAX | BLOCKING | `block_header` is not one of the 7 block types, or a body line uses an unknown/malformed clause keyword | Unknown block type or clause keyword; use a valid block type (§6) / clause keyword (§5). (A trigger with no following `actor_clause` is `SOL-S001`.) |
 | `SOL-S003` | SYNTAX | BLOCKING | `actor_clause`/`and_actor_clause` with no `modal` terminal | Actor clause with no modal; use `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` (`SHALL`/`CAN`/`WILL` are not modals). |
 | `SOL-S004` | SYNTAX | BLOCKING | Two `block_header` productions share the same `*_id` within one spec file | Duplicate block ID (intra-spec); renumber the second block. (Cross-spec collisions are `SOL-M001`.) |
 | `SOL-S011` | SYNTAX | BLOCKING | `block_header` with no `*_id` | Missing obligation ID after the block type; add `PREFIX-NNN:`. |
@@ -214,7 +214,7 @@ Each grammar production carries one or more well-formedness checks from the unif
 | `SOL-S006` | SYNTAX | BLOCKING | `actor_clause` modal is `SHOULD`/`SHOULD NOT` with no `because_clause` or `except_clause` in the same block | `SHOULD`/`SHOULD NOT` used without `BECAUSE` or `EXCEPT`. |
 | ~~`SOL-S009`~~ | (retired) | — | A `trace_body` `IMPLEMENTS`/`PRESERVES` `ref` resolving to no known obligation **re-layers to `SOL-M003`** (unbound-cross-reference) — a cross-obligation resolution check at `NORMALIZE`, not a parse check. | use `SOL-M003`. |
 | `SOL-P003` | PROSE | BLOCKING | `modal` slot filled by `CAN`/`WILL` or a lowercase/informal modal in a binding clause | Missing or informal modality in a binding clause; use a real uppercase modal. |
-| `SOL-P004` | PROSE | ADVISORY (warning) | `req_body`/`constraint_body` with more than two chained `and_actor_clause` (per G3) | Bundled/overloaded obligation; `AND THE` chaining beyond two — consider `ATOMIZE` into separate obligations (permitted, lowered to multiple IR obligations). |
+| `SOL-P004` | PROSE | BLOCKING / ADVISORY | `req_body`/`constraint_body` bundling separable obligations into one clause (BLOCKING), or more than two chained `and_actor_clause` (ADVISORY warning, per G3) | Bundled/overloaded obligation: a single clause carrying multiple separable obligations is BLOCKING (`ATOMIZE`); the *permitted* `AND THE` chain beyond two is a non-blocking warning (lowered to multiple IR obligations, G3). |
 | `SOL-V001` | VERIFICATION | BLOCKING | binding obligation (`REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`) with no `verify_line` (was `SOL-S007`) | Missing `VERIFY BY` for a binding obligation. |
 | `SOL-V009` | VERIFICATION | BLOCKING | `verify_ref` whose `proof_type` is outside the closed 9-set | Unknown proof type; use one of `static, test, contract, property, model, perf, security, manual, monitor`. |
 | `SOL-V005` | VERIFICATION | BLOCKING | `verdict_value` `verdict_core` outside the four core values, or `verdict_lifecycle` missing a mandatory field (was `SOL-S010`) | `VERDICT` value outside `PASS`/`FAIL`/`BLOCKED`/`UNVERIFIED`, or a lifecycle decorator missing authority/reason (`WAIVED` also requires expiry). |
@@ -322,7 +322,7 @@ P-layer rules are single-obligation-local. `001`–`049` are BLOCKING; `050`–`
 | `SOL-P001` | BLOCKING | dangling-condition | A trigger with no modal *consequence* at the prose level (semantically empty even if syntactically a sentence). | `CLARIFY` / `ATOMIZE`: supply the consequence. |
 | `SOL-P002` | BLOCKING | missing-actor | The obligation has no responsible actor. | `CONCRETIZE`: name the actor. |
 | `SOL-P003` | BLOCKING | missing/informal-modality | No modal, or lowercase `should`/`must`/`may` used where binding force is intended. | `NORMALIZE`: uppercase to the correct modal (was `APS-M001`). |
-| `SOL-P004` | BLOCKING | bundled/overloaded-obligation | One sentence carries multiple separable obligations. | `ATOMIZE`: split into one obligation per block (was `APS-O001`; >2 chained `AND THE` also warns, G3). |
+| `SOL-P004` | BLOCKING / ADVISORY | bundled/overloaded-obligation | One clause bundling multiple separable obligations is BLOCKING; the permitted `AND THE` chain beyond two is an ADVISORY warning (G3). | `ATOMIZE`: split into one obligation per block (was `APS-O001`; >2 chained `AND THE` warns, never a hard error, G3). |
 | `SOL-P005` | BLOCKING | vague-quality-no-criterion | A vague-quality / high-risk word in a binding clause with no same-line observable criterion. | `CONCRETIZE` or `QUANTIFY` (was `APS-A001`). |
 | `SOL-P006` | BLOCKING | undefined-term | An undefined term used in a binding clause (not resolvable via in-file `TERM` or `memory/glossary.md`). | `CLARIFY` / `BIND`: define the term. |
 | `SOL-P007` | BLOCKING | negation-ambiguity | A bare `MUST NOT` whose scope is ambiguous; not paired with the affirmative behavior. | `CLARIFY`: state the affirmative alongside the prohibition. |
@@ -342,7 +342,7 @@ The **high-risk-word list** (the union of the subjective/promotional list + Femm
 | `SOL-P055` | ADVISORY | redundancy | Repeated context that adds no constraint. | `COMPRESS` (was `APS-R001`). |
 | `SOL-P056` | ADVISORY / BLOCKING | comparative-no-baseline | Comparative/superlative with no baseline. **BLOCKING in a binding clause, ADVISORY in commentary** (G2). | `QUANTIFY`: supply the baseline. |
 | `SOL-P057` | ADVISORY | terminology-drift | A term in a binding clause or commentary is used inconsistently with its `memory/glossary.md` definition (a synonym, casing variant, or competing label for an already-defined term). Advisory: the term still resolves, so it is not the blocking `SOL-P006` undefined-term defect. | `NORMALIZE`: replace the variant with the canonical glossary term. |
-| `SOL-P058` | ADVISORY | deprecated-modal-alias | `SHALL`/`SHALL NOT` used as a modal — a recognized deprecated alias of `MUST`/`MUST NOT` (§5.4). | `NORMALIZE`: rewrite to `MUST`/`MUST NOT`. |
+| `SOL-P058` | ADVISORY | deprecated-modal-alias | `SHALL`/`SHALL NOT` used as a modal — a recognized deprecated alias of `MUST`/`MUST NOT` (§5.6). | `NORMALIZE`: rewrite to `MUST`/`MUST NOT`. |
 
 ### B.4 Layer M — SEMANTIC (cross-reference)
 
@@ -501,7 +501,7 @@ Where a single legacy code maps to two v0.1 codes (e.g. `SOL101 → SOL-S001`/`S
 
 ### B.9 Conformance note
 
-A conformant `lint-spec` checker (a CONTRACT, never shipped per Principle 1, §17) MUST: (1) emit only `SOL-<LAYER><NNN>` codes; (2) emit the diagnostic record of B.1.2; (3) apply the default severities in this appendix, overridable only through the recorded `swarm.config` waiver schema (G1); (4) never reuse a tombstoned number; (5) name a closed improve op in `suggest` wherever B.7 supplies one. The golden corpus (§33, G12) labels good/bad prose so the `SOL-P` rules' precision/recall (target ≥0.90 / ≥0.85) is measurable.
+A conformant `lint-spec` checker (a CONTRACT, never shipped per Principle 1, §17) MUST: (1) emit only `SOL-<LAYER><NNN>` codes; (2) emit the diagnostic record of B.1.2; (3) apply the default severities in this appendix, overridable only through the recorded `swarm.config` waiver schema (G1); (4) never reuse a tombstoned number; (5) name a closed improve op in `suggest` wherever B.7 supplies one. The golden corpus (§33, G12) labels good/bad prose so the `SOL-P` rules' precision/recall is measurable against a set target (design rationale: ≥0.90 precision / ≥0.85 recall — an aspirational goal for this curated corpus, set above the field-measured ceiling for lightweight automated smell detection of ~59% precision / ~82% recall with high variation `[SMELLS]`, not an achieved result).
 
 ## Appendix C — IR JSON Schema
 
@@ -875,18 +875,18 @@ AFFECTS AC-002
 
 ### D.2 Stage 2 — lint diagnostics (pass: `lint`)
 
-The `lint` pass emits SARIF-shaped diagnostic records `{code, severity, layer, span, message, suggest}` in the unified `SOL-<LAYER><NNN>` namespace (§8). Three diagnostics fire on the authored source; each names the closed `improve` op (§10) or direct edit that repairs it. All three are BLOCKING because each changes *what* gets built (§8.4 binding-clause rule, G2).
+The `lint` pass emits SARIF-shaped diagnostic records `{code, severity, layer, span, message, suggest}` in the unified `SOL-<LAYER><NNN>` namespace (§8). Three diagnostics fire on the authored source; each names the closed `improve` op (§10) or direct edit that repairs it. All three are BLOCKING because each changes *what* gets built (§8.2 BLOCKING-vs-ADVISORY rule; binding-clause boundary §7.2 / G2). The `severity` column carries the authoring-layer value `BLOCKING`/`ADVISORY` (B.1.2), not the IR `level` value (`error`/`warning`/`note`).
 
 ```text
-SOL-V001  ERROR  layer=V  AC-002:L1-L4
+SOL-V001  BLOCKING  layer=V  AC-002:L1-L4
   message: obligation AC-002 has no VERIFY BY binding; no verification path.
   suggest: improve op BIND — add VERIFY BY <type>:<adapter>:<artifact>.
 
-SOL-S006  ERROR  layer=S  AC-002:L2 ("THE auth client SHOULD clear the local session")
+SOL-S006  BLOCKING  layer=S  AC-002:L2 ("THE auth client SHOULD clear the local session")
   message: SHOULD without an accompanying BECAUSE or EXCEPT clause.
   suggest: Edit — add BECAUSE <reason>, or raise to MUST.
 
-SOL-P005  ERROR  layer=P  I-001:L1
+SOL-P005  BLOCKING  layer=P  I-001:L1
   message: INVARIANT predicate uses a vague quality phrase with no same-line observable criterion.
   suggest: improve op CONCRETIZE or QUANTIFY — name the measured quantity and threshold.
 ```
@@ -1149,7 +1149,7 @@ This appendix enumerates twelve residual gaps requiring an author's judgment. Th
 | **G9** | What does a "universal workflow rule" promotion actually become, given the ≤200-line AGENTS.md cap? | A workflow-rule promotion becomes a **pass-guide edit plus a one-line AGENTS.md pointer**, never inline procedure in the bootloader. Only persistent *facts* (ADR 0017) live in `AGENTS.md`; the procedure lives in the named pass guide the pointer references. | §23, §26, §31 | No. |
 | **G10** | What is the canonical frontmatter field-name and value vocabulary? | Frontmatter is normalized to three fields: **`swarm_language: SOL/0.1`** (language discriminator), **`aps_version: 0.1`** (prose-standard version), **`spec_version: 0.1.0`** (spec content version, SemVer). These map one-to-one onto the three IR version fields (`meta.language`, n/a, `meta.version`) and MUST NOT be merged. | §25 | No. |
 | **G11** | What is the exact trace-provenance schema the drift join and conformance checker depend on? | Every recorded PASS MUST carry `{source_hash, per_surface_hash[], adapter, verdict, tier, origin_obligations[], origin_traces[]}`. This single schema is referenced identically by drift/staleness (§16), the memory model's promotion provenance (§23), and the verdict model (§14). | §14, §16, §23 | No. |
-| **G12** | What baseline measures the SOL-P high-risk-word false-positive rate? | The golden corpus (§33) ships a **labeled good/bad prose fixture set** with a stated **precision/recall baseline of 0.90 precision / 0.85 recall** for the `SOL-P` rules, so the high-risk-word list's false-positive rate is measurable rather than asserted. | §33 | Yes — raise the recall target as the corpus grows. |
+| **G12** | What baseline measures the SOL-P high-risk-word false-positive rate? | The golden corpus (§33) ships a **labeled good/bad prose fixture set** with a stated **target (design rationale) of 0.90 precision / 0.85 recall** for the `SOL-P` rules, so the high-risk-word list's false-positive rate is measurable rather than asserted. The target is an aspirational goal for this curated corpus, set above the field-measured ceiling for lightweight smell detection (~59% precision / ~82% recall, high variation `[SMELLS]`) — not an achieved result. | §33 | Yes — raise the recall target as the corpus grows. |
 
 ---
 

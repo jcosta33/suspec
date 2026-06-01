@@ -175,7 +175,7 @@ Three source-document templates the stdlib ships so common authoring entry point
 
 #### 20.3.4 Supported parents of a spec
 
-A spec is not born only from research. Requirements practice distinguishes intent, evidence, proposal, decision, observation, defect, discovery, scenario, interface, and quality-attribute artefacts; Swarm normalizes all of them into one obligation-bearing `spec.swarm.md` rather than pretending every intent begins as research. The canonical upstream-source model — the recognized **parents** of a spec — is:
+A spec is not born only from research. *Design rationale:* requirements practice distinguishes intent, evidence, proposal, decision, observation, defect, discovery, scenario, interface, and quality-attribute artefacts; Swarm normalizes all of them into one obligation-bearing `spec.swarm.md` rather than pretending every intent begins as research. The canonical upstream-source model — the recognized **parents** of a spec — is:
 
 | Source class | Canonical artefact | Contributes | May feed |
 | --- | --- | --- | --- |
@@ -460,7 +460,7 @@ A task is a *pass frame and execution companion*: the lowered work packet for on
 
 | Section | Meaning |
 | --- | --- |
-| frontmatter | `type: task`, `id`, `status` (`active \| blocked \| done \| abandoned`; `done` is terminal), `task_kind` (enum), `source`, `assigned_obligations`, `constraints`, `invariants`, `interfaces`, `write_surfaces`, `verification_bindings`, `parallel_group`, `blocked_by`, `produces`, plus the optional `pass_guides` and `profile` the task activates (§26.4). |
+| frontmatter | `type: task`, `id`, `status` (`active \| blocked \| done \| abandoned`; `done` is terminal), `task_kind` (enum), `source`, `assigned_obligations`, `constraints`, `invariants`, `interfaces`, `write_surfaces`, `verification_bindings`, `parallel_group`, `blocked_by`, `produces` (the artifact paths this pass emits under `generated/` — e.g. the `trace.md`/`review.md` it writes; `[]` when the pass emits no durable artifact), plus the optional `pass`, `pass_guides`, and `profile` the task activates (§26.4). |
 | `## Parent contract` | The inherited hand-off contract: objective + deliverable + acceptance bar + boundaries (owned vs forbidden paths). |
 | `## Scope` | An explicit **In / Out** list bounding the pass. |
 | `## Assigned obligations` | The exact assigned SOL blocks, pasted verbatim. |
@@ -541,7 +541,7 @@ Paste all constraints and invariants this task must preserve.
 
 | Item | Target | Status |
 | ---- | ------ | ------ |
-|      |        | pending / promoted / deferred / rejected / blocked |
+|      |        | pending / promoted / deferred / rejected / blocked / validated / rolled-back |
 
 ## Self-review
 
@@ -705,6 +705,7 @@ A finding is one durable, provenance-anchored project fact discovered during wor
 | `## Evidence` | File / command / output / source references. |
 | provenance fields | `origin_obligations[]`, `origin_traces[]`, `pass` + `profile`, `reviewer_or_tool`, `timestamp` (the `created`/`updated` frontmatter serves as the provenance timestamp), `content_hash`, `confidence`. |
 | `## Applies when` / `## Does not apply when` | Scope conditions (mandatory; if it cannot name when it applies, it MUST NOT be promoted). |
+| `## Related obligations` | The obligation IDs the fact bears on, beyond its `origin_obligations[]` provenance. |
 | `## Promotion target` | The promotion route (spec / audit / ADR / memory pattern / keep-scoped / stale). |
 | `## Status history` | Append-only status transitions. |
 
@@ -900,11 +901,11 @@ The stdlib ships three source-document templates (§20.3.3). Each is plain `.md`
 | `research.md` | `## Question`, `## Findings` (each → a `finding.md`), `## Open questions`, `## Recommendation`. | Investigation: open questions remain `QUESTION` candidates until resolved. | Promotes to a `spec.swarm.md` via the author pass. |
 | `bug-report.md` | `## Symptom`, `## Reproduction`, `## Root cause`, `## Affected obligations`. | Diagnosis-only: MUST NOT contain the fix; states the broken obligation. | Promotes into a fix `task.md` (`task_kind: fix`), never directly into code. |
 
-#### 21.10 PRD and RFC source-doc templates (stdlib, conditional)
+### 21.10 PRD and RFC source-doc templates (stdlib, conditional)
 
 These two stdlib source-doc templates extend the Tier-3 set of §21.9. Like `audit.md`, `research.md`, and `bug-report.md`, each is plain `.md`, carries `type` + `id` frontmatter, and preserves a fixed *epistemic stance* enforced by the distillation-loss and source-authority discipline (§22, §24), not by any gatekeeper tool. They are **conditional**: a conformant repo MUST ship the templates in `scaffold/.agents/` but MAY have zero instances — a `prd.md` is required only when a change introduces or reshapes intended product behaviour, and an `rfc.md` is required only when a technical approach needs a decision before it is committed to an approved `spec.swarm.md` or an `adr.md`. Both promote forward through the author pass; neither carries obligation blocks itself (§21.10.3).
 
-##### 21.10.1 `prd.md` — product intent
+#### 21.10.1 `prd.md` — product intent
 
 A PRD captures the **product intent** behind a body of work: the problem, the affected users, and the outcomes that define success — never the mechanism. Its stance is **intent-only**: it states *what outcome is wanted and why*, and MUST NOT author `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` obligation blocks (those are produced when it promotes to a `spec.swarm.md` via the author pass). It is required when a change initiates new product behaviour or alters the scope of existing behaviour, so that downstream obligations have a single, citable source of intent. A conformant `prd.md` MUST contain:
 
@@ -915,7 +916,7 @@ A PRD captures the **product intent** behind a body of work: the problem, the af
 | `## Users` | Who is affected; the segments the outcome serves. | — |
 | `## Goals` | The outcomes that define success (intent, not mechanism). | Outcome statements, never `REQ` blocks. |
 | `## Non-goals` | Explicitly out-of-scope outcomes; the boundary of intent. | Mandatory; an empty boundary is a defect. |
-| `## Success metrics` | Measurable signals that a goal was met. | Each metric SHOULD be expressible as a future `monitor:` proof type BECAUSE a metric that cannot be observed cannot later bind a `VERIFY BY` (§proof types). |
+| `## Success metrics` | Measurable signals that a goal was met. | Each metric SHOULD be expressible as a future `monitor:` proof type BECAUSE a metric that cannot be observed cannot later bind a `VERIFY BY` (§15). |
 | `## Release constraints` | Date, rollout, compliance, or dependency limits on shipping. | Constraints on *delivery*, not authored `CONSTRAINT` blocks. |
 | `## Linked evidence` | References to `research.md`/`finding.md` that ground the intent. | Cross-file refs use `<spec-id>#<local-id>` where an evidence item has a local id. |
 
@@ -963,9 +964,9 @@ not how to fix it.
 - finding:
 ```
 
-##### 21.10.2 `rfc.md` — technical proposal
+#### 21.10.2 `rfc.md` — technical proposal
 
-An RFC records **one technical proposal** put forward for a decision: the problem it solves, the proposed approach, the alternatives weighed, and the explicit decision being requested. Its stance is **proposal/pre-decision**: it advocates an approach but commits to none until the requested decision is made, at which point it promotes to an accepted `adr.md` (the immutable decision) and/or an approved `spec.swarm.md` (the behavioral contract) via the author pass. It is required when a technical approach is significant enough that a record of *why this and not the alternatives* must outlive the change. Every unresolved item in `## Open questions` is a `QUESTION` (`Q-NNN`) candidate and MUST remain open until resolved (§blocking-question handling); an RFC MUST NOT be promoted while a question that blocks its proposal is unresolved. A conformant `rfc.md` MUST contain:
+An RFC records **one technical proposal** put forward for a decision: the problem it solves, the proposed approach, the alternatives weighed, and the explicit decision being requested. Its stance is **proposal/pre-decision**: it advocates an approach but commits to none until the requested decision is made, at which point it promotes to an accepted `adr.md` (the immutable decision) and/or an approved `spec.swarm.md` (the behavioral contract) via the author pass. It is required when a technical approach is significant enough that a record of *why this and not the alternatives* must outlive the change. Every unresolved item in `## Open questions` is a `QUESTION` (`Q-NNN`) candidate and MUST remain open until resolved (§11); an RFC MUST NOT be promoted while a question that blocks its proposal is unresolved. A conformant `rfc.md` MUST contain:
 
 | Section | Meaning | Stance rule |
 | --- | --- | --- |
@@ -1019,9 +1020,9 @@ The exact decision being asked for, and its promotion target
 (accepted adr.md and/or approved spec.swarm.md).
 ```
 
-##### 21.10.3 Stance and promotion summary
+#### 21.10.3 Stance and promotion summary
 
-Both templates obey the same no-obligation discipline as the §21.9 set: neither `prd.md` nor `rfc.md` MAY contain `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` blocks, because doing so would let an *intent* or a *proposal* be read as an approved contract and bypass the author pass (§24 source-authority). Obligations come into existence only when these source docs promote forward:
+Both templates obey the same no-obligation discipline as the §21.9 set: neither `prd.md` nor `rfc.md` MAY contain `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` blocks, because doing so would let an *intent* or a *proposal* be read as an approved contract and bypass the author pass (§22 source authority). Obligations come into existence only when these source docs promote forward:
 
 | Template | Stance | Promotes to |
 | --- | --- | --- |

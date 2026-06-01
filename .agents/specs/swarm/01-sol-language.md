@@ -175,12 +175,14 @@ Every `*.swarm.md` source spec MUST begin with a YAML frontmatter block (a YAML 
 | `status` | `draft \| review \| approved \| superseded` | Lifecycle status of the spec (one enum across §5.8, §12.3, Appendix C). **MUST be present.** |
 | `title` | string | Human title. *Optional.* |
 | `owners` | list | Accountable owners. *Optional* (recommended; MAY be empty for a draft). |
-| `imports` | list of spec ids | Specs whose obligations this spec may reference cross-spec (§5.7). *Optional.* |
+| `imports` | list of spec ids | Specs whose obligations this spec may reference cross-spec (§5.7). On lowering, each surface spec id resolves to its `*.swarm.md` path via the workspace layout (§20) to populate `meta.imports[]` (which holds paths, §12.3). *Optional.* |
 | `domain` | one of the eight governance domains (§22.1.2) | Default Axis-B domain for this spec's obligations; a per-obligation `DOMAIN` clause overrides it. *Optional* (defaults to `product` when absent, §22.1.2). |
 | `created` / `updated` | date | Provenance timestamps. *Optional.* |
 
 ```sol
 ---
+type: spec
+id: auth-refresh
 swarm_language: SOL/0.1
 aps_version: 0.1
 spec_version: 0.1.0
@@ -313,7 +315,7 @@ invariant_block = "INVARIANT", ws, i_id, ":", nl,
 
 **Semantics.** The invariant body is `<property> MUST|MUST NOT <hold>`. The words `ALWAYS` and `NEVER` are **removed** (redundant with the always-held semantics of the block; ASD-STE100 one-word-one-meaning); an author MUST NOT write `ALWAYS`/`NEVER`. An INVARIANT MUST NOT describe a one-time triggered behavior (that is a `REQ`).
 
-An INVARIANT **PREFERS** a `property`, `model`, or `static` proof, because those proof types can assert a property over all states. Binding an INVARIANT *only* to a non-observable unit `test` is a **`SOL-V` warning** (a single example execution does not establish an always-held property) — see §15 for the proof taxonomy and §16 for why a once-green test is not perpetually valid.
+An INVARIANT **PREFERS** a `property`, `model`, or `static` proof, because those proof types can assert a property over all states. Binding an INVARIANT *only* to a non-observable unit `test` is a **`SOL-V003` warning** (non-observable-proof; a single example execution does not establish an always-held property) — see §15 for the proof taxonomy and §16 for why a once-green test is not perpetually valid.
 
 **Worked example:**
 

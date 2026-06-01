@@ -12,7 +12,7 @@
 | Language version | SOL/0.1 (and APS 0.1) |
 | Document status | **Accepted** |
 | Document role | Single canonical kernel; the source the entire repository is reworked from |
-| Supersedes | The four source files listed in §0.2 |
+| Supersedes | All prior Swarm working material described in §0.2 |
 | Resolution log | this specification |
 
 This document is **Accepted** as the v0.1 kernel. Once accepted, every Swarm document, template, scaffold artifact, pass guide, profile, and ADR MUST be consistent with this specification; where any existing repository file disagrees, this specification governs and that file MUST be reworked to conform (§34).
@@ -386,7 +386,7 @@ Header form: `TYPE PREFIX-NNN:` — the trailing colon is **mandatory**. The **o
 | `SHOULD NOT` | Strong prohibition | Requires an accompanying `BECAUSE` or `EXCEPT` |
 | `MAY` | Optional | — |
 
-Uppercase only. **Deprecated aliases** (recognized on input, flagged advisory `SOL-P058`, `NORMALIZE`d to canonical): `SHALL`→`MUST`, `SHALL NOT`→`MUST NOT`. **Forbidden in binding clauses** (lint warning): `CAN`, `WILL` (non-modal). Lowercase `must`/`should`/`may` carry no force (plain prose). *See §5.4, §6.*
+Uppercase only. **Deprecated aliases** (recognized on input, flagged advisory `SOL-P058`, `NORMALIZE`d to canonical): `SHALL`→`MUST`, `SHALL NOT`→`MUST NOT`. **Forbidden in binding clauses** (lint warning): `CAN`, `WILL` (non-modal). Lowercase `must`/`should`/`may` carry no force (plain prose). *See §5.6, §6.*
 
 ### 4.3 Clause keywords by block (uppercase, case-sensitive)
 

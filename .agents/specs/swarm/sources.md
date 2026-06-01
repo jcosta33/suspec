@@ -299,6 +299,7 @@ This file is the evidence base for the Swarm kernel specification. Every load-be
   *Finding:* Introduces the HOW2BENCH 55-item checklist over the full benchmark lifecycle. ~70% of benchmarks took no data-quality-assurance measures; >10% not (fully) open-sourced; many highly-cited benchmarks have duplicated samples / incorrect references; a 49-participant study found low awareness of quality/reproducibility/transparency. **Caveat:** cite by arXiv ID and the named artifact "HOW2BENCH" (sample count differs across versions: 274 → 572).
 
 - **[REAGENT]** "REAgent: Requirement-Driven LLM Agents for Software Issue Resolution." arXiv:2604.06861, April 8, 2026. https://arxiv.org/abs/2604.06861
+  *Status:* **Considered, not cited.** Retained for provenance only; the spec body does not currently cite this entry, so it is NOT load-bearing evidence. Promote to a live citation only if the spec later makes a "requirements-first issue-resolution" argument.
   *Grounds:* Tangential — only cite if the spec makes a "requirements-first issue-resolution" argument. Off-topic for spec-injection security / context-file efficacy.
   *Finding:* A requirement-driven agent that generates/refines structured issue-oriented requirements before patching; evaluated on SWE-bench Lite/Verified/Pro (DeepSeek-V3.2, Qwen-Plus). (Verify the exact claim before citing; not peer-reviewed; low relevance.)
 

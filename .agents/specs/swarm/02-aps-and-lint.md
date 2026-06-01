@@ -88,7 +88,7 @@ A **high-risk word** is a word or phrase that, used in a binding clause without 
 | Ambiguous exceptions | `unless`, `except where` (without a positive reformulation) | Berry | `SOL-P005` / prefer `IF`/`WHEN` |
 | Vague references | `it`, `they`, `this`, `that`, `the above`, `the previous one`, `this thing` (no unique antecedent) | Femmer pronouns | `SOL-P050` (advisory) / `SOL-P002` (if it hides the actor) |
 
-A bare `MUST NOT` prohibition with no paired affirmative behavior is a related negation hazard (`SOL-P007`, §8.3): the author MUST state what the actor does instead, because negated instructions are a documented model-inversion risk (§7.6).
+A bare `MUST NOT` prohibition with no paired affirmative behavior is a related negation hazard (`SOL-P007`, §8.3): the author MUST state what the actor does instead, because a bare prohibition leaves the affirmative behavior under-determined (design rationale).
 
 ### 7.4 The "same line makes it observable" rule (normative)
 
@@ -173,23 +173,23 @@ Every Swarm diagnostic code MUST use the single namespace `SOL-<LAYER><NNN>`: th
 
 #### 8.1.2 The diagnostic record shape (normative)
 
-Every emitted diagnostic MUST be the object `{ code, severity, layer, span, message, suggest }`. This is the surface contract; the IR carries the same data SARIF-shaped (the `level` severity vocabulary follows SARIF `[SARIF]`) in `diagnostics[]` (§12), with `code` identical across both.
+Every emitted diagnostic MUST be the object `{ code, severity, layer, span, message, suggest }`. This is the checker-emit / surface contract (canonical in Appendix B.1.2): `severity` is `BLOCKING`|`ADVISORY` and `span` is `{ file, block, line, col }`. The IR lowers the same data SARIF-shaped (the `level` severity vocabulary follows SARIF `[SARIF]`) into `diagnostics[]` (§12) — `severity`→`level` (`BLOCKING`→`error`, `ADVISORY`→`warning`), `span`→`source` `{ file, line_start, line_end }` — with `code` identical across both.
 
 | Field | Type | Meaning |
 |---|---|---|
 | `code` | string | A `SOL-<LAYER><NNN>` code from this taxonomy / Appendix B |
-| `severity` | enum | `error` (blocking) \| `warning` (advisory) \| `off` (after a recorded waiver, §8.6) |
+| `severity` | enum | `BLOCKING` (blocking) \| `ADVISORY` (advisory); a recorded waiver (§8.6) demotes its IR `level` to `warning`/`off` |
 | `layer` | enum | `S` \| `P` \| `M` \| `V` \| `O` (redundant with `code`'s letter; explicit for filtering) |
-| `span` | object | Source location: `{ file, line_start, line_end }`, or a node id (`AC-001`) |
+| `span` | object | Source location: `{ file, block, line, col }` (at minimum `{ file, block }`; the IR lowers this to `source: { file, line_start, line_end }`) |
 | `message` | string | One-line human-readable defect statement |
 | `suggest` | string \| null | The named repair: an improve op (§10) or a concrete fix; `null` if none |
 
 ```json
 {
   "code": "SOL-P005",
-  "severity": "error",
+  "severity": "BLOCKING",
   "layer": "P",
-  "span": { "file": "auth-refresh.swarm.md", "line_start": 22, "line_end": 22 },
+  "span": { "file": "auth-refresh.swarm.md", "block": "AC-001", "line": 22, "col": 9 },
   "message": "Vague-quality word 'gracefully' in a binding clause with no same-line observable criterion.",
   "suggest": "CONCRETIZE: replace with actor+action+object, or bind a VERIFY BY target."
 }
@@ -197,9 +197,9 @@ Every emitted diagnostic MUST be the object `{ code, severity, layer, span, mess
 
 ### 8.2 BLOCKING vs ADVISORY (normative)
 
-A rule is **BLOCKING** if and only if its defect changes **what gets built** — the obligation is incomplete, non-binding, untestable, ambiguous, contradictory, or unsafe to parallelize. A blocking diagnostic carries `severity: error` and MUST be resolved before the artifact advances past the gate its layer is checked at (S/P/M block at the lint→`lower` gates, §11.6; V/O block at the merge gate, §14); no blocking diagnostic may remain unresolved at promotion (unless waived, §8.6). That a defect changes what gets built is detectable cheaply *before* generation: a small parameter-efficiently-finetuned classifier reaches F1 0.804 / MCC 0.745, beating frontier LLMs (≈0.47–0.52 F1), and finds under-specification the most severe defect `[SPECVALIDATOR]` — supporting BLOCKING status for actor/object incompleteness (`SOL-M001`) and uncaptured ambiguity (`SOL-P008`).
+A rule is **BLOCKING** if and only if its defect changes **what gets built** — the obligation is incomplete, non-binding, untestable, ambiguous, contradictory, or unsafe to parallelize. A blocking diagnostic carries `severity: BLOCKING` (IR `level: error`) and MUST be resolved before the artifact advances past the gate its layer is checked at (S/P/M block at the lint→`lower` gates, §11.6; V/O block at the merge gate, §14); no blocking diagnostic may remain unresolved at promotion (unless waived, §8.6). That a defect changes what gets built is detectable cheaply *before* generation: a small parameter-efficiently-finetuned classifier reaches F1 0.804 / MCC 0.745, beating frontier LLMs (≈0.47–0.52 F1), and finds under-specification the most severe defect `[SPECVALIDATOR]` — supporting BLOCKING status for actor/object incompleteness (`SOL-M001`) and uncaptured ambiguity (`SOL-P008`).
 
-A rule is **ADVISORY** if and only if its defect affects only **how it reads** — style, length, voice, redundancy — without changing the built behavior. An advisory diagnostic carries `severity: warning` and does not block on its own.
+A rule is **ADVISORY** if and only if its defect affects only **how it reads** — style, length, voice, redundancy — without changing the built behavior. An advisory diagnostic carries `severity: ADVISORY` (IR `level: warning`) and does not block on its own.
 
 The binding-clause vs commentary boundary (§7.2) re-classifies position-sensitive codes: `SOL-P056` (comparative without baseline) is BLOCKING inside an obligation block and ADVISORY in commentary; the high-risk word rules of §7.3–§7.4 are BLOCKING only inside binding clauses.
 

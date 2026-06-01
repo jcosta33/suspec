@@ -18,7 +18,7 @@ A conformant Swarm repo MUST satisfy all of the following:
 
 Rationale: skills are *procedural modules, not semantic homes*; placing semantics in a skill would make meaning depend on a non-authoritative, lazily-loaded layer whose adherence is not guaranteed.
 
-A regression check (§32, §34) MUST confirm that no skill, profile, or `AGENTS.md` section defines modality, authority order, or verification semantics.
+A regression check MUST confirm that no skill, profile, or `AGENTS.md` section defines modality, authority order, or verification semantics.
 
 ### 26.2 The 24-skill → ~9-pass recast
 
@@ -40,8 +40,8 @@ The 24 shipped skills recast onto the nine passes of §9. The mapping is *many-s
 | `write-documentation` | implement guide | `implement` |
 | `fix-flaky-test` | narrow implement guide | `implement` |
 | `adversarial-review` | **folds into** the review pass as a profile (Skeptic, §27) — no longer a skill | `review` |
-| `empirical-proof` | cross-cutting fragment | shared (behind `verify`) |
-| `distillation-discipline` | cross-cutting fragment | shared (behind `lower`/`promote`) |
+| `empirical-proof` | cross-cutting fragment | shared (behind `verify`/`review`, §26.3) |
+| `distillation-discipline` | cross-cutting fragment | shared (behind `lower`/`decompose`/`promote`, §26.3) |
 | `persona-architect` | becomes a profile (§27) | `author` (spec) |
 | `persona-auditor` | becomes a profile (§27) | `author` (audit) |
 | `persona-janitor` | becomes a profile (§27) | `implement` |
@@ -57,7 +57,7 @@ Three transformations in that table are normative and called out individually:
 - **`fix-flaky-test` survives as a narrow `implement` guide.** It is the one legacy skill that maps to a sufficiently specific procedure (de-flaking a non-deterministic test) to remain its own guide rather than collapse into `write-fix`.
 - **The eight `persona-*` skills become profiles (§27).** Their carrier (standalone file vs inlined in a pass guide) is an implementation detail; what matters is that a profile is a heuristic stance, not a procedure module.
 
-The resulting pass-guide set spans the nine passes as a *contract*, but only **five stdlib pass guides ship in v0.1** (§9.4): `lint`, `decompose`, `implement`, `review[profile: skeptic]`, and `promote`. The `lint` and `decompose` guides are **net-new** — no legacy skill seeds them (the recast table maps legacy skills onto `author`/`implement`/`review`/`verify`/`promote`); the remaining four passes (`author`, `improve`, `lower`, `verify`) are guide-less in v0.1.
+The resulting pass-guide set spans the nine passes as a *contract*, but only **five stdlib pass guides ship in v0.1** (§9.4): `lint`, `decompose`, `implement`, `review[profile: skeptic]`, and `promote`. The `lint` and `decompose` guides are **net-new** — no legacy *guide* seeds them (the recast table seeds pass guides only onto `author` and `implement`; the one legacy item touching `decompose` is the `persona-lead-engineer` *profile*, not a guide); the remaining four passes (`author`, `improve`, `lower`, `verify`) are guide-less in v0.1.
 
 ### 26.3 The two cross-cutting fragments
 
@@ -263,7 +263,7 @@ Premature acceptance of plausible but unverified claims.
 
 ### 27.3 The profile → pass mapping
 
-The 13 personas map to passes as follows. This table is normative; it is the routing that **profile × pass replaces** the legacy persona × task-type and persona × document-type matrices. The stdlib ships a six-file profile subset (§20.5.1); `reviewer.md` is a convenience alias carrying the **Skeptic** stance for the `review` pass (row 1), not a fourteenth persona.
+The 13 personas map to passes as follows. This table is normative; it is the routing that **profile × pass replaces** the legacy persona × task-type and persona × document-type matrices. The stdlib ships a six-file profile subset (named in §20.0); `reviewer.md` is a convenience alias carrying the **Skeptic** stance for the `review` pass (row 1), not a fourteenth persona.
 
 | Profile (legacy persona) | Pass(es) it parameterizes |
 |---|---|

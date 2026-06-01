@@ -79,9 +79,10 @@ with the relationships emitted as edges (the single source of relationship truth
 A **write surface** is a named coarse region declared with the SOL `SURFACE` statement. There is **no** `locks` primitive on either the surface or IR layer; a lock group **is** a named SURFACE, so lock-set analysis reduces to write-set analysis at surface granularity.
 
 ```ebnf
-surface_def = "SURFACE", ws, surface_name, ws, "=", ws, surface_expr, [ ws, surface_attr ], nl;
-surface_expr = glob | path | surface_name, { ",", surface_expr };
-surface_attr = "[", ( "append-only" | "integration" | "shared" ), "]";
+surface_decl = "SURFACE", ws, surface_name, ws, "=", ws,
+               glob, { ws, ",", ws, glob },
+               [ ws, "[", surface_attr, "]" ], nl;
+surface_attr = "append-only" | "integration" | "shared";
 ```
 
 Example:
@@ -202,7 +203,7 @@ The following are explicitly OUT of the kernel and MUST be documented, where the
 | Inter-agent wire protocols (A2A / MCP) | Transport between running agents; no markdown artifact, no kernel surface. |
 | SDK delegation primitives | Spawning/handing off live agents; agents are not yet reliable at real-time coordination, so the kernel records the *contract*, not the call. |
 
-A conformant Swarm repo MUST NOT claim any of the above exists. It MUST present the dependency DAG, conflict graph, and predicate as *inputs a launcher could one day consume*, and the coordination artifact (§19) as the recorded contract a human (or eventual checker) reads. This staged-contract stance — recording the contract rather than running live multi-agent orchestration — has empirical support: a simple localize→repair→validate pipeline reaches 32.00% on SWE-bench Lite at $0.70, outperforming the elaborate open-source multi-agent systems of its time [AGENTLESS].
+A conformant Swarm repo MUST NOT claim any of the above exists. It MUST present the dependency DAG, conflict graph, and predicate as *inputs a launcher could one day consume*, and the coordination artifact (§19) as the recorded contract a human (or eventual checker) reads. This staged-contract stance — recording the contract rather than running live multi-agent orchestration — has empirical support: a simple localize→repair→validate pipeline reaches 32.00% on SWE-bench Lite at $0.70, achieving the highest performance compared with all existing open-source software agents of its time [AGENTLESS].
 
 ---
 
@@ -320,7 +321,7 @@ This subsection specifies the **task lifecycle** an orchestration run follows, t
 
 #### 19.8.1 The task lifecycle (four phases)
 
-A task moves through four recorded phases. Each phase names the artifacts it reads and the artifacts it writes; the durable record at the end is the ledger entry (§23.7), the updated status artifact (§21.11), and any promoted findings — never the generated execution files, which are disposable (§20, Principle 7 of the workspace doctrine).
+A task moves through four recorded phases. Each phase names the artifacts it reads and the artifacts it writes; the durable record at the end is the ledger entry (§23.7), the updated status artifact (§21.11), and any promoted findings — never the generated execution files, which are disposable (§20, §2.8 and §2.10).
 
 | Phase | What is read | What is produced | Where |
 |---|---|---|---|
@@ -381,7 +382,7 @@ A task **MUST NOT merge** if any of the following holds:
 | 2 | Any **assigned obligation's verdict is `FAIL` or `UNVERIFIED`** (including a required binding with no verdict — `SOL-V008` — and a `PASS (STALE)`, which is treated as not-`PASS`, §14.4). | §14.4 |
 | 3 | A **blocking `QUESTION` affects assigned work** — an unresolved `[blocking]` `QUESTION` (§6.5) whose `AFFECTS` set reaches an obligation the task covers. | §6.5, §11.1.2 (R-BLOCKING-Q) |
 | 4 | The **promotion queue is unhandled** — any promotion-queue item for the task is still `pending`. | §23.4 |
-| 5 | A **write-surface conflict remains** — a worker's OWNED path overlaps another's (`SOL-O001`), or a worker owns a path outside its obligations' declared `WRITES` (`SOL-O005`, §19.7), or an unmerged dependency in the `DEPENDS ON` merge-order remains. | §18.5, §18.7, §19.7 |
+| 5 | A **write-surface conflict remains** — a worker's OWNED path overlaps that of another worker still scheduled concurrently (a conflicting pair scheduled into the same parallel batch, `SOL-O001`), or a worker owns a path outside its obligations' declared `WRITES` (`SOL-O005`, §19.7), or an unmerged dependency in the `DEPENDS ON` merge-order remains. | §18.5, §18.7, §19.7 |
 | 6 | The **base branch is dirty or out of policy** — uncommitted changes on the base, or the base violates a branch-protection / merge policy. | git etiquette (design rationale) |
 
 Conditions 1–4 are the §14 merge gate read at task scope — a missing trace/review is a verification gap, a `FAIL`/`UNVERIFIED` verdict is a failed gate, a blocking `QUESTION` is an unresolved precondition, and an unhandled promotion queue blocks task close (§23.4). Condition 5 is the orchestration overlay: the per-task gate additionally requires that the §18 write-disjoint invariant still holds at merge time, because two tasks that have silently drifted into the same surface produce exactly the hard-to-review merge corruption that `SOL-O001` was raised to ERROR to prevent (§18.7). When all conditions clear, the branch merges, its resolution is recorded in the §19.6 merge log (with an INTENT-PRESERVED-PROOF for every non-trivial conflict), and the task advances to reconciliation (§19.8.1 phase 4).
