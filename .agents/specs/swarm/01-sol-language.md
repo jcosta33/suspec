@@ -28,7 +28,7 @@ The header is a single line consisting of the block-type keyword, one or more sp
 REQ AC-001:
 ```
 
-The trailing colon is REQUIRED. A header without it (`REQ AC-001`) is not a block header; it is prose, and any obligation clauses that follow are unparsed. A parser MUST treat the colon as the delimiter that opens a block body.
+The trailing colon is REQUIRED. A header without it (`REQ AC-001`) is not a block header; it is prose, and any obligation clauses that follow are unparsed. A parser MUST treat the colon as the delimiter that opens a block body. Two block types decorate this header line: a `QUESTION` carries its `[blocking|non-blocking]` tag *before* the colon, and a `VERDICT` carries its core value *after* the colon (`VERDICT AC-001: PASS`); for every other block the header is exactly keyword + id + colon, with the body on the following lines.
 
 > Rationale: EARS, FRETish `[FRET]`, and Gherkin all use leading-keyword bare lines; bare headers are used throughout. The mandatory colon (a deliberate v0.1 choice) makes the header unambiguously machine-detectable inside free Markdown.
 
@@ -42,7 +42,7 @@ QUESTION Q-001 [blocking]:
 
 A block **body** is the maximal run of contiguous non-blank lines immediately following the header, terminated by the first of:
 
-1. the next block header (any of the seven `block_type` keywords beginning a line, with a trailing colon);
+1. the next block header (a line matching `block_type` + id + trailing colon, i.e. `TYPE PREFIX-NNN:`; a body line that merely begins with a keyword *word* but lacks the `id:` tail — e.g. an INVARIANT predicate naming "INTERFACE contracts" — is body content, not a header);
 2. a **blank line** (one or more consecutive newline-only lines);
 3. a **Markdown heading** line (a line beginning with one or more `#` followed by a space).
 
@@ -229,6 +229,8 @@ and_actor_clause = "AND", ws, "THE", ws, actor, ws, modal, ws, response, nl;
 verify_line      = "VERIFY BY", ws, verify_ref, nl;
 metadata_clause  = depends_on | touches | writes | reads | affects | risk | domain;
 ```
+
+**Modal-scan rule (normative).** In an `actor_clause`, the `modal` is the **first** occurrence of a modal terminal (`MUST NOT`/`MUST`/`SHOULD NOT`/`SHOULD`/`MAY`, longest-match — `NOT` before the bare form) at a token boundary; everything before it is the `actor`, everything after is the `response`. A modal word that belongs to the actor or response phrase MUST be quoted/backticked so it is not mistaken for the clause modal; otherwise the split is ambiguous and the obligation MUST be reworded (the parser MUST NOT guess).
 
 Notes on the order and keywords:
 

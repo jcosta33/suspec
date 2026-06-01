@@ -456,7 +456,7 @@ AFFECTS <id-or-surface>
 
 #### 21.3.1 Contract
 
-A task is a *pass frame and execution companion*: the lowered work packet for one pass over assigned source. `task_kind` is a frontmatter enum that parameterizes which pass runs (forward-ref §28). The frontmatter MUST carry the orchestration scope fields so the lowering pass can prove disjointness (§18): `assigned_obligations`, `write_surfaces`, `verification_bindings`, plus the coordination fields `parallel_group`, `blocked_by`. A conformant `task.md` MUST contain:
+A task is a *pass frame and execution companion*: the lowered work packet for one pass over assigned source. `task_kind` is a frontmatter enum that parameterizes which pass runs (forward-ref §28). The frontmatter MUST carry the full field set in the table below — including the orchestration scope fields the lowering pass needs to prove disjointness (§18): `assigned_obligations`, `write_surfaces`, `verification_bindings`, and the coordination fields `parallel_group`, `blocked_by`. A conformant `task.md` MUST contain:
 
 | Section | Meaning |
 | --- | --- |
@@ -703,7 +703,7 @@ A finding is one durable, provenance-anchored project fact discovered during wor
 | `status` (frontmatter enum) | `candidate \| accepted \| promoted \| rejected \| stale \| superseded`. Goes `stale` when `content_hash` no longer matches the cited source/surfaces (§16). |
 | `## Claim` | The one durable fact. |
 | `## Evidence` | File / command / output / source references. |
-| provenance fields | `origin_obligations[]`, `origin_traces[]`, `pass` + `profile`, `reviewer_or_tool`, `timestamp`, `content_hash`, `confidence`. |
+| provenance fields | `origin_obligations[]`, `origin_traces[]`, `pass` + `profile`, `reviewer_or_tool`, `timestamp` (the `created`/`updated` frontmatter serves as the provenance timestamp), `content_hash`, `confidence`. |
 | `## Applies when` / `## Does not apply when` | Scope conditions (mandatory; if it cannot name when it applies, it MUST NOT be promoted). |
 | `## Promotion target` | The promotion route (spec / audit / ADR / memory pattern / keep-scoped / stale). |
 | `## Status history` | Append-only status transitions. |
