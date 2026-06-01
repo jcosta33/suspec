@@ -733,6 +733,81 @@ A minimal 3-node graph: one `REQ` (verified by a test and a property), one `INTE
 
 Notes on the instance: `meta.language` (`SOL/0.1`), `meta.version` (`0.1.0`), and `provenance.compiler_version` (`null`, no tool exists) are the three distinct version fields and are never collapsed; the `verify_by[].adapter` values (`cmdTest`, `cmdValidate`) are AGENTS.md > Commands slots, not commands the kernel runs (§15, §31); node `status` is `UNVERIFIED` because no `VERDICT` block has judged either obligation yet (§14); the diagnostic `code` matches `^SOL-[SPMVO][0-9]{3}$` (§8).
 
+### C.3 The plan envelope schema
+
+The `*.swarm.plan.json` envelope (§13.3) — the schedulable projection of the IR. Same contract-only status as C.1 (Invariant 1: no tool emits it). The authoritative per-packet field shape is §13.5; this schema is its machine-readable form.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://swarm.dev/schema/0.1/swarm.plan.json",
+  "title": "Swarm plan envelope (*.swarm.plan.json)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "packets", "edges", "provenance"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "derived_from", "language", "version"],
+      "properties": {
+        "id":           { "type": "string", "description": "Plan id (slug); typically the source spec id." },
+        "derived_from": { "type": "string", "description": "The *.swarm.ir.json / spec id this plan was derived from." },
+        "language":     { "const": "SOL/0.1", "description": "SOL language discriminator; never merged with version." },
+        "version":      { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$", "description": "Spec content SemVer; never merged with language." }
+      }
+    },
+    "packets": {
+      "type": "array",
+      "description": "Work packets (§13.5).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "pass", "inputs", "outputs", "merge_safe"],
+        "properties": {
+          "id":         { "type": "string", "description": "Packet id, unique within the plan." },
+          "pass":       { "enum": ["author", "lint", "improve", "lower", "decompose", "implement", "verify", "review", "promote"] },
+          "profile":    { "type": ["string", "null"], "default": null, "description": "Heuristic profile (§27); null = the pass default." },
+          "inputs":     { "type": "array", "items": { "type": "string" }, "description": "Node ids this packet consumes (subsumes the legacy derived_from[])." },
+          "outputs":    { "type": "array", "items": { "type": "string" }, "description": "Artifacts produced (code paths, trace/review/finding)." },
+          "writes":     { "type": "array", "items": { "type": "string" }, "default": [], "description": "Write surfaces; each MUST be a subset of its inputs' WRITES (SOL-O005, §18)." },
+          "reads":      { "type": "array", "items": { "type": "string" }, "default": [] },
+          "depends_on": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Packet ids; each MUST also appear as a depends_on edge." },
+          "lane":       { "type": ["string", "null"], "default": null, "description": "Launcher hint only." },
+          "batch":      { "type": ["integer", "null"], "default": null, "description": "Launcher hint only." },
+          "merge_safe": { "type": "boolean", "description": "Kernel verdict: dependency-independent + write-disjoint from batch-mates (§13.6, §18)." }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "description": "Single source of inter-packet relationship truth (§13.5.1); closed edge-type set (§12.5).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "type"],
+        "properties": {
+          "from": { "type": "string", "description": "Source packet id." },
+          "to":   { "type": "string", "description": "Target packet id." },
+          "type": { "enum": ["depends_on", "blocks", "conflicts_with", "verified_by", "affects", "implements", "preserves"] },
+          "hard": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hash", "compiler_version", "compiled_at"],
+      "properties": {
+        "hash":             { "type": "string", "description": "Hash of the source IR/spec this plan was derived from." },
+        "compiler_version": { "type": ["string", "null"], "description": "Tool version; null until a tool exists." },
+        "compiled_at":      { "type": ["string", "null"], "format": "date-time" }
+      }
+    }
+  }
+}
+```
+
 ## Appendix D — Worked example: auth-refresh, full pipeline
 
 This appendix carries the `auth-refresh` obligation set through every pass of the pipeline (§9), in order: authored source, lint, improve, IR, task frame, trace, review with merge gate, and promotion. Identifiers, hashes, and verdicts are stable across stages so the chain reads as a single run. It is the positive (`must-compile`) `auth-refresh` golden-corpus fixture (§33), exercising a vague-quality defect (`SOL-P005`), a `SHOULD` without `BECAUSE` (`SOL-S006`), a missing-verification defect (`SOL-V001`), the no-unbounded-retry `INVARIANT`, and a blocking `QUESTION`. Terms are defined in Appendix F; the IR conforms to Appendix C; the grammar to Appendix A.
@@ -1067,7 +1142,7 @@ This appendix enumerates twelve residual gaps requiring an author's judgment. Th
 | **G5** | Who holds waiver authority, and does WAIVED auto-expire? | Waiver authority is **human or spec-owner only** (never a tool, never an agent profile acting alone). A `WAIVED` decorator **auto-expires on the next source-hash change** of the waived obligation (preventing zombie waivers); an expired waiver reverts the obligation to its undecorated core verdict and re-closes the merge gate. | §14 | No. |
 | **G6** | What is the action on `CONTRADICTED` at the merge gate, beyond the proof-strength ordering? | On `CONTRADICTED`, the merge gate **blocks and routes to review**; the obligation's core verdict is taken from the **stronger oracle** per the proof-strength order (`model > property/contract > test > static > manual/monitor`), and the weaker proof is recorded as superseded evidence. A tie at equal strength escalates to `manual`. | §14, §15 | Yes — formal weighting for LLM-judge proofs. |
 | **G7** | What is the READS conflict rule, and how are shared/global surfaces handled? | read/read is **always parallel-safe**; read/write on the same surface is a **conflict edge** (conflict-serializability). A `SURFACE` MAY carry an attribute — `SURFACE <name> = … [append-only\|integration\|shared]` — so shared/global/append-only surfaces (lockfiles, CI config, manifests) are not treated as ordinary write conflicts and do not trigger blanket staleness. A new lint code **`SOL-O005`** ("owned path outside declared write surface") enforces the two-tier lowering check. | §8, §16, §18 | No. |
-| **G8** | What is the full `*.swarm.plan.json` schema, given the unreconciled source field sets? | The plan schema follows the **same method as the IR**: a **graph envelope** plus a **rich task payload**. Each task carries `{id, pass, profile, derived_from[], reads[], writes[], depends_on[], verify_by[], merge_safe}`. There is **no `locks` field** — a lock group is a named `SURFACE`. The plan is **documented-as-contract only**; no tool emits it (Invariant 1). | §13 | Yes — batching/lane fields once a launcher exists. |
+| **G8** | What is the full `*.swarm.plan.json` schema, given the unreconciled source field sets? | The plan schema follows the **same method as the IR**: a **graph envelope** plus a **rich packet payload**, formalized in **Appendix C.3**. Each work packet carries the §13.5 fields `{id, pass, profile, inputs[], outputs[], writes[], reads[], depends_on[], lane, batch, merge_safe}` (the authoritative shape) — `inputs[]` subsumes the earlier `derived_from[]`, and proof bindings (`verify_by`) live on the obligations a packet's `inputs` reference, not on the packet. There is **no `locks` field** — a lock group is a named `SURFACE`. The plan is **documented-as-contract only**; no tool emits it (Invariant 1). | §13 | Yes — batching/lane fields once a launcher exists. |
 | **G9** | What does a "universal workflow rule" promotion actually become, given the ≤200-line AGENTS.md cap? | A workflow-rule promotion becomes a **pass-guide edit plus a one-line AGENTS.md pointer**, never inline procedure in the bootloader. Only persistent *facts* (ADR 0017) live in `AGENTS.md`; the procedure lives in the named pass guide the pointer references. | §23, §26, §31 | No. |
 | **G10** | What is the canonical frontmatter field-name and value vocabulary? | Frontmatter is normalized to three fields: **`swarm_language: SOL/0.1`** (language discriminator), **`aps_version: 0.1`** (prose-standard version), **`spec_version: 0.1.0`** (spec content version, SemVer). These map one-to-one onto the three IR version fields (`meta.language`, n/a, `meta.version`) and MUST NOT be merged. | §25 | No. |
 | **G11** | What is the exact trace-provenance schema the drift join and conformance checker depend on? | Every recorded PASS MUST carry `{source_hash, per_surface_hash[], adapter, verdict, tier, origin_obligations[], origin_traces[]}`. This single schema is referenced identically by drift/staleness (§16), the memory model's promotion provenance (§23), and the verdict model (§14). | §14, §16, §23 | No. |

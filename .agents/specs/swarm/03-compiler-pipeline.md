@@ -745,6 +745,6 @@ For the auth-refresh spec (one INTERFACE, one REQ depending on it, one INVARIANT
 
 ### 13.8 Conformance and the formal schema
 
-A document is a conformant SOL/0.1 plan iff it: (1) has exactly the four top-level keys of §13.3; (2) populates every MUST field of §13.4–§13.5; (3) carries no `locks` field anywhere (§13.2); (4) uses only the closed pass set (§9) in `packets[].pass` and the closed edge-type set (§12.5) in `edges[]`; (5) represents inter-packet relationships once, as edges (§13.5.1); (6) keeps the three version fields distinct (§12.7). The plan schema is documented data only — no running emitter or scheduler ships (§13.1). The formal JSON Schema for the plan is companion to **Appendix C**.
+A document is a conformant SOL/0.1 plan iff it: (1) has exactly the four top-level keys of §13.3; (2) populates every field Appendix C.3 marks `required` (defaulting optional fields), per §13.4–§13.5; (3) carries no `locks` field anywhere (§13.2); (4) uses only the closed pass set (§9) in `packets[].pass` and the closed edge-type set (§12.5) in `edges[]`; (5) represents inter-packet relationships once, as edges (§13.5.1); (6) keeps the three version fields distinct (§12.7). The plan schema is documented data only — no running emitter or scheduler ships (§13.1). The formal JSON Schema for the plan is **Appendix C.3**.
 
 ---
