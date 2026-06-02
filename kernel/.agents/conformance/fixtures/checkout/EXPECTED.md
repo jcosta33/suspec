@@ -66,12 +66,15 @@ Both BLOCKING diagnostics clear and no `QUESTION` remains:
 
 The `ATOMIZE` and `SCOPE` edits are intent-preserving: the actor, trigger, modality, and the
 union of responses are unchanged; the bundle is split, not reworded, and the inventory write is
-moved to its own surface, not redefined.
+moved to its own surface, not redefined. `ATOMIZE` did set a per-child `RISK` appropriate to
+each split obligation (`AC-010` validate → medium, `AC-014` email → low; `AC-013` charge keeps
+high) — `RISK` is metadata, not one of the twelve semantic-diff categories, so re-grading it
+per child leaves the obligation content intent-preserving.
 
 ## Expected merge-gate outcome (stage 7) → final
 
-All six required obligations — `AC-010`, `AC-013`, `AC-014`, `AC-011`, `AC-012` — and the
-invariant `I-010` are clean `PASS`. The unauthorized-change check confirms each packet wrote
+Six required obligations — the five REQs (`AC-010`, `AC-013`, `AC-014`, `AC-011`, `AC-012`)
+and the invariant `I-010` — are clean `PASS`. The unauthorized-change check confirms each packet wrote
 only inside its declared `WRITES`, and the two packets' write surfaces (`api/src/checkout/submit.ts`
 + `db/orders`, and `db/inventory`) are pairwise disjoint with `AC-012` ordered behind `AC-011`.
 

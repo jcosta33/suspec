@@ -25,17 +25,19 @@ source_spec: .swarm/sources/specs/payment-5xx.swarm.md
 
 ## Per-obligation verdicts
 
-VERDICT AC-020: PASS (CONTRADICTED by review: test:payment-5xx.spec.ts#retries-bounded=PASS vs monitor:duplicate-captures#zero_double_captures=FAIL)
+VERDICT AC-020: PASS (CONTRADICTED by review: bounded-retry test and the production duplicate-captures monitor disagree about the no-double-charge property)
 REASON Bounded-retry harness test PASSes, but the production monitor observes duplicate captures on the same key; the two proofs disagree about the no-double-charge property.
-EVIDENCE payment-5xx.spec.ts output + duplicate-captures dashboard window in review log
+EVIDENCE test:cmdTest:payment-5xx.spec.ts#retries-bounded passed
+EVIDENCE monitor:cmdMonitor:duplicate-captures#zero_double_captures failed
 
 VERDICT AC-021: PASS
 REASON Budget-exhaustion test asserts a 502 with the structured `processor-unavailable` body returned inside the 30s budget.
 EVIDENCE payment-fail.spec.ts output in review log
 
-VERDICT I-001: FAIL (CONTRADICTED by review: monitor:duplicate-captures#zero_double_captures=FAIL vs test:payment-5xx.spec.ts#retries-bounded=PASS)
+VERDICT I-001: FAIL (CONTRADICTED by review: the production duplicate-captures monitor contradicts the bounded-retry test on the no-double-charge property)
 REASON Production duplicate-captures count is non-zero over the window, contradicting the harness test that exercises a single-flight retry path.
-EVIDENCE duplicate-captures dashboard window + payment-5xx.spec.ts output in review log
+EVIDENCE monitor:cmdMonitor:duplicate-captures#zero_double_captures failed
+EVIDENCE test:cmdTest:payment-5xx.spec.ts#retries-bounded passed
 
 ## Final verdict
 Gate: every required obligation is PASS or WAIVED; none STALE/CONTRADICTED/FAIL/BLOCKED/UNVERIFIED.

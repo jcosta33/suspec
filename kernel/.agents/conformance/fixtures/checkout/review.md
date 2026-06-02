@@ -54,6 +54,6 @@ cleared, not merely re-marked.
 
 ## Final verdict
 Gate: every required obligation is PASS or WAIVED; none STALE/CONTRADICTED/FAIL/BLOCKED/UNVERIFIED.
-Result: PASS — all six required obligations (AC-010, AC-013, AC-014, AC-011, AC-012) and the
-invariant I-010 are clean PASS, and no parallel write-surface conflict remains. The merge gate
-opens.
+Result: PASS — six required obligations — the five REQs (AC-010, AC-013, AC-014, AC-011,
+AC-012) and the invariant I-010 — are clean PASS, and no parallel write-surface conflict
+remains. The merge gate opens.

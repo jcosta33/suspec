@@ -2,7 +2,7 @@
 
 This manifest pins the expected outcome of the `payment-5xx` positive (must-compile)
 fixture, the inert oracle a conformant tool is checked against (§33). It is the authority
-for this directory: the per-stage files reproduce the `intent → review` pipeline (§9), and
+for this directory: the per-stage files reproduce the `intent → promotion` pipeline (§9), and
 this manifest records the verdict a correct run must produce at each gate.
 
 **Expected verdict: PASS after reconcile.**
@@ -30,6 +30,7 @@ this manifest records the verdict a correct run must produce at each gate.
 | 5 | decompose, implement | `task.md` | work packet frame; write surfaces ⊆ assigned `WRITES`; `monitor` row `pending` |
 | 6 | verify | `trace.md` | `TRACE T-001` + the 7-field provenance table; `monitor` FAIL recorded |
 | 7 | review | `review.md` | per-obligation `VERDICT`s; the `CONTRADICTED` → `BLOCKED` → `PASS` gate arc |
+| 8 | promote | `finding.md` | the durable finding promoted with full provenance |
 
 > The `task.md` here shows the **pipeline-relevant work-packet frame**, not a full task-file. The task-file-schema `required_sections` rule (§32.3) is exercised by [`../conformant-task.md`](../conformant-task.md) (positive) and [`../violations.md`](../violations.md) (negatives).
 
@@ -67,9 +68,11 @@ Both BLOCKING diagnostics clear and no blocking `QUESTION` remains:
 - `CONCRETIZE` replaced `AC-021`'s "handle failures gracefully" with an observable criterion
   (return HTTP 502 with a structured `processor-unavailable` body inside the 30s budget) —
   clears `SOL-P005`.
-- `BIND` attached a `test` proof to `AC-020`/`AC-021`, a `contract` proof to `IF-001`, and a
-  `monitor` proof to `I-001` (no harness can witness a real duplicate capture — the honest
-  oracle is the production duplicate-captures dashboard, §15).
+- `BIND` attached the missing bindings on only `AC-020` (a `test` proof) and `I-001` (a
+  `monitor` proof — no harness can witness a real duplicate capture, so the honest oracle is the
+  production duplicate-captures dashboard, §15). `IF-001` (its `contract` proof) and `AC-021`
+  (its `test` proof) already carried their bindings in the authored stage-1 source; `CONCRETIZE`
+  only reworded `AC-021`'s selector (`surfaces-error` → `surfaces-502`).
 - `Q-001` resolved out-of-band (decision: retry automatically up to the bound, then surface a
   502) and removed — clears the `SOL-O003` risk before lowering.
 
@@ -104,7 +107,7 @@ when both proofs agree after a recorded reconciliation.
   `AC-020` source `sha256:4f6a…e2`, `AC-021` source `sha256:9a01…7c`, `I-001` source
   `sha256:b730…5d`; the implemented write surface `server/src/payments/charge.ts` is
   `sha256:6b22…9f` in the recorded trace.
-- Proof types span four of the nine (§15): `contract` (`IF-001`), `test` (`AC-020`/`AC-021`),
+- Proof types span three of the nine (§15): `contract` (`IF-001`), `test` (`AC-020`/`AC-021`),
   and `monitor` (`I-001`) — the production observation that drives the contradiction.
 - Adopted-project paths use `.swarm/` throughout (e.g. `.swarm/sources/specs/payment-5xx.swarm.md`).
 

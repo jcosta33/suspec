@@ -160,7 +160,7 @@ P-layer rules are single-obligation-local; each maps to a closed [improve op](..
 | `SOL-P006` | BLOCKING | P | undefined-term: an undefined term in a binding clause (not resolvable via in-file `TERM` or `memory/glossary.md`). | `CLARIFY` / `BIND`: define the term. |
 | `SOL-P007` | BLOCKING | P | negation-ambiguity: a bare `MUST NOT` whose scope is ambiguous, not paired with the affirmative behavior. | `CLARIFY`: state the affirmative alongside the prohibition. |
 | `SOL-P008` | BLOCKING | P | uncaptured-uncertainty: behavioral uncertainty left in prose, not lifted to a `QUESTION` block. | `CLARIFY`: raise a `QUESTION`. |
-| `SOL-P050` | ADVISORY | P | pronoun: a vague pronoun with a non-unique antecedent. | `CLARIFY`. |
+| `SOL-P050` | ADVISORY | P | pronoun: a vague pronoun with a non-unique antecedent. | `CONCRETIZE`: name the unique referent. |
 | `SOL-P051` | ADVISORY | P | passive-voice: passive voice in an obligation sentence. | `NORMALIZE`. |
 | `SOL-P052` | ADVISORY | P | sentence-length: obligation sentence exceeds ~20 words. | `COMPRESS` / `ATOMIZE`. |
 | `SOL-P053` | ADVISORY | P | non-present-non-active: non-present-tense or non-active phrasing. | `NORMALIZE`. |
@@ -234,11 +234,11 @@ The closed **10-op [improve set](../passes/improve.md)** is the canonical detect
 |---|---|
 | `NORMALIZE` | `SOL-P001`, `SOL-P003`, `SOL-P051`, `SOL-P053`, `SOL-P057`, `SOL-P058` |
 | `ATOMIZE` | `SOL-P004` (and `SOL-P052` by splitting) |
-| `CONCRETIZE` | `SOL-P005`, `SOL-P002`, `SOL-M001` |
+| `CONCRETIZE` | `SOL-P005`, `SOL-P002`, `SOL-P050`, `SOL-M001` |
 | `QUANTIFY` | `SOL-P005`, `SOL-P056` |
 | `BIND` | `SOL-V001`, `SOL-V002`, `SOL-V003`, `SOL-V006`, `SOL-V008`, `SOL-M003`, `SOL-P006` |
 | `SCOPE` | `SOL-O001`, `SOL-O002`, `SOL-O004`, `SOL-O005`, `SOL-O007`, `SOL-O008` |
-| `CLARIFY` | `SOL-P008`, `SOL-P007`, `SOL-P050`, `SOL-O003` |
+| `CLARIFY` | `SOL-P008`, `SOL-P007`, `SOL-O003` |
 | `DECONFLICT` | `SOL-M002`, `SOL-M004`, `SOL-O006` |
 | `COMPRESS` | `SOL-P054`, `SOL-P055`, `SOL-O006` |
 | `PROMOTE` | (no lint code — routes through the [promotion protocol](../reference/promotion-protocol.md)) |

@@ -1,6 +1,6 @@
 # `verify` — pass-output rubric
 
-> The output-quality predicate for the `verify` pass: a candidate verification record MUST give every required `VERIFY BY` binding exactly one core verdict, report no completion claim on a binding that resolved to no proof artifact, resolve each adapter through `AGENTS.md > Commands` (an unresolved adapter is `UNVERIFIED`, never a silent `PASS`), and cite the proof type and artifact for each verdict. Each predicate is a boolean a reviewer decides by comparing the obligations' bindings against the recorded verdicts — no runtime.
+> The output-quality predicate for the `verify` pass: a candidate verification record MUST give every required `VERIFY BY` binding exactly one core verdict, report no completion claim on a binding that resolved to no proof artifact, resolve each adapter through `AGENTS.md > Commands` (an unresolved adapter is `SOL-V002` → `BLOCKED`, never a silent `PASS`), and cite the proof type and artifact for each verdict. Each predicate is a boolean a reviewer decides by comparing the obligations' bindings against the recorded verdicts — no runtime.
 
 `verify` is the `VERIFY`-phase pass and the only profile-independent pass: one verdict per `VERIFY BY` binding. Its rubric grades whether **every required binding got a real verdict backed by a real artifact**, with no binding silently passed.
 
@@ -15,12 +15,12 @@ Each predicate MUST hold. Any single failing predicate fails the pass.
 | --- | --- | --- | --- |
 | V1 | **Proof-result completeness** | Every required `VERIFY BY` binding has **exactly one** core verdict — `PASS`, `FAIL`, `BLOCKED`, or `UNVERIFIED`. | A required binding has no verdict (`SOL-V008`) or carries more than one core verdict. |
 | V2 | **No unverifiable completion claim** | No obligation is reported satisfied on a binding that resolved to **no proof artifact**. | An obligation is marked satisfied while its binding produced no artifact — a completion claim with nothing under it. |
-| V3 | **Adapter-resolved** | Each binding's adapter resolved through `AGENTS.md > Commands` to a real command. | An unresolved adapter yields a silent `PASS` instead of `UNVERIFIED`. |
+| V3 | **Adapter-resolved** | Each binding's adapter resolved through `AGENTS.md > Commands` to a real command. | An unresolved adapter yields a silent `PASS` instead of `BLOCKED` (`SOL-V002`). |
 | V4 | **Provenance recorded** | Each verdict cites the **proof type** and the **artifact** it ran, with the seven provenance fields (`source_hash`, `per_surface_hash[]`, `adapter`, `verdict`, `tier`, `origin_obligations[]`, `origin_traces[]`). | A verdict omits the proof type, the artifact, or the provenance the drift join later depends on. |
 
 ### Adapter-resolution and tier checks a reviewer applies
 
-- For V3, each binding's `<adapter>` (e.g. `cmdTest`) MUST appear as a `Commands` slot in `AGENTS.md` whose entry resolves the binding's proof `<type>`. An adapter naming no `Commands` slot resolves to `UNVERIFIED` — recording `PASS` instead is the failure.
+- For V3, each binding's `<adapter>` (e.g. `cmdTest`) MUST appear as a `Commands` slot in `AGENTS.md` whose entry resolves the binding's proof `<type>`. An adapter naming no `Commands` slot is `SOL-V002` (proof-not-executable) and resolves to `BLOCKED` — recording `PASS` instead is the failure.
 - For V4, the provenance `tier` is the proof **type** (one of the nine: `static`/`test`/`contract`/`property`/`model`/`perf`/`security`/`manual`/`monitor`), never a `RISK` value. A `tier` carrying a risk level is a provenance defect.
 - A `manual` proof MUST still carry a `REASON` and an `EVIDENCE` ref; a bare `manual: PASS` with no reason fails V2/V4.
 
