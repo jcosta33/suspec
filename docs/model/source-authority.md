@@ -1,0 +1,152 @@
+# Source Authority
+
+> Authoritative source: `.agents/specs/swarm/07-governance-memory.md` §22 (the two-axis source-authority model, the conflict / tie-break procedure, and the hard-policy band). This is a reference projection; where it and the spec disagree, the spec governs.
+
+Source authority is the **deterministic procedure** a conformant Swarm repo uses to decide, when two artifacts assert conflicting obligations, **which obligation governs**. It is the conflict-resolution complement to the obligation graph: the graph records *what* obligations exist and how they relate; source authority records *which wins* when they disagree.
+
+Authority is **not** a planning hint and **not** a confidence score. It is the binding precedence order, and it is the only sanctioned alternative to silently letting the most recently written artifact win.
+
+As with everything in the kernel, this is **NO-RUNTIME**: source authority is a contract (a precedence procedure plus lint codes) that a future tool builds against. Nothing here ships a resolver.
+
+## The two axes
+
+The model has **two orthogonal axes**, applied **lexicographically — domain first, then artifact**. The two questions ("how authoritative is the *container*" and "how authoritative is the *domain*") are genuinely independent, so the spec ranks them independently and combines them in a fixed order rather than collapsing them into one ladder.
+
+### Axis A — artifact authority (backward trace)
+
+Axis A ranks an obligation by **the kind of artifact that contains it** and that artifact's lifecycle status. It answers "how settled is the container this obligation was traced back *from*." It is the **backward-trace** axis: follow an obligation back to its source artifact and read its rank.
+
+| Rank | Artifact (with required status) | Notes |
+| ---- | ------------------------------- | ----- |
+| 1 (highest) | accepted `adr.md` | Immutable decision; the strongest recorded intent. |
+| 2 | approved `spec.swarm.md` | The behavioral contract (`status: approved`). |
+| 3 | accepted `finding.md` | A durable project fact (`status: accepted` or `promoted`). |
+| 4 | reviewed `audit.md` | Present-state observation that passed a `review` pass. |
+| 5 | reviewed `research.md` | External / exploratory evidence that passed a `review` pass. |
+| 6 | task notes (`task.md`) | Execution-local; durable only after promotion. |
+| 7 (lowest) | chat | Conversational context; never authoritative on its own. |
+
+A conformant tool MUST reject (lint `SOL-M004` authority-conflict) any claim that a **lower-ranked** artifact silently amended a **higher-ranked** one. (An irreconcilable *equal-rank* conflict is the distinct `SOL-M002`; see step 3 below.) An artifact below `approved`/`accepted` status occupies the rank of its **draft tier**, one step below its accepted tier — e.g. a `proposed` ADR does not outrank an `approved` spec.
+
+### Axis B — domain authority (forward governing force)
+
+Axis B ranks an obligation by **the governance domain it belongs to**, independent of where it is written. It answers "how much *forward* governing force this obligation projects over everything downstream." It is the **forward-governing-force** axis.
+
+| Rank | Domain | Examples |
+| ---- | ------ | -------- |
+| 1 (highest) | `enforced-policy` | Deterministic, externally-enforced rules: write-surface gates, secret redaction, permission denies. |
+| 2 | `compliance` | Regulatory / legal obligations (data residency, retention, audit trails). |
+| 3 | `security` | Authn / authz, secret handling, attack-surface constraints. |
+| 4 | `architecture` | Module boundaries, ownership, layering, public interfaces. |
+| 5 | `product` | User-visible behavior, acceptance criteria. |
+| 6 | `team` | Conventions, style, process agreements. |
+| 7 | `task-map` | Per-task execution scoping. |
+| 8 (lowest) | `memory` | Promoted findings / patterns. |
+
+An obligation's domain MUST be discoverable **deterministically**. The `lower` pass populates the IR `node.authority` by this precedence: the obligation's own `DOMAIN <name>` clause if present, else the spec frontmatter `domain:`, else the default `product`. The eight legal domain names are exactly the Axis-B ranks above (`enforced-policy` … `memory`); the two lowest, `task-map` and `memory`, are also the two axis **floors** (see Invariants).
+
+## The conflict rule (normative)
+
+Two obligations *conflict* when they constrain the same trigger / state / surface with **incompatible modality**. A conformant tool MUST resolve a conflict by this exact procedure, in order:
+
+1. **Compare DOMAIN rank (Axis B) first — but only when at least one obligation is in the hard-policy band (Axis-B ranks 1–3: `enforced-policy`, `compliance`, `security`).** When a hard-policy-band obligation is involved, the **higher domain wins regardless of artifact rank** (a `security` obligation governs a `product` obligation even from a lower-ranked artifact). If **neither** obligation is in the hard-policy band, domain rank does **not** override artifact authority — go to step 2.
+   - The in-band obligation exercises domain-dominance **only when it lives in a durable, reviewed artifact** (Axis-A rank ≤ 5 — accepted ADR, approved spec, accepted finding, or reviewed audit/research). A hard-policy claim living only in un-promoted task notes or chat (Axis-A ranks 6–7) MUST first be promoted to a durable artifact before it can govern; an un-reviewed note cannot override an accepted ADR.
+2. **Otherwise** — neither obligation is in the hard-policy band, or the two are in the same domain — **compare ARTIFACT authority (Axis A).** The obligation in the higher-ranked artifact wins; if artifact rank also **ties**, the higher domain rank breaks the tie.
+3. **If both axes are equal, STOP.** A conformant tool MUST NOT auto-select a winner. It MUST emit `SOL-M002` (semantic-layer contradiction) and route the conflict to amendment / review. **Resolution is an authoring act, never an inference.**
+
+### The hard-policy band, restated
+
+This ordering is **lexicographic with a hard-policy gate**:
+
+- **Inside the hard-policy band** (Axis-B ranks 1–3): domain rank is decisive.
+- **Below the band**: artifact authority is the most-significant key, and domain rank is only a tie-breaker.
+
+This prevents a low-criticality domain note (e.g. a `team`-rank remark in a reviewed audit) from overriding a higher-authority artifact (e.g. a `product` obligation in an approved spec). Domain rank is decisive *only* inside the band; everywhere else, the container's settledness governs.
+
+## Worked tie-break example
+
+A reviewed `audit.md` records a **`security`** obligation: *the refresh endpoint MUST reject reuse of a rotated refresh token*. An approved `spec.swarm.md` records a **`product`** obligation: *the refresh endpoint MUST accept the most recent token presented, for a seamless re-login*. They conflict on the same trigger (reuse of a prior refresh token).
+
+Applying the conflict rule:
+
+1. **Axis B (domain).** `security` (rank 3) vs `product` (rank 5). Security outranks product, and security is in the hard-policy band. **Resolution stops here: the security obligation governs.**
+2. **Axis A is never consulted** — even though the product obligation sits in a *higher*-ranked artifact (approved spec, rank 2) than the security obligation (reviewed audit, rank 4).
+
+```sol
+CONSTRAINT C-014: # from reviewed audit.md, domain: security
+THE refresh endpoint MUST NOT accept a refresh token that has already been rotated
+VERIFY BY security:cmdScan:auth-replay#rotated-token
+AFFECTS auth.refresh
+```
+
+```sol
+REQ AC-031: # from approved spec.swarm.md, domain: product
+WHEN a client presents the most recent refresh token
+THE refresh endpoint MUST issue a new access token
+VERIFY BY test:cmdTest:auth-refresh#happy-path
+AFFECTS auth.refresh
+```
+
+`C-014` (security) governs. The product REQ `AC-031` is **not deleted** — it is routed to amendment so its trigger can be narrowed to exclude rotated tokens. Had **both** obligations been `product`, the procedure would fall to Axis A and the approved spec would win over the reviewed audit.
+
+### Second example (below the hard-policy band)
+
+A reviewed `audit.md` records a **`team`**-domain note: *new modules SHOULD live under `src/v2/`*. An approved `spec.swarm.md` records a **`product`** obligation on the same surface. Neither is in the hard-policy band (ranks 1–3), so domain rank does **not** decide — **artifact authority does** (step 2), and the approved spec (rank 2) outranks the reviewed audit (rank 4). The product obligation wins; the audit note is advisory. Were the audit note instead a `security` obligation (in-band), step 1 would flip the result.
+
+## Invariants on both axes
+
+These hold on Axis A and Axis B simultaneously; no precedence computation may violate them.
+
+| Invariant | Statement |
+| --------- | --------- |
+| **Code is reality, not intent** | Code and tests are implementation reality. They MAY **falsify** an obligation (producing `FAIL` / `CONTRADICTED` / `STALE`) but MUST NOT **silently amend** intent. A divergence routes to the three-way reconcile, never to a quiet edit of the obligation. |
+| **Memory and task-map are a floor** | `memory` (Axis-B rank 8) and `task-map` (rank 7) are the lowest domains and never outrank any governing domain: a promoted finding or task-scoping note can **inform** but never **weaken** an obligation. A promotion that would weaken an obligation *as memory* is itself a `SOL-M004` authority-conflict. Promotion to a spec is a **domain-promotion**, not memory overriding intent — once a finding is re-stated as a spec obligation via the `promote` pass it carries its **new container's** authority. That is intent acquiring rank, not the `memory` floor being breached. |
+| **Planning hints reorder, never weaken** | `DEPENDS ON`, `parallel_group`, and other planning metadata change the **order** work runs in. They MUST NOT change modality, scope, or verification bindings of any obligation. |
+
+## Bidirectional traceability framing
+
+The two axes are the two directions of requirements traceability:
+
+- **Axis A is the backward trace.** Given an obligation, you trace it *back* to the artifact it came from; the artifact's rank tells you how settled the provenance is.
+- **Axis B is the forward governing force.** Given an obligation, you trace its domain *forward* over everything it governs; the domain's rank tells you how much force it projects downstream.
+
+## Lint codes referenced here
+
+| Code | Meaning |
+| --- | --- |
+| `SOL-M002` | Semantic-layer contradiction — an irreconcilable **equal-rank** conflict (conflict-rule step 3). Routes to amendment / review. |
+| `SOL-M004` | Authority-conflict — a lower-ranked artifact (or actor) silently amending a higher-ranked one. |
+
+(Both are in the `SOL-M` semantic layer; today they are enforced by hand or by the documented lint-spec pass, aspirational until tooling exists.)
+
+## The high-oversight band (HITL escalation)
+
+The `RISK` clause is otherwise inert in the kernel; the high-oversight band is where it is wired to a normative obligation. The rationale is that agents are unreliable at knowing **when to stop and ask a human**, so high-stakes work must not proceed on agent self-assessment alone. This too is a contract (a lint plus a verdict-field requirement), not a shipped escalation engine.
+
+**An obligation is in the high-oversight band iff either holds:**
+
+| Trigger | Condition |
+| --- | --- |
+| Declared critical risk | The obligation carries `RISK critical`. |
+| Irreversible / shared write surface | Any surface in the obligation's `WRITES` set is tagged `integration` or `shared`. (Irreversible actions — migrations, destructive or non-replayable operations — MUST be modelled with an `integration` surface tag or `RISK critical` so band membership stays machine-checkable.) |
+
+`RISK high` / `medium` / `low` do **not** enter the band on the strength of the tier alone, but any obligation at any tier enters the moment its `WRITES` touches an `integration` / `shared` surface, or it carries `RISK critical`.
+
+**For an in-band obligation, a conformant repo MUST satisfy both:**
+
+1. **Named-human REVIEW binding.** The obligation MUST carry a `manual @ REVIEW` proof binding (`VERIFY BY manual:…`) in addition to whatever executable proofs its task-kind default suite requires. The band's work cannot reach the merge gate on executable proofs alone.
+2. **Named human on the verdict and on any waiver.** That `manual` verdict MUST name its human **authority**; and any `WAIVED` verdict on a band obligation MUST be issued by a **human or the spec owner**, never self-issued by a skill, persona, or the implementing agent. An in-band `manual` verdict or waiver lacking a named human authority is a `SOL-V010` diagnostic.
+
+| Risk / surface | REVIEW binding | Verdict / waiver authority |
+| --- | --- | --- |
+| `RISK critical` (any surface) | `manual @ REVIEW` REQUIRED | Named human (verdict + any waiver) |
+| Any tier, `WRITES` an `integration` / `shared` / irreversible surface | `manual @ REVIEW` REQUIRED | Named human (verdict + any waiver) |
+| `RISK low` / `medium` / `high`, ordinary exclusive `WRITES` | Per task-kind default suite | MAY be agent-verified |
+
+The "named human" is **not a new kernel role**: *who* the human is stays unspecified and is bound locally by the adopting repository. Approval **authority** is resolved through the source-authority ladder above — the approver is the owner of the highest-ranked governing artifact in the relevant domain. A waiver on a band obligation is the ordinary `WAIVER` lifecycle, with mandatory `authority + reason + expiry` and auto-expiry on source-hash change; there are no permanent waivers and no agent-self-issued waivers in the band. Recording an agent-only verdict on a band obligation, or letting a skill self-issue a band waiver, is additionally a `SOL-M004` authority-conflict.
+
+## Preserved / Dropped / Still-uncertain
+
+- **Preserved.** Both axes with their full rank tables; the lexicographic-with-hard-policy-gate conflict procedure (all three steps); the durable-artifact precondition for in-band domain dominance; the three invariants; both worked tie-break examples; the `SOL-M002` / `SOL-M004` distinction; and the high-oversight band (its two triggers, two-part rule, and the named-human / waiver-authority discipline) — because §22.3 and §22.7 explicitly require this reference to state the axes, the lexicographic rule, the invariants, at least one worked tie-break, the high-oversight band, and the tie to waiver / approval authority.
+- **Dropped (left to the spec).** The supporting empirical evidence for authority-ranking over flat retrieval (the `[DOCPROMPTING]` / `[RACG]` / `[REPOCODER]` citations); the full §22.6 human-approval change-classification table and the closed twelve-category semantic-diff mapping; the detailed cross-references to other sections (IR lowering internals, the `migration` default suite contents, the three-way reconcile mechanics); and the §22.7.3 migration worked example. These remain the spec's long-form responsibility.
+- **Still-uncertain (governed by the spec).** *Who* approves and the identity / title / headcount of any named human are deliberately unspecified by the kernel and bound by the adopting repo; the lint codes are manual-today and aspirational until tooling exists. This projection records that boundary rather than resolving it.

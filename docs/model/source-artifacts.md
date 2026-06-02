@@ -1,0 +1,144 @@
+# Source artifacts and the `.swarm.` infix partition
+
+> Authoritative source: `.agents/specs/swarm/06-artifacts.md` §20 (the artifact set and conformance definition), §20.1 (the `.swarm.` infix rule), §20.2 (canonical filenames by class), and §20.3 (the tiered required-artifact set). This is a reference projection; where it and the spec disagree, the spec governs.
+
+This page is the reader's first map of *which files a Swarm repository may contain* and *how the framework tells them apart*. Swarm is markdown-only and provider-neutral, with **no runtime**: every actor named below ("compiler", "parser", "linter", "planner", "checker") is a CONTRACT a future tool would build against, never shipped code (Invariant 1, NO RUNTIME — §2). Nothing on this page executes; every artifact is inert reference data, a copyable template, or a file a human or agent populates by hand.
+
+The long-form rules — repository layout (§20.0), the adopted-project `.swarm/` workspace (§20.5), the per-artifact contracts and copyable templates (§21), and the mechanically-checkable conformance procedure (§32) — live in the spec. This projection covers only the artifact *set*, its two-class partition, and the *tiers* on which conformance is defined.
+
+## 1. Two classes, one discriminator: the `.swarm.` infix
+
+Swarm partitions every repository file that participates in the pipeline into **exactly two classes**, discriminated solely by whether the filename carries the literal infix `.swarm.` before its final extension (§20.1).
+
+| Class | Filename rule | Meaning |
+| --- | --- | --- |
+| **Compiler-visible** | MUST contain the `.swarm.` infix (e.g. `auth.swarm.md`, `auth.swarm.ir.json`). | The file is *parsed or emitted by the compiler*. Its bytes are subject to the SOL grammar (§5–§6) or the IR/plan JSON schemas (§12–§13, Appendix C). |
+| **Working artifact** | MUST NOT contain `.swarm.`; uses a plain `.md` extension (e.g. `task.md`, `review.md`). | A *human/agent working artifact*: structured Markdown governed by an artifact contract (§21), not by the SOL grammar — though it MAY embed SOL blocks (notably `VERDICT` and `TRACE`) as quoted data. |
+
+A conformant Swarm tool MUST treat the `.swarm.` infix as the **sole, sufficient discriminator** for "do I parse/emit this": it MUST NOT parse a plain `.md` working artifact as SOL source, and MUST NOT emit a compiler output to a path lacking the infix (§20.1).
+
+*Design rationale (from §20.1):* the double-extension convention (`.test.ts`, `.d.ts`) lets tooling select files by a stable, greppable suffix without inspecting their content.
+
+The only **human-authored** `.swarm.` artifact is `*.swarm.md` (the source spec); the `.swarm.*.json` / `.swarm.trace.md` variants are *emitted* artifacts (see §3.1 below).
+
+## 2. The artifact set is built from 7 block types and 7 verdicts
+
+The working artifacts on this page are containers for the language defined elsewhere in the kernel. Two counts are load-bearing here and are stated so this projection stays consistent with the spec:
+
+- **7 block types** — the SOL surface-language blocks (`REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`, `TRACE`, `VERDICT`; §5–§6) are what a `*.swarm.md` source carries and what working artifacts embed as quoted data.
+- **7 verdicts** (4 core + 3 lifecycle; §14) — core ∈ {`PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`}; lifecycle ∈ {`WAIVED`, `STALE`, `CONTRADICTED`}. A `VERDICT` is a SOL *block*, never a file (see §3.3 below).
+
+This page does not re-enumerate the broader kernel taxonomies (5 modals, 9 proof types, 7 phases / 9 passes, 10 improve ops, 5 lint layers S/P/M/V/O); they live in their own reference pages. They are named only to anchor that the artifacts here are the *carriers* of that vocabulary, not new vocabulary.
+
+## 3. Canonical filenames by class
+
+### 3.1 Compiler-visible artifacts (`.swarm.` infix)
+
+| Filename pattern | Role | Authored by | Schema / grammar | Status in v0.1 |
+| --- | --- | --- | --- | --- |
+| `*.swarm.md` | Source spec — APS prose interleaved with SOL blocks. | Human / authoring agent | SOL grammar (§5–§6) + APS prose standard (§7) | Live; the only hand-written `.swarm.` file. |
+| `*.swarm.ir.json` | Emitted intermediate representation (the obligation graph). | Compiler (future tool) | IR envelope (§12, Appendix C) | **Reserved contract name.** Not written by any shipped tool. |
+| `*.swarm.plan.json` | Emitted plan (lowered, schedulable work packets + graphs). | Compiler/planner (future tool) | Plan envelope (§13) | **Reserved contract name.** Not written by any shipped tool. |
+| `*.swarm.trace.md` | Emitted/instantiated trace for a built spec. | Implement/verify pass (today: agent by hand) | Trace contract (§21.4) + §16 provenance | Copyable template is `trace.md` (plain); built *instances* MAY take the `*.swarm.trace.md` name. |
+
+The two `.json` variants are **documented-as-contract names only**: the kernel pins their shape so a future launcher can build against a stable target, but Swarm ships no parser, emitter, planner, or checker (Invariant 1, §2). A v0.1 repository MUST NOT claim that any `*.swarm.ir.json` or `*.swarm.plan.json` is *produced* by a Swarm tool; it MAY hold hand-written examples in the golden corpus (§33).
+
+### 3.2 Working artifacts (plain `.md`)
+
+| Filename | Role | Tier (see §4) |
+| --- | --- | --- |
+| `task.md` | Lowered work packet / pass frame for one pass (§28). | Tier 1 — core (required) |
+| `trace.md` | Implementation/preservation claims + evidence against obligations. | Tier 1 — core (required) |
+| `review.md` | The verdict record: per-obligation `VERDICT` blocks + matrix + final verdict. | Tier 1 — core (required) |
+| `finding.md` | One durable, provenance-anchored project fact. | Tier 1 — core (required) |
+| `adr.md` | An immutable architecture decision record (Nygard form). | Tier 1 — core (required) |
+| `memory/INDEX.md` | Compact recall map (links + a "Load when" per entry). | Tier 1 — core (required) |
+| `memory/glossary.md` | One-word-one-meaning term store. | Memory model (§23) |
+| `memory/patterns/*.md` | Recurring multi-finding knowledge. | Memory model (§23) |
+| `audit.md` | Observation-only source artifact; promotes to a spec. | Tier 3 — stdlib source-doc (conditional) |
+| `research.md` | Investigation source artifact; promotes to a spec. | Tier 3 — stdlib source-doc (conditional) |
+| `bug-report.md` | Diagnosis-only source artifact; promotes into a fix *task*. | Tier 3 — stdlib source-doc (conditional) |
+
+### 3.3 There is NO `verdict.md` (normative)
+
+A repository MUST NOT contain a standalone `verdict.md`, and no tool MAY emit one (§20.2.3). `VERDICT` is a SOL *language block* (§6), not a file; `review.md` is its canonical *container* (§21.5).
+
+*Rationale (from §20.2.3):* a verdict is the output of the review pass, exactly as a SARIF `result` lives inside a `run` and never as a free-standing file. The kernel ships documentation of the `VERDICT` block and the verdict taxonomy (§14) as a reference page, not as a copyable artifact template.
+
+## 4. The tiered required-artifact set
+
+The required set is partitioned into **three tiers**. Only Tiers 1 and 2 are load-bearing for conformance; Tier 3 is shipped but conditional (§20.3).
+
+### 4.1 Tier 1 — kernel-required pipeline core (7 artifacts)
+
+Seven artifacts. Each MUST ship both (a) a documented contract and (b) a copyable template skeleton; all seven are given in §21.
+
+| # | Artifact | Class | Pipeline role |
+| --- | --- | --- | --- |
+| 1 | `spec.swarm.md` | compiler-visible | Source of obligations. |
+| 2 | `task.md` | working | Lowered pass frame. |
+| 3 | `trace.md` | working | Implementation claims + evidence. |
+| 4 | `review.md` | working | Verdict record (verdict container). |
+| 5 | `finding.md` | working | Durable fact (memory Tier-2 evidence). |
+| 6 | `adr.md` | working | Immutable decision. |
+| 7 | `memory/INDEX.md` | working | Recall map (memory Tier-1). |
+
+### 4.2 Tier 2 — kernel-required language / reference docs (6 docs)
+
+Six *prose-and-table reference pages* (not copyable templates). A conformant repo MUST contain a self-contained copy of each, so the repository explains its own language without external dependency (§20.3.2).
+
+| # | Reference doc | Defines | Spec home |
+| --- | --- | --- | --- |
+| 1 | SOL reference | Surface syntax + block-type reference. | §5–§6 |
+| 2 | APS reference | The controlled-prose standard. | §7 |
+| 3 | Error / lint taxonomy | The `SOL-<LAYER><NNN>` catalogue with stable codes + severities. | §8, Appendix B |
+| 4 | Source-authority | The two-axis authority model + tie-break. | §22 |
+| 5 | Promotion-protocol | The promotion statuses + workflow. | §23 |
+| 6 | Distillation-loss-budget | The Preserved / Dropped / Still-uncertain discipline + loss accounting. | §24 |
+
+### 4.3 Tier 3 — stdlib source-doc templates (shipped, conditional)
+
+These are *source documents* that promote into the pipeline. They are **conditional**: a repo need not have instantiated any of them to be conformant, but a conformant scaffold MUST ship the templates (§20.3.3).
+
+| # | Template | Epistemic stance | Promotes to |
+| --- | --- | --- | --- |
+| 1 | `audit.md` | Observation-only (records what *is*, never prescribes). | a `spec.swarm.md` (via author pass). |
+| 2 | `research.md` | Investigation (open questions + findings). | a `spec.swarm.md` (via author pass). |
+| 3 | `bug-report.md` | Diagnosis-only (root cause, never fix). | a fix `task.md` (`task_kind: fix`). |
+
+The spec extends this minimum: per §20.3.4, a conformant scaffold SHOULD also ship `prd.md` (stance: **intent**) and `rfc.md` (stance: **proposal**) templates alongside the three above — extending the Tier-3 set to five — and MAY additionally ship a `use-case.md` or `nfr.md` template. None of these is ever conformance-required.
+
+### 4.4 The recognized parents of a spec (§20.3.4)
+
+A spec is not born only from research. Swarm normalizes many requirements-practice artefacts into one obligation-bearing `spec.swarm.md` rather than pretending every intent begins as research. The canonical **parents** of a spec are catalogued in §20.3.4; the distinction this projection carries forward is:
+
+- **Shipped Tier-3 source-doc templates** (conditional, never required): `audit.md`, `research.md`, `bug-report.md`, and — per §20.3.4 — `prd.md` and `rfc.md`.
+- **Recognized inputs that normalize INTO a spec** during the `author` pass (§9), emitting `REQ` / `CONSTRAINT` / `INVARIANT` / `INTERFACE` blocks plus verification-matrix rows directly, and not necessarily shipped as separate templates: `use-case.md` / examples (scenario), `nfr.md` / SLOs (quality attributes), and interface sources (OpenAPI / GraphQL / DB schema).
+
+`research.md` holds a special role as the kernel's **detached first-class evidence store** (§20.3.4): it is not bound to one downstream artefact — one research artefact MAY feed many PRDs, specs, ADRs, findings, or audits at once — which minimizes copying, preserves provenance, and reduces distillation loss (§24) when upstream facts evolve.
+
+## 5. What conformance requires (pointer)
+
+Per §20.4, a repository is **Swarm-conformant** iff *all four* hold: (1) self-contained copies of all six Tier-2 docs; (2) a copyable template for each of the seven Tier-1 artifacts, each satisfying its §21 contract; (3) a populated `AGENTS.md` bootloader within the ≤200-line / ≤25 KB density cap (§2, §31.1); (4) the version file (`scaffold/.agents/.swarm-version` in the framework repo, `.swarm/VERSION` in an adopted project; §25). Conditional Tier-3 artifacts and the reserved `.swarm.*.json` contract files are **not** required for conformance. The full mechanically-checkable contract is §32; the golden corpus that exercises it is §33. This projection states the artifact set those checks range over; it does not restate the checks themselves.
+
+## Preserved / Dropped / Still-uncertain
+
+### Preserved
+
+- The normative **`.swarm.` infix rule** and its two classes (compiler-visible vs working artifact), including the sole-discriminator requirement and the double-extension rationale (§20.1).
+- Both canonical-filename tables: the four compiler-visible patterns with their reserved-contract status (§20.2.1) and the working-artifact list with tiers (§20.2.2).
+- The **NO `verdict.md`** rule and its SARIF-`result` rationale (§20.2.3).
+- The full **three-tier** structure: 7 Tier-1 core artifacts, 6 Tier-2 reference docs, 3 (extensible to 5) Tier-3 source-doc templates, and the recognized-parents distinction including `research.md` as the detached evidence store (§20.3.1–§20.3.4).
+- The NO-RUNTIME framing applied to every "tool" actor named (§2, carried throughout §20).
+
+### Dropped (left to the spec)
+
+- **§20.0 repository layout** and **§20.5 adopted-project `.swarm/` workspace** — the full directory trees, the eight `.swarm/` directory contracts, the `.agents/` compatibility model, the governing placement rule, and the commit policy. These are out of the named source scope for this page; `docs/model/source-authority.md` and `docs/model/conformance.md` are the projection's homes for adjacent material.
+- **Per-artifact contracts and copyable templates** (§21) — every required-section table and template skeleton. Those belong to the per-artifact pages under `docs/artifacts/`.
+- The **full conformance procedure** (§32) and the **golden corpus** (§33); only the §20.4 four-part definition is summarized here as a pointer.
+- The complete §20.3.4 parents table (intent/evidence/proposal/decision/observation/defect/discovery/scenario/interface/quality-attribute rows with their "May feed" columns) — distilled here to the template-vs-normalized-input distinction.
+
+### Still-uncertain (open in the spec)
+
+- The proposed **v0.2 rename** `scaffold/` → `kernel/` (with a one-cycle `scaffold/` alias) is flagged in §20.0 as a possible future ADR; if adopted it changes a payload directory name only, never the artifact filenames, the `.agents/` interior, or the conformance definition — so this page's filename and tier facts are unaffected.
+- Whether the Tier-3 set settles at five (`audit`/`research`/`bug-report`/`prd`/`rfc`) or grows to include shipped `use-case.md` / `nfr.md` templates is left SHOULD/MAY in §20.3.4 and not fixed here.
