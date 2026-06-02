@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [0037](./0037-load-what-the-task-names.md) — the activation doctrine becomes **"load what the task names"**; description-match self-assessment is reframed as the *fallback*, not the primary mechanism (§26.4). The routing/verification orthogonality recorded below is preserved. The original decision text below is kept as history (Nygard, §30.1: an accepted ADR is never edited in place; only this status line is added).
 
 ## Context
 

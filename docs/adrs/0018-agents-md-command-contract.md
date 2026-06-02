@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [0038](./0038-verify-by-adapters-through-commands.md) — command resolution is recast as `VERIFY BY` adapters resolving through `AGENTS.md > Commands` (§15, §31.3); the single-source-of-truth `## Commands` table is preserved and bound to the SOL proof model. The original decision text below is kept as history (Nygard, §30.1: an accepted ADR is never edited in place; only this status line is added).
 
 ## Context
 

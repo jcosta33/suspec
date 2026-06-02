@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [0036](./0036-heuristic-profile-model.md) — personas are recast as **heuristic profiles** that parameterize a pass (§27); "mindset, not org role" is preserved and made explicit. The original decision text below is kept as history (Nygard, §30.1: an accepted ADR is never edited in place; only this status line is added).
 
 ## Context
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [0035](./0035-seven-value-verdict-model.md) — the self-reviewed / independently-reviewed tiers are recast as values of the **7-value verdict taxonomy** (§14, the 4 core + 3 lifecycle verdicts). The original decision text below is kept as history (Nygard, §30.1: an accepted ADR is never edited in place; only this status line is added).
 
 ## Context
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [0036](./0036-heuristic-profile-model.md) — the Skeptic is recast as a **heuristic profile** applied on the `fix`/`review` passes, not a persona that owns a task type (§27). The original decision text below is kept as history (Nygard, §30.1: an accepted ADR is never edited in place; only this status line is added).
 
 ## Context
 

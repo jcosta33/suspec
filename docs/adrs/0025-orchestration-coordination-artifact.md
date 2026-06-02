@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [0039](./0039-write-surface-model.md) — owned/forbidden paths become the **write-surface model** lowered by the `lower`/`decompose` passes (§18, §19), rather than a standalone orchestration object. The recorded-not-runtime stance is preserved. The original decision text below is kept as history (Nygard, §30.1: an accepted ADR is never edited in place; only this status line is added).
 
 ## Context
 
