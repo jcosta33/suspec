@@ -1,10 +1,10 @@
 # The `lint` pass
 
-> Authoritative source: 03-compiler-pipeline.md §9 (Phases and passes — the `lint` pass contract and stdlib pass guide) + §11.6.1 (the CLARIFY gate) + 02-aps-and-lint.md §8 (the unified `SOL-<LAYER><NNN>` lint taxonomy). This is a reference projection; where it and the spec disagree, the spec governs.
+`lint` is one of Swarm's nine compiler passes. This file is the working contract for that single pass: its non-mutating discipline, the unified `SOL-<LAYER><NNN>` lint taxonomy it emits, the diagnostic record shape, the BLOCKING/ADVISORY model, the CLARIFY gate it decides, and the severity-override and waiver rules.
 
 ## What `lint` is
 
-`lint` is one of Swarm's nine compiler passes. It consumes a `spec.swarm.md` and emits a **lint report** — an array of diagnostic records plus an overall blocking status — without changing a single character of the spec. It is the highest-leverage pass because it catches defects *before any work is committed* (§9.4).
+`lint` consumes a `spec.swarm.md` and emits a **lint report** — an array of diagnostic records plus an overall blocking status — without changing a single character of the spec. It is the highest-leverage pass because it catches defects *before any work is committed* (§9.4).
 
 There is **no runtime** that runs `lint`. Like every pass, it is a **contract** a future tool will build against; today a human or an agent following the `lint` stdlib pass guide performs it by hand (§9.2). This repository ships no parser, linter, or checker — only the specification of what one must do (Invariant 1).
 
@@ -57,7 +57,7 @@ Every emitted diagnostic MUST be the object `{ code, severity, layer, span, mess
 | `message` | string | One-line human-readable defect statement |
 | `suggest` | string \| null | The named repair — an `improve` op (§10) or a concrete fix; `null` if none |
 
-The IR lowers the same data SARIF-shaped into `diagnostics[]`: `severity`→`level` (`BLOCKING`→`error`, `ADVISORY`→`warning`), `span`→`source { file, line_start, line_end }`, with `code` identical across both. The `level` vocabulary follows SARIF [SARIF].
+The IR lowers the same data SARIF-shaped into `diagnostics[]`: `severity`→`level` (`BLOCKING`→`error`, `ADVISORY`→`warning`), `span`→`source { file, line_start, line_end }`, with `code` identical across both. The `level` vocabulary (`error`/`warning`/`note`) is the standard static-analysis result vocabulary, chosen so diagnostics map cleanly onto existing tooling.
 
 ```json
 {
@@ -79,7 +79,7 @@ The severity model is **strictly binary** (§8.2): every surface code lowers to 
 
 The binding-clause vs commentary boundary (§7.2) re-classifies position-sensitive codes: `SOL-P056` (comparative without baseline) is BLOCKING inside an obligation block and ADVISORY in commentary; the high-risk-word rules (§7.3–§7.4) are BLOCKING only inside binding clauses.
 
-*Empirical anchor:* that a defect changes what gets built is detectable cheaply *before* generation — a small finetuned classifier reaches F1 0.804 / MCC 0.745, beating frontier LLMs (≈0.47–0.52 F1) and finding under-specification the most severe defect [SPECVALIDATOR] — supporting BLOCKING status for actor/object incompleteness (`SOL-M001`) and uncaptured ambiguity (`SOL-P008`).
+*Design rationale:* whether a defect changes what gets built is detectable cheaply *before* generation — a defect that alters built behavior is exactly the class a pre-generation check can flag, and under-specification (a missing actor, object, or binding) is the most severe such defect because it silently licenses a guess. This is why actor/object incompleteness (`SOL-M001`) and uncaptured ambiguity (`SOL-P008`) are BLOCKING: they are the cheapest defects to catch and the most expensive to let through.
 
 ### Principal BLOCKING codes (§8.3)
 
@@ -176,7 +176,7 @@ Three points keep this faithful to the spec:
 
 Both gates are **contracts checkable today by review and enforced by a future tool** — there is no runtime (Invariant 1). Today the `lint` carrier verifies the predicate by hand against the IR; a future compiler computes it from `nodes[]` and `edges[]`. A conformant repository MUST state the gate as a review-checkable contract and MUST NOT claim it is enforced by shipped tooling.
 
-*Rationale (cite):* the planner→coder handoff is the dominant failure surface in multi-agent code generation — the planner-coder gap "accounts for 75.3% of failures" [PLANCODER] — and agents do not reliably ask: on messy/ambiguous specs the best model solves only ~24% of tasks even when handed a tool to ask for help [HILBENCH]. The cost of ambiguity is measured: ambiguous descriptions drop Pass@1 by 25–30% and contradictory ones by up to 40% [AMBIGCODE], with >30% degradation across a 1,304-task benchmark [ORCHID]; conversely a clarify-then-generate loop raises GPT-4 Pass@1 from 70.96% to 80.80% [CLARIFYGPT]. Clarifying *before* lowering is therefore a precondition for safe handoff, resolving ambiguity where it is cheapest.
+*Design rationale:* the planner→coder handoff is the dominant failure surface in multi-agent code generation — most end-to-end failures originate in the gap between what the plan specified and what the coder built, not in the coding step itself. Agents also do not reliably ask for help: on messy or ambiguous specs even a strong model resolves only a fraction of tasks, and giving it a tool to ask questions does not close the gap unless the ambiguity is surfaced first. The cost of ambiguity compounds downstream — ambiguous obligations and contradictory ones degrade first-attempt success sharply — whereas resolving each ambiguity *before* generation (a clarify-then-generate loop) recovers most of that loss. Clarifying *before* lowering is therefore a precondition for safe handoff: it resolves ambiguity at the point where it is cheapest, before any work commits to a guess.
 
 ## Severity overrides and waivers
 
@@ -189,23 +189,16 @@ A `swarm.config` MUST NOT redefine, rename, or invent codes, MUST NOT change a c
 
 A lint-layer demotion is distinct from a `WAIVED` verdict at the verification layer (§14): the former silences a *diagnostic*, the latter accepts a *failing proof* — both require the same authority + reason + expiry discipline.
 
-## Preserved / Dropped / Still-uncertain
+This pass page lists the principal inline codes only. Two v0.1 scoping notes carried inline above remain open by design: the IR `note` level has no v0.1 surface producer (a future emitter is reserved, not decided), and `SOL-M002` is exact-key contradiction match only in v0.1 (broader contradiction detection is deferred). Enforcement is a future-tool contract throughout — no parser, linter, or gate-checker ships today (Invariant 1), so all blocking and gating behavior is review-checkable, not tool-enforced, in v0.1.
 
-**Preserved (faithfully projected from the spec):**
-- The `lint` pass contract — non-mutating, `PARSE`+`NORMALIZE` straddle, Skeptic carrier, stdlib pass guide, no-runtime status (§9.3, §9.3.1, §9.4).
-- The full five-layer taxonomy (S/P/M/V/O), the `SOL-<LAYER><NNN>` namespace, append-only-with-tombstoning, and the diagnostic record shape with SARIF lowering (§8.1).
-- The BLOCKING/ADVISORY binary, the principal blocking and advisory code lists, and the binding-clause-vs-commentary reclassification (§8.2–§8.4).
-- The CLARIFY gate's three conditions, its "no new code" aggregation, the R-BLOCKING-Q generalization, and the gate-vs-op distinction (§11.6, §11.6.1).
-- Severity overrides and the waiver record discipline (§8.6).
-- Empirical anchors cited only by `sources.md` [KEY]: [SPECVALIDATOR], [PLANCODER], [HILBENCH], [AMBIGCODE], [ORCHID], [CLARIFYGPT], [SARIF].
+## Related
 
-**Dropped (left to the spec as long-form source of truth):**
-- The full per-layer code catalogue and the complete legacy `APS-*`/`SOL-L###`/flat-code translation table (Appendix B); this projection lists only the principal inline codes.
-- The COVERAGE gate (§11.6.2) and the third LOWER-boundary checkpoint mechanics — out of the named source scope for this doc (the CLARIFY gate is in scope; COVERAGE is its sibling, owned by `decompose`, documented elsewhere).
-- The full `improve` operation set semantics, preconditions/postconditions, worked examples, and the twelve-category semantic-diff classification (§10) — referenced here only as the destinations of lint codes.
-- The IR envelope, edge types, and `diagnostics[]` schema internals (§12, Appendix C) — referenced only via the SARIF lowering of the diagnostic record.
-
-**Still-uncertain (open in the spec, not resolved here):**
-- The IR `note` level has no v0.1 surface producer; whether a future emitter attaches informational notes is reserved, not decided (§8.2).
-- `SOL-M002` is exact-key contradiction match only in v0.1; broader contradiction detection is deferred (§8.3, Appendix B.4).
-- Enforcement is a future-tool contract throughout: no parser, linter, or gate-checker ships today (Invariant 1), so all blocking/gating behavior is review-checkable, not tool-enforced, in v0.1.
+- `../language/errors.md` — the complete v0.1 diagnostic catalogue: every lint code by layer, the diagnostic record shape, the SARIF lowering, the severity-override and waiver discipline, and the legacy `APS-*`/`SOL-L###`/flat-code translation table.
+- `../language/SOL.md` — the SOL modality, actor/trigger, and term semantics the S- and P-layer codes check against.
+- `../language/APS.md` — the controlled-prose standard whose smells the P-layer codes surface.
+- `./improve.md` — the closed set of ten `improve` operations every lint code's `suggest` field names; the only pass permitted to rewrite the spec, strictly semantics-preservingly.
+- `./lower.md` — the typed IR the lint report lowers into, and the first LOWER-boundary checkpoint the CLARIFY gate guards.
+- `./decompose.md` — the LOWER-phase pass that raises the O-layer codes and owns the sibling COVERAGE gate.
+- `./verify.md` — the verdict model and proof taxonomy the V-layer codes (`VERIFY BY` binding) check against, including the `WAIVED` verdict distinct from a lint-layer waiver.
+- `../profiles/skeptic.md` — the heuristic profile carried while running `lint`.
+- `../templates/spec.swarm.md` — the `spec.swarm.md` artifact `lint` consumes.

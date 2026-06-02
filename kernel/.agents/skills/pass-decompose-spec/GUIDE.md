@@ -1,18 +1,18 @@
 ---
 name: pass-decompose-spec
-description: How to run the `decompose` pass — partition a lowered IR obligation graph into task-sized, write-disjoint work packets and emit the plan, applying the single safe-parallelism predicate and the COVERAGE gate before any `implement` pass runs. Load when a task names the `decompose` pass (typically under the Lead Engineer profile). This is a procedural guide; it does not define modality, authority order, verification semantics, or any IR/SOL meaning — those live in the language and spec references it cites.
+description: How to run the `decompose` pass — partition a lowered IR obligation graph into task-sized, write-disjoint work packets and emit the plan, applying the single safe-parallelism predicate and the COVERAGE gate before any `implement` pass runs. Load when a task names the `decompose` pass (typically under the Lead Engineer profile). This is a procedural guide; it does not redefine modality, authority order, verification semantics, or any IR/SOL meaning — it relies on those as already fixed and applies them.
 ---
 
 # Pass guide: decompose
 
 This guide documents *how* to perform the `decompose` pass — the fifth of the nine passes (`author → lint → improve → lower → decompose → implement → verify → review → promote`) and the second of the two `LOWER`-phase passes. Where `lower` builds the IR obligation graph, `decompose` partitions that graph into schedulable work packets and emits the plan.
 
-This guide is procedural only. The load-bearing meaning — what `merge_safe` *means*, what overlap/subset *mean*, what a verdict *means*, the authority order — lives in the spec and language references and is cited here, never redefined (§26.1). A correctly lowered IR is understandable without this guide; the guide only says how to run the pass over it.
+This guide is procedural only. The load-bearing meaning — what `merge_safe` *means*, what overlap/subset *mean*, what a verdict *means*, the authority order — is fixed elsewhere and applied here, never redefined (§26.1). A correctly lowered IR is understandable without this guide; the guide only says how to run the pass over it. The structures it operates over:
 
-- The pass contract: `docs/passes/decompose.md` (reference projection of 03-compiler-pipeline.md §13 and 05-orchestration.md §18).
-- The plan envelope and work-packet record: spec §13.3–§13.5.
-- The single safe-parallelism predicate and its surface semantics: spec §18.5, §18.5.1.
-- The COVERAGE gate: spec §11.6.2.
+- The decompose pass contract: §13 (compiler pipeline) and §18 (orchestration).
+- The plan envelope and work-packet record: §13.3–§13.5.
+- The single safe-parallelism predicate and its surface semantics: §18.5, §18.5.1.
+- The COVERAGE gate: §11.6.2.
 - The carrier profile: the Lead Engineer heuristic profile (§27).
 
 ## Purpose
@@ -88,7 +88,7 @@ This guide does not assign verdicts or evaluate the merge gate — those are `re
 
 7. **Emit the plan.** Write the four-key envelope (§13.3) and one `task.md` per packet (§21). Mirror every `depends_on[]` as a `depends_on` edge and every shared-surface or read/write conflict as a `conflicts_with` edge in `edges[]` (§13.5.1). Set `meta.derived_from`, `language`, `version`, and (optionally) the advisory `max_parallel`. Frame the artifact as the contract a future tool emits and a future launcher consumes — never as the output of a shipped emitter or a live scheduler (§13.1).
 
-The empirical anchor for the contract-not-scheduler stance: a simple localize→repair→validate pipeline reached the highest performance among open-source software agents of its time without live multi-agent scheduling [AGENTLESS]; the write side stays single-threaded because conflicting actions carry conflicting decisions [COGNITION] and agents are not yet reliable at real-time coordination [ANTHROPIC-MA]. A recorded hand-off contract per packet attacks the two largest multi-agent failure clusters — specification/system-design (41.77%) and inter-agent misalignment (36.94%) [MAST].
+The design rationale for the contract-not-scheduler stance: a simple localize→repair→validate pipeline can reach high performance among software agents without any live multi-agent scheduling, so a static plan is sufficient; the write side stays single-threaded because conflicting concurrent actions carry conflicting decisions, and agents are not yet reliable at real-time coordination, so parallelism is opt-in and write-disjoint by default. A recorded hand-off contract per packet attacks the two largest multi-agent failure modes — fuzzy specification and system-design, and inter-agent misalignment — by fixing scope, order, and surfaces statically before any `implement` run.
 
 ## Output contract
 

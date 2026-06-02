@@ -1,8 +1,6 @@
 # The `lower` pass and the typed IR
 
-> Authoritative source: 03-compiler-pipeline.md §11 (the `lower` pass) + §12 (the typed IR it emits). This is a reference projection; where it and the spec disagree, the spec governs.
-
-`lower` is the fourth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This page is the short reference view for that single pass and the **intermediate representation (IR)** it produces; the long-form contract is the spec.
+`lower` is the fourth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This file is the working contract for that single pass and the **intermediate representation (IR)** it produces.
 
 Like every Swarm pass, `lower` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. The IR is specified as a versioned data contract — this repository ships **no emitter, no parser, and no validator** for it, and the only legal producer of an `.ir.json` file is a future compiler (§12.1, Invariant 1). `lower` is one of the four passes (`author`, `improve`, `lower`, `verify`) that ship **no stdlib pass guide** in v0.1.
 
@@ -75,7 +73,7 @@ A spec carrying any of these for an in-scope obligation is **not lowerable**; lo
 
 **Gate vs improve-op (do not conflate):** the CLARIFY *gate* (this section) and the `CLARIFY` *improve operation* (§10.2, op 7) are distinct. The op is a **local edit** in `NORMALIZE` that lifts one buried prose ambiguity (`SOL-P008`) into an explicit interpretation or a `QUESTION`. The gate is the **pipeline checkpoint** at the `NORMALIZE`→`LOWER` boundary that refuses to advance while such a question is still open and blocking. The op *creates* the QUESTION; the gate *waits on* it.
 
-*Rationale (cited).* The planner→coder handoff is the dominant failure surface in multi-agent code generation — the planner-coder gap "accounts for 75.3% of failures" [PLANCODER] — and agents do not reliably ask: with messy/ambiguous specs the best model solves only ~24% of tasks even when handed a tool to ask for help [HILBENCH]. Ambiguous descriptions drop Pass@1 by 25–30% and contradictory ones by up to 40% [AMBIGCODE], with >30% degradation across a 1,304-task benchmark [ORCHID]; conversely a clarify-then-generate loop raises GPT-4 Pass@1 from 70.96% to 80.80% [CLARIFYGPT].
+*Rationale.* The planner→coder handoff is the dominant failure surface in multi-agent code generation — the planner-coder gap accounts for the majority of observed failures — and agents do not reliably ask for help: with messy or ambiguous specs even a strong model solves only about a quarter of tasks even when handed a tool to ask for clarification. Ambiguous task descriptions measurably depress first-attempt pass rates and contradictory ones depress them further still; conversely, a clarify-then-generate loop that resolves the ambiguity up front recovers a large share of that lost pass rate. The gate exists to force that resolution before lowering commits a guess.
 
 ### The COVERAGE gate (pre-`implement`, R-COVERAGE-GATE)
 
@@ -88,7 +86,7 @@ Codes: an uncovered obligation is **`SOL-O007`** (BLOCKING, resolves by `SCOPE`)
 
 ## The typed IR `lower` emits
 
-The **IR** is the typed, machine-checkable form of a SOL spec: a single JSON document re-expressing every obligation, relationship, diagnostic, and provenance fact in one `*.swarm.md` source. The surface is what a human authors; the IR is what a tool would reason over (§3 makes the surface-vs-IR split the master architectural distinction). A structured intermediate measurably beats free prose for downstream code work: structured chain-of-thought beats free-form by up to 13.79% Pass@1 [SCOT] — the empirical support for binding analysis to a typed IR. The file is named with the `.swarm.` infix: `auth-refresh.swarm.md` lowers to `auth-refresh.swarm.ir.json`.
+The **IR** is the typed, machine-checkable form of a SOL spec: a single JSON document re-expressing every obligation, relationship, diagnostic, and provenance fact in one `*.swarm.md` source. The surface is what a human authors; the IR is what a tool would reason over (§3 makes the surface-vs-IR split the master architectural distinction). A structured intermediate measurably beats free prose for downstream code work — structured, typed chain-of-thought reasoning yields higher first-attempt pass rates than free-form prose — which is why analysis binds to a typed IR rather than to the surface text. The file is named with the `.swarm.` infix: `auth-refresh.swarm.md` lowers to `auth-refresh.swarm.ir.json`.
 
 ### Top-level envelope: exactly five keys, in order
 
@@ -195,25 +193,15 @@ The IR echoes three distinct version axes (§12.7), in three distinct fields a c
 
 A document is a conformant SOL/0.1 IR iff it (§12.10): (1) has exactly the five top-level keys; (2) populates every field Appendix C marks `required` and supplies the documented `default` for any optional field omitted; (3) uses only the closed enumerations (**7 kinds, 5 modals, 9 proof types, 7 edge types, 7 verdict values**, the `SOL-<LAYER>NNN` code space); (4) represents every relationship once, as an edge; (5) keeps the three version fields distinct. The normative machine-readable form is the **JSON Schema in Appendix C**; where this prose and Appendix C disagree, Appendix C governs the shape and §12 governs the intent.
 
-## Preserved / Dropped / Still-uncertain
+## Related
 
-**Preserved** (projected faithfully from §11 + §12):
+Sibling payload files that bound `lower`'s neighborhood:
 
-- The two-pass structure of the `LOWER` phase (`lower` vs `decompose`) and the four ordered steps of `lower` (§11.1), including the surface→edge derivation map.
-- AND THE chaining / G3 sub-id production (`<surface-id>.<n>`), verdict distribution over splits, and the R-CHAIN >2-clause `SOL-P004`-adjacent warning (§11.1.1).
-- The distillation-loss discipline as it binds `lower`: authority and verification bindings carried intact, dropping ⇒ distillation error (§11.4).
-- Both gates that bracket `LOWER` — CLARIFY (pre-`lower`, R-CLARIFY-GATE, generalizing R-BLOCKING-Q) and COVERAGE (pre-`implement`, R-COVERAGE-GATE) — their predicates, surfaced codes (`SOL-O003`/`SOL-M002`/`SOL-P008`; `SOL-O007`/`SOL-O008`/`SOL-M003`), carriers, gate-vs-improve-op distinction, and the cited rationale (§11.6).
-- The full IR envelope and every sub-structure of §12: the five top-level keys, `nodes[]` field reference, `clauses{}` (incl. RESERVED `timing`), `verify_by[]` (9 proof types), the 7-value verdict split (4 core + 3 lifecycle), `edges[]` (7 edge types) with relationship-truth-vs-scope-sets, the three scope sets (no `locks`), `diagnostics[]` (5 lint layers), the three version fields, `provenance`, and conformance.
-
-**Dropped** (out of scope here; the spec governs):
-
-- The `decompose` pass internals — packet partitioning, owned-path projection, merge-order computation (§11.2) — covered only as the consumer that bounds `lower`'s output.
-- The owned-path containment rule G7 / `SOL-O005` (§11.3) and the full `READS`/`WRITES` conflict predicate and `SURFACE` attribute mechanism (§11.5, §18) — `lower` only emits the edges; §18 owns the predicate.
-- The plan (`*.swarm.plan.json`) and its envelope (§13), the merge gate and verification model in detail (§14, §15), and the drift model (§16) — referenced, not reproduced.
-- Appendix C's literal JSON Schema and the pinned INTERFACE `clauses` slots — named as the governing shape, not transcribed.
-
-**Still-uncertain** (left to the spec; not pinned here):
-
-- Whether `lower` (one of the four passes with no v0.1 stdlib pass guide) gains one in a later framework release without a language-version change (§9.4, §25).
-- The exact deterministic procedure a future emitter uses for each step (`lower` is "mostly deterministic"; the spec fixes the contract, not a reference algorithm).
-- The minimal pinned shape of per-node `provenance[]` objects, deferred by §12.4.1 to the trace-provenance schema of §16.
+- `./decompose.md` — the second `LOWER`-phase pass; consumes the IR and the two derived graphs `lower` emits (packet partitioning, owned-path projection, merge-order computation), and owns the `READS`/`WRITES` conflict predicate, the owned-path containment rule G7 / `SOL-O005`, and the `SURFACE` attribute mechanism. `lower` only emits the edges; `decompose` runs the safe-parallelism predicate over them.
+- `./improve.md` — the `NORMALIZE`-phase pass that runs the `CLARIFY` improve op (creating the `QUESTION` the CLARIFY gate later waits on) and resolves the `BIND` defect class (`SOL-V001`) before lowering.
+- `./verify.md` — the downstream consumer of the `verified_by` edges and `verify_by[]` proof bindings `lower` preserves; owns the merge gate and verification model in detail.
+- `./review.md` — surfaces the orphan-target code `SOL-M003` and consumes the TRACE `implements`/`preserves` edges.
+- `../language/SOL.md` — the SOL surface grammar (the seven block types, five modals, `AND THE` chaining, `VERIFY BY` clause) `lower` reads from.
+- `../language/errors.md` — the `SOL-<LAYER>NNN` code taxonomy the gate predicates and diagnostics key against.
+- `../skills/distillation-discipline/GUIDE.md` — the distillation-loss discipline as a pass guide: authority and verification bindings carried intact, dropping ⇒ distillation error.
+- `../templates/spec.swarm.md` — the `spec.swarm.md` surface `lower` consumes.

@@ -1,10 +1,18 @@
-# Swarm framework — append these lines to your project's .gitignore
+# Swarm — append these lines to your project's .gitignore.
+# Commit everything that defines, tracks, or reconciles intent; gitignore only
+# execution-local and scratch state (recreatable from sources, compacted into the ledger).
 
-# Worktree-local task files. Task files are execution scaffolding — never committed.
-# Durable findings migrate to .agents/audits/, .agents/specs/, .agents/research/, or .agents/bugs/
-# before the worktree is closed.
-.agents/tasks/
+# Generated task frames + scratch (recreatable from .swarm/sources/).
+.swarm/generated/tasks/
+.swarm/tmp/
 
-# The .worktrees/ convention used by the Lead Engineer pattern. Each worker runs
-# in its own worktree under .worktrees/<slug>.
+# Optional: active traces/reviews are compacted into .swarm/ledger/ on completion.
+# Remove these two lines if governance requires committing active trace/review files.
+.swarm/generated/traces/
+.swarm/generated/reviews/
+
+# Per-worker worktrees used during parallel decomposition.
 .worktrees/
+
+# NOTE: do NOT gitignore .swarm/sources/, .swarm/status/, .swarm/memory/,
+# .swarm/ledger/, .swarm/kernel/, or .swarm/archive/ — those are the durable record.

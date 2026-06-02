@@ -5,12 +5,11 @@ description: How to run the `lint` pass over a `spec.swarm.md` — detect S/P/M 
 
 # Pass guide: pass-lint-spec
 
-This guide tells you *how* to perform the `lint` pass well. It is SOFT control: it carries procedure, not meaning. It MUST NOT define modality, authority order, verification semantics, lint-code meaning, or any other load-bearing fact — those live only in SOL and the IR (the language reference governs; §7.1, §26.1). Where this guide and the language reference disagree, the reference wins. Every code, severity, gate, and record shape named below is defined normatively elsewhere and merely *applied* here:
+This guide tells you *how* to perform the `lint` pass well. It is SOFT control: it carries procedure, not meaning. It MUST NOT define modality, authority order, verification semantics, lint-code meaning, or any other load-bearing fact — those are fixed by SOL and the IR, and this guide only *applies* them. Every code, severity, gate, and record shape named below has a fixed meaning; this guide applies it, and never redefines it:
 
-- The lint taxonomy, the `SOL-<LAYER><NNN>` namespace, the diagnostic record shape, BLOCKING/ADVISORY, and the principal code lists: `02-aps-and-lint.md` §8 (and §7 for the APS prose families behind the `P` layer).
-- The `lint` pass contract (non-mutating, `PARSE`+`NORMALIZE`, Skeptic carrier, no runtime): `03-compiler-pipeline.md` §9.3, §9.3.1, §9.4.
-- The CLARIFY gate: `03-compiler-pipeline.md` §11.6.1 (and §11.1.2 for R-BLOCKING-Q).
-- The reference projection of all of the above: `docs/passes/lint.md`.
+- The lint taxonomy, the `SOL-<LAYER><NNN>` namespace, the diagnostic record shape, BLOCKING/ADVISORY, and the principal code lists are the language's lint section §8 (and §7 for the APS prose families behind the `P` layer).
+- The `lint` pass contract — non-mutating, `PARSE`+`NORMALIZE`, Skeptic carrier, no runtime — is the compiler-pipeline contract at §9.3, §9.3.1, §9.4.
+- The CLARIFY gate is §11.6.1 (and §11.1.2 for R-BLOCKING-Q).
 
 ## Purpose
 
@@ -82,4 +81,4 @@ Before closing the pass, confirm:
 - [ ] **CLARIFY gate decided, not invented.** The gate is reported as a predicate over existing codes, with no fourth diagnostic and no enforced-by-tooling claim.
 - [ ] **No `improve` work leaked in.** No clause was rewritten, concretized, atomized, or deconflicted; repairs were *named*, not *done*.
 
-*Why this pass earns its place (cite):* a lightweight finetuned detector flags defective task descriptions more reliably than frontier LLMs (F1 0.804 / MCC 0.745 vs ≈0.47–0.52), finding under-specification the most severe defect `[SPECVALIDATOR]` — so machine-cheap, pre-generation detection of "what gets built" defects is the BLOCKING criterion (§8.2). The CLARIFY gate before lowering is load-bearing because the planner→coder handoff is the dominant failure surface — the planner-coder gap accounts for 75.3% of failures `[PLANCODER]` — and agents do not reliably ask: on messy/ambiguous specs the best model solves only ~24% of tasks even when handed a help tool `[HILBENCH]`. The cost of unresolved ambiguity is measured: ambiguous descriptions drop Pass@1 by 25–30% and contradictory ones by up to 40% `[AMBIGCODE]`, with >30% degradation across a 1,304-task benchmark `[ORCHID]`; conversely a clarify-then-generate loop raises GPT-4 Pass@1 from 70.96% to 80.80% `[CLARIFYGPT]`. The diagnostic record lowers SARIF-shaped into the IR `diagnostics[]` `[SARIF]`.
+*Why this pass earns its place:* a lightweight finetuned detector flags defective task descriptions more reliably than frontier LLMs (F1 0.804 / MCC 0.745 vs ≈0.47–0.52), finding under-specification the most severe defect — so machine-cheap, pre-generation detection of "what gets built" defects is the BLOCKING criterion (§8.2). The CLARIFY gate before lowering is load-bearing because the planner→coder handoff is the dominant failure surface — the planner-coder gap accounts for 75.3% of failures — and agents do not reliably ask: on messy/ambiguous specs the best model solves only ~24% of tasks even when handed a help tool. The cost of unresolved ambiguity is measured: ambiguous descriptions drop Pass@1 by 25–30% and contradictory ones by up to 40%, with >30% degradation across a 1,304-task benchmark; conversely a clarify-then-generate loop raises GPT-4 Pass@1 from 70.96% to 80.80%. The diagnostic record lowers SARIF-shaped into the IR `diagnostics[]`.

@@ -1,8 +1,6 @@
 # The `decompose` pass
 
-> Authoritative source: 03-compiler-pipeline.md §13 (the plan) + 05-orchestration.md §18 (the safe-parallelism predicate, §18.5/§18.5.1) and 03-compiler-pipeline.md §11.6.2 (the COVERAGE gate). This is a reference projection; where it and the spec disagree, the spec governs.
-
-`decompose` is the fifth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It shares the `LOWER` phase with `lower`: where `lower` builds the IR obligation graph, `decompose` partitions that graph into schedulable **work packets**. This page is the short reference view for that single pass; the long-form contract is the spec.
+`decompose` is the fifth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It shares the `LOWER` phase with `lower`: where `lower` builds the IR obligation graph, `decompose` partitions that graph into schedulable **work packets**. This page is the contract for that single pass.
 
 Like every Swarm pass, `decompose` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. The plan it produces is documented, versioned data — the shape a launcher would consume — never the output of a shipped emitter, and never a live scheduler (§13.1).
 
@@ -155,24 +153,12 @@ The two `depends_on` packet arrays are mirrored as `depends_on` edges in `edges[
 
 A document is a conformant SOL/0.1 plan iff it: (1) has exactly the four top-level keys; (2) populates every required field (defaulting optional fields); (3) carries **no `locks` field anywhere**; (4) uses only the closed 9-pass set in `packets[].pass` and the closed edge-type set in `edges[]`; (5) represents inter-packet relationships **once**, as edges; (6) keeps the three version fields distinct. The plan schema is documented data only — no running emitter or scheduler ships.
 
-## Preserved / Dropped / Still-uncertain
+## Related
 
-**Preserved** (projected faithfully from the named sections):
-
-- The plan as `decompose`'s output and the kernel's static coordination contract: the four-key envelope (§13.3), `meta` with advisory `max_parallel` (§13.4), the work-packet record and its required/optional fields (§13.5), packet edges (§13.5.1), the worked auth-refresh fragment (§13.7), and the six-clause conformance test (§13.8) — including the no-`locks` and closed-pass-set rules (G8, §13.2).
-- The single canonical safe-parallelism predicate verbatim, its formal four-conjunct form, and the two non-weakenable defaults (unscoped serializes, shared serializes) (§18.5); plus the syntactic surface-comparison semantics — glob dialect, pattern-language overlap/subset, boundary nodes (§18.5.1).
-- The COVERAGE gate as `decompose`'s pre-`implement` checkpoint: total coverage, no orphan targets, the `SOL-O007`/`SOL-O008`/`SOL-M003` aggregation, BLOCKING status, and the bijection-with-distillation-loss framing (§11.6.2).
-- The three pass obligations of §11.2 and the owned-path containment rule (§11.3, `SOL-O005`).
-
-**Dropped** (out of scope for this single-pass projection; lives in the spec):
-
-- The `lower` pass internals — IR node-id assignment, typed-edge construction, `verify_by` normalization, `AND THE` chaining (R-CHAIN), R-BLOCKING-Q (§11.1, §11.1.1, §11.1.2) — referenced only where `decompose` consumes their output.
-- The CLARIFY gate (the *other* `LOWER` gate, at `NORMALIZE → LOWER`) and its empirical citations (§11.6.1, §11.6.3) — `decompose` carries the COVERAGE gate, not the CLARIFY gate.
-- The full IR shape (§12), the broader orchestration scope split, SURFACE-attribute staleness treatment, the orchestration lint-code catalogue beyond what `decompose` raises, the coordination artifact `task-orchestration.md` (§19), and the out-of-kernel launcher concerns (§18.8) — referenced for orientation, not reproduced.
-- The full nine-pass / seven-phase model, the improve operation set, verification, and review/promote — other passes' reference pages own those.
-
-**Still-uncertain** (the spec governs; not pinned here):
-
-- The exact decomposition *heuristic* — how a Lead Engineer partitions a given obligation graph into the smallest set of write-disjoint packets — is a pass-guide/profile concern (§26, §27), not fixed by the kernel; the kernel fixes only the predicate the partition must satisfy.
-- How a launcher chooses `lane`, `batch`, and `max_parallel` values, and any live scheduling/replanning over the plan — explicitly out of the kernel (§13.1, §18.8).
-- The formal plan JSON Schema is deferred to Appendix C.3 (and the full worked pipeline to Appendix D), outside the sections projected here.
+- `./lower.md` — the other `LOWER`-phase pass: builds the IR obligation graph (node-id assignment, typed-edge construction, `verify_by` normalization, `AND THE` chaining) that `decompose` partitions into packets.
+- `./implement.md` — consumes each `task.md` work packet; the COVERAGE gate here is its precondition.
+- `./lint.md` — the orchestration lint codes (`SOL-O005`, `SOL-O007`, `SOL-O008`) and the semantic `SOL-M003` surfaced at `review`.
+- `./review.md` — where `SOL-M003` unbound-cross-reference orphans surface.
+- `../profiles/architect.md` — a carrier-profile stance for the `decompose` pass; the decomposition *heuristic* (how to partition an obligation graph into the smallest set of write-disjoint packets) is a profile concern, while the kernel fixes only the predicate the partition must satisfy.
+- `../templates/spec.swarm.md` — the surface spec whose obligations the IR and plan derive from.
+- `../templates/task.md` — the work-packet contract each packet is lowered into.

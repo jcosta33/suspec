@@ -41,8 +41,8 @@ The red-flag table (ADR 0013, amended — the legacy "iron law" recast as an enu
 | "Tests passed" with no command, exit code, or output | reject as `UNVERIFIED` |
 | A trace passing an obligation with missing or mismatched evidence | reject as `UNVERIFIED` |
 | Acceptance resting on the worker's own pasted verification | reject; re-run the bound proofs yourself, then judge |
-| The implementer rendering the verdict on their own change | reject; require an independent reviewer (self-preference hazard `[MTBENCH]`) |
-| A `manual`/judge verdict with no recorded reasoning, or from a judge sharing lineage with the generator | reject; the judgment does not count `[PREFLEAK]`, `[TRUSTJUDGE]` |
+| The implementer rendering the verdict on their own change | reject; require an independent reviewer — a generator scoring its own output favors itself (self-preference hazard) |
+| A `manual`/judge verdict with no recorded reasoning, or from a judge sharing lineage with the generator | reject; the judgment does not count — an unreasoned verdict leaks the prompt's preference, and a same-lineage judge cannot be trusted to disagree with the generator |
 | Confident-sounding language ("harmless", "should never", "by happy accident") standing in for a check | reject; investigate the assumption, then judge on evidence |
 | A small diff skimmed and waved through | reject; walk the default questions — small diffs hide subtle defects |
 | "I can't reproduce, must be environment-specific" | the discrepancy is itself a finding; do not dismiss it |

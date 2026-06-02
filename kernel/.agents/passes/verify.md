@@ -1,10 +1,8 @@
 # Verify — the verdict model, the proof taxonomy, and oracle adequacy
 
-> Authoritative source: 04-verification.md §14 (the verdict model), §15 (proof taxonomy + `VERIFY BY`), and §15.10 (oracle adequacy). This is a reference projection; where it and the spec disagree, the spec governs.
+This pass defines the verdict model (§2–§4), the proof taxonomy (§5), and oracle adequacy (§6): the rules by which Swarm judges whether an obligation was satisfied.
 
 Swarm ships **no runtime** (Invariant 1, NO RUNTIME). Everything described here — the linter, the merge gate, the drift differ, the adequacy harness — is a **contract a future tool builds against**, never shipped code. Today every verdict is recorded by a human or agent in markdown and re-checked by hand or by CI scaffolding that does not yet exist. This page never claims any of it is automatically enforced.
-
-This page is the short reference view of *how Swarm judges whether an obligation was satisfied*. The long-form source of truth is the kernel spec; read it when this projection is silent or ambiguous.
 
 ---
 
@@ -207,7 +205,7 @@ Keeping the *type* in the obligation and the *command* in `AGENTS.md` means the 
 
 An `INVARIANT` asserts a universal ("for all states, P holds") that a single example-based `test` cannot establish; an `INTERFACE` is a boundary contract whose proof must exercise `RETURNS`/`ACCEPTS`/`ERRORS`.
 
-`model` means model-checking OR an economical proof — bounded model checking, an SMT-discharged property, an exhaustive small-scope check, or any economical argument an oracle can replay. It MUST NOT be read as a mandate to discharge a full mechanized theorem per obligation: end-to-end per-obligation proof is unreliable at single trial (~4.9% Lean proof success [VERINA]) and verified-code synthesis is strongly language-specific — high for Dafny (~82%, and 68%→96% over one year [VERICODING], [DAFNYBENCH]) but still low for Lean/Verus. When even `model` is infeasible, `manual` is the honest type.
+`model` means model-checking OR an economical proof — bounded model checking, an SMT-discharged property, an exhaustive small-scope check, or any economical argument an oracle can replay. It MUST NOT be read as a mandate to discharge a full mechanized theorem per obligation: end-to-end per-obligation proof is unreliable at single trial (~4.9% Lean proof success) and verified-code synthesis is strongly language-specific — high for Dafny (~82%, and 68%→96% over one year) but still low for Lean/Verus. When even `model` is infeasible, `manual` is the honest type.
 
 ### 5.5 The proof-strength order
 
@@ -257,9 +255,9 @@ These MUST be rejected and MUST NOT yield `PASS`:
 
 ---
 
-## 6. Oracle adequacy (§15.10)
+## 6. Oracle adequacy
 
-A `PASS` is only as trustworthy as the **oracle** that produced it — the decision procedure that says whether observed behaviour satisfies the obligation. A proof can pass against a *weak* oracle and still be wrong. This is not a corner case: on SWE-bench Verified, 7.8% of patches that pass the official developer-written suite are in fact incorrect, and the bundled tests inflate reported resolution rates by 6.2 absolute percentage points [SWEBENCH-ADQ]; an independent audit found 345 patches mislabeled as passing, affecting 40.9% of SWE-bench Lite and 24.4% of SWE-bench Verified leaderboard entries [UTBOOST]. The root issue is the **test-oracle problem** — a single concrete example cannot stand in for a universal predicate, and metamorphic/property-based pseudo-oracles are the principled response [ORACLE].
+A `PASS` is only as trustworthy as the **oracle** that produced it — the decision procedure that says whether observed behaviour satisfies the obligation. A proof can pass against a *weak* oracle and still be wrong. This is not a corner case: on SWE-bench Verified, 7.8% of patches that pass the official developer-written suite are in fact incorrect, and the bundled tests inflate reported resolution rates by 6.2 absolute percentage points; an independent audit found 345 patches mislabeled as passing, affecting 40.9% of SWE-bench Lite and 24.4% of SWE-bench Verified leaderboard entries. The root issue is the **test-oracle problem** — a single concrete example cannot stand in for a universal predicate, and metamorphic/property-based pseudo-oracles are the principled response.
 
 So Swarm treats "the proof passed" as **necessary but not sufficient**: a proof MUST also record *what it exercised* relative to the obligation, and stronger obligations demand stronger oracles. This is a **contract, not shipped tooling**; the `SOL-V011` check is manual-today.
 
@@ -278,7 +276,7 @@ A missing `oracle_adequacy` object is permitted for `existential` predicates pro
 
 ### 6.2 Stronger obligations demand stronger oracles
 
-For an obligation carrying `RISK high` or `RISK critical`, a single concrete `test` is an **inadequate oracle** [ORACLE] — one example cannot establish a high-consequence or universally-quantified claim.
+For an obligation carrying `RISK high` or `RISK critical`, a single concrete `test` is an **inadequate oracle** — one example cannot establish a high-consequence or universally-quantified claim.
 
 | Obligation `RISK` | Adequate bound oracle |
 | --- | --- |
@@ -302,10 +300,10 @@ A surface participates in a proof's freshness only if it lies on the proof's `ev
 
 ---
 
-## Preserved / Dropped / Still-uncertain
+## Related
 
-**Preserved (this projection keeps the load-bearing contracts in full):** the 7-value verdict model (4 core + 3 lifecycle) with its decoration rules; the `VERDICT` line grammar and the three `SOL-V` well-formedness diagnostics (`SOL-V005`/`V007`/`V008`); the normative merge-gate predicate, its per-verdict dispositions, and the manual-today / deterministic-check-outside-the-model caveat; `review.md` as the only verdict container (no `verdict.md`); the closed 9 proof types with the `test`-scope and `runtime`→`monitor` notes; the `VERIFY BY` typed/bare syntax and two-layer `AGENTS.md` adapter resolution; the per-block type-selection rules; the proof-strength order; one-verdict-per-binding; "what is not a proof"; and the full §15.10 oracle-adequacy contract (adequacy record, RISK→oracle table, adequacy-as-overridable-prior, evidence-path/staleness link).
-
-**Dropped (left to the spec — out of this page's named scope):** the §16 drift/staleness machinery beyond the adequacy link (the seven-field trace-provenance schema G11, the (a)–(d) `STALE` conditions, proof-exercised participation, drift coverage, the 3-way reconcile, surface policies); §17 soft/hard control, waiver lifecycle internals, and `CONTRADICTED` tie-break procedure in full; §18 `RISK`/`READS`/`WRITES`/`SURFACE` definitions; the full per-task default-suite table (only representative rows shown) and the `task_kind` enum (§28); the §17.6.1 `judge` provenance adjunct; phase/pass definitions referenced by `@ phase`.
-
-**Still-uncertain (per the spec / sources):** the `SOL-V011` check, the merge gate, the adequacy harness, and the drift differ are all **contracts for a future tool**, not shipped code — nothing here is automatically enforced today. The `manual`/`monitor` floor of the strength order reflects fallible human/LLM-judge and lagging observational signals. The adequacy thresholds (`RISK high|critical` → `property`/`model`-or-evidence) are a design rationale generalising the `INVARIANT` preference to consequence, grounded by the test-oracle problem [ORACLE] and oracle-inadequacy measurements [SWEBENCH-ADQ], [UTBOOST]; the `model` framing is bounded by the language-specific proof-success evidence [VERINA], [VERICODING], [DAFNYBENCH].
+- `./lint.md` — the `SOL-V` (VERIFICATION) lint layer that raises the well-formedness diagnostics (`SOL-V001`/`V002`/`V003`/`V005`/`V006`/`V007`/`V008`/`V009`/`V011`) referenced throughout this pass.
+- `./improve.md` — the `improve`/`NORMALIZE` pass that upgrades bare `VERIFY BY` refs to typed bindings (§5.2).
+- `../templates/review.md` — the `review.md` artifact that is the verdict container (§4.1): per-obligation `VERDICT` blocks, the obligation-verdict matrix, and the change-set-level merge-gate verdict.
+- `../templates/trace.md` — the `TRACE` artifact whose trace-provenance schema carries `oracle_adequacy`, `per_surface_hash[]`, and the `evidence_path` that binds adequacy to staleness (§6.1, §6.4).
+- `../templates/spec.swarm.md` — where `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` obligations and their `VERIFY BY` bindings are authored (§5).

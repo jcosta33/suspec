@@ -98,7 +98,7 @@ Six *prose-and-table reference pages* (not copyable templates). A conformant rep
 
 ### 4.3 Tier 3 — stdlib source-doc templates (shipped, conditional)
 
-These are *source documents* that promote into the pipeline. They are **conditional**: a repo need not have instantiated any of them to be conformant, but a conformant scaffold MUST ship the templates (§20.3.3).
+These are *source documents* that promote into the pipeline. They are **conditional**: a repo need not have instantiated any of them to be conformant, but a conformant repository MUST ship the templates (§20.3.3).
 
 | # | Template | Epistemic stance | Promotes to |
 | --- | --- | --- | --- |
@@ -106,7 +106,7 @@ These are *source documents* that promote into the pipeline. They are **conditio
 | 2 | `research.md` | Investigation (open questions + findings). | a `spec.swarm.md` (via author pass). |
 | 3 | `bug-report.md` | Diagnosis-only (root cause, never fix). | a fix `task.md` (`task_kind: fix`). |
 
-The spec extends this minimum: per §20.3.4, a conformant scaffold SHOULD also ship `prd.md` (stance: **intent**) and `rfc.md` (stance: **proposal**) templates alongside the three above — extending the Tier-3 set to five — and MAY additionally ship a `use-case.md` or `nfr.md` template. None of these is ever conformance-required.
+The spec extends this minimum: per §20.3.4, a conformant repository SHOULD also ship `prd.md` (stance: **intent**) and `rfc.md` (stance: **proposal**) templates alongside the three above — extending the Tier-3 set to five — and MAY additionally ship a `use-case.md` or `nfr.md` template. None of these is ever conformance-required.
 
 ### 4.4 The recognized parents of a spec (§20.3.4)
 
@@ -119,7 +119,7 @@ A spec is not born only from research. Swarm normalizes many requirements-practi
 
 ## 5. What conformance requires (pointer)
 
-Per §20.4, a repository is **Swarm-conformant** iff *all four* hold: (1) self-contained copies of all six Tier-2 docs; (2) a copyable template for each of the seven Tier-1 artifacts, each satisfying its §21 contract; (3) a populated `AGENTS.md` bootloader within the ≤200-line / ≤25 KB density cap (§2, §31.1); (4) the version file (`scaffold/.agents/.swarm-version` in the framework repo, `.swarm/VERSION` in an adopted project; §25). Conditional Tier-3 artifacts and the reserved `.swarm.*.json` contract files are **not** required for conformance. The full mechanically-checkable contract is §32; the golden corpus that exercises it is §33. This projection states the artifact set those checks range over; it does not restate the checks themselves.
+Per §20.4, a repository is **Swarm-conformant** iff *all four* hold: (1) self-contained copies of all six Tier-2 docs; (2) a copyable template for each of the seven Tier-1 artifacts, each satisfying its §21 contract; (3) a populated `AGENTS.md` bootloader within the ≤200-line / ≤25 KB density cap (§2, §31.1); (4) the version file (`kernel/.agents/.swarm-version` in the framework repo, `.swarm/VERSION` in an adopted project; §25). Conditional Tier-3 artifacts and the reserved `.swarm.*.json` contract files are **not** required for conformance. The full mechanically-checkable contract is §32; the golden corpus that exercises it is §33. This projection states the artifact set those checks range over; it does not restate the checks themselves.
 
 ## Related
 

@@ -1,10 +1,10 @@
 # The `improve` pass — the ten improve operations
 
-> Authoritative source: 03-compiler-pipeline.md §10 (the ten improve operations, strictly semantics-preserving — §10.1 R-IMPROVE / R-DECOMPOSE-NOT-IMPROVE, §10.2 the closed set, §10.3 worked examples, §10.4 the twelve-category semantic-diff and R-SEMDIFF). This is a reference projection; where it and the spec disagree, the spec governs.
+This file defines the `improve` pass: the ten improve operations, strictly semantics-preserving — §1 R-IMPROVE / R-DECOMPOSE-NOT-IMPROVE, §2 the closed set, §3 worked examples, §4 the twelve-category semantic-diff and R-SEMDIFF.
 
-`improve` is the third of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It is the `NORMALIZE`-phase pass that rewrites a spec to satisfy SOL and APS. This page is the short reference view for that single pass; the long-form contract is the spec (§10).
+`improve` is the third of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It is the `NORMALIZE`-phase pass that rewrites a spec to satisfy SOL and APS.
 
-Like every Swarm pass, `improve` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. Nothing here is shipped code (Invariant 1, §2).
+Like every Swarm pass, `improve` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. Nothing here is shipped code (Invariant 1).
 
 ## What the pass does
 
@@ -111,7 +111,7 @@ The `CLARIFY` improve operation (op 7 above) and the **CLARIFY gate** (§11.6.1)
 - The `CLARIFY` **op** is a *local edit* in the `NORMALIZE` phase: it lifts one buried prose ambiguity (`SOL-P008`) into an explicit interpretation or a `QUESTION` block. The op *creates* the QUESTION.
 - The CLARIFY **gate** is a *pipeline checkpoint* at the `NORMALIZE`→`LOWER` boundary: it refuses to advance the spec while any such question is still open and blocking. The gate *waits on* it.
 
-One is the repair; the other is the precondition that the repair has been discharged. This page covers the op; the gate belongs to the lowering reference (§11).
+One is the repair; the other is the precondition that the repair has been discharged. This file covers the op; the gate is the `lower` pass's concern (see `../passes/lower.md`).
 
 ## How an edit is judged legitimate: the twelve-category semantic diff (§10.4)
 
@@ -138,29 +138,20 @@ The bridge this makes explicit: an `improve` operation (§10.2) is legitimate **
 
 ## Why this discipline (design rationale)
 
-The "lint before you generate, then normalize without changing intent" shape is grounded, not stylistic. Ambiguous task descriptions cut code-generation Pass@1 by roughly 25–30% and contradictory ones by up to 40% [AMBIGCODE]; a benchmark of 1,304 tasks shows frontier models degrade >30% on ambiguous requirements and cannot autonomously resolve them [ORCHID]; conversely, surfacing and resolving ambiguity before generation (clarify-then-generate) raised GPT-4 Pass@1 from 70.96% to 80.80% [CLARIFYGPT]. The `CLARIFY` op (lift ambiguity to a `QUESTION`) and the `DECONFLICT` op (resolve contradiction) are the concrete normalizations that turn those gains into pass-level behavior — while R-IMPROVE keeps the cleanup from silently editing intent.
+The "lint before you generate, then normalize without changing intent" shape is grounded, not stylistic. Ambiguous task descriptions measurably cut code-generation Pass@1, and contradictory ones cut it further still; frontier models degrade sharply on ambiguous requirements and cannot autonomously resolve them; conversely, surfacing and resolving ambiguity before generation (clarify-then-generate) measurably raises Pass@1. The `CLARIFY` op (lift ambiguity to a `QUESTION`) and the `DECONFLICT` op (resolve contradiction) are the concrete normalizations that turn those gains into pass-level behavior — while R-IMPROVE keeps the cleanup from silently editing intent.
 
-## Preserved / Dropped / Still-uncertain
+## A note on author judgment
 
-**Preserved** (projected faithfully from §10):
+A few selections inside `improve` are deliberately left to the author rather than mechanized:
 
-- The closed set of **exactly ten** improve operations, in spec order, with each operation's trigger lint code(s), precondition, and postcondition (§10.2).
-- The hard semantics-preserving rule **R-IMPROVE** and the **R-DECOMPOSE-NOT-IMPROVE** boundary, plus the *Semantic changes* report row (§10.1).
-- The `CONCRETIZE`/`QUANTIFY` same-trigger / different-repair distinction (§10.2).
-- All ten worked before/after examples (§10.3), verbatim.
-- The full **twelve-category** semantic-diff set, **R-SEMDIFF**, and the "legitimate `improve` op iff every edit is category 12" test (§10.4).
-- The `improve`-pass row of §9.3 and the two ordering notes from §9.3.1 (runs only after `lint`; only pass that may rewrite the spec).
+- The precise lint-code-to-operation routing where a code maps to more than one op or shares a trigger (e.g. `SOL-V###` triggers both `NORMALIZE` and `BIND`; `SOL-P005` triggers both `CONCRETIZE` and `QUANTIFY`) — §2 fixes the triggers and the repair distinction but leaves the per-finding selection to author judgment.
+- The exact threshold/heuristics for the `COMPRESS` op's "non-load-bearing noise" and for when an `ATOMIZE` is required versus advisory — the operation and trigger are named, but not a mechanical bundling metric.
 
-**Dropped** (out of scope for this single-pass projection; lives in the spec):
+## Related
 
-- The full nine-pass / seven-phase model and the pass→phase mapping for the other eight passes (§9), beyond the row needed to place `improve`.
-- The CLARIFY **gate** and the COVERAGE gate machinery (§11.6) — only the op-vs-gate reconciliation is summarized here; the gates belong to the lowering reference.
-- The §22.6 amendment/approval table itself, and the source-authority two-axis model (§22) that `DECONFLICT` and `PROMOTE` defer to.
-- The IR shape that lowering emits, including how `verify_by`, `WRITES`, and edges are normalized (§11–§12).
-- That `improve` is one of the four passes shipping **no** stdlib pass guide in v0.1 (§9.4) — stated in the spec; not load-bearing for using the op set.
-
-**Still-uncertain** (the spec governs; not pinned here):
-
-- The precise lint-code-to-operation routing where a code maps to more than one op or shares a trigger (e.g. `SOL-V###` triggers both `NORMALIZE` and `BIND`; `SOL-P005` triggers both `CONCRETIZE` and `QUANTIFY`) — §10.2 fixes the triggers and the repair distinction but leaves the per-finding selection to author judgment.
-- Whether `improve` gains a stdlib pass guide in a future framework release (open by §9.4, "without any language-version change", §25).
-- The exact threshold/heuristics for the `COMPRESS` op's "non-load-bearing noise" and for when an `ATOMIZE` is required versus advisory — §10 names the operation and trigger but not a mechanical bundling metric (cf. the `SOL-P004`-adjacent chaining warning, §11.1.1).
+- `../passes/lint.md` — the lint pass that produces the findings each improve operation answers; `improve` runs only after it.
+- `../passes/lower.md` — the `lower` pass that owns the CLARIFY **gate** and the COVERAGE gate at the `NORMALIZE`→`LOWER` boundary, and the IR shape (including `verify_by`, `WRITES`, and edges).
+- `../passes/decompose.md` — the separate `decompose` pass, distinct from the `ATOMIZE` improve operation (R-DECOMPOSE-NOT-IMPROVE).
+- `../passes/review.md` — the `review` pass that, with `improve`, classifies each edit by the twelve-category semantic diff before promotion.
+- `../templates/spec.swarm.md` — the spec artifact `improve` normalizes (`spec.swarm.md`).
+- `../profiles/architect.md`, `../profiles/skeptic.md` — the typical carrier profiles for this pass.

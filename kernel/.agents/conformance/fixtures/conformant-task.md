@@ -15,7 +15,7 @@ Add a `--json` flag to the `export` command so output can be piped to other tool
 
 ## Linked docs
 
-- Spec: `.agents/specs/export-json-flag.md`
+- Spec: `.swarm/sources/specs/export-json-flag.swarm.md`
 
 ## Plan
 

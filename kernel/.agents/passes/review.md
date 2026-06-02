@@ -1,8 +1,6 @@
 # The `review` pass
 
-> Authoritative source: 04-verification.md §14 (the merge gate) + §17 (the CONTRADICTED resolution protocol §17.4, the untrusted-source boundary §17.5, and the model-judge discipline §17.6) + 06-artifacts.md §21.5 (`review.md` / the `VERDICT` block). This is a reference projection; where it and the spec disagree, the spec governs.
-
-`review` is the eighth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This page is the short reference view for that single pass; the long-form contract is the spec.
+`review` is the eighth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This file is the working contract for that single pass: the merge gate (§14), the `CONTRADICTED` resolution protocol (§17.4), the untrusted-source boundary (§17.5), the model-judge discipline (§17.6), and the `review.md` artifact (§21.5).
 
 Like every Swarm pass, `review` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. Nothing here is shipped code (§2, Principle 1). Every "gate", "check", or "enforcement" named below is **manual today** — a deterministic home a future harness MUST provide, never a thing Swarm runs (§17.1).
 
@@ -16,7 +14,7 @@ The `review` pass **renders the merge-gate judgment**: it compares trace claims 
 | Input artifacts | `trace.md` (implementation claims), the `spec.swarm.md` obligations, recorded verification evidence (§15), diffs |
 | Output artifact | `review.md` — the canonical container of `VERDICT` blocks |
 | Default proof suite for the `review` task kind (§15.8) | `manual @ REVIEW` over the recorded evidence; re-run of the bound `cmd*` proofs |
-| Lint layer (§14.3) | `SOL-V` (VERIFICATION) — well-formedness of verdicts |
+| Lint layer (§14.3) | `SOL-V` (VERIFICATION) — well-formedness of verdicts (see ../passes/lint.md) |
 
 ## The verdict vocabulary it records
 
@@ -84,22 +82,22 @@ Adequacy can override strength **within a recorded contradiction**: a `test` car
 
 ## When the oracle is a model judge (§17.6)
 
-Because Swarm ships no runtime, **every verdict today is recorded by a human or agent**, and the `review` task kind's default suite is `manual @ REVIEW` (§15.8). So the de-facto oracle for many obligations is an **LLM judge** rendering a `manual` verdict. The proof-strength order already ranks `manual`/`monitor` last (§15.6) because such judgments are fallible: judge bias is documented and directional (position/verbosity/self-preference, even at ~80% human-agreement) `[MTBENCH]`; a single judgment is not internally reliable `[TRUSTJUDGE]`; and a judge that shares lineage with the generator inflates its own kin via preference leakage `[PREFLEAK]`.
+Because Swarm ships no runtime, **every verdict today is recorded by a human or agent**, and the `review` task kind's default suite is `manual @ REVIEW` (§15.8). So the de-facto oracle for many obligations is an **LLM judge** rendering a `manual` verdict. The proof-strength order already ranks `manual`/`monitor` last (§15.6) because such judgments are fallible: judge bias is documented and directional (position, verbosity, and self-preference effects persist even when a judge agrees with humans most of the time); a single judgment is not internally reliable; and a judge that shares lineage with the generator inflates its own kin via preference leakage.
 
 Any `manual`/judge-rendered verdict MUST satisfy all four requirements (§17.6.1). These are SOFT-control contracts today, with a deterministic home in a `review.md` schema validator / CI gate when a harness exists:
 
 | # | Requirement | Disposition if violated (§17.6.2) |
 |---|---|---|
 | 1 | **Record judge identity** — the model (name + version/family) or named human, in the optional `judge` adjunct on the trace-provenance record (§16.1). | Unrecorded judge → treated as `UNVERIFIED` (joins the §15.9 non-proofs); raise a `SOL-V` judge-provenance smell. |
-| 2 | **No shared lineage with the generator** — not the same model, not teacher→student inheritance, not the same model family `[PREFLEAK]`. | Verdict does not count; re-judge by an unrelated oracle. **BLOCKING.** |
-| 3 | **Implementer ≠ reviewer** — the agent/human that implemented the change MUST NOT render its own `manual` verdict (self-preference hazard `[MTBENCH]`; the soft-oracle analogue of "no self-issued waiver", §17.3). | Treated as `UNVERIFIED`; require an independent reviewer. **BLOCKING.** |
-| 4 | **Dual independent judgment for `RISK high`/`critical`** — two independent judges (two unrelated models, or a model plus a human), neither sharing lineage (per 2), neither the implementer (per 3) `[TRUSTJUDGE]`. | Single judgment → `UNVERIFIED` (dual owed). Judges that **disagree** → decorate `CONTRADICTED` (record the two judgments as the two evidence refs) → route through §17.4. |
+| 2 | **No shared lineage with the generator** — not the same model, not teacher→student inheritance, not the same model family (preference leakage). | Verdict does not count; re-judge by an unrelated oracle. **BLOCKING.** |
+| 3 | **Implementer ≠ reviewer** — the agent/human that implemented the change MUST NOT render its own `manual` verdict (self-preference hazard; the soft-oracle analogue of "no self-issued waiver", §17.3). | Treated as `UNVERIFIED`; require an independent reviewer. **BLOCKING.** |
+| 4 | **Dual independent judgment for `RISK high`/`critical`** — two independent judges (two unrelated models, or a model plus a human), neither sharing lineage (per 2), neither the implementer (per 3). | Single judgment → `UNVERIFIED` (dual owed). Judges that **disagree** → decorate `CONTRADICTED` (record the two judgments as the two evidence refs) → route through §17.4. |
 
 > Rationale (§17.6): ranking a judgment last does nothing if the judgment is silently biased — a self-judged, same-family, single-shot `manual` `PASS` would otherwise sail through whenever no executable proof contests it. The discipline is "no astrology for agents" applied to the one oracle Swarm cannot make executable: when the oracle is a model, **name it, isolate it, and double it where the risk is highest**.
 
 ## The untrusted-source boundary the reviewer must hold (§17.5)
 
-Every artifact `review` reads is agent-readable markdown, which is also an attack surface: the "Rules File Backdoor" hides attacker instructions in rule files via zero-width and bidirectional-control characters `[RULESBACKDOOR]`, a compromised dependency can write a malicious `AGENTS.md` `[NVIDIA-AGENTSMD]`, this class has reached RCE in a shipped agent (Cursor ≤ v1.7, CVSS 3.1 base 8.8 HIGH) `[CVE-2025-61592]`, and prompt injection — including the indirect, file-borne variant — is the #1 LLM risk `[OWASP-LLM01]`. Consistent with §17.1, none of the controls below is shipped tooling; each is a contract a future harness builds against and is **manual today**.
+Every artifact `review` reads is agent-readable markdown, which is also an attack surface: a "rules file backdoor" can hide attacker instructions in rule files via zero-width and bidirectional-control characters, a compromised dependency can write a malicious `AGENTS.md`, this class of attack has reached remote code execution in shipped coding agents, and indirect, file-borne prompt injection is a leading LLM risk. Consistent with §17.1, none of the controls below is shipped tooling; each is a contract a future harness builds against and is **manual today**.
 
 - **Non-printing-character rejection (`SOL-S013`, HARD lane, §17.5.1).** A SYNTAX-layer diagnostic REJECTS any agent-read artifact containing zero-width, bidirectional-control, other non-printing control characters (outside `\t`/`\n`), or homoglyph-suspect mixed-script identifiers. Because the check is purely lexical it sits in the **HARD/deterministic lane**; it is **BLOCKING** and its eventual home is a PreToolUse hook or CI gate. Resolution: strip the offending codepoints or re-author in printable characters.
 - **Source-authority rule for externally-authored sources (SOFT/governance, §17.5.2).** An `audit.md`/`research.md`/`bug-report.md` whose provenance lies **outside the repo trust boundary** MUST be flagged approval-required and **never auto-promotable**. An external source carries the *lowest* applicable source authority and MUST NOT silently amend an approved `spec.swarm.md` (a lower-ranked actor amending a higher-ranked artifact is `SOL-M002`). A source whose provenance cannot be established as in-boundary is treated as external by default. This composes with `SOL-S013`: the lexical check cleans the *bytes*, the source-authority rule governs the *trust* of the source those bytes came from.
@@ -122,26 +120,15 @@ Three lint floors the reviewer enforces by hand or via the `lint-spec` pass toda
 
 What `review` MUST reject as a non-proof (never `PASS`, §15.9): schema-valid output (shape is not truth), "tests passed" with no command/exit-code/output, and a `manual` verdict with no recorded reasoning.
 
-## Preserved / Dropped / Still-uncertain
+## Related
 
-**Preserved** (projected faithfully from the named sections):
+Sibling payload files that `review` reads from, writes to, or hands off to:
 
-- The seven-value verdict model (4 core + 3 lifecycle), the decoration rules, and the `VERDICT <id>: <CORE> [(lifecycle …)]` line grammar (§14.1–§14.2).
-- The full merge-gate predicate and its per-value disposition table, one-verdict-per-binding, node-level aggregate status, and "manual today / deterministic-home-when-it-exists" framing (§14.4, §15.7).
-- The four-step `CONTRADICTED` resolution protocol including the equal-strength case and the not-silent reconcile, with the proof-strength order it depends on (§17.4, §15.6).
-- The four model-judge requirements and their lint dispositions, with the empirical rationale `[MTBENCH]`/`[TRUSTJUDGE]`/`[PREFLEAK]` (§17.6).
-- The untrusted-source boundary: the `SOL-S013` HARD lexical check and the SOFT source-authority rule, with their threat citations (§17.5).
-- The `review.md` contract: required frontmatter and sections, and the `SOL-V005`/`V007`/`V008` lint floors plus the lifecycle field requirements (§21.5, §14.3).
-
-**Dropped** (out of scope for this single-pass projection; lives in the spec):
-
-- The full proof taxonomy and `VERIFY BY` binding syntax, the two-layer `AGENTS.md` adapter resolution, type-selection rules, and per-task default suites — §15 (referenced here only where the gate and tie-break need them).
-- Drift and staleness mechanics in full: the trace-provenance schema, the staleness rule, the 3-way reconcile, drift coverage, proof-exercised staleness, and surface policies — §16 (referenced only as the destination of a `PASS (STALE)`).
-- The wider soft/hard control boundary, the enforcement-lane artifact (G4), and the WAIVER lifecycle beyond what the gate consumes — §17.1–§17.3.
-- The `review.md` template body, and the other artifact contracts (`spec`, `task`, `trace`, `finding`, `adr`, memory) — the rest of §21.
-
-**Still-uncertain** (the spec governs; not pinned here):
-
-- Whether `review` gains or keeps a stdlib pass guide profile beyond `review[profile: skeptic]` — the pass-guide inventory lives in §9 / §26, outside the named sources.
-- The exact `review.md` schema-validator shape that will become the deterministic home for the `SOL-V` and §17.6 checks — the spec fixes the contract, not the validator (§17.1, §17.6.1).
-- How `adequacy_evidence` overrides (§15.10.3) interact with a specific contradiction in practice — the spec states the rule; the reviewer's recorded reasoning supplies the per-case application.
+- `../passes/verify.md` — the pass that records the verification evidence (§15) `review` judges.
+- `../passes/implement.md` — produces the `trace.md` claims that are the input to judgment.
+- `../passes/promote.md` — the ninth pass, gated by the merge-gate result `review` renders.
+- `../passes/lint.md` — the `SOL-V` / `SOL-S` / `SOL-M` lint floors the reviewer enforces (`SOL-V005`/`V007`/`V008`, `SOL-S013`, `SOL-M002`).
+- `../templates/review.md` — the `review.md` artifact template (frontmatter + sections enumerated above).
+- `../templates/trace.md`, `../templates/spec.swarm.md` — the input artifacts the verdicts are bound against.
+- `../templates/audit.md`, `../templates/research.md`, `../templates/bug-report.md` — externally-authorable sources governed by the source-authority rule (§17.5.2).
+- `../profiles/skeptic.md`, `../profiles/reviewer.md` — the profiles `review` runs under (e.g. `review[profile: skeptic]`).
