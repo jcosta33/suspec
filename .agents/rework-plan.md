@@ -58,11 +58,11 @@ Each wave is gated on the prior (a later wave reads what an earlier one froze), 
 
 ---
 
-## 5. Decisions to confirm before W1
+## 5. Decisions (confirmed)
 
-1. **Target conformance tier** (§32.8 / §34.7): tier 4 *Swarm-verifiable* (the reserved "Swarm-conformant" line — trace+review+evidence) or tier 5 *Swarm-orchestratable* (adds the full §18/§19 coordination contract)? This sets which A-/AW-checks bind.
-2. **Old `docs/` disposition:** retire-by-deletion (clean) or move to `docs/_legacy/` / a git tag (preserves history)? The spec wants no surviving pre-pivot framing in *shipped* files (A28), but the archive can live outside the shipped set.
-3. **Dogfood depth:** hand-author W1–W7, or author the rework itself as a real `*.swarm.md` spec and run it through the pipeline from W5 on (validates the kernel by using it)?
-4. **`scaffold/` → `kernel/` rename:** the spec marks this a v0.2 ADR (defer) — confirm we keep `scaffold/` for v0.1.
+1. **Target tier: 4 — Swarm-verifiable** (the reserved "Swarm-conformant" line; spec → obligations → task → trace → review → verdict with pasted evidence). The acceptance gate applies to the A-/AW-checks that tiers 1–4 bind; tier-5 (§18/§19 live-coordination) checks are out of scope for v0.1.
+2. **Old `docs/` → archived to `docs/_legacy/`** (kept out of the shipped/canonical set so A28 still passes; preserves history + a diff reference during migration).
+3. **Hand-author W1–W4, dogfood from W5** (W1–W2 bootstrap by hand since the templates/payload don't exist yet; from W5 author the rework as a real `*.swarm.md` spec and run it through `lower → implement → verify → review`).
+4. **Rename `scaffold/` → `kernel/` now** (pulled forward from the v0.2 deferral). Executed in **W2** (the payload wave): `git mv scaffold kernel`, update the ~35 `scaffold/` path refs + the "scaffold" payload-noun across the spec (§20, §34, Appendix G) to `kernel/`, and record a **new ADR** ("v0.1 ships the payload under `kernel/`; supersedes the §34.0-wave-2 deferral"). The payload still installs 1:1 to a consuming repo's `.swarm/kernel/`. W1 is unaffected (it touches only `docs/`).
 
-I recommend: **tier 4**, **`docs/_legacy/` archive**, **dogfood from W5**, **keep `scaffold/`**. On your go-ahead (with any overrides) I'll start W1 — authoring the canonical `docs/language|model|passes|reference` from the spec, then run the harness.
+**Execution begins at W1.** Sequence: archive `docs/` → `docs/_legacy/`, then author the canonical `docs/language | model | passes | reference` as projections of the spec (each with a distillation-loss note), then run the conformance harness (A5, A10–A16, A2) and commit.
