@@ -1,6 +1,6 @@
 # Heuristic profiles
 
-> Swarm's reference for **heuristic profiles**: the optional cognitive stances that sharpen a pass without changing what the pass means — what a profile is, the seven-section profile contract (including the `## Refuses` red-flag table), the six stdlib profiles and the full thirteen-stance set, where profiles ship, and the single-axis profile-by-pass routing model.
+> Swarm's reference for **heuristic profiles**: the optional cognitive stances that sharpen a pass without changing what the pass means — what a profile is, the seven-section profile contract (including the `## Refuses` red-flag table), the full thirteen-stance set (all thirteen ship as standalone `persona-*/SKILL.md` profiles), where profiles ship, and the single-axis profile-by-pass routing model.
 
 A **heuristic profile** is an optional cognitive stance applied to a pass. It changes *what an agent looks for and refuses* while performing the pass; it never changes *how* the pass runs — that is the job of the pass guide — and it never defines load-bearing meaning. A profile is a parameter, not a person: it is not a character, not an actor, and not a procedure. Like every Swarm surface, a profile is **markdown only with no runtime**; it is a contract a human or an agent reads and adopts, never code that executes.
 
@@ -48,20 +48,27 @@ The `## Refuses` section is the heart of a profile: an enumerated **refusal set*
 
 For example, the Skeptic stance — the canonical reference profile — refuses summary-only proof (demand the artifact), "tests passed" with no command, exit code, or output (reject as `UNVERIFIED`) [[REFLEXION]](../research/sources.md#REFLEXION), a trace whose evidence does not match the obligation it claims (reject as `UNVERIFIED`), and the implementer rendering the verdict on their own change (reject; require an independent reviewer). Each row is a concrete trap the `review`/`verify` passes are prone to, named so the stance catches it on sight.
 
-## The six stdlib profiles
+## The thirteen stdlib profiles
 
-The kernel models **thirteen** heuristic stances (the full set is mapped below). The stdlib ships a **six-file subset** as installed, ready-to-load profiles — the stances that cover the most common entry points across the pipeline:
+The kernel models **thirteen** heuristic stances, and **all thirteen ship as standalone `kernel/.agents/skills/persona-*/SKILL.md` profiles** — installed, ready-to-load carriers discoverable and surgically activated by their `description`. There is no separate `profiles/` directory and no smaller installed subset: the full set ships, and the stances that cover the most common entry points carry the same weight as the rest.
 
 | Stdlib profile | Stance | Pass(es) it parameterizes |
 |---|---|---|
-| `skeptic.md` | refute-by-default — assume a completion claim is unproven until its evidence forces the opposite conclusion. | `review` / `verify` |
-| `builder.md` | constructive build — turn obligations into working surfaces under the assigned scope. | `implement` (`feature`, `rewrite`) |
-| `architect.md` | intent-not-implementation — keep specs verifiable and free of smuggled implementation; survey before reinventing. | `author` (spec-writing) |
-| `researcher.md` | inquiry against external evidence — investigate a question in depth against primary sources. | `author` (research-writing) |
-| `reviewer.md` | the Skeptic stance narrowed to the `review` pass (a convenience alias, **not** a fourteenth stance). | `review` |
-| `janitor.md` | tidy-as-you-go, minimal-footprint, behavior-preserving change. | `implement` (`refactor`) |
+| `persona-skeptic/SKILL.md` | refute-by-default — assume a completion claim is unproven until its evidence forces the opposite conclusion. | `review` / `verify` |
+| `persona-architect/SKILL.md` | intent-not-implementation — keep specs verifiable and free of smuggled implementation; survey before reinventing. | `author` (spec-writing) |
+| `persona-auditor/SKILL.md` | audit-against-evidence — assess a system or claim against its stated obligations and surface the gaps. | `author` (audit-writing) |
+| `persona-surveyor/SKILL.md` | breadth-first inventory — map the landscape before committing to a line of inquiry. | `author` (research — breadth) |
+| `persona-researcher/SKILL.md` | inquiry against external evidence — investigate a question in depth against primary sources. | `author` (research — depth) |
+| `persona-bug-hunter/SKILL.md` | reproduce-then-isolate — pin a defect to a minimal reproduction before reasoning about cause. | `author` (bug-report-writing) |
+| `persona-builder/SKILL.md` | constructive build — turn obligations into working surfaces under the assigned scope. | `implement` (`feature` / `rewrite`) |
+| `persona-janitor/SKILL.md` | tidy-as-you-go, minimal-footprint, behavior-preserving change. | `implement` (`refactor`) |
+| `persona-migrator/SKILL.md` | preserve-behavior-across-the-move — carry meaning intact through a migration or upgrade. | `implement` (`migration` / `upgrade`) |
+| `persona-performance-surgeon/SKILL.md` | measure-before-and-after — change only what the measurement justifies. | `implement` (`performance`) |
+| `persona-test-author/SKILL.md` | prove-the-obligation — write tests that bind behavior to the obligation, not the implementation. | `implement` (`testing`) |
+| `persona-documentarian/SKILL.md` | match-the-source — keep documentation true to the system it describes. | `implement` (`documentation`) |
+| `persona-lead-engineer/SKILL.md` | decompose-and-gate — split the obligation set and hold the merge gate. | `decompose` / merge-gate |
 
-`reviewer.md` is a named alias: it carries the Skeptic stance focused on the single pass it most often parameterizes, so that a task naming `profile: reviewer` resolves to a present, conformant carrier for the `review` pass without minting a new mindset. The substance lives in `skeptic.md`; load that directly whenever the pass is `verify` (or the `fix` task kind for root-causing), which the alias does not cover.
+Whenever the pass is `verify` (or the `fix` task kind, for root-causing), load `persona-skeptic` directly: it carries the refute-by-default stance those passes need.
 
 ## The full thirteen-stance set, mapped to passes
 
@@ -93,7 +100,7 @@ Routing is this **single axis** — profile × pass — rather than a pair of lo
 
 ## Where profiles ship
 
-The six stdlib profiles ship in the kernel payload at **`kernel/.agents/profiles/`** — one file per profile (`skeptic.md`, `builder.md`, `architect.md`, `researcher.md`, `reviewer.md`, `janitor.md`). In an adopted project the same files are installed at `.swarm/kernel/profiles/`. A profile a project authors itself lives alongside them. Because a profile's carrier is incidental, a project that prefers to inline a stance into its pass guide is equally conformant, so long as the seven-section contract is satisfied.
+The thirteen stdlib profiles ship in the kernel payload under **`kernel/.agents/skills/`** — one directory per profile (`persona-skeptic/`, `persona-architect/`, `persona-auditor/`, `persona-surveyor/`, `persona-researcher/`, `persona-bug-hunter/`, `persona-builder/`, `persona-janitor/`, `persona-migrator/`, `persona-performance-surgeon/`, `persona-test-author/`, `persona-documentarian/`, `persona-lead-engineer/`), each carrying a `SKILL.md` of `type: profile`. There is no separate `kernel/.agents/profiles/` directory — profiles live among the pass guides and fragments under `skills/`, discoverable and surgically activated by `description`. In an adopted project the same directories are installed under the project's skills path. A profile a project authors itself lives alongside them. Because a profile's carrier is incidental, a project that prefers to inline a stance into its pass guide is equally conformant, so long as the seven-section contract is satisfied.
 
 ## Authoring a profile
 

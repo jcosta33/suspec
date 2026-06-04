@@ -53,11 +53,11 @@ Three rows are normative and worth calling out:
 
 - **`adversarial-review` is the Skeptic profile over `review`.** It is **not** a standalone procedural module. Its adversarial method is the **Skeptic profile** applied to the `review` (and `verify`) passes, because skepticism is a *parameter to a pass*, not a separate pass of its own.
 - **`fix-flaky-test` is a narrow `implement` guide.** Its procedure is specific enough (de-flaking a non-deterministic test) to stand as its own guide rather than collapse into the general fix guide.
-- **The eight `persona-*` modules are profiles.** A profile is a heuristic stance — what an agent looks for and refuses — not a procedure module. Profiles are documented on their own page; this page covers the procedure layer.
+- **The thirteen `persona-*` modules are profiles.** A profile is a heuristic stance — what an agent looks for and refuses — not a procedure module. All thirteen ship as standalone `persona-*/SKILL.md` files; they are catalogued on their own page, and this page covers the procedure layer.
 
 ### What ships in v0.1
 
-The pass-guide set spans all nine passes as a *contract*, but only **five stdlib pass guides ship in v0.1**: those for `lint`, `decompose`, `implement`, `review[profile: skeptic]`, and `promote`. The remaining four passes — `author`, `improve`, `lower`, `verify` — are fully specified by their pass contracts but ship **no guide yet**, and MAY gain one in a later framework release with no language-version change. A guide-less pass is **not** a conformance gap: the pass contract is the binding artifact, and the guide is an optional aid to performing it.
+The pass-guide set spans all nine passes as a *contract*, and v0.1 ships a full procedural set: **four pass guides**, **nine per-kind `implement` guides**, **six author guides**, and **two cross-cutting fragments** — twenty-one procedural modules in all. Mapped onto the nine passes: `author` is served by the six author guides (`write-spec`, `write-audit`, `write-research`, `write-bug-report`, `write-prd`, `write-rfc`); `lint`, `decompose`, `review`, and `promote` each have a dedicated pass guide; `implement` is served by the nine per-kind guides; `verify` is served by the `empirical-proof` fragment; and `improve` and `lower` ship **no guide** (they are contract-only). A guide-less pass is **not** a conformance gap: the pass contract is the binding artifact, and the guide is an optional aid to performing it. The thirteen `persona-*` profiles ship alongside these modules but are catalogued on [heuristic profiles](heuristic-profiles.md), not here.
 
 The `lint` and `decompose` guides have no antecedent in the mapping table above: that table populates guides only on `author` and `implement`, and the single module touching `decompose` is the Lead Engineer *profile*, not a guide.
 
@@ -162,20 +162,33 @@ The directional evidence behind the body shape — attention degrading across lo
 
 ## The installed guides
 
-The stdlib pass guides, the narrow `fix-flaky-test` guide, and the two cross-cutting fragments ship under `kernel/.agents/skills/`. Each is a self-contained `GUIDE.md` carrying the contract above, plus a self-activating `description` for the launcher-less fallback:
+The four pass guides, the nine per-kind `implement` guides, the six author guides, and the two cross-cutting fragments ship under `kernel/.agents/skills/`. Each is a self-contained `SKILL.md` carrying the contract above, plus a self-activating `description` for the launcher-less fallback. (The thirteen `persona-*/SKILL.md` profiles ship under the same path; they are catalogued on [heuristic profiles](heuristic-profiles.md).)
 
 | Installed module | Role | Pass |
 |---|---|---|
-| `kernel/.agents/skills/pass-lint-spec/` | stdlib pass guide | `lint` |
-| `kernel/.agents/skills/pass-decompose-spec/` | stdlib pass guide | `decompose` |
-| `kernel/.agents/skills/pass-implement-obligations/` | stdlib pass guide (branches by `task_kind`) | `implement` |
+| `kernel/.agents/skills/pass-lint-spec/` | pass guide | `lint` |
+| `kernel/.agents/skills/pass-decompose-spec/` | pass guide | `decompose` |
+| `kernel/.agents/skills/pass-review-trace/` | pass guide (carries the Skeptic profile) | `review` |
+| `kernel/.agents/skills/pass-promote-findings/` | pass guide | `promote` |
+| `kernel/.agents/skills/write-feature/` | per-kind `implement` guide | `implement` |
+| `kernel/.agents/skills/write-fix/` | per-kind `implement` guide | `implement` |
+| `kernel/.agents/skills/write-refactor/` | per-kind `implement` guide | `implement` |
+| `kernel/.agents/skills/write-rewrite/` | per-kind `implement` guide | `implement` |
+| `kernel/.agents/skills/write-migration/` | per-kind `implement` guide (covers migration + upgrade) | `implement` |
+| `kernel/.agents/skills/write-performance/` | per-kind `implement` guide | `implement` |
+| `kernel/.agents/skills/write-testing/` | per-kind `implement` guide | `implement` |
+| `kernel/.agents/skills/write-documentation/` | per-kind `implement` guide | `implement` |
 | `kernel/.agents/skills/fix-flaky-test/` | narrow `implement` guide (loaded under `task_kind: fix`) | `implement` |
-| `kernel/.agents/skills/pass-review-trace/` | stdlib pass guide (carries the Skeptic profile) | `review` |
-| `kernel/.agents/skills/pass-promote-findings/` | stdlib pass guide | `promote` |
+| `kernel/.agents/skills/write-spec/` | author guide | `author` |
+| `kernel/.agents/skills/write-audit/` | author guide | `author` |
+| `kernel/.agents/skills/write-research/` | author guide | `author` |
+| `kernel/.agents/skills/write-bug-report/` | author guide | `author` |
+| `kernel/.agents/skills/write-prd/` | author guide | `author` |
+| `kernel/.agents/skills/write-rfc/` | author guide | `author` |
 | `kernel/.agents/skills/empirical-proof/` | cross-cutting fragment | `verify`, `review` |
 | `kernel/.agents/skills/distillation-discipline/` | cross-cutting fragment | `lower`, `decompose`, `promote` |
 
-These directories sit under a `skills/` path for cross-tool compatibility; in kernel vocabulary they are pass guides and fragments. The four guide-less passes (`author`, `improve`, `lower`, `verify`) ship no module here — their pass contracts stand on their own.
+These directories sit under a `skills/` path for cross-tool compatibility; in kernel vocabulary they are pass guides, per-kind implement guides, author guides, and fragments. The two guide-less passes (`improve`, `lower`) ship no module here — their pass contracts stand on their own.
 
 ## Related
 

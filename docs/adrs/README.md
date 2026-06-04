@@ -58,6 +58,7 @@ Two consequences of that rule govern this ledger:
 | [0039](./0039-write-surface-model.md) | The write-surface model | **New (kernel)** — §18, §19; **supersedes** [0025](./0025-orchestration-coordination-artifact.md) |
 | [0040](./0040-kernel-payload-directory.md) | The kernel payload ships under `kernel/` | **New (kernel)** — §20.5, §34.0 (rename from `scaffold/`, pulled forward from the v0.2 deferral) |
 | [0041](./0041-two-axis-versioning.md) | Two-axis versioning (language axis + package axis) | **New (kernel)** — §25; **extends** [0015](./0015-versioning-scheme.md) |
+| [0042](./0042-skill-carrier-and-standalone-conditioning.md) | Skills carry as `SKILL.md`; conditioning ships as many standalone surgically-activated skills | **New (kernel)** — §26, §27; **refines** [0016](./0016-skills-are-self-contained.md), [0017](./0017-no-always-load-skills.md), [0019](./0019-personas-ship-as-individual-skills.md), [0029](./0029-nine-pass-compiler-model.md), [0036](./0036-heuristic-profile-model.md), [0037](./0037-load-what-the-task-names.md) |
 
 ## The new kernel ADRs (0027+), by topic
 

@@ -24,7 +24,7 @@ This is **design rationale** — a layout and naming decision, not an empirical 
 
 | Directory | Holds | Category | Committed? | Populated by |
 | --- | --- | --- | --- | --- |
-| `kernel/` | The installed framework payload — `language/ templates/ passes/ skills/ profiles/ overlays/`. Framework-owned; project edits belong in `overlays/`. | payload | Yes | Installation from the framework repo's `kernel/`; kernel migrations |
+| `kernel/` | The installed framework payload — `language/ templates/ passes/ skills/ overlays/`. Framework-owned; project edits belong in `overlays/`. | payload | Yes | Installation from the framework repo's `kernel/`; kernel migrations |
 | `sources/` | **Desired truth** + durable source artifacts: specs (`*.swarm.md`), PRDs, RFCs, research, audits, bugs, findings, ADRs, interfaces, NFRs (§20.3.4). | desired | Yes | Humans + the `author`/`improve` passes |
 | `status/` | **Observed** satisfaction + drift: per-spec satisfaction reports, task/worktree state, drift reports. Records whether code satisfies the spec; never redefines intent. | observed | Yes | The `verify`/`review` passes; drift detection (future toolchain) |
 | `generated/` | **Generated** execution packets: task frames, traces, reviews, generated tests/docs. Recreatable from `sources/`; compacted into `ledger/` on completion. | generated | Mostly gitignored (see commit policy) | The `lower`/`decompose`/`implement`/`verify`/`review` passes |
@@ -42,7 +42,7 @@ project/
   .swarm/                   # THE CANONICAL SWARM WORKSPACE
     VERSION                 # adopted kernel version, semver (§25)
     config.yaml             # surface policies (§16.6), agent adapters, lint-severity overrides
-    kernel/                 # the INSTALLED payload (language templates passes skills profiles overlays)
+    kernel/                 # the INSTALLED payload (language templates passes skills overlays)
     sources/                # DESIRED truth      → specs/ prds/ rfcs/ research/ audits/ bugs/ findings/ adrs/ interfaces/ nfrs/
     status/                 # OBSERVED state     → specs/ tasks/ worktrees/ drift/
     generated/              # EXECUTION packets  → tasks/ traces/ reviews/ tests/ docs/
@@ -52,8 +52,7 @@ project/
     tmp/                    # scratch (gitignored)
 
   .agents/                  # COMPATIBILITY MIRROR ONLY (not canonical)
-    skills/                 # mirrored/pointer → .swarm/kernel/skills/
-    profiles/               # mirrored/pointer → .swarm/kernel/profiles/
+    skills/                 # mirrored/pointer → .swarm/kernel/skills/ (incl. persona-* profile stances)
 ```
 
 ## The source / status / generated split

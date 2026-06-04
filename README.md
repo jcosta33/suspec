@@ -57,7 +57,7 @@ The installable payload — the **kernel** — lives in this repo under [`kernel
 
 In an adopted project, `.swarm/` is the canonical Swarm workspace, separating **desired** state from **observed** state from **generated** material:
 
-- `.swarm/kernel/` — the installed payload (`language/`, `templates/`, `passes/`, `skills/`, `profiles/`, `overlays/`).
+- `.swarm/kernel/` — the installed payload (`language/`, `templates/`, `passes/`, `skills/`, `overlays/`).
 - `.swarm/sources/` — desired truth: `*.swarm.md` specs plus PRDs, RFCs, research, audits, bugs, findings, ADRs, interfaces, NFRs.
 - `.swarm/status/` — observed satisfaction and drift; records whether code satisfies the spec, never redefines intent.
 - `.swarm/generated/` — execution packets (task frames, traces, reviews, generated tests/docs); recreatable from sources.
@@ -81,7 +81,7 @@ Swarm holds five invariants in every part of the framework; the governing one is
 - [`docs/model/`](./docs/model/) — the compiler pipeline, source artifacts, source authority, and conformance.
 - [`docs/passes/`](./docs/passes/) — one page per pass (`author`, `lint`, `improve`, `lower`, `decompose`, `implement`, `verify`, `review`, `promote`).
 - [`docs/reference/`](./docs/reference/) — the flow graph, proof types, promotion protocol, distillation loss budget, and glossary.
-- [`kernel/`](./kernel/) — the installable payload (the templates, language references, passes, skills, and profiles that install to `.swarm/kernel/`).
+- [`kernel/`](./kernel/) — the installable payload (the templates, language references, passes, and skills — including the persona-* profile stances — that install to `.swarm/kernel/`).
 
 Each area is the authoritative reference for what it covers; together with the [`kernel/`](./kernel/) payload, the `docs/` tree **is** Swarm. The references here are complete — there is no separate document a reader must defer to.
 
