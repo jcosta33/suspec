@@ -2,58 +2,57 @@
 name: distillation-discipline
 type: fragment
 pass: [lower, decompose, promote]
-description: >
-  Record what a compressing boundary crossing dropped, so a reviewer can confirm nothing binding
-  went missing. ALWAYS apply when a `lower`, `decompose`, or `promote` pass moves obligations across
-  an artifact boundary (spec → task, research/audit/bug-report → spec, task → finding) — even when
-  the crossing looks like a trivial copy. Do not finalize a crossing while any MUST-survive item is
-  dropped-without-justification, while the loss statement claims "nothing dropped", or while a
-  stance change (observation → intent) crossed silently. Skip for same-modality edits that cross no
-  boundary — improving a spec in place, a `verify`/`review` verdict, a `lint` pass naming defects.
-  Procedure only; the loss budget, MAY-drop/MUST-survive lists, and lint codes live in §24.
+description: >-
+  Record what a boundary crossing dropped, so a reviewer confirms nothing binding was lost. ALWAYS
+  apply when a `lower`/`decompose`/`promote` pass moves obligations across an artifact boundary
+  (spec→task, research/audit/bug-report→spec, task→finding), even a trivial copy. Do not finalize
+  while a MUST-survive item is dropped without justification, the loss statement claims "nothing
+  dropped", or a stance change (observation→intent) crossed silently. Skip same-modality edits
+  crossing no boundary: a spec improved in place, a `verify`/`review` verdict, `lint` naming
+  defects.
 ---
 
 # Pass guide: distillation-discipline (cross-cutting fragment)
 
 > **Fragment, not a standalone pass guide.** Per §26.3, `distillation-discipline` is a cross-cutting
-> fragment: a pass-guide-shaped module (§26.5) that other guides *compose* rather than one a
-> `task_kind` names directly. It is shared behind the three passes that cross an artifact boundary —
-> `lower`, `decompose`, and `promote` (§26.2). A pass guide for one of those loads this fragment; a
-> `task.md` does not activate it on its own.
+> fragment: a pass-guide-shaped module (§26.5) that other guides *compose*, not one a `task_kind`
+> names directly. It is shared behind the three passes that cross an artifact boundary — `lower`,
+> `decompose`, `promote` (§26.2). A pass guide for one of those loads it; a `task.md` does not
+> activate it on its own.
 >
 > **This fragment owns no semantics (§26.1, §17.1).** It does not define modality, authority order,
 > verification semantics, the MAY-drop list, the MUST-survive list, the per-boundary matrix, the
-> discipline-not-gatekeeper rule, the forbidden-composition treatment, or any lint code. Those are
-> owned authoritatively by SOL and the conformant repo's distillation-loss-budget reference (§24).
-> Every load-bearing term below is cited by §-number, not redefined: the citation is
-> non-authoritative delivery, and where this fragment and that reference disagree, **the reference
-> governs.** This fragment is the *procedure* for applying the loss budget those layers own.
+> discipline-not-gatekeeper rule, the forbidden-composition treatment, or any lint code — those are
+> owned by SOL and the conformant repo's distillation-loss-budget reference (§24). Every load-bearing
+> term below is cited by §-number, not redefined; the citation is non-authoritative delivery, and
+> where this fragment and that reference disagree, **the reference governs.** This fragment is the
+> *procedure* for applying the loss budget those layers own.
 
 ## Purpose
 
-Information loses detail every time it crosses a boundary in the pipeline — most acutely at the
-**spec → task lowering boundary** (§11) and the **promotion boundary** (§23.4). Compression is the
-point; *silent* compression is the hazard. A distillation that drops an obligation, its modality, or
-its verification binding has not compressed the spec — it has **changed what gets built** (§24,
+Information loses detail every time it crosses a pipeline boundary — most acutely at the **spec →
+task lowering boundary** (§11) and the **promotion boundary** (§23.4). Compression is the point;
+*silent* compression is the hazard. A distillation that drops an obligation, its modality, or its
+verification binding has not compressed the spec — it has **changed what gets built** (§24,
 Rationale). Compression that changes the build is not compression.
 
-This fragment carries the *procedure* for distilling accountably: before a boundary crossing is
-treated as complete, the agent makes the loss **visible** so a reviewer can read source and target
-side by side and confirm nothing binding went missing. The visibility surface is the
-**`Preserved / Dropped / Still-uncertain`** statement, which §24.2 names as the human-authored
-declaration that lint (`SOL-V001` / `SOL-M…`, §24.3) and source authority (`SOL-M004`, §22.2) check
-against. The statement does not *enforce* the budget — a model deciding whether to allow a passage
-is soft control that can be talked past (§17.1). It *records* the loss so the deterministic checks
-have something to compare against the typed obligation set.
+This fragment carries the *procedure* for distilling accountably: before a crossing is complete, the
+agent makes the loss **visible** so a reviewer can read source and target side by side and confirm
+nothing binding went missing. The visibility surface is the **`Preserved / Dropped /
+Still-uncertain`** statement, which §24.2 names as the human-authored declaration that lint
+(`SOL-V001` / `SOL-M…`, §24.3) and source authority (`SOL-M004`, §22.2) check against. The statement
+does not *enforce* the budget — a model judging whether to allow a passage is soft control that can
+be talked past (§17.1). It *records* the loss so the deterministic checks have something to compare
+against the typed obligation set.
 
 ## Consumes
 
-- The higher-verbosity **source artifact** being distilled, with its load-bearing items still
-  intact: a `research.md`, `audit.md`, `bug-report.md`, an approved `spec.swarm.md`, a `finding.md`,
-  a `task.md`, or a trace — whichever the composing pass reads.
-- The **§24 loss budget** as the governing reference: the §24.1 MAY-drop list, the §24.2
-  MUST-survive list, and the per-boundary matrix row for the crossing in hand. The budget differs
-  per boundary; this fragment reads the matching row, it does not author the matrix.
+- The higher-verbosity **source artifact** being distilled, load-bearing items still intact: a
+  `research.md`, `audit.md`, `bug-report.md`, approved `spec.swarm.md`, `finding.md`, `task.md`, or
+  trace — whichever the composing pass reads.
+- The **§24 loss budget** as governing reference: the §24.1 MAY-drop list, the §24.2 MUST-survive
+  list, and the per-boundary matrix row for the crossing in hand. The budget differs per boundary;
+  this fragment reads the matching row, it does not author the matrix.
 - The composing pass's own contract (`lower`, `decompose`, or `promote`), which fixes the target
   artifact and the obligation / discovery set in scope.
 
@@ -61,14 +60,13 @@ have something to compare against the typed obligation set.
 
 No artifact of its own. The fragment contributes a **`Preserved / Dropped / Still-uncertain`**
 statement to the target artifact the composing pass produces, plus the visible per-item check
-(step 4) that backs it. It is the procedure the composing pass runs *while* producing its artifact,
-not a separate output. It defines no new block, modal, status value, or lint code (§26.1).
+(step 4) that backs it — the procedure the composing pass runs *while* producing its artifact, not a
+separate output. It defines no new block, modal, status value, or lint code (§26.1).
 
 ## Preserves
 
 Everything §24.2 marks MUST-survive crosses the boundary intact; this fragment never authorizes
-dropping any of it. Restating the §24.2 categories as the items to confirm (the budget is §24's, not
-this guide's):
+dropping any of it. The §24.2 categories to confirm (the budget is §24's, not this guide's):
 
 - The **obligation itself** (its ID) — the backward-trace key (§22.5); losing it severs the trace.
 - Its **modality** (`MUST` / `MUST NOT` / `SHOULD` / `SHOULD NOT` / `MAY`) — modality *is* the
@@ -85,20 +83,19 @@ this guide's):
 These are distillation errors, not stylistic choices — halt, do not finalize:
 
 - A **`Preserved / Dropped / Still-uncertain` statement that says "nothing was dropped."** If nothing
-  was dropped, the crossing was a copy, not a distillation — either embrace the copy and omit the
-  statement, or distil and record the real loss.
-- A statement that lists **categories without specifics** ("dropped: implementation details"). The
-  reviewer cannot audit a category. Specific: "dropped: the comparison of three retry strategies;
-  the chosen one is recorded as `C-014`."
-- **Silent dropping of any §24.2 MUST-survive item.** This is the failure lint surfaces as
-  `SOL-V001` / `SOL-M…` (§24.3) and a contradicting distillation surfaces as `SOL-M004` (§22.2) —
-  this fragment never extends or overrides that list.
+  dropped, the crossing was a copy, not a distillation — embrace the copy and omit the statement, or
+  distil and record the real loss.
+- A statement listing **categories without specifics** ("dropped: implementation details"). A
+  reviewer cannot audit a category. Specific: "dropped: the comparison of three retry strategies; the
+  chosen one is recorded as `C-014`."
+- **Silent dropping of any §24.2 MUST-survive item.** Lint surfaces this as `SOL-V001` / `SOL-M…`
+  (§24.3) and a contradicting distillation as `SOL-M004` (§22.2) — this fragment never extends or
+  overrides that list.
 - A **forbidden composition** (§24.4): letting an observation-only artifact silently become intent
   (an `audit.md` read as an approved spec, a `research.md` treated as a decision, a `bug-report.md`
-  treated as a fix authorization). The fragment forces the crossing to be an explicit re-statement;
-  it does not adjudicate authority — source authority (§22) does, and a distilled artifact
-  contradicting its higher-authority source is a `SOL-M004` routed to amendment, not something this
-  fragment overrides.
+  treated as a fix authorization). The fragment forces an explicit re-statement; it does not
+  adjudicate authority — source authority (§22) does, and a distilled artifact contradicting its
+  higher-authority source is a `SOL-M004` routed to amendment, not something this fragment overrides.
 - A statement appended **after the fact** without re-running the per-item check below. A loss
   statement written from memory is fiction; it must be backed by the check it summarizes.
 
@@ -106,51 +103,48 @@ These are distillation errors, not stylistic choices — halt, do not finalize:
 
 1. **Identify the boundary and pull its matrix row.** Name the crossing (e.g.
    `spec.swarm.md → task`, `audit.md → spec.swarm.md`, `task.md → finding.md`). Read the matching
-   row of the §24 per-boundary matrix to learn the *permitted loss* and *forbidden loss* for exactly
-   this crossing. **Do not generalize one row to another:** `spec → task` permits dropping only
+   row of the §24 per-boundary matrix for the *permitted loss* and *forbidden loss* for exactly this
+   crossing. **Do not generalize one row to another:** `spec → task` permits dropping only
    rationale-not-needed-for-execution; `research → spec` permits dropping rejected options and
    digressions — the columns differ, and applying the wrong row is how a binding constraint leaks
    out.
 
-2. **Enumerate the source's load-bearing items.** From the source artifact, list every item the
-   §24.2 MUST-survive list covers that is present here: each obligation ID, its modality, its
-   `VERIFY BY` bindings, its authority and scope, and every constraint, invariant, non-goal, and
-   unresolved `QUESTION` in range of the crossing. An item you never enumerate is one you cannot
-   notice dropping.
+2. **Enumerate the source's load-bearing items.** From the source, list every §24.2 MUST-survive
+   item present here: each obligation ID, its modality, its `VERIFY BY` bindings, its authority and
+   scope, and every constraint, invariant, non-goal, and unresolved `QUESTION` in range. An item you
+   never enumerate is one you cannot notice dropping.
 
-3. **Classify each item as it lands in the target.** For each enumerated item, record one
-   disposition:
+3. **Classify each item as it lands in the target.** Record one disposition per item:
    - **preserved** — survives in the target in some form (a requirement, a behavioural constraint, or
      a structural choice that enforces it).
    - **promoted to `<target>`** — moved *upstream* rather than dropped (a discovery routed by
      §23.4.2; see *the sister discipline* below).
-   - **dropped (justified)** — legitimate *only* for items on the §24.1 MAY-drop list or the
-     *permitted loss* column of this boundary's matrix row; record where it survives instead (the
-     linked source, the canonical statement, the ADR / finding / research it came from).
+   - **dropped (justified)** — legitimate *only* for §24.1 MAY-drop items or the *permitted loss*
+     column of this boundary's matrix row; record where it survives instead (the linked source, the
+     canonical statement, the ADR / finding / research it came from).
    - A MUST-survive item marked dropped is a **distillation error** — return to step 2 and either
-     carry it across or, if the boundary's matrix row permits deferral, mark it explicitly deferred
-     to a named downstream artifact. Never leave it implicit.
+     carry it across or, if the matrix row permits deferral, mark it explicitly deferred to a named
+     downstream artifact. Never leave it implicit.
 
-4. **Emit the visible per-item check (forced output — hard gate).** Output one row per enumerated
-   item so the classification is **auditable, not asserted**. The crossing is not complete until this
-   table appears in the target's working notes with every MUST-survive item shown `preserved` or
-   `promoted to <target>`. A row showing a MUST-survive item as `dropped` without justification is a
-   gate failure: halt and revise before the composing pass finalizes its artifact. An asserted
-   "nothing was lost" with no table is the silent-compression failure this fragment exists to close.
+4. **Emit the visible per-item check (forced output — hard gate).** Output one row per item so the
+   classification is **auditable, not asserted**. The crossing is not complete until this table
+   appears in the target's working notes with every MUST-survive item shown `preserved` or
+   `promoted to <target>`. A MUST-survive item shown `dropped` without justification is a gate
+   failure: halt and revise before the composing pass finalizes its artifact. An asserted "nothing
+   was lost" with no table is the silent-compression failure this fragment exists to close.
 
    | Source item | Disposition | Survives as / why droppable |
    | ----------- | ----------- | --------------------------- |
    | `<obligation ID + modality, or other §24.2 item>` | preserved / promoted to `<target>` / dropped (justified) | `<where it lands, or the §24.1 / matrix-row justification>` |
 
-5. **Write the `Preserved / Dropped / Still-uncertain` statement** into the target artifact. This is
-   the declaration §24.2 names; keep it real and complete:
+5. **Write the `Preserved / Dropped / Still-uncertain` statement** into the target artifact — the
+   declaration §24.2 names; keep it real and complete:
    - **Preserved** — the load-bearing items carried across (named concretely, not "all obligations").
    - **Dropped** — each dropped item in concrete terms, with where it survives instead (§24.1) or the
      matrix-row clause that permits it.
    - **Still-uncertain** — anything left open for the next stage rather than guessed (an unresolved
      `QUESTION` carried forward, a decision deferred). Lowering past an unresolved *blocking*
-     `QUESTION` would commit a guess as an obligation — leave it visible here; do not silently
-     resolve it.
+     `QUESTION` commits a guess as an obligation — leave it visible here; do not silently resolve it.
 
 6. **Check for a forbidden composition (§24.4).** If the crossing changes the artifact's epistemic
    stance — observation → intent, exploration → decision, diagnosis → authorization — confirm it is
@@ -161,8 +155,8 @@ These are distillation errors, not stylistic choices — halt, do not finalize:
 
 7. **Do not finalize until every per-item row is justified.** The composing pass MUST NOT treat the
    crossing as complete while any MUST-survive row is dropped-without-justification or any forbidden
-   composition is unresolved. Halt and revise; only then hand the target artifact to the composing
-   pass for its own output contract.
+   composition is unresolved. Halt and revise; only then hand the target to the composing pass for
+   its own output contract.
 
 ## Output contract
 
@@ -179,25 +173,25 @@ These are distillation errors, not stylistic choices — halt, do not finalize:
 ## Self-review delta
 
 When this fragment is composed into a pass, the pass's self-review additionally confirms, before the
-crossing is treated as done:
+crossing is done:
 
-- Did I pull the **correct per-boundary matrix row** (§24) for *this* crossing, rather than apply a
-  generic budget? The permitted-loss columns differ per boundary.
+- Did I pull the **correct per-boundary matrix row** (§24) for *this* crossing, not a generic budget?
+  The permitted-loss columns differ per boundary.
 - Is every **obligation ID, modality, `VERIFY BY` binding, authority, scope, constraint, invariant,
   non-goal, and unresolved `QUESTION`** from the source accounted for in the per-item check as
   `preserved` or `promoted`?
 - Does the `Dropped` list name **concrete items with where they survive**, never categories?
-- Did I avoid inventing any semantic meaning? This guide cites §24, §22, §15, and §18 for the budget,
-  authority, proof, and scope rules — it defines none of them. If I found myself *deciding* what a
-  modal means, what outranks what, or what counts as a valid proof, I overstepped; that is SOL / IR
-  and the reference layer, not this fragment.
+- Did I avoid inventing semantic meaning? This guide cites §24, §22, §15, §18 for the budget,
+  authority, proof, and scope rules — it defines none. If I found myself *deciding* what a modal
+  means, what outranks what, or what counts as valid proof, I overstepped; that is SOL / IR and the
+  reference layer, not this fragment.
 - For a stance-crossing boundary, is the crossing an **explicit re-statement** (§24.4), not a silent
   promotion of observation to intent?
 
 ## Anti-patterns
 
-The agent (or user) reasoning toward one of these should write the per-item check (step 4) and the
-real loss statement — the point is to make skipping the accountability cost a visible exchange.
+An agent (or user) reasoning toward one of these should write the per-item check (step 4) and the
+real loss statement — the point is to make skipping accountability a visible exchange.
 
 | 🚩 Anti-pattern | Correction |
 | --------------- | ---------- |
@@ -212,10 +206,10 @@ real loss statement — the point is to make skipping the accountability cost a 
 ## The sister discipline: promotion (the upward direction)
 
 Distillation flows downhill; **promotion** flows up. When a task discovers something durable, the
-finding is promoted *upstream* (§23.4) rather than silently dropped at the boundary — routed to its
-target by the §23.4.2 discovery-to-target table and resolved to one of the seven promotion statuses
-before the task closes (§23.4). "Keep in the task only" is itself a recorded disposition (`rejected`,
-reason "execution-local"), not an omission. This is why step 3 admits **promoted to `<target>`** as a
+finding is promoted *upstream* (§23.4) rather than silently dropped — routed to its target by the
+§23.4.2 discovery-to-target table and resolved to one of the seven promotion statuses before the task
+closes (§23.4). "Keep in the task only" is itself a recorded disposition (`rejected`, reason
+"execution-local"), not an omission. This is why step 3 admits **promoted to `<target>`** as a
 first-class disposition: a load-bearing item not carried *across* a downhill boundary may instead be
 promoted *up* one — what it must never do is vanish. The `promote` pass owns that routing; this
 fragment only marks the item as promoted rather than dropped.

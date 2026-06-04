@@ -5,79 +5,71 @@ pass: implement
 activates_for_task_kind:
   - rewrite
 description: >-
-  Run an `implement` pass for a `task_kind: rewrite` packet: re-implement an
-  existing module whose behaviour deliberately changes, proving both the
-  explicit behaviour delta and the preserved non-delta by an equivalence check.
-  ALWAYS apply when a `task.md` carries `pass: implement` with
-  `task_kind: rewrite`, or when the user asks to rewrite a module with new
-  behaviour, replace an implementation, or redo something wrong — even if they
-  do not say "rewrite" — when behaviour changes deliberately. Do not start
-  before the behaviour delta is recorded, let an unintended difference ship, or
-  proceed past an emergent change without halting and amending the spec. Skip
-  for behaviour-preserving refactors, API/framework migrations, performance
-  tuning, and net-new feature work against a fresh spec.
+  Re-implement code whose behaviour changes on purpose, proving the delta and
+  the preserved non-delta by equivalence check. ALWAYS apply when a
+  `task.md` has `pass: implement` + `task_kind: rewrite`, or the user asks to
+  rewrite a module, replace an implementation, or redo something wrong (even
+  without "rewrite") when behaviour deliberately changes. Never start before the
+  delta is recorded, let an unintended difference ship, or pass an emergent
+  change without halting to amend the spec. Skip behaviour-preserving refactors,
+  API/framework migrations, perf tuning, net-new features on fresh specs.
 ---
 
 # Pass guide: implement — rewrite
 
 > **This guide is SOFT control (Invariant 2).** It tells you *how* to run a
-> `rewrite` implementation; it never defines the verdict values, the proof
-> taxonomy, modality, authority order, or any other load-bearing meaning —
-> those live only in SOL and the IR. Every load-bearing term used below (the
-> 7-value verdict, `proof_result`, the `SOL-O005` owned-path rule, the COVERAGE
-> gate) is *delivered*, not redefined here. Where this guide and the spec
-> disagree, the spec governs.
+> `rewrite` implementation; it never defines verdict values, the proof taxonomy,
+> modality, authority order, or any load-bearing meaning — those live only in SOL
+> and the IR. Every load-bearing term below (the 7-value verdict, `proof_result`,
+> the `SOL-O005` owned-path rule, the COVERAGE gate) is *delivered*, not redefined
+> here. Where this guide and the spec disagree, the spec governs.
 
 ## Purpose
 
-A rewrite is riskier than a refactor precisely because behaviour is *permitted*
-to change — so an unintended change hides exactly where an intended one is
-allowed. This guide forces the change onto **two provable surfaces**: the
-**delta** (every behaviour that was meant to change) and the **preserved
-non-delta** (everything else). The delta is the contract; anything not on it
-must survive untouched.
+A rewrite is riskier than a refactor because behaviour is *permitted* to change
+— so an unintended change hides exactly where an intended one is allowed. This
+guide forces the change onto **two provable surfaces**: the **delta** (every
+behaviour meant to change) and the **preserved non-delta** (everything else).
+The delta is the contract; anything not on it must survive untouched.
 
-The defining test against the neighbours: a `refactor` changes *no* observable
-behaviour, so if your task moves none, relabel it `refactor` and load that
-discipline. A `migration` moves from API A to API B while the *contract* stays
-put; if the observable behaviour is meant to hold and only the implementation
-API changes, it is a `migration`, not a rewrite. A `feature` adds capability
-that did not exist against a fresh spec; a rewrite re-implements something that
-already exists. If you are changing some observable behaviour of an existing
-module on purpose, this is the discipline.
+The test against the neighbours: a `refactor` changes *no* observable behaviour,
+so if your task moves none, relabel `refactor` and load that discipline. A
+`migration` moves from API A to API B while the *contract* stays put; if the
+observable behaviour holds and only the implementation API changes, it is a
+`migration`. A `feature` adds capability that did not exist, against a fresh
+spec; a rewrite re-implements something that already exists. Changing some
+observable behaviour of an existing module on purpose is this discipline.
 
 ## Stance: Builder
 
 Adopt the Builder stance: build exactly what the obligations specify, reuse
-before you invent, and let nothing leave your hand unproven. For a rewrite the
+before you invent, let nothing leave your hand unproven. For a rewrite the
 Builder is adversarial toward its own diff — hostile to the *un-asked-for*
 difference, the "redesign while we're here" temptation, and the emergent change
-that never made it into the delta table. A stance sharpens *what you build and
-refuse*; it never changes the procedure or decides a verdict.
+that never made the delta table. A stance sharpens *what you build and refuse*;
+it never changes the procedure or decides a verdict.
 
 ## Project context (the `cmd*` slots)
 
 Resolve project commands through the consuming repo's `AGENTS.md > Commands`
-slots: the test command (`cmdTest`), the aggregate validation command
-(`cmdValidate`), and the format-hygiene command (`cmdFormat`) where the change
+slots: `cmdTest`, the aggregate `cmdValidate`, and `cmdFormat` where the change
 touches docs or you close by formatting. If `AGENTS.md` is missing or a slot you
-need is undefined, **ask the user** which command to run before proceeding —
-never guess a command, because a guessed command produces a false proof.
+need is undefined, **ask the user** before proceeding — never guess, because a
+guessed command produces a false proof.
 
 ## Consumes
 
 - **One `task.md`** — the lowered work packet for this single pass, **not** the
   surface spec or the IR; `implement` works against the packet `decompose`
-  handed it. Read in particular: the assigned obligations pasted verbatim (the
-  `REQ` / `CONSTRAINT` / `INVARIANT` / `INTERFACE` blocks that fix scope and that
-  encode which behaviours change and which are held); the `write_surfaces` (your
-  owned paths, the only files you may touch); the `verification_bindings` (the
-  proof each criterion demands); the `## Scope` In/Out list; and the `task_kind`
-  enum, which must read `rewrite` for this guide to apply.
-- The driving spec or audit, when one exists — a rewrite is typically prompted
-  by an audit finding or a revised spec. Read it in full before editing; the
-  delta you record must trace to it, not to your own judgement of what "should"
-  change.
+  handed it. Read: the assigned obligations pasted verbatim (the `REQ` /
+  `CONSTRAINT` / `INVARIANT` / `INTERFACE` blocks that fix scope and encode which
+  behaviours change and which are held); the `write_surfaces` (your owned paths,
+  the only files you may touch); the `verification_bindings` (the proof each
+  criterion demands); the `## Scope` In/Out list; and the `task_kind` enum, which
+  must read `rewrite` for this guide to apply.
+- The driving spec or audit, when one exists — a rewrite is typically prompted by
+  an audit finding or revised spec. Read it in full before editing; the delta you
+  record must trace to it, not to your judgement of what "should" change.
 - The Builder stance the task names.
 
 ## Produces
@@ -90,18 +82,17 @@ never guess a command, because a guessed command produces a false proof.
   surfaces, and at least one `PROOF` line with pasted, re-runnable output. Its
   `## Provenance` section carries the per-binding drift fields the staleness join
   depends on. Externalising the run's intermediate work into this durable
-  artifact (rather than leaving it in context) is what lets the downstream
-  `verify` and `review` passes judge it. You also fill the `task.md` body
-  sections as you work (`## Implementation or pass trace`, `## Verification
-  matrix`, `## Promotion queue`, `## Self-review`).
+  artifact is what lets the downstream `verify` and `review` passes judge it. Fill
+  the `task.md` body sections as you work (`## Implementation or pass trace`,
+  `## Verification matrix`, `## Promotion queue`, `## Self-review`).
 
 ## Preserves
 
-- **The entire non-delta surface.** Every observable behaviour *not* listed in
-  the delta is held end to end — this is the obligation a rewrite exists to
-  honour alongside its delta (rule 1, rule 3). Constraints, invariants, and
-  non-goals are held, not relaxed; changing an obligation's intent is an
-  amendment decision at `improve`, never an `implement` action.
+- **The entire non-delta surface.** Every observable behaviour *not* in the delta
+  is held end to end — the obligation a rewrite exists to honour alongside its
+  delta (rule 1, rule 3). Constraints, invariants, and non-goals are held, not
+  relaxed; changing an obligation's intent is an amendment decision at `improve`,
+  never an `implement` action.
 - **Only the assigned obligations.** Any change not traceable to an assigned
   obligation is an `## Unassigned changes` row in the trace (reason + authorizing
   ID, or `none`), judged at `review`.
@@ -110,7 +101,7 @@ never guess a command, because a guessed command produces a false proof.
   outside any assigned obligation's declared write surface is the owned-path
   defect `SOL-O005` ("owned path outside declared write surface") — the property
   that keeps parallel `implement` packets write-disjoint. If you need a file
-  outside your surfaces, stop: the write surface needs amending upstream, you do
+  outside your surfaces, stop: the write surface needs amending upstream; you do
   not widen it here.
 
 ## Core rules
@@ -120,21 +111,21 @@ never guess a command, because a guessed command produces a false proof.
 Before touching code, fill a before/after table naming **every** aspect that
 changes — input handling, output shape, error behaviour, side effects, ordering,
 defaults. The table is the contract: anything not on it MUST be preserved, and
-anything you later change that is not on it is an unauthorized change. *Why:* a
-rewrite permits behaviour to move, so without an explicit list there is no line
-between an intended change and a smuggled one — the delta table *is* that line,
-and writing it after the fact lets the implementation define the contract
-instead of the other way round.
+anything you later change that is not on it is unauthorized. *Why:* a rewrite
+permits behaviour to move, so without an explicit list there is no line between
+an intended change and a smuggled one — the delta table *is* that line, and
+writing it after the fact lets the implementation define the contract instead of
+the reverse.
 
 ### 2. Acceptance criteria cover the new behaviour *and* the preserved behaviour
 
 Each criterion is one of two kinds, both present: a **delta criterion** asserting
-a behaviour that changed, and a **preservation criterion** explicitly stating a
-behaviour that stayed the same. A rewrite that only tests its delta proves the
-intended change was built and proves *nothing* about the regression risk it just
-created. *Why:* the preserved surface is exactly where an unintended change hides;
-naming the preservation criteria up front is what turns "I think the rest is
-fine" into a check the reviewer can see.
+a behaviour that changed, and a **preservation criterion** stating a behaviour
+that stayed the same. A rewrite that only tests its delta proves the intended
+change was built and proves *nothing* about the regression risk it just created.
+*Why:* the preserved surface is exactly where an unintended change hides; naming
+the preservation criteria up front turns "I think the rest is fine" into a check
+the reviewer can see.
 
 ### 3. Verify the two surfaces with two different oracles
 
@@ -143,20 +134,20 @@ a rewrite ships an unproven regression:
 
 - **The delta** is proven against its acceptance checks — each changed behaviour
   bound to its `test` / `command` / `manual` proof per its check binding. For a
-  `test`-bound delta criterion, the oracle is shown valid by **flipping the
+  `test`-bound delta criterion, show the oracle valid by **flipping the
   assertion** (or commenting out the production path it exercises): the test MUST
   fail, then restore and it MUST pass — paste both transitions. A test that still
   passes when flipped exercises nothing.
 - **The non-delta** is proven by an **equivalence check that would fail if any
   behaviour outside the delta changed** — property-based, differential (keep the
   pre-rewrite path reachable behind a shim and diff the two until clean on the
-  preserved surface), or golden-output that pins the prior behaviour before the
+  preserved surface), or golden-output pinning the prior behaviour before the
   change. A green suite that never asserted the preserved behaviour is *necessary
-  but not sufficient*; it only covers what was already tested, so a delta in an
+  but not sufficient*; it covers only what was already tested, so a delta in an
   untested corner passes silently. Where no stronger oracle than the suite exists
-  for the non-delta, record in the self-review *why* the existing suite is a
-  sufficient oracle for this specific change (e.g. exhaustive named-test coverage
-  of the touched surface, shown).
+  for the non-delta, record in the self-review *why* the suite is a sufficient
+  oracle for this change (e.g. exhaustive named-test coverage of the touched
+  surface, shown).
 
 *Why:* the delta proof shows the intended change was built; the preservation
 proof shows nothing else moved. Drop either and half the rewrite is unverified.
@@ -168,47 +159,46 @@ codebase — not just the module under change — and for each caller either upd
 it for the new behaviour or verify it still works under the preserved behaviour.
 Search the *string form* too (dynamic dispatch, registries, reflection,
 generated code, config), which a search of the call syntax cannot reach. Paste
-the search output. *Why:* a behaviour change is only safe once every consumer of
-the old behaviour is accounted for; "I checked, the callers are fine" without
-pasted search evidence is the most common way a rewrite breaks a caller it never
-looked at.
+the output. *Why:* a behaviour change is safe only once every consumer of the old
+behaviour is accounted for; "I checked, the callers are fine" without pasted
+evidence is the most common way a rewrite breaks a caller it never looked at.
 
 ### 5. Halt and amend the spec on an emergent behaviour change
 
-If during implementation you discover a behaviour change that is **not** in the
-delta — stop. Either amend the spec to authorize the change (which adds a row to
-the delta and its preservation/acceptance criteria) or revise the implementation
-to keep the original behaviour. *Why:* a silent emergent change is the rewrite's
-signature failure mode — it ships a behaviour nobody decided to ship; resolving
-it silently in either direction is an amendment you are not authorized to make at
+If during implementation you discover a behaviour change **not** in the delta —
+stop. Either amend the spec to authorize it (adding a row to the delta and its
+preservation/acceptance criteria) or revise the implementation to keep the
+original behaviour. *Why:* a silent emergent change is the rewrite's signature
+failure mode — it ships a behaviour nobody decided to ship; resolving it silently
+in either direction is an amendment you are not authorized to make at
 `implement`, so it goes upstream.
 
 ### 6. No redesign beyond the delta; promote, never fix inline
 
 "Rewrite" is not a licence to redesign the surrounding module. Anything you spot
 that is not on the assigned obligations / delta gets a `## Promotion queue` row
-with a target and status, not a silent fix. *Why:* extra restructuring dilutes
-the rewrite's review surface and re-introduces exactly the behaviour-drift risk
-this discipline exists to bound; the reviewer must be able to tell the intended
-change from a smuggled one. All promotion items MUST be resolved before the task
-closes. (Do not, however, revert correct in-scope work merely because it turned
-out larger than expected — record the reasoning in the trace's decisions.)
+with target and status, not a silent fix. *Why:* extra restructuring dilutes the
+rewrite's review surface and re-introduces the behaviour-drift risk this
+discipline exists to bound; the reviewer must be able to tell the intended change
+from a smuggled one. All promotion items MUST be resolved before the task closes.
+(Do not, however, revert correct in-scope work merely because it grew larger than
+expected — record the reasoning in the trace's decisions.)
 
 ### 7. Validate after every batch; forced visible output
 
-Run `cmdValidate` (and `cmdTest`) after each batch of changes, not only at the
-end, and paste the output as you go — catching drift at batch 3 is cheaper than
-at batch 12, and pasting as you go means the proof exists before the claim that
-depends on it. Any verification step that is otherwise invisible MUST produce
-pasted, verbatim output: a `PROOF` line that references real run output is
-admissible; an unqualified "tests passed" or "validation clean" is not. A
-no-`PROOF` `TRACE` that claims `IMPLEMENTS` is a structural parse error
-(`SOL-S014`), and an `IMPLEMENTS`/`PRESERVES` naming an unknown obligation is the
-unbound cross-reference `SOL-M003`. The observed `proof_result` (`passed |
-failed | blocked | unverified`) is only the core run observation; the `PASS`
-decision is made downstream by the profile-independent `verify` pass, and the
-lifecycle decorators (the 7-value verdict's `WAIVED` / `STALE` / `CONTRADICTED`)
-are applied later at `review` — never here.
+Run `cmdValidate` (and `cmdTest`) after each batch, not only at the end, and
+paste the output as you go — catching drift at batch 3 is cheaper than at batch
+12, and pasting as you go means the proof exists before the claim that depends on
+it. Any otherwise-invisible verification step MUST produce pasted, verbatim
+output: a `PROOF` line referencing real run output is admissible; an unqualified
+"tests passed" or "validation clean" is not. A no-`PROOF` `TRACE` claiming
+`IMPLEMENTS` is a structural parse error (`SOL-S014`), and an
+`IMPLEMENTS`/`PRESERVES` naming an unknown obligation is the unbound
+cross-reference `SOL-M003`. The observed `proof_result` (`passed | failed |
+blocked | unverified`) is only the core run observation; the `PASS` decision is
+made downstream by the profile-independent `verify` pass, and the lifecycle
+decorators (the 7-value verdict's `WAIVED` / `STALE` / `CONTRADICTED`) are
+applied later at `review` — never here.
 
 ## Procedure
 
@@ -234,9 +224,9 @@ are applied later at `review` — never here.
 6. **Halt on ambiguity.** If an assigned obligation is unclear or contradictory,
    surface it — do not invent the requirement.
 7. **Rewrite in batches.** After each batch run `cmdValidate` and `cmdTest`;
-   paste both outputs as you go (rule 7). If a behaviour change emerges that is
-   not in the delta, halt and amend (rule 5). Promote, never fix inline, anything
-   outside scope (rule 6).
+   paste both outputs as you go (rule 7). If a behaviour change emerges outside
+   the delta, halt and amend (rule 5). Promote, never fix inline, anything out of
+   scope (rule 6).
 8. **Prove both surfaces** (rule 3): the delta against its acceptance checks
    (assertion-flip for `test`-bound criteria, both transitions pasted); the
    non-delta against the equivalence oracle.
@@ -264,18 +254,18 @@ this guide does not redefine them.
   obligation is `SOL-M003`.
 - The observed `proof_result` maps 1:1 to the downstream core verdict
   (`passed → PASS`, `failed → FAIL`, `blocked → BLOCKED`,
-  `unverified → UNVERIFIED`); a `rewrite` pass only ever records this core
-  observation. The gate (`PASS`) decision is made by the profile-independent
-  `verify` pass, and the 3 lifecycle decorators of the 7-value verdict
-  (`WAIVED` / `STALE` / `CONTRADICTED`) are applied later at `review` — not here.
-  The Builder stance may influence which proofs are *demanded*; it never decides
-  whether a run PASSes.
+  `unverified → UNVERIFIED`); a `rewrite` pass records only this core
+  observation. The `PASS` gate is decided by the profile-independent `verify`
+  pass, and the 3 lifecycle decorators of the 7-value verdict (`WAIVED` / `STALE`
+  / `CONTRADICTED`) are applied later at `review` — not here. The Builder stance
+  may influence which proofs are *demanded*; it never decides whether a run
+  PASSes.
 
 ## What does not belong
 
-- **In a rewrite:** behaviour changes that are not in the delta table (halt and
-  amend, rule 5), scope expansion to "redesign while we're here" (promote, rule
-  6), and net-new capability against a fresh spec (that is a `feature`).
+- **In a rewrite:** behaviour changes not in the delta table (halt and amend,
+  rule 5), scope expansion to "redesign while we're here" (promote, rule 6), and
+  net-new capability against a fresh spec (that is a `feature`).
 - **In the behaviour-delta table:** a row with `Behaviour change?` left blank —
   make the call; an aspect is either in the delta or preserved, never undecided.
 - **In the trace's decisions:** silently resolved ambiguities or silently
@@ -283,16 +273,16 @@ this guide does not redefine them.
 
 ## Anti-patterns
 
-- ❌ Starting to code before the behaviour delta is written → rule 1; the
-  implementation must not be allowed to define the contract.
-- ❌ A behaviour change that never made it into the delta table → halt and amend
-  the spec (rule 5); a silent emergent change is the signature failure mode.
+- ❌ Coding before the behaviour delta is written → rule 1; the implementation
+  must not define the contract.
+- ❌ A behaviour change that never made the delta table → halt and amend the spec
+  (rule 5); a silent emergent change is the signature failure mode.
 - ❌ Treating "rewrite" as a licence to redesign the surrounding module →
   promote out-of-scope work (rule 6).
 - ❌ Mislabelling: calling it a `refactor` when behaviour changes, or a `rewrite`
   when behaviour is fully preserved (the latter is a `refactor`) → relabel before
   proceeding.
-- ❌ Testing only the delta and never the preserved surface → the regression risk
+- ❌ Testing only the delta, never the preserved surface → the regression risk
   lives in the non-delta (rule 2, rule 3).
 - ❌ "Callers are fine" without pasted `git grep` (call syntax *and* string form)
   → rule 4.
@@ -305,8 +295,8 @@ this guide does not redefine them.
 
 > **Hard gate.** The task is not complete until every question below has a
 > written answer directly beneath it, with the named output pasted verbatim.
-> Rewrites are riskier than refactors precisely because behaviour is permitted to
-> change — act as a senior engineer doing an adversarial review of your own diff.
+> Rewrites are riskier than refactors because behaviour is permitted to change —
+> act as a senior engineer doing an adversarial review of your own diff.
 
 - **Verification outputs (paste actual command output — do not paraphrase):**
   `git status`; `cmdValidate` (last 2 lines); `cmdTest` (last 2 lines).
@@ -335,9 +325,9 @@ this guide does not redefine them.
 ## Bundled resources
 
 - `references/task-template.md` — a fillable rewrite-task frame (objective,
-  behaviour-delta table, acceptance criteria including preservation criteria,
-  module plan, progress checklist, decisions, findings, and a self-review hard
-  gate). It scores on the multi-stage-plan, state-separate-from-deliverable, and
+  behaviour-delta table, acceptance criteria with preservation criteria, module
+  plan, progress checklist, decisions, findings, and a self-review hard gate). It
+  scores on the multi-stage-plan, state-separate-from-deliverable, and
   paste-output-gate criteria, so it ships a template. Instantiate it into your
   local task file, resolve the `cmd*` slots from `AGENTS.md > Commands` (asking
   the user for any undefined slot), and fill it in as you work.

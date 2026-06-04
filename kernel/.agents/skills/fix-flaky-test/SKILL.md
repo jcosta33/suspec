@@ -5,28 +5,26 @@ pass: implement
 activates_for_task_kind:
   - fix
 description: >-
-  How to run an `implement` pass on a fix whose oracle is a loop-run — a flaky,
-  non-deterministic test. ALWAYS apply when a `fix` packet's failing test passes
-  sometimes and fails sometimes, when CI shows occasional failures of the same
-  test, when a test is `.skip`'d/quarantined for flakiness, or when "passes
-  locally, fails in CI" — even without the word "flaky". Do not re-run until
-  green and call it fixed, add a sleep or bump a timeout as the fix, swallow the
-  nondeterminism in try/catch, widen the assertion, or quarantine as the
-  resolution. Skip for deterministic failures (a test that fails 100% of the time
-  after a change is an ordinary regression `fix` or a `feature`), for authoring
-  new tests from scratch, and for any non-`fix` task kind.
+  Run an `implement` pass on a `fix` whose oracle is a loop-run — a flaky,
+  non-deterministic test. ALWAYS apply when a `fix` test passes sometimes and
+  fails sometimes, when CI shows occasional failures of the same test, when a
+  test is `.skip`'d/quarantined for flakiness, or for "passes locally, fails in
+  CI" — even without the word "flaky". Never fix by re-run-to-green, a sleep, a
+  timeout bump, try/catch, a widened assertion, or quarantine. Skip deterministic
+  failures (one failing 100% of the time is a regression `fix` or a `feature`),
+  authoring new tests, and any non-`fix` task kind.
 ---
 
 # Pass guide: implement — fix (flaky test)
 
-> **Scope of this file.** This is a *pass guide*: the `fix` branch of the
-> `implement` pass, narrowed to the case where the failing test is
-> non-deterministic. It documents *how* to stabilise a flake; it does **not**
-> redefine what a `VERDICT` is, the proof taxonomy, the proof-strength order, the
-> proof_result→verdict mapping, or any load-bearing meaning — those are fixed by
-> the SOL/IR language references and applied here, never restated. Where this
-> guide and the spec disagree, the spec governs. A pass guide is SOFT control: it
-> influences how an agent works; it constrains nothing.
+> **Scope of this file.** A *pass guide*: the `fix` branch of the `implement`
+> pass, narrowed to a non-deterministic failing test. It documents *how* to
+> stabilise a flake; it does **not** redefine `VERDICT`, the proof taxonomy, the
+> proof-strength order, the proof_result→verdict mapping, or any load-bearing
+> meaning — those are fixed by the SOL/IR language references and applied here,
+> never restated. Where this guide and the spec disagree, the spec governs. A
+> pass guide is SOFT control: it influences how an agent works; it constrains
+> nothing.
 >
 > Carrier profile: **Builder**; the **Skeptic** stance is the natural sharpener
 > for a flake (assume the test passed by luck until a loop-run proves otherwise).
@@ -37,31 +35,29 @@ description: >-
 
 Stop the most tempting non-fix in software: re-running a test until it goes
 green, calling it fixed, and shipping the bug. A flaky test fails
-non-deterministically — green sometimes, red sometimes, almost always worse under
-CI load than locally. The flake is a **real** signal about the system: about
-ordering, timing, shared state, or resource coupling. The only acceptable
-resolution is to reproduce it, characterise the nondeterminism, fix the root
-cause, and prove the fix by re-running the *bound* test under the conditions in
-which it failed. A `PASS` cannot be recorded until the fix proof shows every
-looped run passing.
+non-deterministically — green sometimes, red sometimes, usually worse under CI
+load than locally. The flake is a **real** signal about the system: ordering,
+timing, shared state, or resource coupling. The only acceptable resolution is to
+reproduce it, characterise the nondeterminism, fix the root cause, and prove the
+fix by re-running the *bound* test under the conditions in which it failed. A
+`PASS` cannot be recorded until the fix proof shows every looped run passing.
 
-This guide stabilises an **existing** test. Read `## Skip for` before starting —
-a test that fails every single time after a change is a different category of
-problem, not a flake.
+This guide stabilises an **existing** test. Read `## Skip for` first — a test
+that fails every time after a change is a different problem, not a flake.
 
 ## Skip for
 
-A flaky `fix` is narrow. Do not load this branch for tasks whose territory is
-elsewhere; each of these matches a different `task_kind` or a different `fix`:
+A flaky `fix` is narrow. Do not load this branch for territory elsewhere; each
+matches a different `task_kind` or a different `fix`:
 
 - **A deterministic failure.** "Test fails 100% of the time after my change" is
   an ordinary regression `fix` (reproduce → patch root cause → assertion-flip
-  proof), or a `feature` if the expected behaviour changed. There is nothing
+  proof), or a `feature` if the expected behaviour changed. Nothing
   non-deterministic to loop.
-- **Authoring a new test from scratch.** That is a `testing` task kind. This
+- **Authoring a new test from scratch.** That is a `testing` task kind; this
   branch stabilises a test that already exists and already named itself flaky.
-- **Feature work whose tests fail.** A feature whose tests fail because the
-  behaviour is not yet built is a `feature` task, not stabilisation.
+- **Feature work whose tests fail.** Tests failing because the behaviour is not
+  yet built is a `feature` task, not stabilisation.
 - **Any non-`fix` task kind** (refactor, rewrite, migration, performance,
   documentation). Those have their own `implement` branches.
 
@@ -74,14 +70,14 @@ elsewhere; each of these matches a different `task_kind` or a different `fix`:
   packet, not the surface spec or the IR.
 - The flaky test under judgment plus the failing-run evidence that named it
   flaky — the symptom, not yet the cause. Also the conditions under which it last
-  fired (CI vs local, parallel siblings, load, seed, clock); these are part of
-  what gets reproduced.
+  fired (CI vs local, parallel siblings, load, seed, clock); these get
+  reproduced too.
 - The project's test command, resolved through the consuming repo's `AGENTS.md`
   `cmdTest` slot. A flake is reproduced by **looping** a single test, and the
   loop-runner ("run this test 500×", a single-thread or seed-pinned mode, a CI
   matrix) is **not** in the standard `cmd*` contract. If the project's loop
   mechanism is undefined, ask the user how the project loops one test — do **not**
-  guess. A guessed loop produces a false signal about reproduction.
+  guess; a guessed loop produces a false signal about reproduction.
 
 ## Produces
 
@@ -89,9 +85,9 @@ elsewhere; each of these matches a different `task_kind` or a different `fix`:
   nondeterminism is real and characterised, not a one-off.
 - The root-cause diagnosis: which category of nondeterminism, and where in
   production code or test setup it lives (never in the assertion).
-- The fix, plus the pasted loop-run output that **proves** the fix — the same
-  test, looped under the conditions in which it failed, all runs passing.
-- An inline one-liner at the cause site documenting the failure mode (e.g.
+- The fix, plus the pasted loop-run output that **proves** it — the same test,
+  looped under the conditions in which it failed, all runs passing.
+- An inline one-liner at the cause site naming the failure mode (e.g.
   `// session id is seeded; do not draw it from a global RNG here`) so it is
   recognisable next time.
 - The standard `implement` outputs: `TRACE` claims (`IMPLEMENTS` / `PRESERVES` /
@@ -107,15 +103,14 @@ elsewhere; each of these matches a different `task_kind` or a different `fix`:
   the cause, not the message — the test still fails when the behaviour it guards
   is actually broken.
 - **The bound oracle.** The test that named the flake is the test that proves the
-  fix. The proof binds to *that* test, re-run, not to a fresh or weakened
+  fix. The proof binds to *that* test, re-run, not a fresh or weakened
   substitute.
 - **Determinism.** After the fix, the test's outcome is a function of the code
   under test, not of ordering, scheduling, the clock, or a shared neighbour.
 - **Only the assigned obligations and owned paths.** Any change not traceable to
-  an assigned obligation is an `## Unassigned changes` row, not a silent edit. A
-  path touching a file outside the union of the assigned obligations' write
-  surfaces is the owned-path violation (§11.3, lint code `SOL-O005`) — stop and
-  surface it.
+  an assigned obligation is an `## Unassigned changes` row, not a silent edit.
+  Touching a file outside the union of the assigned obligations' write surfaces
+  is the owned-path violation (§11.3, lint code `SOL-O005`) — stop and surface it.
 
 ## Rejects
 
@@ -129,15 +124,14 @@ it; the rationale is why, not just that:
   documented async contract — and then you wait on the contract (a settled state,
   an emitted event), never on a hope.
 - **Quarantine as the resolution.** `.skip`, mark-as-allowed-to-fail, or a
-  conditional `it.if(env)` is containment — a way to keep the suite honest *while*
-  a real fix is investigated — never the fix. Without an owner and a date it
+  conditional `it.if(env)` is containment — keeping the suite honest *while* a
+  real fix is investigated — never the fix. Without an owner and a date it
   becomes a permanently disabled test.
 - **Widen the assertion.** Loosening a check because the value drifts (asserting
   "greater than zero" where it should be exact) masks the bug behind a check too
   weak to fire.
-- **Fix the assertion instead of the cause.** The assertion is the messenger.
-  Editing it to accommodate the nondeterminism hides the defect rather than
-  removing it.
+- **Fix the assertion instead of the cause.** The assertion is the messenger;
+  editing it to accommodate the nondeterminism hides the defect, not removes it.
 - **Swallow it in try/catch.** Catching the error on the source of nondeterminism
   suppresses the assertion's signal — the same as widening it, by another route.
 - **A repro you could not actually reproduce.** A flake that will not fire under
@@ -153,12 +147,12 @@ the flaky-specific branch below.
 
 1. **Reproduce before you claim to understand.** Loop the test until it fires
    (typically 100×, often 500×–1000× for low-frequency flakes), then loop enough
-   times to trust the failure rate you observe. If it will not reproduce, broaden
-   the conditions — run under CI-like load, run alongside sibling tests, pin or
-   vary the seed, advance the clock — rather than concluding it was never real.
-   Paste the loop-run output showing **both** passes and failures: that is the
-   repro proof. *Why:* a diagnosis without a reproduction is a guess; the loop is
-   what makes "I understand it" falsifiable.
+   to trust the failure rate you observe. If it will not reproduce, broaden the
+   conditions — CI-like load, sibling tests alongside, pin or vary the seed,
+   advance the clock — rather than concluding it was never real. Paste the
+   loop-run output showing **both** passes and failures: that is the repro proof.
+   *Why:* a diagnosis without a reproduction is a guess; the loop makes "I
+   understand it" falsifiable.
 2. **Characterise the nondeterminism.** Name the category, because the category
    narrows the fix:
    - **Timing / ordering** — depends on a `setTimeout`, an unbounded poll, or
@@ -178,26 +172,26 @@ the flaky-specific branch below.
    - **Environment** — locale, timezone, hostname, env vars, `NODE_ENV`,
      terminal width, ANSI.
    A flake that mixes categories is **split into separate fixes** — each category
-   root-causes differently, and a single fix that claims to cover two is one of
-   them masked.
+   root-causes differently, and one fix claiming to cover two is one of them
+   masked.
 3. **Find the root cause in production code or test setup, not in the
    assertion.** The cause lives in nondeterministic production code (un-seeded
-   random, un-mocked time, a race), in un-isolated setup/teardown (shared state
-   not reset), in the parallel-runner harness (siblings on a shared resource), or
-   in the environment. Trace from the reproduced failure to the line that
-   introduces the nondeterminism. *Why:* the assertion is the messenger; editing
-   it accommodates the flake instead of removing it.
+   random, un-mocked time, a race), un-isolated setup/teardown (shared state not
+   reset), the parallel-runner harness (siblings on a shared resource), or the
+   environment. Trace from the reproduced failure to the line that introduces the
+   nondeterminism. *Why:* the assertion is the messenger; editing it accommodates
+   the flake instead of removing it.
 4. **Fix the cause; never mask it.** Make the outcome deterministic at the
    source: inject the clock or the RNG seed instead of reading the real one;
    isolate the shared state (fresh fixture per test, scoped teardown); wait on the
    actual contract instead of a sleep; reserve or release the contended resource
    correctly. Do not reach for the shortcuts in `## Rejects` — they move the
-   flake, they do not remove it.
+   flake, not remove it.
 5. **Prove the fix with the bound test, re-run.** Loop the *same* test, under the
-   conditions in which the flake reproduced, enough times to trust the result —
-   every run passing. Paste the loop-run output verbatim. *Why:* a flake
-   reproduced once and fixed once is not a flake proven fixed; the loop is the
-   only proof that the failure rate is now zero, not merely low.
+   conditions in which the flake reproduced, enough to trust the result — every
+   run passing. Paste the loop-run output verbatim. *Why:* a flake reproduced
+   once and fixed once is not a flake proven fixed; the loop is the only proof
+   that the failure rate is now zero, not merely low.
 6. **Document the cause inline.** Leave a one-liner at the cause site naming the
    failure mode, so the next reader recognises it before reintroducing it.
 7. **Hand off a production cause downstream.** If the root cause is a real
@@ -210,17 +204,17 @@ the flaky-specific branch below.
 
 Compliance here is otherwise invisible — "I think it's fixed" reads the same
 whether or not the loop ran. So two pasted, verbatim, re-runnable proofs against
-the bound test are the hard gate, never a paraphrase and never a prediction:
+the bound test are the hard gate, never a paraphrase or a prediction:
 
-- **The repro proof** — the test, looped, showing it fails non-deterministically
-  *before* the fix (both passes and failures visible, plus the failure rate).
+- **The repro proof** — the test, looped, failing non-deterministically *before*
+  the fix (both passes and failures visible, plus the failure rate).
 - **The fix proof** — the same test, looped under the conditions in which it
   failed, *all* runs passing *after* the fix.
 
-Both are pasted as data into fenced blocks: the resolved loop command, the run,
-and the runner's pass/fail tally (last lines minimum), unmodified — no quoting,
-no Markdown styling, no inline annotation, treat the output as data. A run with
-no pasted output is not a proof; a green tick without the tally is not a proof.
+Both pasted as data into fenced blocks: the resolved loop command, the run, and
+the runner's pass/fail tally (last lines minimum), unmodified — no quoting, no
+Markdown styling, no inline annotation. A run with no pasted output is not a
+proof; a green tick without the tally is not a proof.
 
 ## Output contract
 
@@ -235,11 +229,11 @@ repro and fix proofs land in the trace and verdict containers the `implement` an
   core verdict value: `passed → PASS`, `failed → FAIL`, `blocked → BLOCKED`,
   `unverified → UNVERIFIED`. The full verdict has 7 values (4 core + the 3
   lifecycle decorators `WAIVED` / `STALE` / `CONTRADICTED`), but the decorators
-  are applied later at `review` and the `PASS` decision is made by the
+  apply later at `review` and the `PASS` decision is made by the
   profile-independent `verify` pass — never recorded here.
 - For a flake, the observed result is `passed` **only** when the fix proof shows
-  every looped run passing; a single failure among many is `failed`; and a flake
-  that could not be looped (no defined loop-runner, an environmental block) is
+  every looped run passing; a single failure among many is `failed`; a flake that
+  could not be looped (no defined loop-runner, an environmental block) is
   `blocked` — never a silent `passed`.
 
 ## Self-review delta
@@ -256,7 +250,7 @@ Before closing, confirm — and paste the evidence into the `task.md`
   test setup — not in the assertion, not by a sleep, a timeout bump, a widened
   check, a try/catch swallow, or quarantine.
 - **Fix proof pasted?** The same bound test, looped under the failing conditions,
-  every run passing — not a single observed pass.
+  every run passing — not a single pass.
 - **Documented and handed off?** The cause is documented inline, and any
   production-side root cause was promoted as a downstream fix with the stabilised
   test as its regression guard.
@@ -266,8 +260,8 @@ Before closing, confirm — and paste the evidence into the `task.md`
 
 ## Anti-patterns
 
-The reasoning toward any of these should be met by running the loop and pasting
-the output — make skipping reproduction a visible cost, not an argument to win.
+Meet the reasoning toward any of these by running the loop and pasting the
+output — make skipping reproduction a visible cost, not an argument to win.
 
 | 🚩 Evasion | Response |
 | --- | --- |
@@ -286,5 +280,5 @@ the output — make skipping reproduction a visible cost, not an argument to win
 - `references/task-template.md` — the task-file scaffold for a flaky-test
   session: the flake-category field, the reproduction protocol and pasted repro
   evidence, the hypothesis tracker (with a Reflexion-shaped *Next adjustment*
-  column so a rejected hypothesis teaches the next one), the root-cause / fix
-  evidence blocks, and the self-review hard gate.
+  column so a rejected hypothesis teaches the next), the root-cause / fix evidence
+  blocks, and the self-review hard gate.

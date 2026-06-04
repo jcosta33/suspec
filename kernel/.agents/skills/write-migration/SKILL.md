@@ -6,71 +6,63 @@ activates_for_task_kind:
   - migration
   - upgrade
 description: >-
-  Run an `implement` pass for a `task_kind: migration` or `upgrade` packet: move
-  the implementation from API A to API B (framework / language / library bump,
-  API replacement) while the surface stays put, in waves that each leave the
-  codebase green. ALWAYS apply when a `task.md` names `pass: implement` with
-  `task_kind: migration` or `upgrade`, or when the user asks to migrate, upgrade,
-  port, or adopt a breaking change — even if they do not say "migration" — only
-  while behaviour is preserved. Do not change unrelated behaviour, run a bulk
-  codemod, skip per-wave validation, declare done with old-API callsites
-  surviving, or leave a shim without a removal criterion. Skip for
-  behaviour-preserving refactors at one API version, behaviour-changing rewrites,
-  and net-new features at the new version.
+  Move an implementation from API A to B (framework/library bump or API replacement), surface
+  preserved, in green-per-wave steps. ALWAYS apply when a `task.md` names `pass: implement` +
+  `task_kind: migration`/`upgrade`, or the user asks to migrate, upgrade, port, or adopt a
+  breaking change — only while behaviour holds. Do not change unrelated behaviour, bulk-codemod,
+  skip per-wave validation, finish with old-API callsites surviving, or leave a shim without a
+  removal criterion. Skip same-version behaviour-preserving refactors, behaviour-changing
+  rewrites, and net-new features at the new version.
 ---
 
 # Pass guide: write-migration (`implement` · `task_kind: migration` | `upgrade`)
 
 > **SOFT control (Invariant 2).** This guide tells you *how* to run a `migration`
 > or `upgrade` implement pass. It does **not** define modality, authority order,
-> verification semantics, the verdict values, the proof taxonomy, or any other
-> load-bearing meaning — those are owned only by SOL and the typed IR. Every
-> load-bearing term below (a `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`
-> obligation, a `TRACE` block, `IMPLEMENTS`/`PRESERVES`/`CHANGED`/`PROOF`, the
-> 7-value verdict, the `SOL-O005` owned-path rule, the COVERAGE gate) is **cited,
-> not redefined**. Where this guide and the language reference disagree, the
-> reference governs.
+> verification semantics, the verdict values, or the proof taxonomy — those are
+> owned only by SOL and the typed IR. Every load-bearing term below (a
+> `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` obligation, a `TRACE` block,
+> `IMPLEMENTS`/`PRESERVES`/`CHANGED`/`PROOF`, the 7-value verdict, the `SOL-O005`
+> owned-path rule, the COVERAGE gate) is **cited, not redefined**. Where this
+> guide and the language reference disagree, the reference governs.
 >
-> **One discipline, two kinds.** `migration` and `upgrade` share the same
-> wave-planned procedure: both move the implementation across an API boundary
-> while preserving the surface. They differ only in the *trigger* (an internal
-> API sunset vs a framework / language / library version bump), not the method,
-> so one guide carries both. This is a narrow branch of the most-run pass of the
-> nine (`author → lint → improve → lower → decompose → implement → verify →
-> review → promote`); it carries the full migration discipline at depth for the
-> two kinds it names.
+> **One discipline, two kinds.** `migration` and `upgrade` share one wave-planned
+> procedure: both move the implementation across an API boundary while preserving
+> the surface. They differ only in the *trigger* (an internal API sunset vs a
+> framework/language/library version bump), not the method, so one guide carries
+> both. This is a narrow branch of the most-run pass of the nine (`author → lint →
+> improve → lower → decompose → implement → verify → review → promote`), carrying
+> the full migration discipline at depth for the two kinds it names.
 
 ## Purpose
 
 A migration moves the implementation from API A to API B — a framework upgrade, a
 language version bump, a library replacement, an internal API sunset — while the
 behaviour callers observe is preserved. The *implementation* moves; the *contract*
-does not. Migrations fail in two characteristic ways, both of which produce a diff
-that looks finished:
+does not. Migrations fail in two ways, both producing a diff that looks finished:
 
 - the **permanent half-migration** — some callsites use the old API and some the
-  new, indefinitely, because validation only ran at the end and the drift across
-  waves became its own untangling project; and
+  new, indefinitely, because validation only ran at the end and the cross-wave
+  drift became its own untangling project; and
 - the **phantom completion** — the migration "completes" with old-API callsites
   still alive in dynamic dispatch, registries, generated code, or string-based
   lookups that a text search never reached.
 
-This guide is the discipline that prevents both. Anything that *also* changes
-behaviour is a separate task — promote it, do not smuggle it in under the
-mechanical change.
+This guide prevents both. Anything that *also* changes behaviour is a separate
+task — promote it, do not smuggle it in under the mechanical change.
 
 ## Stance: Migrator
 
-Adopt the Migrator stance: mechanical, careful, and paranoid about partial
-states. The Migrator knowingly remaps an externally reachable contract from one
-API to another, where a behaviour-preserving cleanup hand (the refactor mindset)
-forbids any behaviour delta at all — that difference is exactly why the migration
-must prove the *surface* held while the *internals* moved. The Migrator is hostile
-to "I'll `sed` this across all 200 files", to "wave validation is optional, it's
-all the same change", to "the shim is temporary, no need to document removal", and
-to "old API is mostly gone, I'll handle the last few in a follow-up" — "mostly
-gone" means unfinished. A stance sharpens *what you look for and refuse*; it never
-changes the procedure below and never decides a verdict.
+Adopt the Migrator stance: mechanical, careful, paranoid about partial states.
+The Migrator knowingly remaps an externally reachable contract from one API to
+another — where the refactor mindset forbids any behaviour delta at all — which
+is exactly why the migration must prove the *surface* held while the *internals*
+moved. The Migrator is hostile to "I'll `sed` this across all 200 files", to
+"wave validation is optional, it's all the same change", to "the shim is
+temporary, no need to document removal", and to "old API is mostly gone, I'll
+handle the last few in a follow-up" — "mostly gone" means unfinished. A stance
+sharpens *what you look for and refuse*; it never changes the procedure below and
+never decides a verdict.
 
 ## Consumes
 
@@ -81,18 +73,18 @@ changes the procedure below and never decides a verdict.
   (your **owned paths**, the only files you may touch); `verification_bindings`
   (the proofs each obligation demands); and the `task_kind` enum, which must read
   `migration` or `upgrade` for this guide to apply.
-- The migration spec — a SOL `*.swarm.md` whose `REQ` / `CONSTRAINT` / `INVARIANT`
-  / `INTERFACE` blocks state what moves from A to B and what surface must be
+- The migration spec — a SOL `*.swarm.md` whose `REQ`/`CONSTRAINT`/`INVARIANT`/
+  `INTERFACE` blocks state what moves from A to B and what surface must be
   preserved — and the triggering audit, when one exists. Read it in full before
   editing.
 - Project command slots resolved through the consuming repo's `AGENTS.md >
   Commands`: `cmdTest` and `cmdValidate` (run together after every wave), and the
-  architectural / dependency-validation command used to confirm the old API is
-  truly gone (often a `cmdValidate`-adjacent slot such as a dependency-cruiser;
-  not a fixed contract slot). **If `AGENTS.md` is missing or a slot you need is
-  undefined, ask the user which command to run before proceeding — never guess.**
-  A guessed validation command produces a false signal about whether a wave left
-  the codebase green.
+  architectural/dependency-validation command confirming the old API is truly gone
+  (often a `cmdValidate`-adjacent slot such as a dependency-cruiser, not a fixed
+  contract slot). **If `AGENTS.md` is missing or a slot you need is undefined, ask
+  the user which command to run before proceeding — never guess.** A guessed
+  validation command produces a false signal about whether a wave left the codebase
+  green.
 
 ## Produces
 
@@ -103,8 +95,8 @@ changes the procedure below and never decides a verdict.
   `CHANGED` the modified surfaces, and at least one `PROOF` line with pasted,
   re-runnable output. Its `## Provenance` section carries the per-binding drift
   fields the staleness join depends on. Externalising the run's intermediate work
-  into this durable artifact (rather than leaving it in context) is what lets the
-  downstream `verify` and `review` passes judge it.
+  into this durable artifact lets the downstream `verify` and `review` passes
+  judge it.
 
 ## Preserves
 
@@ -119,10 +111,10 @@ changes the procedure below and never decides a verdict.
 - **Only the declared write surfaces.** Owned paths MUST stay a subset of the
   union of the assigned obligations' `WRITES` surfaces. A path touching a file
   outside any assigned obligation's declared write surface is the owned-path
-  defect `SOL-O005` ("owned path outside declared write surface") — this is the
-  property that keeps parallel `implement` packets write-disjoint. If a wave needs
-  to touch a file outside your owned paths, stop: the file belongs to another
-  packet, or the write surface needs amending upstream.
+  defect `SOL-O005` ("owned path outside declared write surface") — the property
+  that keeps parallel `implement` packets write-disjoint. If a wave needs a file
+  outside your owned paths, stop: the file belongs to another packet, or the write
+  surface needs amending upstream.
 
 ## Core rules
 
@@ -130,101 +122,100 @@ changes the procedure below and never decides a verdict.
 
 The implementation moves from API A to API B; what callers observe does not. Prove
 preservation with an equivalence check that **would fail if behaviour changed** —
-property-based, differential, or golden-output. Differential is the natural fit
-behind a migration: keep the old-API path reachable behind a shim and diff old vs
-new until the diff is clean. A green suite is *necessary but not sufficient* — it
-only covers what was already tested, so a behaviour delta in an untested corner
-passes silently; where no stronger oracle exists, record in the self-review *why*
-the existing suite is a sufficient oracle for this specific migration. If a test
-fails after a wave, investigate before "fixing" the test — adapting a test to a new
-result is how a migration silently turns into a rewrite. *Rationale:* a migration
-that changed behaviour is a rewrite mislabelled; relabel it and load that
-discipline rather than shipping the drift under a mechanical change.
+property-based, differential, or golden-output. Differential is the natural fit:
+keep the old-API path reachable behind a shim and diff old vs new until clean. A
+green suite is *necessary but not sufficient* — it only covers what was already
+tested, so a behaviour delta in an untested corner passes silently; where no
+stronger oracle exists, record in the self-review *why* the suite is a sufficient
+oracle for this specific migration. If a test fails after a wave, investigate
+before "fixing" it — adapting a test to a new result is how a migration silently
+turns into a rewrite. *Rationale:* a migration that changed behaviour is a rewrite
+mislabelled; relabel it and load that discipline rather than shipping drift under a
+mechanical change.
 
 ### 2. Plan in waves, up front
 
 Break the migration into waves before starting. A wave is the smallest atomic
 change that leaves the codebase compiling and passing tests. Document the waves up
 front; do not discover them mid-migration. *Rationale:* an undocumented wave plan
-is a plan you cannot validate against — and a migration drawn up after it started
-has no checkpoint structure to catch drift before it accumulates.
+cannot be validated against, and a plan drawn up after the migration started has no
+checkpoint structure to catch drift before it accumulates.
 
 ### 3. Validate after every wave — never let two waves' breakage accumulate
 
 Run `cmdTest` and `cmdValidate` at the end of every wave; paste both outputs as you
 go. The codebase must be green at every wave checkpoint, not only at the end.
 *Rationale:* per-wave validation catches a break while it is one wave old and cheap
-to bisect; final-only validation lets two (then five, then ten) waves' worth of
-breakage tangle together until untangling it is its own project — the permanent
+to bisect; final-only validation lets two (then five, then ten) waves' breakage
+tangle together until untangling it is its own project — the permanent
 half-migration failure mode.
 
 ### 4. Each file migrated individually — no bulk codemods
 
 No `sed`, no codemod, no shell loop sweeping hundreds of files in one commit. Bulk
-operations hide the one context-specific callsite that uses the API in an unusual
-way — the codemod's fixed substitution silently breaks it, and the green-looking
-global edit is exactly the misleading signal the Migrator distrusts. Each file is
-read, migrated, and reviewed deliberately. *Rationale:* the outliers are where
-migrations break, and a bulk edit is structurally blind to them.
+operations hide the one context-specific callsite using the API in an unusual way
+— the fixed substitution silently breaks it, and the green-looking global edit is
+exactly the misleading signal the Migrator distrusts. Each file is read, migrated,
+and reviewed deliberately. *Rationale:* the outliers are where migrations break,
+and a bulk edit is structurally blind to them.
 
 ### 5. Track callsite coverage explicitly, across the whole codebase
 
-Count the callsites of the old API up front; track per wave how many are migrated
-and how many remain. The migration is done only when the count of old-API
-callsites *outside explicitly-tracked shims* is **zero** — and the count is taken
-over the **whole codebase**, not just the modules the migration was scoped to.
-*Rationale:* an old-API call in an un-scoped module is the half-migration that
-never closes; the up-front count is the falsification target that makes "done"
-checkable instead of asserted.
+Count the old-API callsites up front; track per wave how many are migrated and how
+many remain. The migration is done only when old-API callsites *outside
+explicitly-tracked shims* number **zero** — counted over the **whole codebase**,
+not just the modules the migration was scoped to. *Rationale:* an old-API call in
+an un-scoped module is the half-migration that never closes; the up-front count is
+the falsification target that makes "done" checkable instead of asserted.
 
 ### 6. Document every shim with a verifiable removable-when criterion
 
 A compatibility shim lets old callers keep working while the migration proceeds.
 Record three things *before* introducing each shim: its **path** (where it lives),
-its **forward target** (what it forwards to), and a **removable-when criterion**
-that is mechanically verifiable (e.g. `git grep -c '<old-API>' src/` returns 0). A
+its **forward target** (what it forwards to), and a mechanically verifiable
+**removable-when criterion** (e.g. `git grep -c '<old-API>' src/` returns 0). A
 shim with no removal criterion is permanent by default. *Rationale:* permanent
-shims are the migration's lasting cost; the criterion is the contract that turns a
-temporary bridge back into a finite one — without it, "temporary" means "forever".
+shims are the migration's lasting cost; the criterion turns a temporary bridge back
+into a finite one — without it, "temporary" means "forever".
 
 ### 7. Search beyond grep — the references a text search cannot reach
 
 Static text-search misses the callsites that fail rule 5 silently. After grep,
-audit explicitly and paste the results into the self-review:
+audit these explicitly and paste the results into the self-review:
 
 - dynamic-dispatch sites (interface implementations, virtual methods);
 - string-based references (registry lookups, dependency injection by name);
 - generated code (build outputs, codegen templates);
 - test fixtures and snapshots; reflection.
 
-*Rationale:* the phantom completion fires precisely where the old API survives in
-a form `git grep` of the call syntax cannot see; the explicit audit is the only
-thing that closes the gap a text search leaves open.
+*Rationale:* the phantom completion fires precisely where the old API survives in a
+form `git grep` of the call syntax cannot see; the explicit audit is the only thing
+that closes the gap a text search leaves.
 
 ### 8. Promote out-of-scope findings — never fix them inline
 
 Anything you discover that is not on the migration plan's list gets a
 `## Promotion queue` row with a target (an audit or follow-up task) and a status,
-not a silent fix. "While I'm migrating" semantic changes destroy the migration's
-reviewability — the reviewer can no longer tell the mechanical surface move from a
-behaviour delta riding along with it. All promotion items MUST be resolved before
-the task closes. *Rationale:* the migration's whole value is that it is reviewable
-as a mechanical change; one bundled "improvement" forfeits that.
+not a silent fix. "While I'm migrating" semantic changes destroy reviewability —
+the reviewer can no longer tell the mechanical surface move from a behaviour delta
+riding along with it. All promotion items MUST be resolved before the task closes.
+*Rationale:* the migration's whole value is that it is reviewable as a mechanical
+change; one bundled "improvement" forfeits that.
 
 ### 9. Forced visible output: paste it, don't assert it
 
 Any verification step that is otherwise invisible MUST produce pasted, verbatim
-output. A `PROOF` line that references real run output is admissible; an
-unqualified "tests passed" or "validation clean" is not. A `TRACE` that claims
-`IMPLEMENTS` with **zero** `PROOF` lines is a structural parse error (`SOL-S014`),
-not a soft lint; an `IMPLEMENTS`/`PRESERVES` naming an unknown obligation is the
-unbound cross-reference `SOL-M003`. The observed `proof_result` (`passed | failed
-| blocked | unverified`) is only the core run observation; the `PASS` decision is
-made downstream by the profile-independent `verify` pass, and the lifecycle
-decorators (the 7-value verdict's `WAIVED` / `STALE` / `CONTRADICTED`) are applied
-later at `review` — never here. *Rationale:* the verbatim paste is the only thing
-that closes the bypass where "the wave passed" is asserted but the command was
-never run — the execution failure mode this gate exists to defend against.
+output. A `PROOF` line referencing real run output is admissible; an unqualified
+"tests passed" or "validation clean" is not. A `TRACE` claiming `IMPLEMENTS` with
+**zero** `PROOF` lines is a structural parse error (`SOL-S014`), not a soft lint;
+an `IMPLEMENTS`/`PRESERVES` naming an unknown obligation is the unbound
+cross-reference `SOL-M003`. The observed `proof_result` (`passed | failed | blocked
+| unverified`) is only the core run observation; the `PASS` decision is made
+downstream by the profile-independent `verify` pass, and the lifecycle decorators
+(the 7-value verdict's `WAIVED`/`STALE`/`CONTRADICTED`) are applied later at
+`review` — never here. *Rationale:* the verbatim paste is the only thing that
+closes the bypass where "the wave passed" is asserted but the command was never
+run — the execution failure mode this gate defends against.
 
 ## Procedure
 
@@ -242,8 +233,7 @@ The pass has a common spine and the migration-specific waves below.
    surface it — do not invent the requirement. Resolving it silently is an
    amendment you are not authorized to make at `implement`.
 4. **Record the from / to / why.** Write down the API being replaced (with version
-   if relevant), the API replacing it, and one sentence on why the migration is
-   happening now.
+   if relevant), the API replacing it, and one sentence on why now.
 5. **Capture the equivalence oracle before touching code** (rule 1). Establish the
    differential/golden/property baseline that pins current behaviour; run `cmdTest`
    and confirm green. If no stronger oracle than the suite exists, note the
@@ -271,13 +261,13 @@ The pass has a common spine and the migration-specific waves below.
 - **In a migration:** behavioural drift bundled with the surface change. If the new
   API behaves differently and that divergence is intentional, it is a separate
   spec/task (a `rewrite`) — promote it, do not ship it here.
-- **In the task's `## Findings`:** durable architectural concerns that were not
-  promoted upstream to an audit.
+- **In the task's `## Findings`:** durable architectural concerns not promoted
+  upstream to an audit.
 - **In this guide:** the refactor and rewrite disciplines. A behaviour-preserving
   restructuring at a single API version is a `refactor`; a deliberate behaviour
   change is a `rewrite`; net-new behaviour at the new API version is a `feature`.
-  Each has its own guide — do not run a migration under one of those labels, or
-  one of those under this.
+  Each has its own guide — do not run a migration under one of those labels, or one
+  of those under this.
 
 ## Anti-patterns
 
@@ -316,17 +306,17 @@ guide does not redefine them.
   is `SOL-M003`.
 - The observed `proof_result` maps 1:1 to the downstream core verdict (`passed →
   PASS`, `failed → FAIL`, `blocked → BLOCKED`, `unverified → UNVERIFIED`); the PASS
-  decision and the lifecycle decorators are not made here (rule 9). The Migrator
-  stance may influence which proofs you demand of yourself; it never decides
-  whether a run PASSes.
+  decision and lifecycle decorators are not made here (rule 9). The Migrator stance
+  may influence which proofs you demand of yourself; it never decides whether a run
+  PASSes.
 
 ## Self-review
 
 > **Hard gate.** The task is not complete until every question below has a written
 > answer directly beneath it, with the named output pasted verbatim. Migrations
-> fail in two characteristic ways — a wave that left the codebase half-migrated,
-> and a "completion" that left old-API callsites lurking. Review as a senior
-> engineer hostile to both.
+> fail in two ways — a wave that left the codebase half-migrated, and a
+> "completion" that left old-API callsites lurking. Review as a senior engineer
+> hostile to both.
 
 - **Verification outputs (paste actual command output — do not paraphrase):**
   `git status`; each per-wave `cmdTest` + `cmdValidate` output; the final
@@ -342,7 +332,7 @@ guide does not redefine them.
 - **Callsite coverage:** Did I grep the *entire* codebase for the old API, not just
   the modules I expected it in? Is the tracker count accurate? Are zero old-API
   callsites remaining outside documented shims?
-- **Beyond grep:** Where might a callsite hide that a text search won't find —
+- **Beyond grep:** Where might a callsite hide that text search won't find —
   dynamic dispatch, string-based lookup, registry, generated code, reflection,
   fixtures? Is the explicit audit of each pasted?
 - **Shim hygiene:** Is every shim documented with a verifiable removable-when
@@ -365,5 +355,5 @@ guide does not redefine them.
   state). It scores on the multi-session-waves, multi-stage-plan,
   state-separate-from-deliverable, and paste-output-gate criteria, so it ships a
   template. Instantiate it into your local task file, resolve the `cmd*` slots from
-  `AGENTS.md > Commands` (asking the user for any undefined slot), and fill it in
-  as you work.
+  `AGENTS.md > Commands` (asking the user for any undefined slot), and fill it in as
+  you work.

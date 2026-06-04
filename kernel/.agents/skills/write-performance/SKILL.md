@@ -5,24 +5,22 @@ pass: implement
 activates_for_task_kind:
   - performance
 description: >-
-  Run an `implement` pass for a `task_kind: performance` packet: optimise a
-  measured bottleneck to a stated numeric target, with a baseline taken before
-  any code change and the final number under the same protocol, and correctness
-  proven by the full suite after every change. ALWAYS apply when a `task.md`
-  carries `pass: implement` with `task_kind: performance`, or when the user asks
-  to optimise, profile, speed up, or reduce latency / memory / CPU / allocations
-  against a metric. Do not change code before a baseline exists, compare numbers
-  from different conditions, batch unattributable optimisations, or skip the
-  suite. Skip for correctness fixes, refactors, behaviour-changing rewrites,
-  API/version migrations, and net-new feature work.
+  `implement` pass for a `task_kind: performance` packet: optimise a measured
+  bottleneck to a numeric target under one measurement protocol. ALWAYS apply
+  when a `task.md` carries `pass: implement` + `task_kind: performance`, or the
+  user asks to optimise, profile, speed up, or cut latency / memory / CPU /
+  allocations against a metric. Never change code pre-baseline, compare numbers
+  across conditions, batch unattributable optimisations, or skip the suite. Skip
+  for correctness fixes, refactors, behaviour-changing rewrites, API/version
+  migrations, net-new features.
 ---
 
 # Pass guide: implement — performance
 
 > **SOFT control (Invariant 2).** This guide tells you *how* to run a
 > `performance` implement pass. It does **not** define modality, authority
-> order, verification semantics, the verdict values, or the proof taxonomy —
-> those are owned only by SOL and the typed IR. Every load-bearing term below (a
+> order, verification semantics, verdict values, or proof taxonomy — those are
+> owned only by SOL and the typed IR. Every load-bearing term below (a
 > `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` obligation, a `TRACE` block,
 > `IMPLEMENTS`/`PRESERVES`/`CHANGED`/`PROOF`, the 7-value verdict, a lint code
 > like `SOL-O005`) is **cited, not redefined**. Where this guide and the language
@@ -30,33 +28,31 @@ description: >-
 
 ## Purpose
 
-Performance work fails in two characteristic ways, and both produce a diff that
-looks like a win. The first is **a number that moved on the benchmark but not in
-production** — measured under conditions that do not match where the system is
-actually slow, or compared against a baseline taken under a different protocol,
-so the comparison is meaningless. The second is **a speedup that quietly broke
-correctness** — a faster wrong answer is still a defect. This guide is the
-discipline against both: a baseline measured *before* touching code, a target
-stated as a number under named conditions, the *same* measurement protocol on
-both sides, one benchmarked change at a time, and the full suite green after
-every change.
+Performance work fails two ways, both producing a diff that looks like a win.
+First, **a number that moved on the benchmark but not in production** — measured
+under conditions that do not match where the system is actually slow, or against
+a baseline taken under a different protocol, so the comparison is meaningless.
+Second, **a speedup that quietly broke correctness** — a faster wrong answer is
+still a defect. The discipline against both: a baseline measured *before*
+touching code, a target stated as a number under named conditions, the *same*
+protocol on both sides, one benchmarked change at a time, the full suite green
+after every change.
 
 The defining test: performance work optimises a *measured* bottleneck under a
-*stated* target. If you are restructuring internals without a behaviour change
-the work is a `refactor`; if you are changing what the code does it is a
-`rewrite`; if there is no number and no protocol you are tinkering, not
-optimising — surface that and get the target before you start.
+*stated* target. Restructuring internals without a behaviour change is a
+`refactor`; changing what the code does is a `rewrite`; no number and no protocol
+is tinkering, not optimising — surface that and get the target before you start.
 
 ## Stance: Performance-Surgeon
 
 Adopt the Performance-Surgeon stance: numbers over vibes, correctness over
 speed. The Surgeon does not believe a thing is faster until a baseline and a
-final figure — taken under the identical protocol — say so, and treats every
+final figure — under the identical protocol — say so, and treats every
 optimisation as guilty of breaking correctness until the suite proves otherwise.
 The standing questions bite here: *what number am I moving, under what
 conditions, and what measurement would falsify my hypothesis?* The red flags
 fire on sight — "it feels faster", a benchmark with no pasted output, a baseline
-and a final measured under different load, a green benchmark with a skipped test
+and a final measured under different load, a green benchmark with a skipped
 suite. A stance sharpens *what you look for and refuse*; it never changes the
 procedure below and never decides a verdict.
 
@@ -66,22 +62,22 @@ procedure below and never decides a verdict.
   works against the packet `decompose` handed it, **not** the surface spec or
   the IR. Read in particular: `assigned_obligations`, `constraints`,
   `invariants`, `interfaces` (the SOL blocks pasted verbatim that fix scope —
-  including any performance `REQ` that states the target as a number, and the
-  `CONSTRAINT`/`INVARIANT` that pin the correctness the speedup must not break);
+  including any performance `REQ` stating the target as a number, and the
+  `CONSTRAINT`/`INVARIANT` pinning the correctness the speedup must not break);
   `write_surfaces` (your owned paths, the only files you may touch);
   `verification_bindings` (the proofs each obligation demands); and the
   `task_kind` enum, which must read `performance` for this guide to apply.
 - The driving audit or perf spec, when one exists — performance work is
-  typically seeded by a profiling audit or a spec that names the metric and the
-  target. Read it in full before measuring.
+  typically seeded by a profiling audit or a spec naming the metric and target.
+  Read it in full before measuring.
 - Project command slots resolved through the consuming repo's `AGENTS.md >
-  Commands`: `cmdTest` (the full suite that proves correctness held), `cmdValidate`,
+  Commands`: `cmdTest` (the full suite proving correctness held), `cmdValidate`,
   and the **benchmark command** the perf proof is measured with. The benchmark
   slot is `cmdBenchmark` where the repo defines one; **if `AGENTS.md` is missing,
   or `cmdBenchmark` (or any needed slot) is undefined, ask the user which command
-  to run before establishing the baseline — never invent or guess one.** A
-  guessed benchmark invocation produces a baseline that the final figure cannot
-  honestly be compared against.
+  to run before the baseline — never invent or guess one.** A guessed benchmark
+  invocation produces a baseline the final figure cannot honestly be compared
+  against.
 
 ## Produces
 
@@ -95,27 +91,27 @@ procedure below and never decides a verdict.
   correctness is incomplete). Its `## Provenance` section carries the per-binding
   drift fields the staleness join depends on. Externalising the run's
   intermediate work — baseline, protocol, hypothesis, per-change measurements —
-  into this durable artifact rather than leaving it in context is what lets the
-  downstream `verify` and `review` passes judge it.
+  into this durable artifact rather than leaving it in context is what lets
+  downstream `verify` and `review` judge it.
 
 ## Preserves
 
-- **Correctness, end to end.** This is the obligation a performance change must
-  not trade away — see rule 6. Constraints, invariants, and non-goals are held,
-  not relaxed; making the benchmark fast by weakening a `CONSTRAINT` or skipping
-  an `INVARIANT` is not an optimisation, it is a defect. Changing an obligation's
-  intent is an amendment decision at `improve`, never an `implement` action.
+- **Correctness, end to end.** The obligation a performance change must not trade
+  away — see rule 6. Constraints, invariants, and non-goals are held, not
+  relaxed; making the benchmark fast by weakening a `CONSTRAINT` or skipping an
+  `INVARIANT` is a defect, not an optimisation. Changing an obligation's intent is
+  an amendment decision at `improve`, never an `implement` action.
 - **Only the assigned obligations.** Any change not traceable to an assigned
   obligation is an `## Unassigned changes` row in the trace (reason + authorizing
-  ID, or `none`), judged at `review`. A second bottleneck you spot while here is a
+  ID, or `none`), judged at `review`. A second bottleneck spotted while here is a
   promotion item, not a second optimisation in this packet (rule 5).
 - **Only the declared write surfaces.** Owned paths MUST stay a subset of the
   union of the assigned obligations' `WRITES` surfaces. A path touching a file
   outside any assigned obligation's declared write surface is the owned-path
   defect `SOL-O005` ("owned path outside declared write surface") — the property
-  that keeps parallel `implement` packets write-disjoint. If the optimisation
-  needs a file outside your owned paths, stop: it belongs to another packet, or
-  the write surface needs amending upstream — not an `implement` decision.
+  keeping parallel `implement` packets write-disjoint. If the optimisation needs
+  a file outside your owned paths, stop: it belongs to another packet, or the
+  write surface needs amending upstream — not an `implement` decision.
 
 ## Core rules
 
@@ -123,19 +119,19 @@ procedure below and never decides a verdict.
 
 Run the benchmark in your worktree and paste the output *before* touching the
 implementation. The baseline is real numbers from a real run, not "we know it is
-slow". *Rationale:* "improvement" has no meaning without a fixed reference
-point; a baseline measured after the change has already lost the comparison, and
-a baseline reconstructed from memory is unfalsifiable.
+slow". *Rationale:* "improvement" is meaningless without a fixed reference point;
+a baseline measured after the change has already lost the comparison, and one
+reconstructed from memory is unfalsifiable.
 
 ### 2. State the target as a number, under named conditions
 
 The target is a specific value of a specific metric under specific conditions —
 e.g. "p95 latency of `getQuote()` under 1k RPS sustained drops from 240 ms to
-≤ 80 ms". This usually comes from the performance `REQ` in the packet; if the
-packet states the goal only as "make X faster", that is not a target — surface
-it as a blocker and get the number before you start. *Rationale:* an unquantified
-goal can be declared met by any change in the right direction, which is how a
-perf task ships a rounding-error improvement and calls it done.
+≤ 80 ms". This usually comes from the performance `REQ` in the packet; a goal
+stated only as "make X faster" is not a target — surface it as a blocker and get
+the number before you start. *Rationale:* an unquantified goal can be declared
+met by any change in the right direction, which is how a perf task ships a
+rounding-error improvement and calls it done.
 
 ### 3. State the hypothesis as a falsifiable claim
 
@@ -143,49 +139,48 @@ Write down what you believe the bottleneck is and the measurement that would
 *disprove* it — "allocations in the hot loop dominate; cutting them 50% should
 drop latency ≥ 30%" is falsifiable; "I think this is slow" is not. Profile to
 confirm the bottleneck before optimising it. *Rationale:* a non-falsifiable
-hypothesis cannot be wrong, so it never teaches you that you optimised the
-wrong thing — and optimising a path that is not the bottleneck is the most common
-way perf effort produces no production gain.
+hypothesis cannot be wrong, so it never teaches you that you optimised the wrong
+thing — and optimising a path that is not the bottleneck is the most common way
+perf effort produces no production gain.
 
 ### 4. Identical protocol before and after — or the comparison is meaningless
 
 The measurement protocol — warmup runs, sample count, statistical aggregate
 (mean / median / p95 / p99), hardware, environment, input shape, warm/cold cache
-state — MUST be identical for the baseline and the final figure. Record the
-protocol once in the task frame and re-use it verbatim. *Rationale:* different
-conditions give different numbers; a baseline measured cold against a final
-measured warm "proves" a speedup that does not exist, and is the mechanism behind
-the benchmark-improved-but-production-did-not failure mode.
+state — MUST be identical for the baseline and the final figure. Record it once
+in the task frame and re-use it verbatim. *Rationale:* different conditions give
+different numbers; a baseline measured cold against a final measured warm
+"proves" a speedup that does not exist, the mechanism behind the
+benchmark-improved-but-production-did-not failure mode.
 
 ### 5. One benchmarked change at a time — never batch optimisations
 
 Each iteration is: change → re-run the benchmark under the protocol → compare to
-baseline → run the suite. Do not bundle several optimisations into one change,
-and do not skip the benchmark because "I am sure this helps". *Rationale:*
-batched changes are unattributable — you cannot tell which one moved the number,
-which one regressed it, or which one is dead weight you are now maintaining for
-no gain. A second bottleneck found mid-task is a `## Promotion queue` row, not a
-silent second edit (it would land as an `## Unassigned changes` row at review).
+baseline → run the suite. Do not bundle several optimisations into one change, or
+skip the benchmark because "I am sure this helps". *Rationale:* batched changes
+are unattributable — you cannot tell which one moved the number, which one
+regressed it, or which is dead weight you now maintain for no gain. A second
+bottleneck found mid-task is a `## Promotion queue` row, not a silent second edit
+(it would land as an `## Unassigned changes` row at review).
 
 ### 6. Run the full suite after every change — a faster wrong answer is a defect
 
 Run the project's full test command (`cmdTest`) and `cmdValidate` after every
 change, and paste the output. Performance work does not get to skip the suite.
 *Rationale:* a speedup that broke correctness is a worse defect than the slowness
-it cured — you traded a known cost for an unknown bug. The benchmark proves the
-number moved; only the suite proves you did not break what the number was
-measuring.
+it cured — a known cost traded for an unknown bug. The benchmark proves the
+number moved; only the suite proves you did not break what it was measuring.
 
 ### 7. Document the conditions and define a hard ceiling
 
 The speedup holds *under specific conditions* — record which input shape, load
 profile, hardware, and cache state, so whoever inherits the code knows when the
 optimisation stops helping. Define a **hard ceiling**: the regression threshold
-on any other metric below which the change is rolled back regardless of the
+on any other metric beyond which the change is rolled back regardless of the
 primary gain. *Rationale:* without documented conditions the next reader assumes
 the gain is universal and is surprised when it inverts on a different input;
 without a ceiling, "a small regression on memory for a big latency win" creeps
-into shipping with no one having agreed the trade was acceptable.
+into shipping with no one having agreed the trade.
 
 ### 8. Readability is on probation; justify and annotate the trade
 
@@ -193,7 +188,7 @@ If the optimisation made the code harder to read, the cost is real and must be
 paid down explicitly: document *why* the readability trade is justified by the
 measured gain, and add a comment at the call site explaining what the unusual
 structure is for. *Rationale:* an undocumented clever optimisation is unwound by
-the next refactor that does not know why it exists — and then the gain is lost
+the next refactor that does not know why it exists, and the gain is lost
 silently. The comment is what makes the gain survive the next person.
 
 ### 9. Forced visible output: paste it, don't assert it
@@ -201,8 +196,8 @@ silently. The comment is what makes the gain survive the next person.
 Any verification step that is otherwise invisible MUST produce pasted, verbatim
 output — the baseline benchmark, the final benchmark, and the suite result, each
 fenced and treated as data, last lines minimum, no paraphrase. A `PROOF` line
-that references real run output is admissible; an unqualified "tests passed" or
-"benchmark improved" is not — a no-`PROOF` `TRACE` that claims `IMPLEMENTS` is a
+referencing real run output is admissible; an unqualified "tests passed" or
+"benchmark improved" is not — a no-`PROOF` `TRACE` claiming `IMPLEMENTS` is a
 structural parse error (`SOL-S014`), and an `IMPLEMENTS`/`PRESERVES` naming an
 unknown obligation is the unbound cross-reference `SOL-M003`. The observed
 `proof_result` (`passed | failed | blocked | unverified`) is only the core run
@@ -210,8 +205,8 @@ observation; the `PASS` decision is made downstream by the profile-independent
 `verify` pass, and the lifecycle decorators (the 7-value verdict's `WAIVED` /
 `STALE` / `CONTRADICTED`) are applied later at `review` — never here. *Rationale:*
 the observed `proof_result` is the only thing `verify` can turn into a verdict;
-a perf claim with no pasted before/after figure is a claim the pipeline cannot
-judge, and an implementer scoring their own speedup favours it.
+a perf claim with no pasted before/after figure is one the pipeline cannot judge,
+and an implementer scoring their own speedup favours it.
 
 ## Procedure
 
@@ -221,11 +216,11 @@ judge, and an implementer scoring their own speedup favours it.
    commands from `AGENTS.md > Commands`; **ask the user for any undefined slot,
    especially the benchmark command — never guess it.**
 2. **Confirm the owned paths.** Verify `write_surfaces` is a subset of the
-   assigned obligations' `WRITES` surfaces. If you need a file outside it, stop —
-   that is `SOL-O005`.
+   assigned obligations' `WRITES` surfaces. Needing a file outside it is
+   `SOL-O005` — stop.
 3. **Fix the protocol, then measure the baseline** (rules 1, 4). Record the
-   measurement protocol in the task frame, run the benchmark under it, and paste
-   the baseline output *before* changing code.
+   protocol in the task frame, run the benchmark under it, and paste the baseline
+   output *before* changing code.
 4. **State the target and the falsifiable hypothesis** (rules 2, 3). Pull the
    target from the performance `REQ`; if it is not a number, surface a blocker.
    Profile to confirm the bottleneck the hypothesis names.
@@ -235,8 +230,8 @@ judge, and an implementer scoring their own speedup favours it.
    to make at `implement`.
 6. **Optimise one change at a time** (rule 5). Per change: re-run the benchmark
    under the same protocol and compare to baseline; run `cmdTest` and
-   `cmdValidate`; paste both as you go (rules 6, 9). Roll back anything that
-   breaches the hard ceiling (rule 7). Annotate any readability cost (rule 8).
+   `cmdValidate`; paste both as you go (rules 6, 9). Roll back anything breaching
+   the hard ceiling (rule 7). Annotate any readability cost (rule 8).
 7. **Write the TRACE claims.** Per obligation: `IMPLEMENTS` / `PRESERVES` /
    `CHANGED` + at least one pasted `PROOF` line carrying both the final benchmark
    figure and the suite result (rule 9). Record the `## Provenance` drift fields
@@ -252,10 +247,10 @@ judge, and an implementer scoring their own speedup favours it.
   bundled across unrelated bottlenecks in one change; a baseline and a final
   figure taken under different conditions; a green benchmark with the suite
   skipped; behaviour changes smuggled in under a perf label (that is a `rewrite`).
-- **In the task's `## Decisions`:** "the optimisation worked" — that is a
-  verification output to be pasted in the self-review, not a design decision.
-- **In the task's `## Findings`:** a second bottleneck or architectural smell that
-  was not promoted to an audit before close (rule 5).
+- **In the task's `## Decisions`:** "the optimisation worked" — a verification
+  output to be pasted in the self-review, not a design decision.
+- **In the task's `## Findings`:** a second bottleneck or architectural smell not
+  promoted to an audit before close (rule 5).
 
 ## Anti-patterns
 
@@ -293,10 +288,10 @@ guide does not redefine them.
   status).
 - Each `TRACE` claiming `IMPLEMENTS` MUST carry at least one `PROOF` line
   (`SOL-S014` otherwise); an `IMPLEMENTS`/`PRESERVES` naming an unknown
-  obligation is `SOL-M003`. The two pasted proofs that make a perf claim
-  admissible are the **before/after benchmark under one protocol** (the number
-  moved) and the **post-change suite result** (correctness held) — both verbatim,
-  fenced, as data.
+  obligation is `SOL-M003`. The two pasted proofs making a perf claim admissible
+  are the **before/after benchmark under one protocol** (the number moved) and
+  the **post-change suite result** (correctness held) — both verbatim, fenced, as
+  data.
 - `proof_result` maps 1:1 to the downstream core verdict (`passed → PASS`,
   `failed → FAIL`, `blocked → BLOCKED`, `unverified → UNVERIFIED`); the gate
   decision and the lifecycle decorators are not made here (rule 9).
@@ -345,4 +340,4 @@ guide does not redefine them.
   preservation, conditions, and the readability trade. Copy it into your
   project's task-file location, substitute the `{{...}}` placeholders from the
   consuming repo's `AGENTS.md` command slots (`{{cmdTest}}`, `{{cmdValidate}}`,
-  and the benchmark command), and fill it in as you work.
+  the benchmark command), and fill it in as you work.
