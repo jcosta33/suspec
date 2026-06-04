@@ -1,13 +1,13 @@
 # AGENTS.md
 
 <!--
-  Swarm bootloader template (§31). This is the ALWAYS-LOADED file every task reads first.
+  Swarm bootloader. This is the ALWAYS-LOADED file every task reads first.
   Copy it to your project ROOT and fill the {{placeholders}}. Keep it FACTS-ONLY.
 
-  HARD CAP (§31.1): MUST stay <= 200 lines / 25 KB; SHOULD target ~50-150 lines.
+  HARD CAP: MUST stay <= 200 lines / 25 KB; SHOULD target ~50-150 lines.
   A conformant repo MUST have a regression check that fails when this file exceeds the cap.
 
-  WHAT BELONGS HERE (§31.2): persistent facts the model cannot infer, the Commands
+  WHAT BELONGS HERE: persistent facts the model cannot infer, the Commands
   contract, one-line POINTERS into memory and the language reference, and a small set of
   universal startup + "do not" rules.
 
@@ -17,10 +17,10 @@
 -->
 
 ## Swarm startup
-<!-- The always-on doctrine (the load-what-the-task-names rule, §26.4, plus the universal invariants).
-     Keep these as facts/rules, never step-by-step procedures (§31.2). -->
+<!-- The always-on doctrine (the load-what-the-task-names rule, plus the universal invariants).
+     Keep these as facts/rules, never step-by-step procedures. -->
 1. Read the current task file first.
-2. The Swarm workspace is `.swarm/` (canonical intent, status, memory, and the installed kernel; §20.5).
+2. The Swarm workspace is `.swarm/` (canonical intent, status, memory, and the installed kernel).
 3. Treat `.swarm.md` blocks as authoritative over prose summaries.
 4. Use assigned obligation IDs as scope.
 5. Load only the pass / profile / context files the task names.
@@ -42,7 +42,7 @@
 - {{persistent-fact-the-model-cannot-infer}}
 
 ## Pointers
-<!-- One-line pointers ONLY — never inline the target content (§31.2). -->
+<!-- One-line pointers ONLY — never inline the target content. -->
 - Language reference (SOL / APS / errors / versioning): `.swarm/kernel/language/`
 - Memory recall map (says *when to load* each entry; never dumped here): `.swarm/memory/INDEX.md`
 - Passes, `.swarm/kernel/skills/` (pass guides, per-kind implement & author guides, heuristic-profile persona-* stances, fragments) and overlays: `.swarm/kernel/`
@@ -50,19 +50,19 @@
 ## Compatibility
 `.agents/` MAY hold compatibility mirror files for agent tools (skills, profiles, thin task
 pointers), each pointing back to its canonical `.swarm/kernel/` (or `.swarm/generated/`) original.
-Canonical Swarm artifacts live in `.swarm/` (§20.5).
+Canonical Swarm artifacts live in `.swarm/`.
 
 ## Commands
 <!--
-  The Commands contract (§31.3). This is a FACT (a binding), which is why a table is allowed
+  The Commands contract. This is a FACT (a binding), which is why a table is allowed
   in an otherwise facts-only file. Each `cmd*` slot is the adapter a
-  `VERIFY BY <type>:<adapter>:<artifact>` clause resolves through (§15).
+  `VERIFY BY <type>:<adapter>:<artifact>` clause resolves through (see `.swarm/kernel/passes/verify.md`).
 
   NORMATIVE:
   - Populate a `cmd*` row for EVERY proof type any `VERIFY BY` clause in this repo references.
     An unresolved adapter is a verification-layer lint defect (SOL-V002) and a BLOCKED verdict
-    at the gate (§14); a missing required `cmd*` row is a negative conformance-fixture class (§33).
-  - This is SOFT CONTROL (§17): the table names what a future launcher WOULD run. Nothing here
+    at the gate; a missing required `cmd*` row is a negative conformance-fixture class.
+  - This is SOFT CONTROL: the table names what a future launcher WOULD run. Nothing here
     is executed, and this file MUST NOT claim it enforces or runs these commands.
 
   Fill the Command column; add or remove rows to match the proof types this repo actually uses.

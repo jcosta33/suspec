@@ -99,7 +99,7 @@ SOL keywords are **UPPERCASE and case-sensitive**, and the keyword set is **clos
 | `SHOULD NOT` | Strong prohibition; REQUIRES a same-block `BECAUSE` or `EXCEPT`. |
 | `MAY` | Optional; carries no obligation. |
 
-`SHALL` / `SHALL NOT` are **removed** (RFC 2119 makes `MUST` ≡ `REQUIRED` ≡ `SHALL`, so `SHALL` is redundant). They are recognized only as **deprecated migration aliases**: a parser accepts them, `lint` flags them advisory (`SOL-P058`), and `NORMALIZE` rewrites them to `MUST`/`MUST NOT`. No template emits them.
+`SHALL` / `SHALL NOT` are **removed** (RFC 2119 makes `MUST` ≡ `REQUIRED` ≡ `SHALL`, so `SHALL` is redundant). They are recognized only as **deprecated aliases**: a parser accepts them, `lint` flags them advisory (`SOL-P058`), and `NORMALIZE` rewrites them to `MUST`/`MUST NOT`. No template emits them.
 
 `CAN` and `WILL` are **non-modal** (capability / prediction) and are **forbidden in binding clauses**; their use where a modal is expected is `SOL-P003` (BLOCKING).
 
@@ -225,7 +225,8 @@ This lowers to two IR obligations (one per `THE` / `AND THE`), both carrying the
 Bounds *how* obligations may be satisfied rather than requesting a behavior; it persists across tasks as a guard.
 
 ```ebnf
-constraint_body = actor_clause, { and_actor_clause }
+constraint_body = [ "WHERE", ws, cond, nl ]
+                  actor_clause, { and_actor_clause }
                   [ "BECAUSE", ws, prose, nl ]
                   [ "EXCEPT",  ws, prose, nl ]
                   verify_line

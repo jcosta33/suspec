@@ -27,7 +27,9 @@ Two contract notes follow from this position:
 
 ## `author` ships author guides, not a pass guide
 
-The shipped stdlib guide set (ADR-0042) is: a dedicated pass guide for each of `lint`, `decompose`, `review[profile: skeptic]`, and `promote`; nine per-`task_kind` `implement` guides (`write-feature`/`fix`/`refactor`/`rewrite`/`migration`/`performance`/`testing`/`documentation` + `fix-flaky-test`); six author guides (`write-spec`/`audit`/`research`/`bug-report`/`prd`/`rfc`); and two cross-cutting fragments (`empirical-proof`, `distillation-discipline`) — all standalone `SKILL.md` under `kernel/.agents/skills/`. The `improve` and `lower` passes ship no guide, and `verify` is served by the `empirical-proof` fragment; a guide-less pass is not a conformance gap. `author` is **not** served by a single pass guide: it is served by the **six author guides** (`../skills/write-spec/SKILL.md`, `../skills/write-audit/SKILL.md`, `../skills/write-research/SKILL.md`, `../skills/write-bug-report/SKILL.md`, `../skills/write-prd/SKILL.md`, `../skills/write-rfc/SKILL.md`), one per recognized parent. A guide, when it exists, is SOFT control (Invariant 2): it MUST NOT define SOL/APS semantics, modality, authority order, or verification meaning.
+The shipped stdlib guide set (ADR-0042) is: a dedicated pass guide for each of `lint`, `decompose`, `review[profile: skeptic]`, and `promote`; nine per-`task_kind` `implement` guides (`write-feature`/`fix`/`refactor`/`rewrite`/`migration`/`performance`/`testing`/`documentation` + `fix-flaky-test`); six author guides (`write-spec`/`audit`/`research`/`bug-report`/`prd`/`rfc`); and two cross-cutting fragments (`empirical-proof`, `distillation-discipline`). Each ships as a standalone `SKILL.md` carrier under `../skills/`.
+
+`author` is **not** served by a single pass guide: it is served by the **six author guides** — `../skills/write-spec/SKILL.md`, `../skills/write-audit/SKILL.md`, `../skills/write-research/SKILL.md`, `../skills/write-bug-report/SKILL.md`, `../skills/write-prd/SKILL.md`, and `../skills/write-rfc/SKILL.md` — one per recognized parent that normalizes into a spec. Across the nine passes, `lint`, `decompose`, `review`, and `promote` each ship a dedicated pass guide; `implement` is served by the nine per-`task_kind` implement guides; `author` by these six author guides; and `verify` is served by the `empirical-proof` cross-cutting fragment. Only `improve` and `lower` ship **no** guide — they are *fully specified by their pass contract and the language references* and MAY gain a guide in a later framework release without any language-version bump; a guide-less pass is not a conformance gap. A pass guide, when it exists, is SOFT control (Invariant 2): it MUST NOT define SOL/APS semantics, modality, authority order, or verification meaning.
 
 ## Authoring is parent-normalization: epistemic stances are preserved
 
@@ -46,8 +48,8 @@ Each parent carries an **epistemic stance** — what kind of knowledge it is all
 | `use-case.md` / examples | **scenario** — illustrates desired behavior by example | `REQ`/`INTERFACE` blocks in a `spec.swarm.md` (via `author`) |
 | `nfr.md` / SLOs | **quality attribute** — states non-functional targets | `CONSTRAINT`/`INVARIANT` blocks + verification rows (via `author`) |
 | interface source (OpenAPI/GraphQL/DB schema) | **boundary shape** — declares an interface contract | `INTERFACE` blocks (via `author`) |
-| `finding.md` | **evidence** — one durable, evidenced project fact | governs as Axis-A rank 3 once accepted (§22, §23) |
-| `adr.md` | **decision** — an immutable architecture decision (Nygard) | governs as Axis-A rank 1 (§22, §30) |
+| `finding.md` | **evidence** — one durable, evidenced project fact | governs as Axis-A rank 3 once accepted |
+| `adr.md` | **decision** — an immutable architecture decision (Nygard) | governs as Axis-A rank 1 |
 
 ### The stance invariants `author` must honor
 
@@ -59,13 +61,15 @@ Authoring writes the one human-authored compiler-visible artifact, `spec.swarm.m
 
 ## What gates the boundary — but not via `author`
 
-`author` itself emits no lint codes and runs no gate; it produces the draft that the rest of the pipeline analyzes. The disciplines that *guard* the content `author` produces live downstream and are referenced here only for orientation: forbidden compositions (e.g. a file that is both a spec and an audit) are enforced not by `author` and not by a gatekeeper skill, but by the **distillation loss budget** (§24) and **source authority** (§22). Re-introducing a composition-policing skill is forbidden, because such a skill would be a semantic owner (§26.1) and soft control presented as enforcement (§17).
+`author` itself emits no lint codes and runs no gate; it produces the draft that the rest of the pipeline analyzes. The disciplines that *guard* the content `author` produces live downstream and are referenced here only for orientation: forbidden compositions (e.g. a file that is both a spec and an audit) are enforced not by `author` and not by a gatekeeper skill, but by the **distillation loss budget** and **source authority**. Re-introducing a composition-policing skill is forbidden, because such a skill would be a semantic owner and soft control presented as enforcement (Invariant 2).
 
 ## Related
 
 - `../passes/lint.md` — the next pass; non-mutating well-formedness analysis that consumes the `author` draft.
 - `../passes/improve.md` — the only pass permitted to rewrite the spec, and only semantics-preservingly.
-- `../passes/lower.md`, `../passes/decompose.md`, `../passes/verify.md` — the rest of the downstream pipeline that normalizes and lowers authored intent rather than re-inventing it.
+- `../passes/lower.md`, `../passes/decompose.md`, `../passes/verify.md` — the rest of the downstream pipeline that normalizes and lowers authored intent rather than re-inventing it. `verify` is served by the `empirical-proof` cross-cutting fragment rather than a dedicated pass guide.
+- `../language/SOL.md` — the obligation language `author` writes into `spec.swarm.md`.
 - `../templates/spec.swarm.md` — the one human-authored compiler-visible artifact `author` produces.
 - `../templates/audit.md`, `../templates/research.md`, `../templates/prd.md`, `../templates/rfc.md`, `../templates/bug-report.md`, `../templates/finding.md`, `../templates/adr.md` — the recognized parents `author` normalizes (each carries the epistemic stance the table above pins).
-- `../skills/persona-architect/SKILL.md`, `../skills/persona-researcher/SKILL.md` — typical carrier profiles for the `author` pass.
+- `../skills/write-spec/SKILL.md`, `../skills/write-audit/SKILL.md`, `../skills/write-research/SKILL.md`, `../skills/write-bug-report/SKILL.md`, `../skills/write-prd/SKILL.md`, `../skills/write-rfc/SKILL.md` — the six author-guide carriers that serve this pass, one per recognized parent.
+- `../skills/persona-architect/SKILL.md`, `../skills/persona-surveyor/SKILL.md`, `../skills/persona-researcher/SKILL.md` — typical carrier profiles for the `author` pass.

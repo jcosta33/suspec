@@ -4,7 +4,7 @@
 
 APS (Agent Prose Semantics) is the controlled-prose standard for every word of natural-language prose that surrounds, introduces, or accompanies SOL blocks in a Swarm spec or working artifact. SOL is the obligation language; **APS is the standard for everything that is *not* a SOL block**.
 
-Swarm is markdown-only and has no runtime. Every "linter," "parser," or "checker" named here is a **contract** that a future tool builds against — not shipped code. APS defines what such a tool must accept, flag, or reject; it never executes anything itself.
+Swarm is markdown-only and has no runtime. Every "linter," "parser," or "checker" named here is a **contract** that a future tool builds against — not shipped code. APS defines what such a tool must accept, flag, or reject; it never executes anything itself. The [lint pass](../passes/lint.md) is where these prose checks are run against an artifact.
 
 ## 1. Doctrine: prose is a non-authoritative delivery layer
 
@@ -46,7 +46,7 @@ Good Swarm prose is **concrete, observable, atomic, scoped, verifiable, traceabl
 - **Observable:** `return`, `show`, `reject`, `record`, `persist`, `redirect`, `retry`, `deny`, `notify`, `log`, …
 - **Vague (high-risk):** `handle`, `support`, `manage`, `improve`, `optimize`, `streamline`, `enhance`, `modernize`, `clean up`, `make robust`.
 
-A vague action verb in prose is governed by the high-risk word rules (§3, §4 below).
+A vague action verb in prose is governed by the high-risk word rules (sections 3 and 4 below).
 
 ```text
 Bad (decorative, vague verb, no observable behavior):
@@ -131,11 +131,11 @@ Permitted via QUANTIFY (same-line measurable threshold):
 
 ## 5. APS rule families mapped to `SOL-P` codes
 
-Every APS rule family resolves to **exactly one** prose-layer lint code in the unified taxonomy: APS violations surface as `SOL-P` codes. This mapping is canonical. Full code definitions and the lint taxonomy (the S/P/M/V/O layers) live in [errors](errors.md).
+Every APS rule family resolves to **exactly one** prose-layer lint code in the unified taxonomy: APS violations surface as `SOL-P` codes. The earlier `APS-*` code prefix is retired; this `SOL-P` mapping is canonical and supersedes it. Full code definitions and the lint taxonomy (the S/P/M/V/O layers) live in [errors](errors.md).
 
 | APS rule family | `SOL-P` code | Severity | Repair op |
 |---|---|---|---|
-| Dangling condition (trigger, no modal consequence) | `SOL-P001` | BLOCKING | author rewrite |
+| Dangling condition (trigger, no modal consequence) | `SOL-P001` | BLOCKING | author rewrite / `NORMALIZE` |
 | Missing actor | `SOL-P002` | BLOCKING | `CONCRETIZE` |
 | Missing / informal modality (`should`→`SHOULD`) | `SOL-P003` | BLOCKING | `NORMALIZE` |
 | Bundled / overloaded obligation (connectives) | `SOL-P004` | BLOCKING | `ATOMIZE` |
@@ -174,3 +174,4 @@ No fixed "accuracy at N instructions" figure may be cited as a capability ceilin
 - [errors](errors.md) — the full S/P/M/V/O lint taxonomy and per-code definitions, including every `SOL-P` code mapped here.
 - [grammar](grammar.md) — SOL block grammar and the typed IR that load-bearing meaning lowers into.
 - [versioning](versioning.md) — how the high-risk catalogue's "closed for v0.1" set and its project extensions evolve.
+- [lint pass](../passes/lint.md) — the pass that runs these prose checks against an artifact and emits the `SOL-P` diagnostics.

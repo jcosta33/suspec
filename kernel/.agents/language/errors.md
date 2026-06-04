@@ -16,7 +16,7 @@ layer     = "S" | "P" | "M" | "V" | "O";
 number    = digit, digit, digit;          (* zero-padded, 3 digits *)
 ```
 
-One prefix (`SOL-`), exactly **five layers** (S/P/M/V/O), a three-digit number. `APS-` is **retired as a code prefix** — "APS" survives only as the *name* of the controlled-prose standard (the Agent Prose Semantics rules, see `./APS.md`) and MUST NOT appear in any code. Each layer is a 100-block, **append-only with tombstoning**: a retired code keeps its row marked `TOMBSTONED`, carries a `superseded-by` pointer where one exists, and its number is never reissued. The rationale is a single greppable namespace that stays stable across versions — numbers are never recycled, so a code always means one thing.
+One prefix (`SOL-`), exactly **five layers** (S/P/M/V/O), a three-digit number. There is a single code prefix: `SOL-`. `APS-` is **retired as a code prefix** — "APS" survives only as the *name* of the controlled-prose standard (the Agent Prose Semantics rules, see `./APS.md`) and MUST NOT appear in any code; prose violations surface as `SOL-P` codes. Each layer is a 100-block, **append-only with tombstoning**: a retired code keeps its row marked `TOMBSTONED`, carries a `superseded-by` pointer where one exists, and its number is never reissued. The rationale is a single greppable namespace that stays stable across versions — numbers are never recycled, so a code always means one thing.
 
 ### The five layers
 
@@ -25,7 +25,7 @@ Each layer maps 1:1 to a compiler phase/pass. A code's letter tells you the phas
 | Layer | Letter | Detects | Phase it guards | Gate it blocks at |
 |---|---|---|---|---|
 | SYNTAX | `S` | Parser-detectable well-formedness of a single block | `PARSE` | lint → lower gate |
-| PROSE | `P` | Controlled-prose / requirement-smell, single-obligation-local (the former APS layer; absorbs legacy `SOL-L###`) | `NORMALIZE` (lint / improve) | lint → lower gate |
+| PROSE | `P` | Controlled-prose / requirement-smell, single-obligation-local (the APS layer; subsumes the `SOL-L###` code scheme) | `NORMALIZE` (lint / improve) | lint → lower gate |
 | SEMANTIC | `M` | Cross-reference: duplicate id, contradiction, unbound ref | `NORMALIZE` | lint → lower gate |
 | VERIFICATION | `V` | Proof-binding: missing / stale / non-observable proof | `VERIFY` | merge gate |
 | ORCHESTRATION | `O` | Planning / parallelism: write-conflict, dep cycle, blocking `QUESTION` reaching lowering | `LOWER` (raised by the lower / decompose passes, surfaced by the lint gate) | merge gate |
@@ -124,7 +124,7 @@ The rationale: one config, two legal moves — strict-up freely, blocking-down o
 
 ## 3. The full catalogue
 
-Every v0.1 code, by layer, with `{code, severity, layer, message, resolves-by}`. "Resolves by" names a closed improve op (see `../passes/improve.md`) where one applies, otherwise a direct edit. Block types, modals, clauses, and metadata fields are defined in `./SOL.md`; the high-risk-word rules in `./APS.md`; the nine proof types in `../passes/verify.md` §5.1.
+Every v0.1 code, by layer, with `{code, severity, layer, message, resolves-by}`. "Resolves by" names a closed improve op (see `../passes/improve.md`) where one applies, otherwise a direct edit. Block types, modals, clauses, and metadata fields are defined in `./SOL.md`; the high-risk-word rules in `./APS.md`; the nine proof types in `../passes/verify.md`.
 
 ### 3.1 Layer S — SYNTAX (fire at `PARSE`; all BLOCKING)
 
@@ -197,7 +197,7 @@ The subject is the `VERIFY BY <type>:<adapter>:<artifact>[#selector]` binding (s
 | `SOL-V006` | BLOCKING | V | interface-without-contract: an `INTERFACE` whose `VERIFY BY` proof_type is not `contract`. | `BIND`: use `contract:` as the proof type for INTERFACE bindings. |
 | `SOL-V007` | BLOCKING | V | invalid-lifecycle-decoration: a lifecycle decorator applied to the wrong core value (e.g. `WAIVED` on a `PASS`/`BLOCKED`, or `STALE` on anything other than a prior `PASS`). | Edit: remove or correct the lifecycle decorator. |
 | `SOL-V008` | BLOCKING | V | missing-verdict-at-merge-gate: a required `VERIFY BY` binding has no `VERDICT` at the merge gate (counts as `UNVERIFIED`). | `BIND`: run the proof and record a verdict, or `WAIVE`. |
-| `SOL-V009` | BLOCKING | V | unknown-proof-type: a `verify_ref` whose `proof_type` is outside the closed 9-set (`static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`). | Edit: use one of the nine canonical proof types (see `../passes/verify.md` §5.1). |
+| `SOL-V009` | BLOCKING | V | unknown-proof-type: a `verify_ref` whose `proof_type` is outside the closed 9-set (`static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`). | Edit: use one of the nine canonical proof types (see `../passes/verify.md`). |
 | `SOL-V010` | BLOCKING | V | missing-human-authority: a high-oversight-band obligation carries a `manual`/`WAIVED` verdict with no named human authority. | Edit: record the human authority on the `manual @ REVIEW` verdict / waiver. |
 | `SOL-V011` | ADVISORY / BLOCKING | V | oracle-adequacy-unrecorded: a proof does not record what it exercised relative to the obligation predicate where one is required. ADVISORY by default; BLOCKING in strict mode for `RISK high`/`critical`. | Edit: add the `oracle_adequacy` record. |
 
@@ -245,13 +245,13 @@ The closed **10-op improve set** (see `../passes/improve.md`) is the canonical d
 
 ---
 
-## 6. Legacy translation table (old → new)
+## 6. Legacy-code translation table (old → new)
 
-`APS-` is retired; every legacy `APS-*` code, every flat legacy research code (`SOL00x`/`10x`/`20x`/`30x`), and every legacy layered code (`SOL-S00x`/`SOL-L1xx`/`SOL-M2xx`/`SOL-O3xx`/`SOL-V4xx`) remaps into `SOL-<LAYER><NNN>`. Legacy codes are **non-normative aliases retained for migration only** and MUST NOT appear in any conformant artifact. The mapping is one-way. The tables below are the authoritative remap.
+Swarm's diagnostic codes have passed through three prior code schemes before settling on the unified `SOL-<LAYER><NNN>` namespace: an `APS-*` prose-rule scheme, a flat research scheme (`SOL00x`/`10x`/`20x`/`30x`), and a layered research scheme (`SOL-S00x`/`SOL-L1xx`/`SOL-M2xx`/`SOL-O3xx`/`SOL-V4xx`). The `APS-` prefix is retired; every prior code remaps into `SOL-<LAYER><NNN>`. These prior codes are **non-normative aliases** and MUST NOT appear in any conformant artifact; they are recorded here only so a reader meeting an old code can resolve it. The mapping is one-way. The tables below are the authoritative remap.
 
 ### 6.1 APS family (retired prefix)
 
-| Legacy code | v0.1 code | Note |
+| Prior code | v0.1 code | Note |
 |---|---|---|
 | `APS-A001` | `SOL-P005` | vague-quality, no observable criterion |
 | `APS-A002` | `SOL-P050` | pronoun ambiguity |
@@ -266,11 +266,11 @@ The closed **10-op improve set** (see `../passes/improve.md`) is the canonical d
 | `APS-V001` | `SOL-V001` | no verification path |
 | `APS-X001` | `SOL-M002` | contradiction |
 
-### 6.2 Legacy flat research scheme (`SOL00x` / `10x` / `20x` / `30x`)
+### 6.2 Flat research scheme (`SOL00x` / `10x` / `20x` / `30x`)
 
 Allocation rule: flat `SOL00x`/`10x` → `SOL-S`; `SOL20x` → `SOL-M` (cross-ref) / `SOL-V` (proof) / `SOL-O` (planner); `SOL30x` → `SOL-P`.
 
-| Legacy code | v0.1 code | Note |
+| Prior code | v0.1 code | Note |
 |---|---|---|
 | `SOL001` | `SOL-S010` | invalid/missing frontmatter (metadata) |
 | `SOL002` | `SOL-S002` | unknown block type |
@@ -300,9 +300,9 @@ Allocation rule: flat `SOL00x`/`10x` → `SOL-S`; `SOL20x` → `SOL-M` (cross-re
 | `SOL306` | `SOL-O006` | imported-file policy overlap |
 | `SOL307` | `SOL-P052` / `SOL-P054` | overlong block body |
 
-### 6.3 Legacy layered research scheme (`SOL-S00x` / `SOL-L1xx` / `SOL-M2xx` / `SOL-O3xx` / `SOL-V4xx`)
+### 6.3 Layered research scheme (`SOL-S00x` / `SOL-L1xx` / `SOL-M2xx` / `SOL-O3xx` / `SOL-V4xx`)
 
-| Legacy code | v0.1 code | Note |
+| Prior code | v0.1 code | Note |
 |---|---|---|
 | `SOL-S001` | `SOL-S001` | trigger, no consequence (unchanged) |
 | `SOL-S002` | `SOL-S002` | unknown keyword / malformed block (unchanged) |
@@ -325,19 +325,19 @@ Allocation rule: flat `SOL00x`/`10x` → `SOL-S`; `SOL20x` → `SOL-M` (cross-re
 
 ### 6.4 Cross-layer re-layerings
 
-A handful of legacy codes change *layer* in v0.1 because their concern moved to a later phase. The whole legacy prose layer `SOL-L###` absorbs into `SOL-P###`.
+A handful of prior codes change *layer* in v0.1 because their concern moved to a later phase. The whole prior prose layer `SOL-L###` absorbs into `SOL-P###`.
 
-| Legacy code | v0.1 code | Re-layering |
+| Prior code | v0.1 code | Re-layering |
 |---|---|---|
 | `SOL-S007` | `SOL-V001` | verification → V |
-| `SOL-S010` (legacy) | `SOL-V005` | verdict-value check → V (the v0.1 `SOL-S010` slot is re-allocated to `unknown-metadata-field`) |
+| `SOL-S010` (prior) | `SOL-V005` | verdict-value check → V (the v0.1 `SOL-S010` slot is re-allocated to `unknown-metadata-field`) |
 | `SOL-S008` | `SOL-O003` | planner / blocking-QUESTION → O |
-| `SOL-M003` (legacy) | `SOL-V001` | proof-binding → V (the v0.1 `SOL-M003` slot is `unbound-cross-reference`) |
+| `SOL-M003` (prior) | `SOL-V001` | proof-binding → V (the v0.1 `SOL-M003` slot is `unbound-cross-reference`) |
 | `SOL-M007` | `SOL-V003` | proof-observability → V |
 | `SOL-M008` | `SOL-V004` | proof-staleness → V |
 | `SOL-M009` | `SOL-O001` | planner parallelism → O |
 
-**Splits by phase.** Where one legacy code maps to two v0.1 codes — e.g. `SOL101 → SOL-S001`/`SOL-P001`, `SOL201 → SOL-S004`/`SOL-M001` — the syntactic facet fires at `PARSE` (S) and the semantic/prose facet at `NORMALIZE` (P/M); a migration tool MUST emit both where both facets are present and MUST NOT collapse them. **Tombstoned** legacy codes (`SOL004` `:::END` removed; `SOL104` `ALWAYS`/`NEVER` removed from INVARIANT) have no successor. New-in-v0.1 codes `SOL-O005` and `SOL-S013` have no legacy alias.
+**Splits by phase.** Where one prior code maps to two v0.1 codes — e.g. `SOL101 → SOL-S001`/`SOL-P001`, `SOL201 → SOL-S004`/`SOL-M001` — the syntactic facet fires at `PARSE` (S) and the semantic/prose facet at `NORMALIZE` (P/M); a translator MUST emit both where both facets are present and MUST NOT collapse them. **Tombstoned** prior codes (`SOL004` `:::END` removed; `SOL104` `ALWAYS`/`NEVER` removed from INVARIANT) have no successor. New-in-v0.1 codes `SOL-O005` and `SOL-S013` have no prior alias.
 
 ---
 

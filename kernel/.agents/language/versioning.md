@@ -2,7 +2,7 @@
 
 > Swarm's reference for versioning: the two independent version axes, the one-way trigger between them, and the three version fields a reader sees in frontmatter and the IR.
 
-Swarm carries **two independent version axes**. Conflating them is a category error: one tracks the *meaning of the language*, the other tracks *the package that delivers it*. A conformant repo MUST track both and MUST NOT merge them into a single number (§1, §1.1).
+Swarm carries **two independent version axes**. Conflating them is a category error: one tracks the *meaning of the language*, the other tracks *the package that delivers it*. A conformant repo MUST track both and MUST NOT merge them into a single number (§1).
 
 This language is **version 0.1**. The framework package that delivers it carries its own semver, independent of that `0.1`.
 
@@ -30,7 +30,7 @@ This document is language `0.1`; later language epochs are `0.2`, then `1.0`.
 
 ### §1.2 — Framework / package version: "which kernel payload shipped this repo?"
 
-The framework version answers **"which kernel payload, templates, and pass guides shipped this repo?"** It is a single semver string in `kernel/.agents/.swarm-version`; an adopted project mirrors it as `.swarm/VERSION`. It is **never** written in per-file frontmatter (§4). The language axis is added *alongside* the package axis, not in place of it: the framework version file predates the per-file language fields, and both coexist — the version file tracks the package, the frontmatter tracks the grammar.
+The framework version answers **"which kernel payload, templates, and pass guides shipped this repo?"** It is a single semver string in `kernel/.agents/.swarm-version`; an adopted project mirrors it as `.swarm/VERSION`. It is **never** written in per-file frontmatter (§4). The language axis sits *alongside* the package axis, not in place of it: the framework version file predates the per-file language fields, and both coexist — the version file tracks the package, the frontmatter tracks the grammar.
 
 ## §2 — The one-way trigger
 
@@ -99,7 +99,7 @@ spec_version: 0.1.0       # spec content version (= meta.version in the IR)
 | `aps_version: 0.1` | (not echoed in IR; governs the `SOL-P…` prose lint layer) | Language |
 | `spec_version: 0.1.0` | `meta.version` | Spec content |
 
-**Conformance note.** Earlier draft templates write `swarm_language: 0.1` (a bare number). The normalized form is `swarm_language: SOL/0.1` (with the `SOL/` discriminator) plus a separate `spec_version`. A conformant repo MUST use the normalized form; a bare `swarm_language: 0.1` is a `SOL-S…`-class frontmatter diagnostic (the `SOL-S` structural lint layer; see `./errors.md`). The framework version is **never** written in per-file frontmatter — it lives only in the framework version file (`kernel/.agents/.swarm-version`; `.swarm/VERSION` in an adopted project).
+**Conformance note.** The canonical form is `swarm_language: SOL/0.1` (with the `SOL/` discriminator) plus a separate `spec_version`. A conformant repo MUST use this form; a bare `swarm_language: 0.1` (a number with no discriminator) is a `SOL-S…`-class frontmatter diagnostic (the `SOL-S` structural lint layer; see `./errors.md`). The framework version is **never** written in per-file frontmatter — it lives only in the framework version file (`kernel/.agents/.swarm-version`; `.swarm/VERSION` in an adopted project).
 
 ## Related
 

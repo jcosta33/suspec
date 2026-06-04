@@ -28,11 +28,11 @@ There is one master layering of the language:
 - **Surface** is English-shaped **UPPERCASE keywords** — what a human writes.
 - **IR** is **snake_case fields** — what a tool *emits*, never authored.
 
-Wherever the surface gives a keyword (`VERIFY BY`, `DEPENDS ON`, `OWNED BY`), the corresponding IR field (`verify_by`, `depends_on`, `owner`) is reserved for the IR layer and MUST NOT appear at the surface. A conformant SOL document is a Markdown document in which obligation content is expressed as SOL *blocks* interleaved with APS-controlled prose (the prose standard, not covered here).
+Wherever the surface gives a keyword (`VERIFY BY`, `DEPENDS ON`, `OWNED BY`), the corresponding IR field (`verify_by`, `depends_on`, `owner`) is reserved for the IR layer and MUST NOT appear at the surface. A conformant SOL document is a Markdown document in which obligation content is expressed as SOL *blocks* interleaved with APS-controlled prose (the prose standard; see [APS](APS.md)).
 
 ---
 
-## 2. Lexical and structural rules (§5)
+## 2. Lexical and structural rules
 
 ### 2.1 The block header — the one normative delimiter
 
@@ -99,7 +99,7 @@ SOL keywords are **UPPERCASE and case-sensitive**, and the keyword set is **clos
 | `SHOULD NOT` | Strong prohibition; REQUIRES a same-block `BECAUSE` or `EXCEPT`. |
 | `MAY` | Optional; carries no obligation. |
 
-`SHALL` / `SHALL NOT` are **not modals** (RFC 2119 makes `MUST` ≡ `REQUIRED` ≡ `SHALL`, so `SHALL` would be redundant). They are recognized only as **deprecated aliases**: a parser accepts them, `lint` flags them advisory (`SOL-P058`), and `NORMALIZE` rewrites them to `MUST`/`MUST NOT`. No template emits them.
+`SHALL` / `SHALL NOT` are **removed** (RFC 2119 makes `MUST` ≡ `REQUIRED` ≡ `SHALL`, so `SHALL` is redundant). They are recognized only as **deprecated aliases**: a parser accepts them, `lint` flags them advisory (`SOL-P058`), and `NORMALIZE` rewrites them to `MUST`/`MUST NOT`. No template emits them.
 
 `CAN` and `WILL` are **non-modal** (capability / prediction) and are **forbidden in binding clauses**; their use where a modal is expected is `SOL-P003` (BLOCKING).
 
@@ -154,7 +154,7 @@ imports: [session-core]
 # Spec: Auth refresh
 ```
 
-*Design rationale:* the three version axes are never merged — `swarm_language` (language), `spec_version` (content), and (when a tool exists) `provenance.compiler_version` (tool). The frontmatter carries the first two.
+*Design rationale:* the three version axes are never merged — `swarm_language` (language), `spec_version` (content), and (when a tool exists) `provenance.compiler_version` (tool). The frontmatter carries the first two; the version-axis model is detailed in [versioning.md](versioning.md).
 
 ### 2.7 Binding vs commentary
 
@@ -162,7 +162,7 @@ SOL blocks and APS prose coexist. Prose is **commentary**; a typed obligation bl
 
 ---
 
-## 3. The seven block types (§6)
+## 3. The seven block types
 
 SOL v0.1 defines **exactly seven block types**. Three carry **binding force** (the *obligation blocks*): `REQ`, `CONSTRAINT`, `INVARIANT`. The other four declare boundaries (`INTERFACE`), mark ambiguity (`QUESTION`), claim implementation (`TRACE`), or judge an obligation (`VERDICT`).
 
@@ -254,7 +254,7 @@ invariant_body = property, ws, ( "MUST" | "MUST NOT" ), ws, predicate, nl,
                  { metadata_clause };
 ```
 
-- `ALWAYS` and `NEVER` are **not INVARIANT keywords** (redundant with the block's always-held semantics; one-word-one-meaning). An author MUST NOT write them.
+- `ALWAYS` and `NEVER` are **removed** (redundant with the block's always-held semantics; one-word-one-meaning). An author MUST NOT write them.
 - An INVARIANT MUST NOT describe a one-time triggered behavior (that is a `REQ`).
 - It **PREFERS** a `property`, `model`, or `static` proof (those can assert a property over all states). Binding an INVARIANT *only* to a non-observable unit `test` is a `SOL-V003` warning.
 

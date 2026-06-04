@@ -57,7 +57,7 @@ The same separation prevents observed reality from masquerading as authored inte
 
 ## The counter-evidence: externalisation is not free
 
-The same research base that justifies externalised state also bounds it. A fabricated arXiv figure that circulates in the skill-authoring literature would purport to ground an upper bound (a claimed "21× degradation when file-state externalisation is removed"). That id was misattributed — it resolves to an unrelated condensed-matter physics paper — and it is **rejected**: it is not cited here, and its number is not repeated (see [sources.md § Rejected](sources.md#rejected--do-not-cite-fabricated--misattributed)). The bound is real; the figure was not.
+The same research base that justifies externalised state also bounds it. A fabricated arXiv figure that circulates in the skill-authoring literature would purport to ground an upper bound (a claimed "21× degradation when file-state externalisation is removed"). That id was misattributed — it resolves to an unrelated condensed-matter physics paper — and it is **rejected**: it is not cited here, and its number is not repeated (see [sources.md § Rejected](sources.md#rejected--do-not-cite-fabricated--misattributed--unconfirmed)). The bound is real; the figure was not.
 
 The verified bound is the **density / Lost-in-the-Middle tradeoff**. [LOSTMID](sources.md#LOSTMID) (*Lost in the Middle*, TACL 2024) establishes a U-shaped attention curve: a model retrieves information from the start and end of a long context far more reliably than from the middle. The implication for externalised state is direct and two-sided:
 

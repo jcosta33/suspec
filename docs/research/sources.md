@@ -38,6 +38,12 @@
 <a id="MINJA"></a>
 **[MINJA] Memory Injection Attacks on LLM Agents via Query-Only Interaction (MINJA).** Dong, Xu, He, Li, Tang, Liu, Liu, Xiang. **NeurIPS 2025**, arXiv:2503.03704. *Verified (June 2026, OpenReview + search).* A query-only attacker injects malicious records into an agent's memory (~98% injection success; ~70–77% downstream attack success) that later fire on benign queries. Grounds **threat-motivated design, not a measured reliability gain**: the epistemic-stance boundary — durable memory/findings carry stance + provenance so a lower-stance or injected record cannot masquerade as authoritative. *The attack is measured; Swarm's defense against it is design, not a measured delta.*
 
+<a id="SWEBENCH-ADQ"></a>
+**[SWEBENCH-ADQ] Are "Solved Issues" in SWE-bench Really Solved Correctly? An Empirical Study.** Wang, Pradel, Liu. **ICSE 2026**, arXiv:2503.15223. *Verified (June 2026, venue + finding; figures per audit O-0).* Differential patch testing (PatchDiff) finds **7.8%** of "passing" patches fail the developer suite, inflating reported resolution rates by **~6.2 absolute points** (a "~14.5 pt" figure is fabricated — do not cite). Grounds: oracle adequacy — passing the bundled suite overstates correctness; require a stronger/independent oracle (the `verify` rationale).
+
+<a id="UTBOOST"></a>
+**[UTBOOST] UTBoost: Rigorous Evaluation of Coding Agents on SWE-Bench.** Yu, Zhu, He, Kang. **ACL 2025** (Anthology 2025.acl-long.189), arXiv:2506.09289. *Verified (June 2026, ACL Anthology + finding).* Generated tests uncovered **345 erroneous patches** wrongly labeled passed, impacting **40.9%** of SWE-Bench Lite and **24.4%** of SWE-Bench Verified leaderboard entries. Grounds (with [SWEBENCH-ADQ]): independent corroboration of SWE-bench oracle inadequacy.
+
 ## Verified — reused from the kernel bibliography
 
 These were already verified by the framework's bibliography elsewhere; the entries below restate them so this layer is self-contained.
@@ -120,6 +126,18 @@ A web-verified arXiv preprint is stronger than a blog post but is **not peer-rev
 
 <a id="REPORTLOGIC"></a>
 **[REPORTLOGIC] Agent-report quality axis.** **arXiv:2602.18446** (preprint). *Verified (June 2026).* A primary quality axis of an agent's report is an explicit **claim → support** structure. Grounds: the evidence-before-conclusion / claim-must-carry-evidence rule for findings and audits.
+
+<a id="PLANCODER"></a>
+**[PLANCODER] Understanding and Bridging the Planner-Coder Gap.** Lyu et al. **arXiv:2510.10460** (preprint). *Verified (June 2026, audit O-0).* The planner→coder gap "accounts for **75.3%** of failures"; semantic-preserving input mutations break 7.9–83.3% of previously-solved problems; a monitor agent repairs 40–89%. Grounds: the planner→coder handoff is the dominant multi-agent code-gen failure surface (the `lint`/`lower` CLARIFY-gate rationale).
+
+<a id="VERINA"></a>
+**[VERINA] VERINA: Benchmarking Verifiable Code Generation.** Ye et al. **arXiv:2505.23135** / OpenReview (preprint; *not* ICML 2025). *Verified (June 2026, audit O-0).* On 189 Lean tasks the best model (o3) reached 72.6% code / 52.3% spec but **a mere 4.9% end-to-end proof success** (one trial). Grounds: one-shot LLM proof is near-total failure → staged/assisted verification (the `verify` rationale).
+
+<a id="VERICODING"></a>
+**[VERICODING] A Benchmark for Vericoding: Formally Verified Program Synthesis.** Bursuc et al. **arXiv:2509.22908** (preprint). *Verified (June 2026, audit O-0).* ~12,504 specs; best-approach success is **language-specific — Dafny 82% (68%→96% over a year), Verus 44%, Lean 27%**. Cite the language-specific framing only; do NOT generalize to "mechanized proof is no longer single-digit" (Lean is still 27%, consistent with [VERINA]'s 4.9%).
+
+<a id="HILBENCH"></a>
+**[HILBENCH] HiL-Bench: Do Agents Know When to Ask for Help?** **arXiv:2604.09408** (preprint; not yet peer-reviewed). *Verified (June 2026).* Frontier agents solve up to ~89% of SWE/SQL tasks with full info, but on messy/ambiguous specs the best model drops to **~24% even when given a tool to ask for help**. Grounds: agents don't reliably self-clarify → clarify-before-lower (the CLARIFY-gate rationale).
 
 <a id="SUPPORTING-PREPRINTS"></a>
 **[FOCUSEDCOT / PAPERTRAIL / REQ2LTL / SPECFIX] Supporting preprints** (mechanism-strong, number-weak): focused chain-of-thought (arXiv:2511.22176), provenance trails (arXiv:2602.21045), requirements→temporal-logic (arXiv:2512.17334), spec-repair (arXiv:2505.07270). *Verified directionally (June 2026).* Used only to corroborate the provenance / structured-frame direction; never load-bearing.

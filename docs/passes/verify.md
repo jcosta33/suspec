@@ -20,7 +20,7 @@ The verdict model is the confidence backbone: it is the only place that answers 
 
 ## 2. The seven-value verdict model (4 core + 3 lifecycle)
 
-The verdict vocabulary is **exactly seven values**, in two disjoint roles. A verdict carries **exactly one CORE value** and **zero or more LIFECYCLE decorators**. The four CORE values are the base; the three LIFECYCLE decorators *extend* them, never replace them.
+The verdict vocabulary is **exactly seven values**, in two disjoint roles. A verdict carries **exactly one CORE value** and **zero or more LIFECYCLE decorators**: 4 CORE values are the base, and 3 LIFECYCLE decorators extend them, never replace them.
 
 ### 2.1 The four CORE run results (mutually exclusive)
 
@@ -205,7 +205,7 @@ Keeping the *type* in the obligation and the *command* in `AGENTS.md` means the 
 
 An `INVARIANT` asserts a universal ("for all states, P holds") that a single example-based `test` cannot establish; an `INTERFACE` is a boundary contract whose proof must exercise `RETURNS`/`ACCEPTS`/`ERRORS`.
 
-`model` means model-checking OR an economical proof — bounded model checking, an SMT-discharged property, an exhaustive small-scope check, or any economical argument an oracle can replay. It MUST NOT be read as a mandate to discharge a full mechanized theorem per obligation: end-to-end per-obligation proof is unreliable at single trial (Lean proof success on the order of 5%) and verified-code synthesis is strongly language-specific — high for Dafny (roughly 82%, climbing from 68% to 96% over a year) but still low for Lean/Verus. When even `model` is infeasible, `manual` is the honest type.
+`model` means model-checking OR an economical proof — bounded model checking, an SMT-discharged property, an exhaustive small-scope check, or any economical argument an oracle can replay. It MUST NOT be read as a mandate to discharge a full mechanized theorem per obligation: end-to-end per-obligation proof is unreliable at single trial (4.9% Lean end-to-end proof success [[VERINA]](../research/sources.md#VERINA)) and verified-code synthesis is strongly language-specific — Dafny 82% (68%→96% over a year) but Verus 44% and Lean 27% [[VERICODING]](../research/sources.md#VERICODING). When even `model` is infeasible, `manual` is the honest type.
 
 ### 5.5 The proof-strength order
 
@@ -257,15 +257,15 @@ The phase tag (`@ VERIFY`, `@ NORMALIZE`, `@ REVIEW`, `@ LOWER`) names the pass 
 
 ### 5.7.1 The verification side of the task-kind contracts
 
-A default suite says *which* proof types a task kind expects; this note records *what those proofs must establish* for the three task kinds whose verification shape is non-obvious. Each is a design rationale, not a new lint rule — for the evidence behind the discipline, see [the evidence](../research/execution.md), and for the authoring side these contracts gate, cross-ref [`docs/passes/implement.md`](./implement.md).
+A default suite says *which* proof types a task kind expects; this note records *what those proofs must establish* for the three task kinds whose verification shape is non-obvious. Each is a design rationale, not a new lint rule — for the evidence behind the discipline, see [the execution research](../research/execution.md), and for the authoring side these contracts gate, see [the implement pass](./implement.md).
 
-- **`refactor` — the equivalence/characterization oracle.** A refactor preserves behaviour end to end, so its `test`-at-`VERIFY` proof is not "does the new code pass a suite" but "would this oracle *fail if behaviour changed*". An adequate refactor oracle is a characterization or equivalence check — golden-output, differential, or property — that pins the existing behaviour before the change and would break the instant any of it moved. A green suite that never asserted the preserved behaviour is necessary but not sufficient; its `oracle_adequacy` should record what surface it actually exercised (§6.1), and a high-risk refactor escalates per §6.2.
+- **`refactor` — the equivalence/characterization oracle.** A refactor preserves behaviour end to end, so its `test`-at-`VERIFY` proof is not "does the new code pass a suite" but "would this oracle *fail if behaviour changed*". An adequate refactor oracle is a characterization or equivalence check — golden-output, differential, or property — that pins the existing behaviour before the change and would break the instant any of it moved. A green suite that never asserted the preserved behaviour is necessary but not sufficient; its `oracle_adequacy` should record what surface it actually exercised (the adequacy record), and a high-risk refactor escalates under the stronger-oracle threshold for `RISK high|critical`.
 
 - **`rewrite` — the delta-plus-behaviour two-proof.** A rewrite is the one task kind where behaviour is *permitted* to change, so its verification splits along the recorded delta. The intended change carries an acceptance-criteria proof: each changed behaviour is an `AC` bound to a `test`/`manual` oracle that is shown valid (fails when the criterion is violated, passes when satisfied). Everything *outside* the delta carries a behaviour-preservation proof — an equivalence check that would fail if the unchanged surface moved. Both are required: the first shows the intended change was built; the second shows nothing else silently shifted, which is precisely the rewrite failure mode (an emergent change hiding under the licence to change).
 
 - **`performance` — the same-protocol baseline-and-target proof (`perf`).** A `perf` proof is meaningless without a baseline measured under the *same* protocol — identical warmup, sample count, statistical aggregate, hardware, environment, input shape, and cache state — as the target measurement. The verdict binds two readings taken the same way, not a single after-the-fact number; the recorded conditions are part of the evidence because the speedup only holds under them. A `perf` `PASS` does not waive the correctness suite: a faster wrong answer is still wrong, so `performance` also binds `test @ VERIFY`.
 
-The unifying discipline across all three (and every other suite) is **forced visible output** [[REFLEXION]](../research/sources.md#REFLEXION): a verdict's `EVIDENCE` must be inspectable. A "tests passed" claim with no command, exit code, run output, or selector resolution is not a proof — the verification step that produces no visible marker is the one that gets silently skipped, and an asserted-but-uninspectable result is recorded `UNVERIFIED`, never `PASS` (§5.8).
+The unifying discipline across all three (and every other suite) is **forced visible output** [[REFLEXION]](../research/sources.md#REFLEXION): a verdict's `EVIDENCE` must be inspectable. A "tests passed" claim with no command, exit code, run output, or selector resolution is not a proof — the verification step that produces no visible marker is the one that gets silently skipped, and an asserted-but-uninspectable result is recorded `UNVERIFIED`, never `PASS`.
 
 ### 5.8 What is NOT a proof
 
@@ -279,7 +279,7 @@ These MUST be rejected and MUST NOT yield `PASS`:
 
 ## 6. Oracle adequacy
 
-A `PASS` is only as trustworthy as the **oracle** that produced it — the decision procedure that says whether observed behaviour satisfies the obligation. A proof can pass against a *weak* oracle and still be wrong. This is not a corner case: on SWE-bench Verified, an estimated 7.8% of patches that pass the official developer-written suite are in fact incorrect, and the bundled tests inflate reported resolution rates by roughly 6 absolute percentage points; an independent audit found hundreds of patches mislabeled as passing, affecting around 41% of SWE-bench Lite and 24% of SWE-bench Verified leaderboard entries. The root issue is the **test-oracle problem** — a single concrete example cannot stand in for a universal predicate, and metamorphic/property-based pseudo-oracles are the principled response.
+A `PASS` is only as trustworthy as the **oracle** that produced it — the decision procedure that says whether observed behaviour satisfies the obligation. A proof can pass against a *weak* oracle and still be wrong. This is not a corner case: on SWE-bench Verified, 7.8% of patches that pass the official developer-written suite are in fact incorrect, and the bundled tests inflate reported resolution rates by ~6.2 absolute percentage points [[SWEBENCH-ADQ]](../research/sources.md#SWEBENCH-ADQ); an independent audit found 345 patches mislabeled as passing, affecting 40.9% of SWE-bench Lite and 24.4% of SWE-bench Verified leaderboard entries [[UTBOOST]](../research/sources.md#UTBOOST). The root issue is the **test-oracle problem** — a single concrete example cannot stand in for a universal predicate, and metamorphic/property-based pseudo-oracles are the principled response.
 
 So Swarm treats "the proof passed" as **necessary but not sufficient**: a proof MUST also record *what it exercised* relative to the obligation, and stronger obligations demand stronger oracles. This is a **contract, not shipped tooling**; the `SOL-V011` check is manual-today.
 
@@ -294,7 +294,7 @@ A `PASS` MUST carry an **adequacy record** — `oracle_adequacy`, one optional o
 | `evidence_path[]` | The surfaces the oracle actually executed/analysed — the *derived* exercised subset of `per_surface_hash[]` (its entries with `exercised: true`), not a separate stored field. The proof's footprint on the code. |
 | `adequacy_evidence[]` | Zero or more `{kind, ref[, value]}` records, `kind` ∈ `mutation` \| `metamorphic` \| `property` \| `coverage`, substantiating that the oracle is adequate for the predicate. |
 
-A missing `oracle_adequacy` object is permitted for `existential` predicates proven by `test`; it is a `SOL-V011` finding (oracle-adequacy-unrecorded) wherever §6.2 requires it.
+A missing `oracle_adequacy` object is permitted for `existential` predicates proven by `test`; it is a `SOL-V011` finding (oracle-adequacy-unrecorded) wherever a `RISK high|critical` obligation requires it.
 
 ### 6.2 Stronger obligations demand stronger oracles
 
@@ -302,14 +302,14 @@ For an obligation carrying `RISK high` or `RISK critical`, a single concrete `te
 
 | Obligation `RISK` | Adequate bound oracle |
 | --- | --- |
-| `low` \| `medium` | Any type per §5.4; `test` alone is acceptable. |
+| `low` \| `medium` | Any type per the per-block type-selection rules; `test` alone is acceptable. |
 | `high` \| `critical` | `property` \| `model`, OR a `test`/`contract` whose `oracle_adequacy.adequacy_evidence[]` carries `mutation` or `metamorphic` evidence. A bare concrete `test` with no adequacy evidence is `SOL-V011` (ADVISORY by default; BLOCKING in strict mode). |
 
 This is the `INVARIANT` type-preference generalised to consequence: an `INVARIANT` is flagged because a universal predicate outruns an example; a `RISK high|critical` obligation is flagged because the *cost of a missed defect* outruns an example. The fix in both cases is an oracle that ranges over more than one input, or explicit evidence the example-based oracle is hard to fool.
 
 ### 6.3 Adequacy is a prior that strength can be overridden by
 
-The proof-strength order (§5.5) is a **prior**, not a verdict: it ranks proof *types* by how much an oracle of that type typically establishes. The adequacy record refines that prior with evidence about *this* oracle. In a `CONTRADICTED` tie-break:
+The proof-strength order is a **prior**, not a verdict: it ranks proof *types* by how much an oracle of that type typically establishes. The adequacy record refines that prior with evidence about *this* oracle. In a `CONTRADICTED` tie-break:
 
 - Strength sets the **default** authoritative side.
 - Recorded `adequacy_evidence` **MAY override** the default *within the recorded contradiction*: a `test` carrying strong mutation/metamorphic evidence and an `evidence_path` covering the disputed surface MAY outrank a nominally-stronger proof that exercised neither — but the reviewer MUST record the override and its reason (the two `EVIDENCE` refs still apply). An override is a recorded judgment, never a silent re-rank, and never closes the contradiction on its own.
@@ -334,8 +334,8 @@ This is the single most important honesty constraint in Swarm, and it governs wh
 
 Three corollaries follow directly, each normative:
 
-- **Schema-valid output is not verification.** That a model emitted JSON matching a schema constrains *shape*, not *truth* (§5.8). Schema validation MAY be a gate *input*; it MUST NOT be presented as proof an obligation is met.
-- **Every completion claim maps to independent verification.** No obligation is `PASS` on the model's say-so; it is `PASS` only against an independent deterministic or evidentiary oracle (§4, §5).
+- **Schema-valid output is not verification.** That a model emitted JSON matching a schema constrains *shape*, not *truth*. Schema validation MAY be a gate *input*; it MUST NOT be presented as proof an obligation is met.
+- **Every completion claim maps to independent verification.** No obligation is `PASS` on the model's say-so; it is `PASS` only against an independent deterministic or evidentiary oracle — the merge gate over the proof taxonomy.
 - **A SOFT-control artifact MUST NOT define hard semantics.** No skill, persona/profile, or `AGENTS.md` section may define modality, authority order, or verification semantics — those live in SOL and the typed IR.
 
 The rationale is empirical: model adherence is probabilistic (prompt-format sensitivity, multi-turn reliability decay, lost-in-the-middle / context-rot), so a model is an unsound enforcement substrate. Only an external deterministic check can guarantee a property holds. Honesty about this boundary is what lets a Swarm verdict be trusted: the markdown layer makes an omission *conspicuous*; it cannot make a property *hold*.
@@ -362,16 +362,16 @@ Each row maps one `CONSTRAINT` / `INVARIANT` / stop-rule / secret-redaction rule
 | Deterministic home (eventual) | The PreToolUse hook / CI gate / permission deny-rule / schema validator that WILL enforce it when a harness exists. |
 | Status today | `manual review`, `aspirational`, or — only when a harness genuinely runs it — `enforced by <mechanism>`. |
 
-The four deterministic-home categories are exactly: **PreToolUse hook**, **CI gate**, **permission deny-rule**, **schema validator**. The lane MUST NOT mark any row `enforced` unless a deterministic check outside the model genuinely runs it; until then every hard-control obligation is honestly `manual review` or `aspirational`. The lane is the operational form of the boundary in §7: the merge gate of §4, the `SOL-V` lint diagnostics, the `RISK high|critical` oracle thresholds, and secret redaction are all hard-control obligations whose rows sit in this lane reading `manual review` or `aspirational` today.
+The four deterministic-home categories are exactly: **PreToolUse hook**, **CI gate**, **permission deny-rule**, **schema validator**. The lane MUST NOT mark any row `enforced` unless a deterministic check outside the model genuinely runs it; until then every hard-control obligation is honestly `manual review` or `aspirational`. The lane is the operational form of the soft/hard control boundary: the merge gate, the `SOL-V` lint diagnostics, the `RISK high|critical` oracle thresholds, and secret redaction are all hard-control obligations whose rows sit in this lane reading `manual review` or `aspirational` today.
 
 ---
 
 ## Related
 
-- **`docs/passes/lint.md`** — the `SOL-V` (VERIFICATION) lint layer in full, including the `SOL-V` codes referenced here (`V001`/`V002`/`V003`/`V005`/`V006`/`V007`/`V008`/`V009`/`V011`).
-- **`docs/reference/proof-types.md`** — the closed nine proof types and the `VERIFY BY` binding grammar, expanded.
-- **`docs/passes/review.md`** and **`docs/artifacts/review.md`** — `review.md`, the verdict container that holds the `VERDICT` blocks and the change-set-level merge-gate verdict.
-- **`docs/passes/promote.md`** — the merge gate as a promotion predicate and the promotion queue.
-- **`docs/artifacts/task.md`** — the task frame and its `task_kind` enum, which selects a default suite from §5.7.
-- **`docs/PRINCIPLES.md`** — the SOFT vs HARD control principle that §7–§8 operationalise for verification.
-- **`docs/artifacts/trace.md`** — the trace-provenance schema (the `oracle_adequacy` object and `per_surface_hash[]`) and the drift/staleness machinery the adequacy record links into.
+- [The `lint` pass](lint.md) — the `SOL-V` (VERIFICATION) lint layer in full, including the `SOL-V` codes referenced here (`V001`/`V002`/`V003`/`V005`/`V006`/`V007`/`V008`/`V009`/`V011`).
+- [Proof types (reference)](../reference/proof-types.md) — the closed nine proof types and the `VERIFY BY` binding grammar, expanded.
+- [The `review` pass](review.md) and [the `review` artifact](../artifacts/review.md) — `review.md`, the verdict container that holds the `VERDICT` blocks and the change-set-level merge-gate verdict.
+- [The `promote` pass](promote.md) — the merge gate as a promotion predicate and the promotion queue.
+- [The task frame](../artifacts/task.md) — the task frame and its `task_kind` enum, which selects a default suite for each task kind.
+- [Principles](../PRINCIPLES.md) — the SOFT vs HARD control principle that the soft/hard control boundary and enforcement-lane sections operationalise for verification.
+- [The trace artifact](../artifacts/trace.md) — the trace-provenance schema (the `oracle_adequacy` object and `per_surface_hash[]`) and the drift/staleness machinery the adequacy record links into.

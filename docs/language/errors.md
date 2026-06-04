@@ -1,6 +1,6 @@
 # Swarm Lint Codes — `SOL-<LAYER><NNN>` Error Reference
 
-This page is the complete v0.1 diagnostic catalogue for Swarm: every lint code, by layer, with its severity, defect, and the closed repair op that resolves it. It also fixes the diagnostic record shape, the SARIF lowering, and the severity-override and waiver discipline.
+This page is the complete v0.1 diagnostic catalogue for Swarm: every lint code, by layer, with its severity, defect, and the closed repair op that resolves it. It also fixes the diagnostic record shape, the SARIF lowering, the severity-override and waiver discipline, and the legacy-code translation table.
 
 Swarm is markdown-only and has no runtime. A *checker* that emits these codes is a **contract** a future `lint-spec` tool builds against — never shipped code in this repo. The codes here are what such a checker must produce and what conformant artifacts are graded against.
 
@@ -16,7 +16,7 @@ layer     = "S" | "P" | "M" | "V" | "O";
 number    = digit, digit, digit;          (* zero-padded, 3 digits *)
 ```
 
-One prefix (`SOL-`), exactly **five layers** (S/P/M/V/O), a three-digit number. There is a single code prefix: `SOL-`. "APS" is the *name* of the controlled-prose standard (the Agent Prose Semantics rules) and MUST NOT appear in any code; APS violations surface as `SOL-P` codes. Each layer is a 100-block, **append-only with tombstoning**: a retired code keeps its row marked `TOMBSTONED`, carries a `superseded-by` pointer where one exists, and its number is never reissued. The rationale is a single greppable namespace that stays stable across versions — numbers are never recycled, so a code always means one thing.
+One prefix (`SOL-`), exactly **five layers** (S/P/M/V/O), a three-digit number. There is a single code prefix: `SOL-`. `APS-` is **retired as a code prefix** — "APS" survives only as the *name* of the controlled-prose standard (the Agent Prose Semantics rules, see [APS](APS.md)) and MUST NOT appear in any code; prose violations surface as `SOL-P` codes. Each layer is a 100-block, **append-only with tombstoning**: a retired code keeps its row marked `TOMBSTONED`, carries a `superseded-by` pointer where one exists, and its number is never reissued. The rationale is a single greppable namespace that stays stable across versions — numbers are never recycled, so a code always means one thing.
 
 ### The five layers
 
@@ -25,7 +25,7 @@ Each layer maps 1:1 to a compiler phase/pass. A code's letter tells you the phas
 | Layer | Letter | Detects | Phase it guards | Gate it blocks at |
 |---|---|---|---|---|
 | SYNTAX | `S` | Parser-detectable well-formedness of a single block | `PARSE` | lint → lower gate |
-| PROSE | `P` | Controlled-prose / requirement-smell, single-obligation-local (the APS layer) | `NORMALIZE` (lint / improve) | lint → lower gate |
+| PROSE | `P` | Controlled-prose / requirement-smell, single-obligation-local (the APS layer; subsumes the `SOL-L###` code scheme) | `NORMALIZE` (lint / improve) | lint → lower gate |
 | SEMANTIC | `M` | Cross-reference: duplicate id, contradiction, unbound ref | `NORMALIZE` | lint → lower gate |
 | VERIFICATION | `V` | Proof-binding: missing / stale / non-observable proof | `VERIFY` | merge gate |
 | ORCHESTRATION | `O` | Planning / parallelism: write-conflict, dep cycle, blocking `QUESTION` reaching lowering | `LOWER` (raised by the lower / decompose passes, surfaced by the lint gate) | merge gate |
@@ -245,11 +245,107 @@ The closed **10-op [improve set](../passes/improve.md)** is the canonical detect
 
 ---
 
-## 6. Conformance
+## 6. Legacy-code translation table (old → new)
+
+Swarm's diagnostic codes have passed through three prior code schemes before settling on the unified `SOL-<LAYER><NNN>` namespace: an `APS-*` prose-rule scheme, a flat research scheme (`SOL00x`/`10x`/`20x`/`30x`), and a layered research scheme (`SOL-S00x`/`SOL-L1xx`/`SOL-M2xx`/`SOL-O3xx`/`SOL-V4xx`). The `APS-` prefix is retired; every prior code remaps into `SOL-<LAYER><NNN>`. These prior codes are **non-normative aliases** and MUST NOT appear in any conformant artifact; they are recorded here only so a reader meeting an old code can resolve it. The mapping is one-way. The tables below are the authoritative remap.
+
+### 6.1 APS family (retired prefix)
+
+| Prior code | v0.1 code | Note |
+|---|---|---|
+| `APS-A001` | `SOL-P005` | vague-quality, no observable criterion |
+| `APS-A002` | `SOL-P050` | pronoun ambiguity |
+| `APS-C001` | `SOL-M001` | actor/object incompleteness |
+| `APS-M001` | `SOL-P003` | informal modality |
+| `APS-O001` | `SOL-P004` | bundled/overloaded obligation |
+| `APS-P001` | `SOL-P054` | prose noise |
+| `APS-Q001` | `SOL-P008` | uncaptured behavioral uncertainty |
+| `APS-R001` | `SOL-P055` | redundancy |
+| `APS-S001` | `SOL-S012` | document-level section gap → required-section-missing (per-obligation scope gap stays `SOL-O004`) |
+| `APS-T001` | `SOL-M001` | traceability id → semantic completeness |
+| `APS-V001` | `SOL-V001` | no verification path |
+| `APS-X001` | `SOL-M002` | contradiction |
+
+### 6.2 Flat research scheme (`SOL00x` / `10x` / `20x` / `30x`)
+
+Allocation rule: flat `SOL00x`/`10x` → `SOL-S`; `SOL20x` → `SOL-M` (cross-ref) / `SOL-V` (proof) / `SOL-O` (planner); `SOL30x` → `SOL-P`.
+
+| Prior code | v0.1 code | Note |
+|---|---|---|
+| `SOL001` | `SOL-S010` | invalid/missing frontmatter (metadata) |
+| `SOL002` | `SOL-S002` | unknown block type |
+| `SOL003` | `SOL-S007` | invalid block id |
+| `SOL004` | — (TOMBSTONED) | `:::END` removed; bare-header form makes this moot |
+| `SOL005` | `SOL-S008` | first line not a control sentence |
+| `SOL006` | `SOL-S010` | unknown metadata field |
+| `SOL007` | `SOL-S010` | duplicate scalar field |
+| `SOL101` | `SOL-S001` / `SOL-P001` | `WHEN`/`IF` without consequence (syntax + prose companion) |
+| `SOL102` | `SOL-S001` | `THEN` without modal obligation |
+| `SOL103` | `SOL-S003` / `SOL-P003` | REQ lacks modal |
+| `SOL104` | — (TOMBSTONED) | `ALWAYS`/`NEVER` removed from INVARIANT |
+| `SOL105` | `SOL-S002` | malformed QUESTION |
+| `SOL201` | `SOL-S004` / `SOL-M001` | duplicate id (intra-spec → S004; cross-spec → M001) |
+| `SOL202` | `SOL-M003` | unresolved dependency reference |
+| `SOL203` | `SOL-O002` | dependency cycle |
+| `SOL204` | `SOL-V001` | missing verification binding |
+| `SOL205` | `SOL-O003` | blocking QUESTION unresolved at lowering |
+| `SOL206` | `SOL-M004` | authority conflict |
+| `SOL207` | `SOL-M002` | contradiction |
+| `SOL208` | `SOL-O001` | planner marks conflicting tasks parallel |
+| `SOL301` | `SOL-P005` | ambiguous adjective/adverb |
+| `SOL302` | `SOL-P005` | unverifiable wording |
+| `SOL303` | `SOL-P004` | low singularity (multiple obligations) |
+| `SOL304` | `SOL-O004` | missing owner/priority (scope/governance) |
+| `SOL305` | `SOL-O004` | scope too broad for planning |
+| `SOL306` | `SOL-O006` | imported-file policy overlap |
+| `SOL307` | `SOL-P052` / `SOL-P054` | overlong block body |
+
+### 6.3 Layered research scheme (`SOL-S00x` / `SOL-L1xx` / `SOL-M2xx` / `SOL-O3xx` / `SOL-V4xx`)
+
+| Prior code | v0.1 code | Note |
+|---|---|---|
+| `SOL-S001` | `SOL-S001` | trigger, no consequence (unchanged) |
+| `SOL-S002` | `SOL-S002` | unknown keyword / malformed block (unchanged) |
+| `SOL-S003` | `SOL-S003` | actor-clause modal check (singularity warning is now `SOL-P004`) |
+| `SOL-S004` | `SOL-S004` | duplicate id (unchanged) |
+| `SOL-L101` | `SOL-P005` | subjective/promotional term (`SOL-L → SOL-P`) |
+| `SOL-L102` | `SOL-P005` | ambiguous qualifier / loophole |
+| `SOL-L103` | `SOL-P050` | vague pronoun |
+| `SOL-L104` | `SOL-P004` | bundled obligation |
+| `SOL-L105` | `SOL-P051` | passive voice |
+| `SOL-M201` | `SOL-M001` | unresolved actor/term/surface |
+| `SOL-M202` | `SOL-M002` | contradiction |
+| `SOL-M203` | `SOL-V001` | missing `VERIFY BY` (re-layered S/M → V) |
+| `SOL-M204` | `SOL-O005` / `SOL-V001` | declared write surface missing |
+| `SOL-M205` | `SOL-O002` | dependency cycle |
+| `SOL-O001` | `SOL-O001` | parallel write-surface conflict (severity raised to BLOCKING) |
+| `SOL-V401` | `SOL-V001` | proof missing / not executable |
+| `SOL-V402` | `SOL-V004` | stale proof (→ `STALE` verdict) |
+| `SOL-V403` | `SOL-V003` | non-observable proof |
+
+### 6.4 Cross-layer re-layerings
+
+A handful of prior codes change *layer* in v0.1 because their concern moved to a later phase. The whole prior prose layer `SOL-L###` absorbs into `SOL-P###`.
+
+| Prior code | v0.1 code | Re-layering |
+|---|---|---|
+| `SOL-S007` | `SOL-V001` | verification → V |
+| `SOL-S010` (prior) | `SOL-V005` | verdict-value check → V (the v0.1 `SOL-S010` slot is re-allocated to `unknown-metadata-field`) |
+| `SOL-S008` | `SOL-O003` | planner / blocking-QUESTION → O |
+| `SOL-M003` (prior) | `SOL-V001` | proof-binding → V (the v0.1 `SOL-M003` slot is `unbound-cross-reference`) |
+| `SOL-M007` | `SOL-V003` | proof-observability → V |
+| `SOL-M008` | `SOL-V004` | proof-staleness → V |
+| `SOL-M009` | `SOL-O001` | planner parallelism → O |
+
+**Splits by phase.** Where one prior code maps to two v0.1 codes — e.g. `SOL101 → SOL-S001`/`SOL-P001`, `SOL201 → SOL-S004`/`SOL-M001` — the syntactic facet fires at `PARSE` (S) and the semantic/prose facet at `NORMALIZE` (P/M); a translator MUST emit both where both facets are present and MUST NOT collapse them. **Tombstoned** prior codes (`SOL004` `:::END` removed; `SOL104` `ALWAYS`/`NEVER` removed from INVARIANT) have no successor. New-in-v0.1 codes `SOL-O005` and `SOL-S013` have no prior alias.
+
+---
+
+## 7. Conformance
 
 A conformant `lint-spec` checker (a contract, never shipped code) MUST: (1) emit only `SOL-<LAYER><NNN>` codes; (2) emit the diagnostic record shape defined above; (3) apply the default severities here, overridable only through the recorded `swarm.config` waiver schema; (4) never reuse a tombstoned number; (5) name a closed [improve op](../passes/improve.md) in `suggest` wherever one applies. The [conformance model](../model/conformance.md) sets the wider contract these obligations sit inside.
 
-A curated good/bad golden corpus makes the `SOL-P` rules' precision and recall measurable. The target is an aspirational ≥0.90 precision / ≥0.85 recall — set deliberately above the field-measured ceiling for lightweight automated requirement-smell detection (roughly 59% precision / 82% recall, with high variation), and a design goal, not an achieved result.
+A curated good/bad golden corpus makes the `SOL-P` rules' precision and recall measurable. The target is an aspirational ≥0.90 precision / ≥0.85 recall — set deliberately above the field-measured ceiling for lightweight automated requirement-smell detection (roughly 59% precision / 82% recall, with high variation [[SMELLS]](../research/sources.md#SMELLS)), and a design goal, not an achieved result.
 
 Two scope limits hold in v0.1, by design: `SOL-M002` contradiction fires on **exact-key match only** — paraphrase/entailment contradiction is out of scope and may at most surface as an advisory judge-rendered diagnostic; and the IR `level: note` value has **no surface producer**, reserved for a future emitter.
 

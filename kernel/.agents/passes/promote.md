@@ -18,7 +18,7 @@ The model is **two-tier and provenance-anchored**. Rationale: chat transcripts a
 | Input | the task's discoveries + the resolved-or-pending promotion queue |
 | Output | durable writes to `.swarm/memory/` and `.swarm/sources/` (plus the `AGENTS.md` pointer case) and a fully-resolved promotion queue |
 | Close gate | a task MUST NOT close while any promotion item is `pending` |
-| Ships a stdlib pass guide in v0.1? | **Yes** — `promote` ships a dedicated pass guide (`../skills/pass-promote-findings/SKILL.md`), alongside dedicated guides for `lint`, `decompose`, and `review[profile: skeptic]`; `implement` is served by the nine per-kind implement guides and `author` by the six author guides |
+| Ships a stdlib pass guide in v0.1? | **Yes** — `promote` ships a dedicated pass guide (`../skills/pass-promote-findings/SKILL.md`), as do `lint`, `decompose`, and `review[profile: skeptic]`; `implement` is served by the nine per-`task_kind` guides, `author` by the six author guides, and `verify` by the `empirical-proof` fragment; `improve` and `lower` ship none |
 
 ## The two-tier memory model
 
@@ -28,7 +28,7 @@ The model is **two-tier and provenance-anchored**. Rationale: chat transcripts a
 
 | Artifact | Role | Discipline |
 |---|---|---|
-| `memory/INDEX.md` | A **map of links, not explanations**; links into Tier-2, never duplicates bodies | Every entry MUST carry a **`Load when`** condition (the trigger telling a future agent the entry is relevant). The **load-when discipline**: an entry that cannot name *when it matters* MUST be removed — it is dead weight against the loss budget and density cap. |
+| `memory/INDEX.md` | A **map of links, not explanations**; links into Tier-2, never duplicates bodies | Every entry MUST carry a **`Load when`** condition (the trigger telling a future agent the entry is relevant). The **load-when discipline**: an entry that cannot name *when it matters* MUST be removed — it is dead weight against the loss budget and the always-loaded density cap, since attention degrades for information buried in a long context. |
 | `memory/glossary.md` | One word, one meaning (controlled vocabulary: each term resolves to a single sense so agents never disambiguate at read time) | Each entry binds exactly one term to one definition; a contested term is **split**, never overloaded. An in-file `TERM` in a spec takes precedence over the glossary for that spec. |
 
 ### Tier-2 — the immutable evidence store (the territory)
@@ -98,7 +98,7 @@ Two consequences hold across every row. First, weakening an obligation is forbid
 
 ### G9 — "universal workflow rule" promotions never inline procedure
 
-A universal-workflow-rule promotion collides with the ≤200-line bootloader cap and the fact/procedure split: only persistent **facts** belong in `AGENTS.md`; **procedures** belong in pass guides. The kernel resolves it normatively:
+A universal-workflow-rule promotion collides with the ≤200-line bootloader cap and the fact/procedure split: only persistent **facts** belong in `AGENTS.md`; **procedures** belong in pass guides. Swarm resolves it normatively:
 
 | Where it goes | What goes there |
 |---|---|
@@ -109,25 +109,30 @@ A universal-workflow-rule promotion collides with the ≤200-line bootloader cap
 
 ## Validation and rollback (memory governance)
 
-Authorization is not validation. A memory write MUST pass consistency verification before consolidation, not merely owner approval; the named failure points are poisoning at ingestion, semantic drift at consolidation, and conflict/hallucination at retrieval. The v0.1 forward-only `pending -> promoted` model addresses none of these, so two additions close the gap:
+Authorization is not validation. A memory write MUST pass consistency verification before consolidation, not merely owner approval — owner sign-off establishes *who* may write, never *whether the fact holds*. Three failure points motivate the rule: poisoning at ingestion (a bad fact entering the store), semantic drift at consolidation (a fact's meaning bending as it merges with others), and conflict/hallucination at retrieval (a recalled fact contradicting the store or inventing detail). The v0.1 forward-only `pending -> promoted` model addresses none of these, so two additions close the gap:
 
-- **`validated`.** A high-consequence promotion MUST pass `pending -> validated -> promoted`, where `validated` requires **independent corroboration** — a second finding, a re-run proof, or a reviewer who is not the promoting agent (generalizing the two-finding rule for patterns). A `pending` finding from an externally-authored source (the untrusted-source boundary, since an attacker-supplied `AGENTS.md` or rules file is a known prompt-injection / memory-poisoning vector) MUST NOT skip `validated`.
-- **`rolled-back`.** A promoted finding later shown poisoned, `CONTRADICTED`, or `STALE` MUST be withdrawable, recording a **retraction entry in `memory/INDEX.md`** — not a silent delete, so the chain stays auditable (immutable record discipline) — and re-opening any obligation it had narrowed. Supersession replaces a fact with a better one; rollback withdraws a fact that should never have been promoted.
+- **`validated`.** A high-consequence promotion MUST pass `pending -> validated -> promoted`, where `validated` requires **independent corroboration** — a second finding, a re-run proof, or a reviewer who is not the promoting agent (generalizing the two-finding rule for patterns). A `pending` finding from an externally-authored source MUST NOT skip `validated`: this is the untrusted-source boundary — an agent file, rules file, or `AGENTS.md` supplied outside the project is a known prompt-injection / memory-poisoning vector, so its claims cannot be trusted on authorship alone.
+- **`rolled-back`.** A promoted finding later shown poisoned, `CONTRADICTED`, or `STALE` (the verdict decorators the `review` pass attaches) MUST be withdrawable, recording a **retraction entry in `memory/INDEX.md`** — not a silent delete, so the chain stays auditable (immutable-record discipline, the Nygard sense) — and re-opening any obligation it had narrowed. Supersession replaces a fact with a better one; rollback withdraws a fact that should never have been promoted.
 
 ## Staleness
 
-A finding's `status` enum is `candidate | accepted | promoted | rejected | stale | superseded`. A finding becomes **`stale`** when its `content_hash` no longer matches the cited source/surfaces — the same drift signal behind the `STALE` verdict decorator and the spec↔code reconcile. A `stale` finding MUST NOT be relied on as authority; it routes to re-verification or supersession. A `superseded` finding records its replacement in the INDEX stale/superseded table. The kernel ships the **fields** that make staleness computable (`content_hash`, `origin_traces`); it does **not** ship the comparator — recomputing the hash and flipping `accepted -> stale` is a harness/CLI concern, aspirational/manual today (every pass is a contract with no runtime).
+A finding's `status` enum is `candidate | accepted | promoted | rejected | stale | superseded`. A finding becomes **`stale`** when its `content_hash` no longer matches the cited source/surfaces — the same drift signal behind the `STALE` verdict decorator and the spec↔code reconcile. A `stale` finding MUST NOT be relied on as authority; it routes to re-verification or supersession. A `superseded` finding records its replacement in the INDEX stale/superseded table. The kernel ships the **fields** that make staleness computable (`content_hash`, `origin_traces`); it does **not** ship the comparator — recomputing the hash and flipping `accepted -> stale` is a harness/CLI concern, aspirational/manual today (every pass is a contract with no runtime, never code this repo runs).
 
 ## Deferred to post-v0.1
 
 Each of these needs a runtime Swarm does not ship: embedding / dense-vector retrieval; LRU (or any automatic) eviction; automatic staleness hashing (fields shipped, comparator deferred); cross-session agent identity; memory dashboards / analytics. v0.1 ships the two-tier file model, the provenance fields, the promotion statuses, and the `Load when` discipline — automation builds against them later.
 
-The exact `validated`-corroboration procedure (what counts as a "second finding" vs a "re-run proof" vs an "independent reviewer") fixes the requirement here, not a step-by-step recipe; the `promote` stdlib pass guide supplies that. The mechanics of the staleness comparator (recompute, compare, flip) are deferred to a harness/CLI; the kernel ships only the fields.
+This file fixes the *requirements* of the pass, not its step-by-step procedure — the spec-vs-procedure boundary. The exact `validated`-corroboration procedure (what counts as a "second finding" vs a "re-run proof" vs an "independent reviewer") is bound here as a requirement; the `promote` stdlib pass guide supplies the recipe. The mechanics of the staleness comparator (recompute, compare, flip) are likewise deferred to a harness/CLI; this file ships only the fields that make them computable.
 
 ## Related
 
 Sibling payload files under `kernel/.agents/`:
 
-- `../passes/author.md` and `../passes/lint.md` — the other passes in the nine-pass pipeline.
+- `../passes/author.md` and `../passes/lint.md` — the start of the pipeline, where promoted intent re-enters as obligations.
+- `../passes/review.md` — the pass before `promote`; its verdicts (`CONTRADICTED`, `STALE`) feed the rollback path.
+- `../passes/verify.md` — produces the traces and proofs that become a finding's evidence and corroboration.
+- `../passes/implement.md` — where universal-workflow-rule procedures land under the G9 tie-break.
+- `../language/SOL.md` — the lint codes (`SOL-M004`, `SOL-P006`, `SOL-P057`) this pass resolves or routes to amendment.
+- `../skills/pass-promote-findings/SKILL.md` — the `promote` stdlib pass guide (the step-by-step procedure this file's requirements bind).
 - `../templates/spec.swarm.md` — the spec container a "new intended behaviour" promotion writes into.
 - `../skills/persona-skeptic/SKILL.md` — the heuristic profile named in `review[profile: skeptic]` provenance.

@@ -46,7 +46,7 @@ Good Swarm prose is **concrete, observable, atomic, scoped, verifiable, traceabl
 - **Observable:** `return`, `show`, `reject`, `record`, `persist`, `redirect`, `retry`, `deny`, `notify`, `log`, …
 - **Vague (high-risk):** `handle`, `support`, `manage`, `improve`, `optimize`, `streamline`, `enhance`, `modernize`, `clean up`, `make robust`.
 
-A vague action verb in prose is governed by the high-risk word rules (§3, §4 below).
+A vague action verb in prose is governed by the high-risk word rules (sections 3 and 4 below).
 
 ```text
 Bad (decorative, vague verb, no observable behavior):
@@ -92,7 +92,7 @@ It is **closed for v0.1**: these families are the lint-checked set. A project MA
 
 | Family | Examples (non-exhaustive within family) | Default lint |
 |---|---|---|
-| Subjective / promotional | `robust`, `clean`, `simple`, `intuitive`, `user-friendly`, `modern`, `seamless`, `flexible`, `elegant`, `polished`, `correct`, `appropriate`, `proper`, `reasonable` | `SOL-P005` |
+| Subjective / promotional | `robust`, `clean`, `simple`, `intuitive`, `user-friendly`, `easy to use`, `modern`, `seamless`, `flexible`, `elegant`, `beautiful`, `polished`, `nice`, `flamboyant`, `innovative`, `world-class`, `correct`, `appropriate`, `proper`, `reasonable` | `SOL-P005` |
 | Non-verifiable quality | `fast`, `performant`, `scalable`, `secure`, `safe`, `reliable`, `consistent`, `graceful`, `sufficient`, `adequate` | `SOL-P005` |
 | Vague action verbs | `handle`, `support`, `manage`, `improve`, `optimize`, `enhance`, `streamline`, `modernize`, `clean up`, `make robust` | `SOL-P005` |
 | Loopholes | `as far as possible`, `if practical`, `where feasible`, `if possible`, `to the extent practicable` | `SOL-P005` |
@@ -131,7 +131,7 @@ Permitted via QUANTIFY (same-line measurable threshold):
 
 ## 5. APS rule families mapped to `SOL-P` codes
 
-Every APS rule family resolves to **exactly one** prose-layer lint code in the unified taxonomy. The legacy `APS-*` codes are retired; this mapping is canonical and supersedes them. Full code definitions and the lint taxonomy (the S/P/M/V/O layers) live in [errors](errors.md).
+Every APS rule family resolves to **exactly one** prose-layer lint code in the unified taxonomy: APS violations surface as `SOL-P` codes. The earlier `APS-*` code prefix is retired; this `SOL-P` mapping is canonical and supersedes it. Full code definitions and the lint taxonomy (the S/P/M/V/O layers) live in [errors](errors.md).
 
 | APS rule family | `SOL-P` code | Severity | Repair op |
 |---|---|---|---|
@@ -170,7 +170,7 @@ No fixed "accuracy at N instructions" figure may be cited as a capability ceilin
 
 ## Related
 
-- [SOL](SOL.md) — the obligation language APS prose surrounds; the `REQ`/`CONSTRAINT`/`INVARIANT` blocks that make a span BINDING, plus the SOL block grammar and the typed IR that load-bearing meaning lowers into.
-- [errors](errors.md) — the full S/P/M/V/O lint taxonomy and per-code definitions, including every `SOL-P` code mapped here.
-- [versioning](versioning.md) — how the high-risk catalogue's "closed for v0.1" set and its project extensions evolve.
-- [lint pass](../passes/lint.md) — the pass that runs these prose checks against an artifact and emits the `SOL-P` diagnostics.
+- `./SOL.md` — the obligation language APS prose surrounds; the `REQ`/`CONSTRAINT`/`INVARIANT` blocks that make a span BINDING, plus the SOL block grammar and the typed IR that load-bearing meaning lowers into.
+- `./errors.md` — the full S/P/M/V/O lint taxonomy and per-code definitions, including every `SOL-P` code mapped here.
+- `./versioning.md` — how the high-risk catalogue's "closed for v0.1" set and its project extensions evolve.
+- `../passes/lint.md` — the pass that runs these prose checks against an artifact and emits the `SOL-P` diagnostics.

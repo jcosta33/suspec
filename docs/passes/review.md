@@ -4,25 +4,25 @@
 
 `review` is the eighth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This page is the reference for that single pass.
 
-Like every Swarm pass, `review` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. Nothing here is shipped code (§2, Principle 1). Every "gate", "check", or "enforcement" named below is **manual today** — a deterministic home a future harness MUST provide, never a thing Swarm runs (§17.1).
+Like every Swarm pass, `review` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. Nothing here is shipped code (Principle 1: no runtime). Every "gate", "check", or "enforcement" named below is **manual today** — a deterministic home a future harness MUST provide, never a thing Swarm runs.
 
 ## What the pass does
 
-The `review` pass **renders the merge-gate judgment**: it compares trace claims against the obligations they purport to satisfy, records one `VERDICT` per required proof binding, and decides — for the whole change set — whether promotion is permitted. Its single durable artifact is `review.md`, and **that artifact *is* the verdict record** (§14.5, §21.5). The kernel ships **no** `verdict.md`; a repo that records verdicts in a standalone `verdict.md` is non-conformant (§14.5).
+The `review` pass **renders the merge-gate judgment**: it compares trace claims against the obligations they purport to satisfy, records one `VERDICT` per required proof binding, and decides — for the whole change set — whether promotion is permitted. Its single durable artifact is `review.md`, and **that artifact *is* the verdict record**. The kernel ships **no** `verdict.md`; a repo that records verdicts in a standalone `verdict.md` is non-conformant.
 
 | Aspect | Value |
 |---|---|
-| Phase (§the pipeline) | **REVIEW** |
-| Input artifacts | `trace.md` (implementation claims), the `spec.swarm.md` obligations, recorded verification evidence (§15), diffs |
+| Phase | **REVIEW** |
+| Input artifacts | `trace.md` (implementation claims), the `spec.swarm.md` obligations, recorded verification evidence (see [`verify`](verify.md)), diffs |
 | Output artifact | `review.md` — the canonical container of `VERDICT` blocks |
-| Default proof suite for the `review` task kind (§15.8) | `manual @ REVIEW` over the recorded evidence; re-run of the bound `cmd*` proofs |
-| Lint layer (§14.3) | `SOL-V` (VERIFICATION) — well-formedness of verdicts |
+| Default proof suite for the `review` task kind | `manual @ REVIEW` over the recorded evidence; re-run of the bound `cmd*` proofs |
+| Lint layer | `SOL-V` (VERIFICATION) — well-formedness of verdicts (see [`lint`](lint.md)) |
 
 ## The verdict vocabulary it records
 
-`review` records **verdicts**, and the verdict vocabulary is **exactly seven values**, partitioned into two disjoint roles: a verdict carries exactly **one CORE** value and **zero or more LIFECYCLE** decorators (§14.1).
+`review` records **verdicts**, and the verdict vocabulary is **exactly seven values**, partitioned into two disjoint roles: a verdict carries exactly **one CORE** value and **zero or more LIFECYCLE** decorators.
 
-The **four CORE run results** are mutually exclusive — one bound proof, on one run, lands in exactly one (§14.1.1):
+The **four CORE run results** are mutually exclusive — one bound proof, on one run, lands in exactly one:
 
 | CORE | Meaning |
 |---|---|
@@ -31,9 +31,9 @@ The **four CORE run results** are mutually exclusive — one bound proof, on one
 | `BLOCKED` | A bound proof could not run (missing prerequisite, tool, adapter, environment, or fixture). The truth is *unknown*, not false. |
 | `UNVERIFIED` | No acceptable proof was bound, or a binding exists but no run was attempted. |
 
-`BLOCKED` and `UNVERIFIED` MUST NOT be conflated: `BLOCKED` is an environment fix, `UNVERIFIED` is a binding/execution gap. A reviewer who cannot tell which applies MUST record `UNVERIFIED` (the weaker, more honest claim) (§14.1.1).
+`BLOCKED` and `UNVERIFIED` MUST NOT be conflated: `BLOCKED` is an environment fix, `UNVERIFIED` is a binding/execution gap. A reviewer who cannot tell which applies MUST record `UNVERIFIED` (the weaker, more honest claim).
 
-The **three LIFECYCLE decorators** annotate a core value with a governance fact that arises *after* or *around* the run (§14.1.2):
+The **three LIFECYCLE decorators** annotate a core value with a governance fact that arises *after* or *around* the run:
 
 | LIFECYCLE | Decorates | Mandatory fields |
 |---|---|---|
@@ -41,19 +41,19 @@ The **three LIFECYCLE decorators** annotate a core value with a governance fact 
 | `STALE` | a prior `PASS` only | prior-verdict ref, changed-surface |
 | `CONTRADICTED` | any core value | two conflicting evidence refs |
 
-`WAIVED` MUST decorate only `FAIL`/`UNVERIFIED` (there is no reason to waive a `PASS`); `STALE` MUST decorate only a prior `PASS` (a `FAIL`/`BLOCKED`/`UNVERIFIED` was never trusted, so it cannot go stale); `CONTRADICTED` MAY decorate any core, because contradiction is a relationship between *two* evidence sources (§14.1.2).
+`WAIVED` MUST decorate only `FAIL`/`UNVERIFIED` (there is no reason to waive a `PASS`); `STALE` MUST decorate only a prior `PASS` (a `FAIL`/`BLOCKED`/`UNVERIFIED` was never trusted, so it cannot go stale); `CONTRADICTED` MAY decorate any core, because contradiction is a relationship between *two* evidence sources.
 
-The verdict line grammar is `VERDICT <id>: <CORE> [(<lifecycle> by <authority>: <reason>)]`, with `<id>` reusing the judged obligation's surface id (`AC-001`, `C-001`, `I-001`, `IF-001`), followed by `REASON` and one or more `EVIDENCE` clauses (§14.2). A `QUESTION` is never judged; a `TRACE` is the *input* to judgment; a `VERDICT` *is* the recorded judgment (§14).
+The verdict line grammar is `VERDICT <id>: <CORE> [(<lifecycle> by <authority>: <reason>)]`, with `<id>` reusing the judged obligation's surface id (`AC-001`, `C-001`, `I-001`, `IF-001`), followed by `REASON` and one or more `EVIDENCE` clauses. A `QUESTION` is never judged; a `TRACE` is the *input* to judgment; a `VERDICT` *is* the recorded judgment.
 
 ## The merge gate (the one normative predicate)
 
-The **merge gate** is the single normative predicate that decides whether a change set may be promoted. It is evaluated over the set of **required** obligations — every `REQ`, `CONSTRAINT`, `INVARIANT`, and `INTERFACE` in scope, each with its required `VERIFY BY` bindings (§14.4).
+The **merge gate** is the single normative predicate that decides whether a change set may be promoted. It is evaluated over the set of **required** obligations — every `REQ`, `CONSTRAINT`, `INVARIANT`, and `INTERFACE` in scope, each with its required `VERIFY BY` bindings.
 
-> **Merge gate (normative, §14.4).** A change set MAY be promoted **if and only if**, for **every required `VERIFY BY` binding** of every required obligation, the binding's latest verdict is `PASS` or `WAIVED`, **and none** is `STALE`, `CONTRADICTED`, `FAIL`, `BLOCKED`, or `UNVERIFIED`. "Latest" is the verdict from the most recent recorded run for that binding.
+> **Merge gate (normative).** A change set MAY be promoted **if and only if**, for **every required `VERIFY BY` binding** of every required obligation, the binding's latest verdict is `PASS` or `WAIVED`, **and none** is `STALE`, `CONTRADICTED`, `FAIL`, `BLOCKED`, or `UNVERIFIED`. "Latest" is the verdict from the most recent recorded run for that binding.
 
-There is **one `VERDICT` per required `VERIFY BY` binding** (§15.7): an obligation with three required bindings contributes three verdicts, and *all* must pass-or-waive. The node-level `status` is the **aggregate** over an obligation's bindings (blocking if any binding blocks, else `PASS`).
+There is **one `VERDICT` per required `VERIFY BY` binding**: an obligation with three required bindings contributes three verdicts, and *all* must pass-or-waive. The node-level `status` is the **aggregate** over an obligation's bindings (blocking if any binding blocks, else `PASS`).
 
-The per-value disposition under the gate (§14.4):
+The per-value disposition under the gate:
 
 | Latest verdict | Disposition |
 |---|---|
@@ -62,51 +62,51 @@ The per-value disposition under the gate (§14.4):
 | `FAIL` | Blocks. Fix code or amend the obligation. |
 | `BLOCKED` | Blocks. Fix the environment/adapter, then re-run. |
 | `UNVERIFIED` | Blocks. Bind a proof and run it, or `WAIVE`. |
-| `PASS (STALE)` | Blocks. Forces the 3-way reconcile (§16.3). |
-| any `(CONTRADICTED)` | Blocks. Routes to review with the stronger oracle authoritative (§17.4). |
+| `PASS (STALE)` | Blocks. Forces the 3-way reconcile (the not-silent reconcile discipline). |
+| any `(CONTRADICTED)` | Blocks. Routes to review with the stronger oracle authoritative (see below). |
 
-A conformant repo MUST NOT promote while any required obligation is in a blocking disposition. Because Swarm has no runtime, this gate is enforced by a **deterministic check outside the model** when one exists (CI, a PreToolUse hook, a merge-blocking status) and is **manual today** — the spec MUST NOT claim it is automatically enforced (§14.4, §17.1).
+A conformant repo MUST NOT promote while any required obligation is in a blocking disposition. Because Swarm has no runtime, this gate is enforced by a **deterministic check outside the model** when one exists (CI, a PreToolUse hook, a merge-blocking status) and is **manual today** — the spec MUST NOT claim it is automatically enforced.
 
-A `WAIVED` verdict passes the gate **only while its waiver is live**: a waiver auto-expires on the next source-hash change of the waived obligation, and an expired waiver reverts to its underlying `FAIL`/`UNVERIFIED` so the gate blocks again (§14.4, §17.3). There are **no permanent waivers** (§17.3).
+A `WAIVED` verdict passes the gate **only while its waiver is live**: a waiver auto-expires on the next source-hash change of the waived obligation, and an expired waiver reverts to its underlying `FAIL`/`UNVERIFIED` so the gate blocks again. There are **no permanent waivers**.
 
-## Resolving a `CONTRADICTED` verdict (§17.4)
+## Resolving a `CONTRADICTED` verdict
 
-`CONTRADICTED` arises when two proofs disagree, or when a `TRACE`/code disagrees with the obligation. The `review` pass owns its resolution, which is normative (§17.4):
+`CONTRADICTED` arises when two proofs disagree, or when a `TRACE`/code disagrees with the obligation. The `review` pass owns its resolution, which is normative:
 
 1. **Block at the merge gate.** A `CONTRADICTED` on any required obligation blocks promotion. Contradiction is never resolved by picking the more convenient result.
 2. **Route to review.** The reviewer MUST record **both** conflicting evidence refs (the two `EVIDENCE` lines required by `SOL-V005`).
-3. **The stronger oracle is authoritative pending reconciliation.** Using the fixed proof-strength order (§15.6) — `model > property | contract > test > static > manual | monitor` — the stronger proof's result is the *working assumption* while the contradiction is open. This does **not** close the contradiction; it keeps review from being paralysed. Example: a `contract` `PASS` is presumptively authoritative over a `manual` `FAIL`, but the obligation stays `CONTRADICTED` (and gate-blocking) until reconciled. **Equal-strength case:** when both proofs share a rank (two `test`s, `property` vs `contract`, `manual` vs `monitor`), neither is stronger — no working assumption is set, and the contradiction MUST NOT auto-resolve to either side; it routes to an independent reviewer or a higher-rank re-proof.
-4. **Reconcile (never silently).** Reconciliation re-runs the disagreeing proofs, fixes the weaker oracle, corrects the code, or amends the obligation — the same not-silent discipline as the 3-way reconcile (§16.3). The `CONTRADICTED` decorator is removed only when both proofs agree (or one is withdrawn as invalid with a recorded reason).
+3. **The stronger oracle is authoritative pending reconciliation.** Using the fixed proof-strength order — `model > property | contract > test > static > manual | monitor` — the stronger proof's result is the *working assumption* while the contradiction is open. This does **not** close the contradiction; it keeps review from being paralysed. Example: a `contract` `PASS` is presumptively authoritative over a `manual` `FAIL`, but the obligation stays `CONTRADICTED` (and gate-blocking) until reconciled. **Equal-strength case:** when both proofs share a rank (two `test`s, `property` vs `contract`, `manual` vs `monitor`), neither is stronger — no working assumption is set, and the contradiction MUST NOT auto-resolve to either side; it routes to an independent reviewer or a higher-rank re-proof.
+4. **Reconcile (never silently).** Reconciliation re-runs the disagreeing proofs, fixes the weaker oracle, corrects the code, or amends the obligation — the same not-silent discipline as the 3-way reconcile. The `CONTRADICTED` decorator is removed only when both proofs agree (or one is withdrawn as invalid with a recorded reason).
 
-> Rationale (§17.4): block-plus-stronger-oracle keeps the gate honest (no silent pick-the-pass) while keeping review actionable. Executable oracles outrank an LLM-judge `manual` verdict because judge bias is a known failure mode — an executable result is harder to fool than a narrative judgment.
+> Rationale: block-plus-stronger-oracle keeps the gate honest (no silent pick-the-pass) while keeping review actionable. Executable oracles outrank an LLM-judge `manual` verdict because judge bias is a known failure mode — an executable result is harder to fool than a narrative judgment.
 
-Adequacy can override strength **within a recorded contradiction**: a `test` carrying strong mutation/metamorphic evidence over the disputed surface MAY be treated as authoritative over a nominally-stronger proof that exercised neither — but the override is a recorded judgment, never a silent re-rank, and never closes the contradiction on its own (§15.10.3).
+Adequacy can override strength **within a recorded contradiction**: a `test` carrying strong mutation/metamorphic evidence over the disputed surface MAY be treated as authoritative over a nominally-stronger proof that exercised neither — but the override is a recorded judgment, never a silent re-rank, and never closes the contradiction on its own.
 
-## When the oracle is a model judge (§17.6)
+## When the oracle is a model judge
 
-Because Swarm ships no runtime, **every verdict today is recorded by a human or agent**, and the `review` task kind's default suite is `manual @ REVIEW` (§15.8). So the de-facto oracle for many obligations is an **LLM judge** rendering a `manual` verdict. The proof-strength order already ranks `manual`/`monitor` last (§15.6) because such judgments are fallible: judge bias is directional and predictable (a judge favours the earlier-positioned answer, the longer answer, and answers resembling its own style); a single judgment is not internally reliable enough to trust on its own; and a judge that shares lineage with the generator systematically inflates its own kin. These are structural failure modes, not occasional slips — which is why the discipline below treats them as defaults to design against.
+Because Swarm ships no runtime, **every verdict today is recorded by a human or agent**, and the `review` task kind's default suite is `manual @ REVIEW`. So the de-facto oracle for many obligations is an **LLM judge** rendering a `manual` verdict. The proof-strength order already ranks `manual`/`monitor` last because such judgments are fallible: judge bias is directional and predictable (a judge favours the earlier-positioned answer, the longer answer, and answers resembling its own style); a single judgment is not internally reliable enough to trust on its own [[REFLEXION]](../research/sources.md#REFLEXION); and a judge that shares lineage with the generator systematically inflates its own kin. These are structural failure modes, not occasional slips — which is why the discipline below treats them as defaults to design against.
 
-Any `manual`/judge-rendered verdict MUST satisfy all four requirements (§17.6.1). These are SOFT-control contracts today, with a deterministic home in a `review.md` schema validator / CI gate when a harness exists:
+Any `manual`/judge-rendered verdict MUST satisfy all four requirements. These are SOFT-control contracts today, with a deterministic home in a `review.md` schema validator / CI gate when a harness exists:
 
-| # | Requirement | Disposition if violated (§17.6.2) |
+| # | Requirement | Disposition if violated |
 |---|---|---|
-| 1 | **Record judge identity** — the model (name + version/family) or named human, in the optional `judge` adjunct on the trace-provenance record (§16.1). | Unrecorded judge → treated as `UNVERIFIED` (joins the §15.9 non-proofs); raise a `SOL-V` judge-provenance smell. |
+| 1 | **Record judge identity** — the model (name + version/family) or named human, in the optional `judge` adjunct on the trace-provenance record. | Unrecorded judge → treated as `UNVERIFIED` (joins the non-proofs); raise a `SOL-V` judge-provenance smell. |
 | 2 | **No shared lineage with the generator** — not the same model, not teacher→student inheritance, not the same model family (a judge of shared lineage inflates its own kin). | Verdict does not count; re-judge by an unrelated oracle. **BLOCKING.** |
-| 3 | **Implementer ≠ reviewer** — the agent/human that implemented the change MUST NOT render its own `manual` verdict (the self-preference hazard; the soft-oracle analogue of "no self-issued waiver", §17.3). | Treated as `UNVERIFIED`; require an independent reviewer. **BLOCKING.** |
-| 4 | **Dual independent judgment for `RISK high`/`critical`** — two independent judges (two unrelated models, or a model plus a human), neither sharing lineage (per 2), neither the implementer (per 3), because a single judgment is not reliable enough alone for high-stakes obligations. | Single judgment → `UNVERIFIED` (dual owed). Judges that **disagree** → decorate `CONTRADICTED` (record the two judgments as the two evidence refs) → route through §17.4. |
+| 3 | **Implementer ≠ reviewer** — the agent/human that implemented the change MUST NOT render its own `manual` verdict (the self-preference hazard; the soft-oracle analogue of "no self-issued waiver"). | Treated as `UNVERIFIED`; require an independent reviewer. **BLOCKING.** |
+| 4 | **Dual independent judgment for `RISK high`/`critical`** — two independent judges (two unrelated models, or a model plus a human), neither sharing lineage (per 2), neither the implementer (per 3), because a single judgment is not reliable enough alone for high-stakes obligations. | Single judgment → `UNVERIFIED` (dual owed). Judges that **disagree** → decorate `CONTRADICTED` (record the two judgments as the two evidence refs) → route through the `CONTRADICTED` resolution above. |
 
-> Rationale (§17.6): ranking a judgment last does nothing if the judgment is silently biased — a self-judged, same-family, single-shot `manual` `PASS` would otherwise sail through whenever no executable proof contests it. The discipline is "no astrology for agents" applied to the one oracle Swarm cannot make executable: when the oracle is a model, **name it, isolate it, and double it where the risk is highest**.
+> Rationale: ranking a judgment last does nothing if the judgment is silently biased — a self-judged, same-family, single-shot `manual` `PASS` would otherwise sail through whenever no executable proof contests it. The discipline is "no astrology for agents" applied to the one oracle Swarm cannot make executable: when the oracle is a model, **name it, isolate it, and double it where the risk is highest**.
 
-## The untrusted-source boundary the reviewer must hold (§17.5)
+## The untrusted-source boundary the reviewer must hold
 
-Every artifact `review` reads is agent-readable markdown, which is also an attack surface: attacker instructions can be hidden in rule files via zero-width and bidirectional-control characters, a compromised dependency can write a malicious `AGENTS.md`, this class of file-borne injection has reached remote code execution in shipped coding agents, and indirect (file-borne) prompt injection is among the foremost risks for any LLM that reads untrusted text. Treating every read artifact as untrusted input is therefore a baseline reviewer posture, not a precaution for unusual cases. Consistent with §17.1, none of the controls below is shipped tooling; each is a contract a future harness builds against and is **manual today**.
+Every artifact `review` reads is agent-readable markdown, which is also an attack surface: attacker instructions can be hidden in rule files via zero-width and bidirectional-control characters, a compromised dependency can write a malicious `AGENTS.md`, this class of file-borne injection has reached remote code execution in shipped coding agents, and indirect (file-borne) prompt injection is among the foremost risks for any LLM that reads untrusted text. Treating every read artifact as untrusted input is therefore a baseline reviewer posture, not a precaution for unusual cases. None of the controls below is shipped tooling; each is a contract a future harness builds against and is **manual today**.
 
-- **Non-printing-character rejection (`SOL-S013`, HARD lane, §17.5.1).** A SYNTAX-layer diagnostic REJECTS any agent-read artifact containing zero-width, bidirectional-control, other non-printing control characters (outside `\t`/`\n`), or homoglyph-suspect mixed-script identifiers. Because the check is purely lexical it sits in the **HARD/deterministic lane**; it is **BLOCKING** and its eventual home is a PreToolUse hook or CI gate. Resolution: strip the offending codepoints or re-author in printable characters.
-- **Source-authority rule for externally-authored sources (SOFT/governance, §17.5.2).** An `audit.md`/`research.md`/`bug-report.md` whose provenance lies **outside the repo trust boundary** MUST be flagged approval-required and **never auto-promotable**. An external source carries the *lowest* applicable source authority and MUST NOT silently amend an approved `spec.swarm.md` (a lower-ranked actor amending a higher-ranked artifact is `SOL-M004`). A source whose provenance cannot be established as in-boundary is treated as external by default. This composes with `SOL-S013`: the lexical check cleans the *bytes*, the source-authority rule governs the *trust* of the source those bytes came from.
+- **Non-printing-character rejection (`SOL-S013`, HARD lane).** A SYNTAX-layer diagnostic REJECTS any agent-read artifact containing zero-width, bidirectional-control, other non-printing control characters (outside `\t`/`\n`), or homoglyph-suspect mixed-script identifiers. Because the check is purely lexical it sits in the **HARD/deterministic lane**; it is **BLOCKING** and its eventual home is a PreToolUse hook or CI gate. Resolution: strip the offending codepoints or re-author in printable characters.
+- **Source-authority rule for externally-authored sources (SOFT/governance).** An `audit.md`/`research.md`/`bug-report.md` whose provenance lies **outside the repo trust boundary** MUST be flagged approval-required and **never auto-promotable**. An external source carries the *lowest* applicable source authority and MUST NOT silently amend an approved `spec.swarm.md` (a lower-ranked actor amending a higher-ranked artifact is `SOL-M004`). A source whose provenance cannot be established as in-boundary is treated as external by default. This composes with `SOL-S013`: the lexical check cleans the *bytes*, the source-authority rule governs the *trust* of the source those bytes came from.
 
-## The `review.md` artifact (§21.5)
+## The `review.md` artifact
 
-`review.md` IS the verdict record — the canonical container of `VERDICT` blocks (§14.5, §21.5.1). A conformant `review.md` MUST contain:
+`review.md` IS the verdict record — the canonical container of `VERDICT` blocks. A conformant `review.md` MUST contain:
 
 | Section | Meaning |
 |---|---|
@@ -119,14 +119,17 @@ Every artifact `review` reads is agent-readable markdown, which is also an attac
 | `## Final verdict` | The merge-gate result at the change-set level (PASS / BLOCKED). |
 | `## Promotion queue` | Items to promote, with target + status. |
 
-Three lint floors the reviewer enforces by hand or via the `lint-spec` pass today (`SOL-V` layer, §14.3): a non-`PASS/FAIL/BLOCKED/UNVERIFIED` core or a lifecycle missing its mandatory fields is `SOL-V005` (BLOCKING); a misplaced `WAIVED`/`STALE` is `SOL-V007` (BLOCKING); a required obligation with no `VERDICT` at the gate is `SOL-V008` (BLOCKING, and counts as `UNVERIFIED`). A `WAIVED` MUST name authority + reason + expiry; a `STALE` MUST cite the prior-verdict ref + changed surface; a `CONTRADICTED` MUST cite the two conflicting evidence refs (§14.3, §21.5.1).
+Three lint floors the reviewer enforces by hand or via the [`lint`](lint.md) pass today (`SOL-V` layer): a non-`PASS/FAIL/BLOCKED/UNVERIFIED` core or a lifecycle missing its mandatory fields is `SOL-V005` (BLOCKING); a misplaced `WAIVED`/`STALE` is `SOL-V007` (BLOCKING); a required obligation with no `VERDICT` at the gate is `SOL-V008` (BLOCKING, and counts as `UNVERIFIED`). A `WAIVED` MUST name authority + reason + expiry; a `STALE` MUST cite the prior-verdict ref + changed surface; a `CONTRADICTED` MUST cite the two conflicting evidence refs.
 
-What `review` MUST reject as a non-proof (never `PASS`, §15.9): schema-valid output (shape is not truth), "tests passed" with no command/exit-code/output, and a `manual` verdict with no recorded reasoning [[REFLEXION]](../research/sources.md#REFLEXION).
+What `review` MUST reject as a non-proof (never `PASS`): schema-valid output (shape is not truth), "tests passed" with no command/exit-code/output, and a `manual` verdict with no recorded reasoning [[REFLEXION]](../research/sources.md#REFLEXION).
 
 ## Related
 
 - [The `verify` pass](verify.md) — the seven-value verdict model, the closed proof taxonomy, `VERIFY BY` binding, oracle adequacy, the proof-strength order, and the soft/hard control boundary the gate consumes.
+- [The `implement` pass](implement.md) — produces the `trace.md` claims that are the input to judgment.
 - [The `promote` pass](promote.md) — what happens after the gate passes: the memory model, the promotion protocol, and the promotion-status enum.
+- [The `lint` pass](lint.md) — the `SOL-V` / `SOL-S` / `SOL-M` lint floors the reviewer enforces (`SOL-V005`/`V007`/`V008`, `SOL-S013`, `SOL-M002`).
 - [The `review.md` artifact](../artifacts/review.md) — the full artifact contract and template body for the verdict record.
 - [The `trace.md` artifact](../artifacts/trace.md) — the implementation-claim input that `review` judges, including the trace-provenance and `judge` adjunct records.
 - [SOL diagnostics](../language/SOL.md) and [the errors reference](../language/errors.md) — the `SOL-V`, `SOL-S013`, and `SOL-M002` codes the reviewer enforces.
+- The Skeptic persona — the heuristic profile `review` runs under (`review[profile: skeptic]`), served by the `persona-skeptic` skill.
