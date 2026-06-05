@@ -6,7 +6,32 @@
 > ownership boundary · brownfield-safe · cross-platform portability · ADR-0044 single-sourcing), then
 > synthesized (workflow `w4gohoh2r`, 13 agents). Supersedes the *mechanism* of DX-plan P1/P2.
 
-## The recommended model — "init bundle driven by an install skill"
+## Decision (owner, locked 2026-06-05)
+
+**Strictly static — no shipped scripts.** Invariant 1 / N1 ("no shipped CLI") stay intact and are
+*reinforced*, not amended. This repo ships **no** CLI, installer, `npx` package, Copier template, shell
+script, or plugin hook. (The install-method research confirmed a file-placer would not *violate*
+Invariant 1, and `init` is a reserved toolchain verb — but the owner's call is to stay purely static
+regardless, keeping "this repo ships no software" literally true and shedding the maintenance,
+cross-platform, and prerequisite-tax burden a real installer carries.)
+
+Convenience comes from **two static readers of one static contract**, never from shipped code:
+- **Primary — agent-performed.** The dev's *own* agent reads `INIT.md` + the manifest and performs the
+  placement, the **brownfield merge**, and the judgment steps (deriving real `cmd*` adapters, filling
+  facts). We ship the contract (data); the dev supplies the executor (their agent). One instruction.
+- **Fallback — manual runbook.** `INIT.md` doubles as a literal copy-paste `cp`/`mkdir` runbook the human
+  runs in their own shell. Still no script shipped by us.
+- **Brownfield is first-class** — many adopters integrate into an *existing* repo, so the manifest/`INIT.md`
+  **leads** with the non-clobbering, heading-keyed `AGENTS.md`/`.gitignore`/alias merge; `.swarm/kernel/`
+  is brand-new so never collides; existing code adopts as an `observed` surface; the `conformant-repo/` +
+  `brownfield-before/after` fixtures make "done" checkable.
+
+**Dropped from scope by this decision:** the thin POSIX/`npx` executor tier, Copier, package-manager
+initializers, the Claude-Code plugin hook, and any N1-amendment ADR. ADR-0046 stands but is reworded as
+*"adoption is a **static** contract (`INIT.md` + manifest + fixture) with the dev's agent or a human as
+the executor — no shipped executor."*
+
+## The recommended model — "static init bundle, read by the dev's agent (or a human)"
 
 A graft of the three strongest candidates:
 
