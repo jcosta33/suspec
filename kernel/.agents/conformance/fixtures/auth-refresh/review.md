@@ -2,7 +2,7 @@
 auth-refresh golden-corpus POSITIVE fixture — Stage 7 (review + merge gate, pass: review,
 run under the `skeptic` profile, §27). The `review` pass consumes the trace and emits
 per-obligation VERDICT lines carrying a core value optionally decorated with a lifecycle
-value (§14). AC-001 and I-001 are clean PASS. AC-002 carries the STALE lifecycle decorator:
+value (§14). IF-001 (the interface contract), AC-001, and I-001 are clean PASS. AC-002 carries the STALE lifecycle decorator:
 its bound test PASSed, but web/src/http/client.ts was edited after the recorded PASS, so its
 source no longer matches (§16). A STALE required obligation is NOT mergeable until reconciled,
 so the gate is BLOCKED. The reconcile note records option 1 (re-run the bound proof against the
@@ -19,6 +19,10 @@ source_spec: .swarm/sources/specs/auth-refresh.swarm.md
 # Review: auth-refresh client
 
 ## Per-obligation verdicts
+
+VERDICT IF-001: PASS
+REASON The `refreshSession` interface contract holds — the contract proof verifies the `Session | AuthExpired` return and the declared error cases (a required `VERIFY BY` binding; an INTERFACE in scope is a judged obligation at the merge gate).
+EVIDENCE refresh-session-contract output in review log
 
 VERDICT AC-001: PASS
 REASON Replay-after-refresh test exercises a 401 with a present refresh token and asserts one replay.
