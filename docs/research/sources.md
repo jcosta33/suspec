@@ -44,6 +44,12 @@
 <a id="UTBOOST"></a>
 **[UTBOOST] UTBoost: Rigorous Evaluation of Coding Agents on SWE-Bench.** Yu, Zhu, He, Kang. **ACL 2025** (Anthology 2025.acl-long.189), arXiv:2506.09289. *Verified (June 2026, ACL Anthology + finding).* Generated tests uncovered **345 erroneous patches** wrongly labeled passed, impacting **40.9%** of SWE-Bench Lite and **24.4%** of SWE-Bench Verified leaderboard entries. Grounds (with [SWEBENCH-ADQ]): independent corroboration of SWE-bench oracle inadequacy.
 
+<a id="SELFPREFER"></a>
+**[SELFPREFER] LLM Evaluators Recognize and Favor Their Own Generations.** Panickssery, Bowman, Feng. **NeurIPS 2024**, arXiv:2404.13076. *Verified (June 2026, venue + finding).* An LLM evaluator scores its **own** outputs higher than human annotators judge they merit (self-preference), and the bias rises **linearly with the model's self-recognition** — its ability to tell its own text apart. Grounds: the implementer-≠-reviewer rule — an author MUST NOT render the `manual` judgment on its own output.
+
+<a id="JUDGEBIAS"></a>
+**[JUDGEBIAS] Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena.** Zheng, Chiang, Sheng, Zhuang, Wu, Zhuang, Lin, Li, Li, Xing, Gonzalez, Stoica. **NeurIPS 2023 (Datasets & Benchmarks)**, arXiv:2306.05685. *Verified (June 2026, venue + finding).* Documents the structural biases of an LLM judge: **self-enhancement** (rates its own outputs more favourably), **position** (favours the first/last answer), and **verbosity** (favours longer answers). Grounds: judge bias is directional and predictable, so a `manual` verdict needs a recorded, independent, non-author judge.
+
 ## Verified — reused from the kernel bibliography
 
 These were already verified by the framework's bibliography elsewhere; the entries below restate them so this layer is self-contained.
