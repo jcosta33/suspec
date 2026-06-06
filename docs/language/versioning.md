@@ -49,12 +49,7 @@ The rationale: a new keyword or lint code changes what the templates and pass gu
 
 ## §2.1 — Editions / MSRV analogues
 
-The two-axis split follows the design seen in mature language ecosystems, where the *language* version is deliberately not the same number as the *toolchain* that delivers it (design rationale):
-
-- **Rust** separates editions (a per-crate, opt-in language epoch), `rust-version` (the MSRV floor), and the cargo / rustc release number. These are independent axes joined by a one-way constraint — the same shape as Swarm's language ⇒ framework trigger. Swarm deliberately does **not** borrow Rust's "~3-year edition cadence": that ecosystem does not guarantee a fixed schedule, so Swarm claims a *floor*, not a *cadence*.
-- **C#** has a `LangVersion` that is overridable from its target-framework default **but bounded by the installed compiler**. The accurate framing matters here: the language version is decoupled from the *target-framework default*, **not** independent of the compiler/SDK. Swarm likewise does not claim its language axis is "decoupled from the toolchain."
-
-The takeaway from both: the *language API* (grammar + lint codes) and the *package API* (template sections + skills + flow-graph) are versioned as **separately-named public APIs**, because semantic versioning is only meaningful once each public API is named explicitly.
+The two-axis split mirrors mature language ecosystems that version the *language* separately from the *toolchain* delivering it — Rust's editions / `rust-version` MSRV / cargo release, and C#'s `LangVersion` (bounded by the installed compiler) — each joined by a one-way constraint, the same shape as Swarm's language ⇒ framework trigger. The takeaway: the *language API* (grammar + lint codes) and the *package API* (template sections + skills + flow-graph) are versioned as **separately-named public APIs**.
 
 ## §3 — Three distinct fields in the IR / plan
 

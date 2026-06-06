@@ -70,26 +70,6 @@ The kernel models **thirteen** heuristic stances, and **all thirteen ship as sta
 
 Whenever the pass is `verify` (or the `fix` task kind, for root-causing), load `persona-skeptic` directly: it carries the refute-by-default stance those passes need.
 
-## The full thirteen-stance set, mapped to passes
-
-The thirteen stances map onto the nine passes as follows. This is the routing the framework uses; the stances that do not ship as standalone stdlib files are still part of the model and MAY be carried inline in a pass guide or installed by a project.
-
-| Profile | Pass(es) it parameterizes |
-|---|---|
-| Skeptic | `review` / `verify` |
-| Architect | `author` (spec-writing) |
-| Auditor | `author` (audit-writing) |
-| Surveyor | `author` (research — breadth / inventory survey) |
-| Researcher | `author` (research — depth / external evidence) |
-| Bug Hunter | `author` (bug-report-writing) |
-| Janitor | `implement` (`refactor`) |
-| Migrator | `implement` (`migration` / `upgrade`) |
-| Performance Surgeon | `implement` (`performance`) |
-| Builder | `implement` (`feature` / `rewrite`) |
-| Test Author | `implement` (`testing`) |
-| Documentarian | `implement` (`documentation`) |
-| Lead Engineer | `decompose` / merge-gate (`review` over the obligation set) |
-
 All thirteen are uniformly heuristic profiles: there is no two-tier "persona vs profile" split. Surveyor and Researcher share one evidentiary stance and differ only on breadth versus depth. Builder and Janitor are constructive and behavior-preserving counterparts on the same `implement` pass.
 
 ## Profile × pass: the routing model

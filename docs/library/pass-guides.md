@@ -57,11 +57,9 @@ Three rows are normative and worth calling out:
 - **`fix-flaky-test` is a narrow `implement` guide.** Its procedure is specific enough (de-flaking a non-deterministic test) to stand as its own guide rather than collapse into the general fix guide.
 - **The thirteen `persona-*` modules are profiles.** A profile is a heuristic stance — what an agent looks for and refuses — not a procedure module. All thirteen ship as standalone `persona-*/SKILL.md` files; they are catalogued on their own page, and this page covers the procedure layer.
 
-### What ships in v0.1
+### Guide-less passes are not a gap
 
-The pass-guide set spans all nine passes as a *contract*, and v0.1 ships a full procedural set: **four pass guides**, **nine per-kind `implement` guides**, **six author guides**, and **two cross-cutting fragments** — twenty-one procedural modules in all. Mapped onto the nine passes: `author` is served by the six author guides (`write-spec`, `write-audit`, `write-research`, `write-bug-report`, `write-prd`, `write-rfc`); `lint`, `decompose`, `review`, and `promote` each have a dedicated pass guide; `implement` is served by the nine per-kind guides; `verify` is served by the `empirical-proof` fragment; and `improve` and `lower` ship **no guide** (they are contract-only). A guide-less pass is **not** a conformance gap: the pass contract is the binding artifact, and the guide is an optional aid to performing it. The thirteen `persona-*` profiles ship alongside these modules but are catalogued on [heuristic profiles](heuristic-profiles.md), not here.
-
-The `lint` and `decompose` guides have no antecedent in the mapping table above: that table populates guides only on `author` and `implement`, and the single module touching `decompose` is the Lead Engineer *profile*, not a guide.
+`improve` and `lower` ship **no guide** — they are fully specified by the language and verification references. A guide-less pass is **not** a conformance gap: the pass contract is the binding artifact, and a guide is an optional aid to performing it. (The full installed set — four pass guides, nine per-kind `implement` guides, six author guides, two cross-cutting fragments — is tabulated under [The installed guides](#the-installed-guides) below; the thirteen `persona-*` profiles are catalogued on [heuristic profiles](heuristic-profiles.md).)
 
 ## The two cross-cutting fragments
 
