@@ -10,6 +10,24 @@ method: 13-agent read-only fan-out (12 area scanners across the corpus + 1 adver
 
 # Audit — content economy (bloat, overstatement, overexplanation, jargon, verbosity)
 
+> **Update (2026-06-06) — most findings actioned.** Applied in five commits (`Audit fix 1–5/N`):
+> S-3 superlatives + M-3/M-4 (the §0.7 `ir-schema:9` overreach) + S-7 meta-narration + the glossary
+> Tier-1→Tier-2 correctness bug; S-1/M-15 verbatim NO-RUNTIME duplication; M-2 (single-sourced the
+> verdict model + merge gate from `review.md` to `verify.md`, ~40 lines/twin); M-6/M-10/M-11 (the three
+> standalone-bloat sections); M-7 (the N4 batch-invariance tangent) + M-8 (the 4× stance paragraph). All
+> `docs/`↔kernel twins kept in sync.
+> **Deliberately NOT applied — S-5/M-12/M-13/M-14 (implement-guide "dedup"):** on inspection a
+> calibration false-positive. The `## Anti-patterns` sections are the concrete negative examples the
+> guide-body design ([`docs/library/pass-guides.md`](../../docs/library/pass-guides.md)) explicitly
+> requires; the cross-file repetition across the nine guides is **mandated self-containment** (ADR-0016 /
+> ADR-0042 — only one guide loads per `task_kind`); the within-file `SOL-O005`/verdict mentions sit in
+> distinct functional sections (Consumes / Preserves / Procedure / Self-review), reinforcement not
+> restatement. Cutting them would degrade the guides.
+> **Left by judgment:** S-2/M-1 (the pass-tailored rationale paragraphs carry the contextual
+> `[[PLANCODER]]`/`[[HILBENCH]]` cites — single-sourcing would strip them); S-4/M-16 (ADR bodies follow
+> Nygard immutability; the README by-topic section adds the §30.3 mapping the ledger lacks); M-5 (that
+> `workspace.md` section now carries the `[[REFLEXION]]` salvage); M-9 + the residual MINOR tail.
+
 > **Observation-only.** This audit records what *is* — where the framework's prose wastes reader
 > attention — and recommends where to cut or tighten. It prescribes no inline edits and authors no
 > obligations; the `## Recommended actions` section names candidate cuts for a future editing pass.
