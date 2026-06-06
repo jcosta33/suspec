@@ -45,10 +45,11 @@
 
 ## Pointers
 <!-- One-line pointers ONLY — never inline the target content. -->
-- Skills (self-contained pass guides, per-kind implement & author guides, heuristic-profile persona-* stances, fragments): `.swarm/kernel/skills/`. Each skill carries the operational rules it needs inline; it names — but does not ship — the deep reference.
+- Skills (a pass guide for every one of the 9 passes, per-kind implement & author guides, persona-* stances, fragments): `.swarm/kernel/skills/`. Each carries its pass *procedure* inline.
+- Operative reference cards (the shared closed-set rules every pass needs — SOL grammar, proofs/verdicts/adequacy, the IR/edges): `.swarm/kernel/reference/` (`sol.md`, `proofs.md`, `ir.md`). Load the card for the pass you're running.
 - Memory recall map (says *when to load* each entry; never dumped here): `.swarm/memory/INDEX.md`
 - Project rule bundles (overlays): `.swarm/overlays/` (project-owned; survives kernel upgrades)
-- The full SOL / APS / passes reference (rationale, worked examples) is **not installed** — it lives in the Swarm project (the `swarm` repo's `docs/`); read it there when you want depth.
+- The **full** SOL/APS/passes manuals (rationale, worked examples) are **not installed** — they live in the Swarm project (`docs/`); the shipped cards carry the operative rules, the manuals carry the *why*.
 
 ## Compatibility
 The kernel skills live at `.swarm/kernel/skills/`; for an agent CLI to discover them, adoption bridges

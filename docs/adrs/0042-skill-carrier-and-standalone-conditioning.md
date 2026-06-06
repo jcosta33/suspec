@@ -54,7 +54,7 @@ This record **refines, and does not supersede,** ADRs 0016, 0017, 0019, 0029, 00
 
 ### Negative
 
-- The shipped skill count grows substantially (~35 files). This is acceptable because the ~15/25 practitioner ceiling concerns *broad* descriptions causing mis-activation, not file count; surgical descriptions + name-based loading keep per-task context small.
+- The shipped skill count grows substantially (~37 files — `pass-improve-spec` and `pass-lower-spec` were added later so all nine passes have a guide; see [0048](./0048-installed-payload-is-the-runtime-surface.md)'s Update). This is acceptable because the ~15/25 practitioner ceiling concerns *broad* descriptions causing mis-activation, not file count; surgical descriptions + name-based loading keep per-task context small.
 
 ### Neutral / tradeoffs
 

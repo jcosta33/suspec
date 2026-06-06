@@ -26,12 +26,13 @@ is gone. The corpus (`conformance/`) is test data for a *checker*, never used by
 
 ## Decision
 
-1. **The installed payload is the runtime surface only:** `skills/` (self-contained) + `templates/` +
-   the `memory/` seed + the `AGENTS.md` bootloader + `config.yaml` + `overlays/` + `.swarm-version`.
+1. **The installed payload is the runtime surface only:** `skills/` (self-contained for *procedure*) +
+   `reference/` (the compact operative cards — see the Update below) + `templates/` + the `memory/` seed +
+   the `AGENTS.md` bootloader + `config.yaml` + `overlays/` + `.swarm-version`.
 2. **`passes/`, `language/`, and `conformance/` are NOT installed.** They are the framework's **human
    reference and test data**, and they live canonically in the `swarm` repo (`docs/passes/`,
-   `docs/language/`, and the conformance corpus). An adopter that wants depth reads the `swarm` repo.
-3. The bootloader and skills **name** the deep reference (provenance) but link nothing that isn't
+   `docs/language/`, and the conformance corpus). An adopter that wants the *rationale* reads the `swarm` repo.
+3. The bootloader and skills **name** the deep manuals (provenance) but link nothing that isn't
    shipped, so the slim payload has no dangling refs.
 
 This **refines ADR-0044**: `docs/` remains canonical, but the kernel no longer carries derived
@@ -43,7 +44,7 @@ the deep reference stays upstream. (The twin-maintenance burden 0044 introduced 
 | Alternative | Why rejected |
 | --- | --- |
 | Ship the whole kernel (status quo) | ~1.2 MB of reference an agent never loads, duplicated into every adopter; the user-visible bloat that prompted this. |
-| Ship a compact normative *card* instead of the manuals | Still a shipped reference the skills would cite (a hop); [0047](./0047-skills-are-self-contained.md) shows the hop is unreliable, so the rules belong inline in the skills, not in a shipped card. |
+| Ship a compact normative *card* instead of the manuals | Originally rejected (a card is one more hop, and [0047](./0047-skills-are-self-contained.md) says the hop is unreliable). **The Update below overturns this** — see there. |
 | Fetch the reference from the network on demand | Breaks offline use and pins a repo location; the reference is for *humans*, who can open the `swarm` repo. |
 
 ## Consequences
@@ -55,10 +56,35 @@ the deep reference stays upstream. (The twin-maintenance burden 0044 introduced 
 - **Neutral:** `kernel/.agents/{passes,language,conformance}` remain in the `swarm` repo (the reference +
   the corpus a future `swarm-core` checker tests against); they are simply outside the installed subset.
 
+## Update (2026-06-06): the compact reference is shipped after all
+
+A self-containment audit (three readers checking whether the slim payload can carry an agent to full
+compliance) overturned alternative #2. Two gaps showed the original trim went too far:
+
+1. **De-linking ≠ self-containing.** Dropping `passes/`/`language/` rewrote skill citations from links to
+   bare *names*, but the named facts — the SOL block grammar, the 9 proof types + oracle-adequacy rule,
+   the 7-value verdict + merge gate, the IR/edge schema, the per-`task_kind` suites — were never folded
+   *into* a skill. They became orphans: the skill pointed at a manual that no longer ships.
+2. **Two passes had no skill at all.** `improve` and `lower` shipped no guide, so their procedures (the ten
+   improve operations; the surface→IR lowering contract) were unreachable from the payload.
+
+The fix keeps 0047's principle intact and corrects the boundary: a skill carries its pass **procedure**
+inline (0047), but the **shared closed-set facts** every pass leans on are factored into three compact
+**operative** cards — `reference/sol.md`, `reference/proofs.md`, `reference/ir.md` — that ship with the
+payload. These are not the manuals (no rationale, no worked examples — those stay upstream); they are the
+*rules*, ~12 KB total. The 0047 "the hop is unreliable" worry applied to *rationale* citations an agent
+skips; an operative card the running pass needs is loaded *because* it is operative, the same reason the
+skill is. Added `pass-improve-spec` and `pass-lower-spec` so all nine passes have a guide.
+
+Net payload is still far below the wholesale kernel (the manuals + corpus remain unshipped); the cards add
+~12 KB, not the ~1.2 MB this ADR removed.
+
 ## Status
 
-Accepted (v0.1). `ADOPTING.md` copies the runtime subset; `swarm-cli`'s `.swarm/kernel/` was trimmed to
-`skills/` + `templates/` (1.2 MB → ~0.79 MB, almost all of it the skills).
+Accepted (v0.1), amended 2026-06-06 (see Update). `ADOPTING.md` copies the runtime subset
+`{skills, reference, templates, memory}` + `.swarm-version`; `swarm-cli`'s `.swarm/kernel/` carries the
+skills + the three reference cards (still far below the 1.2 MB wholesale kernel — manuals + corpus stay
+upstream).
 
 ## Affected obligations / constraints
 

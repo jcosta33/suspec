@@ -37,8 +37,13 @@ Empirically, inspecting the kernel skills confirmed they were **already operatio
 ## Decision
 
 1. **A skill MUST be sufficient for the agent to perform its task correctly from the loaded skill body
-   alone.** Every operational rule the agent needs is inline (within the skill + its one-hop bundled
-   `references/`). The agent's correctness MUST NOT depend on following a citation out of the skill.
+   plus the operative references the pass actually needs.** The pass *procedure* is inline (within the
+   skill + its one-hop bundled `references/`); the *shared closed-set facts* that several passes lean on
+   (the SOL grammar, the proof/verdict/adequacy rules, the IR/edge schema) live in the compact, shipped
+   `reference/` cards a skill names. The agent's correctness MUST NOT depend on following a citation to an
+   *un*shipped manual — but loading an operative card the running pass requires is reliable (it is needed
+   to act, not skippable rationale). See [0048](./0048-installed-payload-is-the-runtime-surface.md)'s
+   Update for where this boundary settled.
 2. **Citations are provenance, not a required read.** A skill names its authoritative source (e.g. "the
    `review` pass", "the SOL error catalogue") for a human and for drift-tracking — it does not link a
    file the agent must open, and it does not link a file outside the shipped surface.
@@ -56,7 +61,7 @@ cite-by-name-for-provenance**." A skill still owns no semantics (it does not *re
 | Alternative | Why rejected |
 | --- | --- |
 | Keep cite-don't-define (skills cite local `passes/`) | The cited hop is not reliably followed; the agent acts on a thin skill + its prior, not the cited authority. |
-| Ship a compact normative *card* the skills cite | Still a hop; the evidence says the hop is the weak link. Inlining the few load-bearing rules is more reliable than any cited card. |
+| Ship a compact normative *card* the skills cite | Adopted for the **shared** facts (see [0048](./0048-installed-payload-is-the-runtime-surface.md)'s Update): an operative card the running pass needs is a *reliable* hop, unlike a skipped rationale citation. Per-pass *procedure* still inlines, not carded. |
 | Let each skill define semantics freely | Drift: copies diverge from the spec. Single-sourcing (decision 3) is what makes inlining safe. |
 
 ## Consequences
