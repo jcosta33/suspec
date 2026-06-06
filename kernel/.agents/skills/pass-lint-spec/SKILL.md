@@ -27,7 +27,7 @@ The per-code defect text, the code→`improve`-op map, the worked diagnostic rec
 
 ## Purpose
 
-Read one `spec.swarm.md` and emit a **lint report** — diagnostic records plus an overall blocking status — *without changing the spec*. `lint` is the highest-leverage pass: it catches defects before any work is committed ([`../../passes/lint.md`](../../passes/lint.md)). You only *detect and name* defects; repair is the `improve` pass ([`../../passes/improve.md`](../../passes/improve.md)), triggered by the codes you emit. Naming the repair in `suggest` is detection; *applying* it is not.
+Read one `spec.swarm.md` and emit a **lint report** — diagnostic records plus an overall blocking status — *without changing the spec*. `lint` catches defects before any work is committed ([`../../passes/lint.md`](../../passes/lint.md)). You only *detect and name* defects; repair is the `improve` pass ([`../../passes/improve.md`](../../passes/improve.md)), triggered by the codes you emit. Naming the repair in `suggest` is detection; *applying* it is not.
 
 Run it with the **Skeptic** stance (the `skeptic` profile): assume each obligation is under-specified until its actor, modality, object, and proof are present and observable; never wave a clause through because it "reads fine." *Why:* a defect that changes what gets built is cheapest to catch here, before generation; under-specification is the most severe defect class, and a clause that reads fine to a generous reader is exactly the one that hands a coder a guess.
 

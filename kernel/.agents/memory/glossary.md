@@ -1,4 +1,4 @@
-# Memory glossary — Tier-1 term store (seed)
+# Memory glossary — Tier-2 term store (seed)
 
 This is the **Tier-2 one-word-one-meaning term store** (see the two-tier memory model in the
 `promote` pass at `.swarm/kernel/passes/promote.md`): the project-level lexicon that

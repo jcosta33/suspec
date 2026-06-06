@@ -33,7 +33,7 @@ builder free on choices the obligations do not constrain. It produces the change
 claims binding it to those obligations, and the pasted proof the downstream `verify` and `review`
 passes judge.
 
-This is one branch of the most-run pass of the nine (`author → lint → improve → lower → decompose
+This is one branch of the `implement` pass of the nine (`author → lint → improve → lower → decompose
 → implement → verify → review → promote`). It adds capability that did not exist. It is **not** for
 repairing a defect in shipped code, restructuring internals without changing behaviour, a
 behaviour-changing rewrite of an existing module, moving from one API to another, tuning a measured

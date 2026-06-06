@@ -4,7 +4,7 @@
 
 ## What `lint` is
 
-`lint` is one of Swarm's nine compiler passes. It consumes a `spec.swarm.md` and emits a **lint report** — an array of diagnostic records plus an overall blocking status — without changing a single character of the spec. It is the highest-leverage pass because it catches defects *before any work is committed*.
+`lint` is one of Swarm's nine compiler passes. It consumes a `spec.swarm.md` and emits a **lint report** — an array of diagnostic records plus an overall blocking status — without changing a single character of the spec. It catches defects *before any work is committed*.
 
 There is **no runtime** that runs `lint`. Like every pass, it is a **contract** a future tool will build against; today a human or an agent following the `lint` stdlib pass guide performs it by hand. This repository ships no parser, linter, or checker — only the specification of what one must do (Invariant 1).
 

@@ -44,7 +44,7 @@ The manifest encodes, as inert data, the structural and content rules a well-for
   - `non-empty-paste` (on the *Verification matrix*): every required paste slot holds non-empty, non-placeholder text — a fenced command-output block, or `n/a` with a one-line reason — never a bare `[Paste output]` placeholder.
   - `no-open-critical`: no blocking `QUESTION` remains unresolved anywhere in the task when its frontmatter status is the terminal value `done`.
 
-`non-empty-paste` is the single most load-bearing rule: it closes the hallucinated-completion hole, since a "tests passed" claim with no pasted output is an invalid proof — schema-valid output is not verification [[REFLEXION]](../research/sources.md#REFLEXION).
+`non-empty-paste` closes the hallucinated-completion hole: a "tests passed" claim with no pasted output is an invalid proof — schema-valid output is not verification [[REFLEXION]](../research/sources.md#REFLEXION).
 
 ### Required command rows
 

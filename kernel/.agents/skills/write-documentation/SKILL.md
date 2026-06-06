@@ -34,7 +34,7 @@ doc, every example executed before it is written down, every behaviour claim anc
 `file:line` the reader can open. It produces the doc change, the `TRACE` claims binding it to the
 obligations, and the pasted proof the downstream `verify` and `review` passes judge.
 
-This is one branch of the most-run pass of the nine (`author → lint → improve → lower → decompose →
+This is one branch of the `implement` pass of the nine (`author → lint → improve → lower → decompose →
 implement → verify → review → promote`), for documentation a human reads. It is **not** for
 agent-facing material (pass guides, task templates, internal flow docs — a different audience,
 different conventions), nor for net-new feature code, defect repair, behaviour-preserving refactors,

@@ -30,7 +30,7 @@ description: >-
 > procedure: both move the implementation across an API boundary while preserving
 > the surface. They differ only in the *trigger* (an internal API sunset vs a
 > framework/language/library version bump), not the method, so one guide carries
-> both. This is a narrow branch of the most-run pass of the nine (`author → lint →
+> both. This is a narrow branch of the `implement` pass of the nine (`author → lint →
 > improve → lower → decompose → implement → verify → review → promote`), carrying
 > the full migration discipline at depth for the two kinds it names.
 

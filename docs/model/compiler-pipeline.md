@@ -4,13 +4,11 @@
 
 Swarm models the journey from a human-authored specification to a promoted, verified change as a **compiler pipeline**. Nothing here is shipped code: there is no runtime that runs these passes (Invariant 1). Every pass, gate, and emitter named below is a **contract** — checkable today by a human or agent following a written pass guide, and enforced by a future tool. A conformant repository MUST frame any emitted artifact (IR, plan) as "the contract a future tool emits," never as the output of shipped tooling.
 
-This document keeps the counts, the closed sets, and the normative rules exact. It states the reasoning behind a rule inline as design rationale where that grounding is load-bearing.
-
 ---
 
 ## 0. The thesis: spec-as-code with verifiable output
 
-Swarm treats a **specification as source code** and a **fleet of agents as the compiler**. Human intent is written as a controlled-markdown specification; that specification is compiled — through an ordered, named sequence of transformations — into work that is implemented, verified against the original obligations, and promoted into durable project knowledge, at an extremely high and *evidenced* level of confidence.
+Swarm treats a **specification as source code** and a **fleet of agents as the compiler**. Human intent is written as a controlled-markdown specification; that specification is compiled — through an ordered, named sequence of transformations — into work that is implemented, verified against the original obligations, and promoted into durable project knowledge, at an *evidenced* level of confidence.
 
 > **Swarm is an obligation-centered specification compiler framework for agentic software engineering. It turns human intent into verifiable obligations, lowers those obligations into bounded agent tasks, verifies traces against obligations, and promotes durable discoveries back into project memory.**
 

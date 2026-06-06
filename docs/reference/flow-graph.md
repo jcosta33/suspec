@@ -134,7 +134,7 @@ When two proofs disagree (`CONTRADICTED`), the tie-break uses a fixed proof-stre
 model  >  property | contract  >  test  >  static  >  manual | monitor
 ```
 
-A reconciliation caveat, so this hub does not overstate: only the **counts** are frozen, not every row of the default-suite matrix. The suites are recommendations — an author MAY override per obligation, and a kind's suite may evolve without a language-version change. Likewise the `cmd*` slot names in the manifest shadow (`cmdValidate`, `cmdValidateDeps`, etc.) are project-resolved through `AGENTS.md > Commands`; their exact spelling is a manifest convention, while the proof-type matrix above is the canonical layer.
+A reconciliation caveat: only the **counts** are frozen, not every row of the default-suite matrix. The suites are recommendations — an author MAY override per obligation, and a kind's suite may evolve without a language-version change. Likewise the `cmd*` slot names in the manifest shadow (`cmdValidate`, `cmdValidateDeps`, etc.) are project-resolved through `AGENTS.md > Commands`; their exact spelling is a manifest convention, while the proof-type matrix above is the canonical layer.
 
 ## Related
 

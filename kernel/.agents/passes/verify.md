@@ -302,7 +302,7 @@ A surface participates in a proof's freshness only if it lies on the proof's `ev
 
 ## The soft/hard control boundary
 
-This is the single most important honesty constraint in Swarm, and it governs what a verdict is *allowed to mean*. Everything Swarm ships is markdown, and markdown cannot stop an agent from doing anything. So Swarm MUST be precise about what is *guidance* and what is *enforcement*, and MUST NOT dress up the former as the latter.
+This honesty constraint governs what a verdict is *allowed to mean*. Everything Swarm ships is markdown, and markdown cannot stop an agent from doing anything. So Swarm MUST be precise about what is *guidance* and what is *enforcement*, and MUST NOT dress up the former as the latter.
 
 > **Soft control.** Swarm prose, SOL, APS, skills/pass guides, heuristic profiles, and `AGENTS.md` are **SOFT control**: they are context and guidance for a model. They influence behaviour; they do not constrain it. They **MUST NEVER** be presented as enforcement.
 

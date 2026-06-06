@@ -36,7 +36,7 @@ net-negative — they cost maintenance and catch nothing. This guide keeps a `te
 honest: behaviour-focused, one-reason-to-fail, proven to fire, and robust against
 behaviour-preserving refactors.
 
-This is one branch of the most-run pass of the nine (`author → lint → improve → lower → decompose
+This is one branch of the `implement` pass of the nine (`author → lint → improve → lower → decompose
 → implement → verify → review → promote`), for **adding or improving test coverage as a
 deliverable in its own right**. It is **not** for writing tests *as part of* building a feature or
 fixing a defect (tests already ride inside those deliverables), nor for stabilising a test that

@@ -68,7 +68,7 @@ An owned path that touches a file outside any assigned obligation's declared wri
 
 ## `implement` ships as nine per-kind pass guides
 
-`implement` is not served by a single guide. Because its carrier profile is selected **by task kind**, not fixed, the kernel ships **nine per-kind implement guides** under `kernel/.agents/skills/`, each a `SKILL.md` (ADR-0042): `write-feature`, `write-fix`, `write-refactor`, `write-rewrite`, `write-migration` (covering migration + upgrade), `write-performance`, `write-testing`, `write-documentation`, plus the narrow `fix-flaky-test` (under `task_kind: fix`). The rationale: `implement` is **the most-run pass**, so each task kind benefits from its own written procedure tuned to that kind's discipline. A pass guide is SOFT control (Invariant 2): it MUST NOT define SOL/APS semantics, modality, authority order, or verification meaning — those live only in SOL and the IR.
+`implement` is not served by a single guide. Because its carrier profile is selected **by task kind**, not fixed, the kernel ships **nine per-kind implement guides** under `kernel/.agents/skills/`, each a `SKILL.md` (ADR-0042): `write-feature`, `write-fix`, `write-refactor`, `write-rewrite`, `write-migration` (covering migration + upgrade), `write-performance`, `write-testing`, `write-documentation`, plus the narrow `fix-flaky-test` (under `task_kind: fix`). The rationale: `implement` runs on nearly every obligation that reaches code, so each task kind benefits from its own written procedure tuned to that kind's discipline. A pass guide is SOFT control (Invariant 2): it MUST NOT define SOL/APS semantics, modality, authority order, or verification meaning — those live only in SOL and the IR.
 
 ## The input: the `task.md` pass frame
 

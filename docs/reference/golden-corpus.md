@@ -161,7 +161,7 @@ Beyond the domain defects, the corpus ships fixtures for each task-file violatio
 | missing `Commands` row | an `AGENTS.md` omitting `cmdFormat` | the required command-row set | FAIL |
 | unresolved blocking QUESTION at close | `status: done` with an open blocking `QUESTION` | the no-open-critical content rule | FAIL |
 
-The **empty-paste** class is the single most load-bearing fixture: it guards the hallucinated-completion hole. A `task.md` can present every required heading and still claim "tests passed" with no pasted output — schema-valid, but not verified. Every completion claim must bind to actual pasted proof output (or an honest `n/a` with a one-line reason), never a bare `[Paste output]` placeholder. This is the corpus's encoding of the principle that schema-valid output is **not** verification [[REFLEXION]](../research/sources.md#REFLEXION).
+The **empty-paste** class guards the hallucinated-completion hole. A `task.md` can present every required heading and still claim "tests passed" with no pasted output — schema-valid, but not verified. Every completion claim must bind to actual pasted proof output (or an honest `n/a` with a one-line reason), never a bare `[Paste output]` placeholder. This is the corpus's encoding of the principle that schema-valid output is **not** verification [[REFLEXION]](../research/sources.md#REFLEXION).
 
 Additionally, the corpus ships at least one minimal syntax negative for **each `SOL-S` error family** (for example `SOL-S001` dangling condition, `SOL-S003` actor clause with no modal, `SOL-S005` prefix↔type mismatch, `SOL-S006` SHOULD-without-BECAUSE), so every error-code family has a guarding fixture and no family can silently regress.
 
@@ -194,7 +194,7 @@ Because the `SOL-P` grader is itself an LLM judge today — not a deterministic 
 
 ## The nine pass-output rubrics
 
-The fixtures above pin *what a correct pipeline produces*. The **pass-output rubrics** are the scoring criteria the suite runs *against a candidate pass's actual output* to decide whether the agent-as-compiler performed the pass correctly. They exist because schema-validity is not correctness: a `task.md` can be perfectly well-formed and still drop an obligation; a `review.md` can carry every required `VERDICT` block and still be summary-only.
+The fixtures above pin *what a correct pipeline produces*. The **pass-output rubrics** are the scoring criteria the suite runs *against a candidate pass's actual output* to decide whether the agent-as-compiler performed the pass correctly. They exist because schema-validity is not correctness: a `task.md` can be well-formed and still drop an obligation; a `review.md` can carry every required `VERDICT` block and still be summary-only.
 
 Each rubric is a small set of **checkable predicates** — boolean assertions over the pass's output, keyed to that pass's output contract — and **not** a Likert/quality score. A predicate either holds or does not; the suite reports the count of failing predicates per pass, and a single failing predicate fails the pass. Every predicate is decidable against the pass's input artifact plus its output artifact alone — no runtime, no tool under test is presumed. These rubrics grade **compiler behaviour** (did the transformation preserve the obligations, bindings, scopes, and verdicts it was contracted to preserve), not grammar — the `SOL-S` family and the task-file classes already cover grammar.
 

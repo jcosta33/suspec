@@ -29,7 +29,7 @@ task_file:
     - Promotion queue
     - Self-review
   content_rules:
-    - id: non-empty-paste        # the single most load-bearing rule (Invariant 5: evidence over claim)
+    - id: non-empty-paste        # evidence over claim (Invariant 5)
       applies_to: "Verification matrix"
       rule: >-
         every required paste slot holds non-empty, non-placeholder text — a fenced
