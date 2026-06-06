@@ -6,7 +6,7 @@ promoted into a finding carrying full provenance (per the finding schema in
 [../../../templates/finding.md](../../../templates/finding.md)): origin_obligations,
 origin_traces, the pass+profile that produced it, reviewer/tool, content_hash, confidence,
 and applies-when bounds. The memory/INDEX.md MAP gains one link with a "Load when" condition;
-no procedure is inlined there (see [../../../passes/promote.md](../../../passes/promote.md)). Inert oracle data.
+no procedure is inlined there (see the `promote` pass). Inert oracle data.
 -->
 
 ---
@@ -44,7 +44,7 @@ keeps a bounded retry (AC-020) from violating the no-double-charge invariant (I-
 ---
 
 The promotion also adds one recall link to the memory MAP (the index says *when to load*
-the entry; it never inlines the finding's procedure, see [../../../passes/promote.md](../../../passes/promote.md)):
+the entry; it never inlines the finding's procedure, see the `promote` pass):
 
 ```text
 # memory/INDEX.md  (excerpt)

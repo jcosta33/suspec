@@ -36,8 +36,8 @@ this manifest records the verdict a correct run must produce at each gate.
 
 ## Expected lint diagnostics (stage 2, on the authored `spec.swarm.md`)
 
-Two BLOCKING diagnostics fire, each in the unified `SOL-<LAYER><NNN>` namespace (see [`../../../language/errors.md`](../../../language/errors.md)). Each is
-BLOCKING because it changes *what* gets built. Each names the closed `improve` op (see [`../../../passes/improve.md`](../../../passes/improve.md)) or
+Two BLOCKING diagnostics fire, each in the unified `SOL-<LAYER><NNN>` namespace (see the SOL error catalogue). Each is
+BLOCKING because it changes *what* gets built. Each names the closed `improve` op (see the `improve` pass) or
 direct edit that repairs it.
 
 | Code | Layer | Severity | Span | Defect | Repair |
@@ -47,7 +47,7 @@ direct edit that repairs it.
 
 Plus a blocking-QUESTION risk recorded as a note: `Q-001` is `[blocking]` and `AFFECTS AC-020`.
 `AC-020` MUST NOT reach the `lower` pass while `Q-001` is open; a blocking `QUESTION` that does
-reach `lower` is **`SOL-O003`** (blocking-question-reaches-lowering, see [`../../../language/errors.md`](../../../language/errors.md)). In this fixture
+reach `lower` is **`SOL-O003`** (blocking-question-reaches-lowering, see the SOL error catalogue). In this fixture
 `Q-001` is resolved at the `improve` stage, so `SOL-O003` does **not** fire downstream — it is
 the risk the open question would have raised had it survived to lowering.
 
@@ -70,7 +70,7 @@ Both BLOCKING diagnostics clear and no blocking `QUESTION` remains:
   clears `SOL-P005`.
 - `BIND` attached the missing bindings on only `AC-020` (a `test` proof) and `I-001` (a
   `monitor` proof — no harness can witness a real duplicate capture, so the honest oracle is the
-  production duplicate-captures dashboard, see [`../../../passes/verify.md`](../../../passes/verify.md)). `IF-001` (its `contract` proof) and `AC-021`
+  production duplicate-captures dashboard, see the `verify` pass). `IF-001` (its `contract` proof) and `AC-021`
   (its `test` proof) already carried their bindings in the authored stage-1 source; `CONCRETIZE`
   only reworded `AC-021`'s selector (`surfaces-error` → `surfaces-502`).
 - `Q-001` resolved out-of-band (decision: retry automatically up to the bound, then surface a
@@ -80,14 +80,14 @@ Both BLOCKING diagnostics clear and no blocking `QUESTION` remains:
 
 `AC-021` is a clean `PASS`. `AC-020` (`test` PASS) and `I-001` (`monitor` FAIL) disagree about
 the same no-double-charge property, so both carry the `CONTRADICTED` decorator with the two
-conflicting evidence refs (see [`../../../passes/review.md`](../../../passes/review.md)). Per the proof-strength preorder
+conflicting evidence refs (see the `review` pass). Per the proof-strength preorder
 `model > property | contract > test > static > manual | monitor`, the `test` PASS is the
 *working assumption* over the `monitor` FAIL — but a working assumption does not close the
 contradiction.
 
 ```text
 Gate (first evaluation): BLOCKED — AC-020 and I-001 are CONTRADICTED (I-001 core FAIL).
-Reconcile (passes/review.md): re-examine the disagreeing proofs (never pick the convenient one);
+Reconcile (the `review` pass): re-examine the disagreeing proofs (never pick the convenient one);
                           the production duplicates came from concurrent requests racing before
                           the idempotency key persisted — fix with a single-flight guard,
                           re-run both proofs.
@@ -97,7 +97,7 @@ Final outcome:            PASS.
 ```
 
 **Final gate: BLOCKED → (reconcile) → PASS.** A `CONTRADICTED` is never closed by silently
-trusting the stronger oracle's working assumption (see [`../../../passes/review.md`](../../../passes/review.md)); the contradiction is closed only
+trusting the stronger oracle's working assumption (see the `review` pass); the contradiction is closed only
 when both proofs agree after a recorded reconciliation.
 
 ## Stable identifiers and hashes (consistent across all stages)
@@ -107,7 +107,7 @@ when both proofs agree after a recorded reconciliation.
   `AC-020` source `sha256:4f6a…e2`, `AC-021` source `sha256:9a01…7c`, `I-001` source
   `sha256:b730…5d`; the implemented write surface `server/src/payments/charge.ts` is
   `sha256:6b22…9f` in the recorded trace.
-- Proof types span three of the nine (see [`../../../passes/verify.md`](../../../passes/verify.md)): `contract` (`IF-001`), `test` (`AC-020`/`AC-021`),
+- Proof types span three of the nine (see the `verify` pass): `contract` (`IF-001`), `test` (`AC-020`/`AC-021`),
   and `monitor` (`I-001`) — the production observation that drives the contradiction.
 - Adopted-project paths use `.swarm/` throughout (e.g. `.swarm/sources/specs/payment-5xx.swarm.md`).
 

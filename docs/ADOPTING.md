@@ -9,7 +9,11 @@ already use; a human can run the same steps by hand.
 Paste this into your agent (Claude Code, Codex, Cursor, …), pointing it at a checkout of this repo:
 
 > Adopt the **Swarm** framework into this repository, following `<swarm-repo>/docs/ADOPTING.md`. Specifically:
-> 1. Copy `<swarm-repo>/kernel/.agents/` → `.swarm/kernel/` (the framework payload).
+> 1. Copy the **runtime surface** into `.swarm/kernel/`: `<swarm-repo>/kernel/.agents/{skills,templates,memory}`
+>    and `<swarm-repo>/kernel/.agents/.swarm-version`. Do **NOT** copy `passes/`, `language/`, or
+>    `conformance/` — the skills are self-contained (they carry the operational rules inline and only
+>    *name* the deep reference), so an adopter needs none of the full SOL/APS/passes manuals or the
+>    golden corpus locally. Those are the framework's human reference and live in the `swarm` repo.
 > 2. Put `<swarm-repo>/kernel/AGENTS.md` at my repo **root** as `AGENTS.md`, plus the `CLAUDE.md` and
 >    `GEMINI.md` one-line `@AGENTS.md` aliases. **If `AGENTS.md`/`CLAUDE.md` already exist, merge — do not
 >    overwrite**: append Swarm's sections by heading, keep my existing content, and stop for my approval on
@@ -37,7 +41,7 @@ commands and facts) and approval of any brownfield merge in step 2.
 | From the kernel | → installs to | Owner |
 | --- | --- | --- |
 | `kernel/AGENTS.md` (+ `CLAUDE.md`/`GEMINI.md` aliases) | repo **root** | project (you fill Commands + facts) |
-| `kernel/.agents/` | `.swarm/kernel/` | framework — replaced wholesale on upgrade |
+| `kernel/.agents/{skills,templates,memory}` + `.swarm-version` | `.swarm/kernel/` | framework runtime surface — replaced wholesale on upgrade. (`passes/`, `language/`, `conformance/` are **not** shipped; the skills are self-contained.) |
 | `kernel/config.yaml` | `.swarm/config.yaml` | project — survives upgrade |
 | `kernel/overlays/` | `.swarm/overlays/` | project — survives upgrade |
 | memory seed | `.swarm/memory/` | project — grown by the `promote` pass |

@@ -11,13 +11,13 @@ status: draft
 
 <!--
 auth-refresh golden-corpus POSITIVE fixture — Stage 3 (improved source, pass: improve).
-The `improve` pass applied the closed, intent-preserving ops ([improve](../../../passes/improve.md)):
+The `improve` pass applied the closed, intent-preserving ops (the `improve` pass):
   - NORMALIZE  resolved AC-002 `SHOULD` to `MUST` (the owner judged the session-clear
                mandatory, so no BECAUSE is needed) — clears SOL-S006.
   - CONCRETIZE fixed I-001's threshold to the literal `1` and named the measured
                quantity (the retry count) — clears SOL-P005.
   - BIND       attached a `test` proof to AC-002 and a `property` proof to I-001
-               (an INVARIANT prefers property|model|static, see [verify](../../../passes/verify.md)) — clears SOL-V001.
+               (an INVARIANT prefers property|model|static, see the `verify` pass) — clears SOL-V001.
 Q-001 was resolved out-of-band by the spec owner (decision: redirect to `/login`);
 the resolution is recorded and Q-001 is removed, unblocking AC-002. All other clauses carry
 through unchanged (improve is semantics-preserving) — including AC-001's `AFFECTS I-001`, which

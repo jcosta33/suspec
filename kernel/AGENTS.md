@@ -11,9 +11,10 @@
   contract, one-line POINTERS into memory and the language reference, and a small set of
   universal startup + "do not" rules.
 
-  WHAT MUST STAY OUT: pass procedures, how-to-review/audit/migrate steps, full memory
-  content, and the SOL/APS manual. Those live in `.swarm/kernel/` and load on demand.
-  This file carries at most a one-line pointer to the language reference, never the manual.
+  WHAT MUST STAY OUT: pass procedures and how-to-review/audit/migrate steps (those live in the
+  self-contained skills under `.swarm/kernel/skills/`, loaded on demand) and full memory content.
+  The SOL/APS manual and the pass reference are NOT installed — they live in the Swarm project; this
+  file names them, never inlines them.
 -->
 
 ## Swarm startup
@@ -44,10 +45,10 @@
 
 ## Pointers
 <!-- One-line pointers ONLY — never inline the target content. -->
-- Language reference (SOL / APS / errors / versioning): `.swarm/kernel/language/`
+- Skills (self-contained pass guides, per-kind implement & author guides, heuristic-profile persona-* stances, fragments): `.swarm/kernel/skills/`. Each skill carries the operational rules it needs inline; it names — but does not ship — the deep reference.
 - Memory recall map (says *when to load* each entry; never dumped here): `.swarm/memory/INDEX.md`
-- Passes + skills (pass guides, per-kind implement & author guides, heuristic-profile persona-* stances, fragments): `.swarm/kernel/`
 - Project rule bundles (overlays): `.swarm/overlays/` (project-owned; survives kernel upgrades)
+- The full SOL / APS / passes reference (rationale, worked examples) is **not installed** — it lives in the Swarm project (the `swarm` repo's `docs/`); read it there when you want depth.
 
 ## Compatibility
 The kernel skills live at `.swarm/kernel/skills/`; for an agent CLI to discover them, adoption bridges
@@ -60,7 +61,7 @@ Swarm artifacts live in `.swarm/`.
 <!--
   The Commands contract. This is a FACT (a binding), which is why a table is allowed
   in an otherwise facts-only file. Each `cmd*` slot is the adapter a
-  `VERIFY BY <type>:<adapter>:<artifact>` clause resolves through (see `.swarm/kernel/passes/verify.md`).
+  `VERIFY BY <type>:<adapter>:<artifact>` clause resolves through (the `verify` pass; full reference in the Swarm project).
 
   NORMATIVE:
   - Populate a `cmd*` row for EVERY proof type any `VERIFY BY` clause in this repo references.

@@ -4,8 +4,8 @@
 # testable definition a future checker would honour and the artifact a human
 # uses to validate a repository BY HAND today. Per Invariant 1 (NO RUNTIME),
 # nothing here executes — Swarm ships the contract, never the checker.
-# The prose sources of truth are the kernel files under `.swarm/kernel/language/`
-# and the per-task-kind suite in `.swarm/kernel/passes/verify.md`; this manifest
+# The prose sources of truth are the SOL language reference and the per-task-kind
+# suite in the `verify` pass (the Swarm reference); this manifest
 # mirrors them and conformance/fixtures/ guards against drift.
 #
 # Copyable skeleton: fill every {{placeholder}} / replace each "<what goes here>".
@@ -13,7 +13,7 @@
 # cmd*/no-prefix names without an ADR.
 
 version: 0.1.0                    # <semver of this manifest; bump on contract change>
-language: SOL/0.1                 # the discriminator this manifest targets (meta.language; see `../language/versioning.md`)
+language: SOL/0.1                 # the discriminator this manifest targets (meta.language; see `the versioning reference`)
 
 # --- The task-file schema (keyed to the task.md template) --------------------
 # A conformant task.md MUST present every required_sections H2 heading and MUST
@@ -43,7 +43,7 @@ task_file:
 
 # --- Required AGENTS.md > Commands rows --------------------------------------
 # <adapter> slots in SOL `VERIFY BY` bindings resolve through this table (see
-# `../passes/verify.md`); a binding whose adapter has no row is unresolvable.
+# the `verify` pass); a binding whose adapter has no row is unresolvable.
 # Slot names are the cmd* slots bound in AGENTS.md > Commands.
 agents_md:
   required_command_rows: [cmdValidate, cmdTest, cmdFormat]                                 # MUST be present; absence is non-conformant
@@ -63,17 +63,17 @@ placeholders:
 # --- The unified lint scheme -------------------------------------------------
 # One prefix `SOL`, five layers, form `SOL-<LAYER>NNN`. Every diagnostic record
 # has the shape {code, severity, layer, span, message, suggest}. The full
-# catalogue in `../language/errors.md` is the source of truth; this is its inert shadow.
+# catalogue (the SOL error catalogue) is the source of truth; this is its inert shadow.
 lint:
   scheme: "SOL-<LAYER>NNN"
   layers: { S: SYNTAX, P: PROSE, M: SEMANTIC, V: VERIFICATION, O: ORCHESTRATION }
   record_shape: [code, severity, layer, span, message, suggest]
-  catalogue_ref: .swarm/kernel/language/errors.md   # the full catalogue is the source of truth
+  catalogue_ref: the SOL error catalogue   # the Swarm language reference is the source of truth
   retired_prefixes: [APS-]                           # APS- is not a code prefix
 
 # --- The per-task-kind required verification suite ---------------------------
 # The (proof-type, phase) defaults resolving to cmd* slots. The canonical
-# per-task-kind matrix lives in `../passes/verify.md`; this is its machine-readable shadow.
+# per-task-kind matrix lives in the `verify` pass; this is its machine-readable shadow.
 #   - bare entries     = cmd* adapter slots, resolved through AGENTS.md > Commands
 #   - gate:<name>      = an equivalence/coverage gate; the legal tokens are exactly
 #                        these five:
@@ -87,6 +87,6 @@ required_suite:
   feature:            [cmdValidate, cmdTest, cmdValidateDeps, gate:acceptance-criteria-coverage]
   fix:                [cmdValidate, cmdTest, gate:regression-test]
   refactor:           [cmdValidateDeps, cmdTypecheck, cmdTest, gate:behaviour-preservation]
-  # … one row per task_kind; full matrix mirrors `../passes/verify.md` …
+  # … one row per task_kind; full matrix mirrors the `verify` pass …
   # <add the remaining task_kind rows here, each row a list of cmd* slots and gate:<name> tokens>
   orchestration:      [merged:cmdValidate, merged:cmdTest, gate:scope-disjointness, gate:merge-intent]

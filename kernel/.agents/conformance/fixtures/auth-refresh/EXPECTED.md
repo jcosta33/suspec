@@ -33,8 +33,8 @@ and this manifest records the verdict a correct run must produce at each gate.
 
 ## Expected lint diagnostics (stage 2, on the authored `spec.swarm.md`)
 
-Three BLOCKING diagnostics fire, each in the unified `SOL-<LAYER><NNN>` namespace ([`../../../language/errors.md`](../../../language/errors.md)). Each
-is BLOCKING because it changes *what* gets built. Each names the closed `improve` op ([`../../../passes/improve.md`](../../../passes/improve.md)) or
+Three BLOCKING diagnostics fire, each in the unified `SOL-<LAYER><NNN>` namespace (the SOL error catalogue). Each
+is BLOCKING because it changes *what* gets built. Each names the closed `improve` op (the `improve` pass) or
 direct edit that repairs it.
 
 | Code | Layer | Severity | Span | Defect | Repair |
@@ -45,7 +45,7 @@ direct edit that repairs it.
 
 Plus a blocking-QUESTION risk recorded as a note: `Q-001` is `[blocking]` and `AFFECTS AC-002`.
 `AC-002` MUST NOT reach the `lower` pass while `Q-001` is open; a blocking `QUESTION` that does
-reach `lower` is **`SOL-O003`** (blocking-question-reaches-lowering, [`../../../language/errors.md`](../../../language/errors.md)). In this fixture
+reach `lower` is **`SOL-O003`** (blocking-question-reaches-lowering, the SOL error catalogue). In this fixture
 `Q-001` is resolved at the `improve` stage, so `SOL-O003` does **not** fire downstream — it is
 the risk the open question would have raised had it survived to lowering.
 
@@ -58,7 +58,7 @@ All three BLOCKING diagnostics clear and no blocking `QUESTION` remains:
 - `CONCRETIZE` fixed `I-001`'s threshold to the literal `1` and named the measured quantity —
   clears `SOL-P005`.
 - `BIND` attached a `test` proof to `AC-002` and a `property` proof to `I-001` (an `INVARIANT`
-  prefers `property`/`model`/`static`, [`../../../passes/verify.md`](../../../passes/verify.md)) — clears `SOL-V001`.
+  prefers `property`/`model`/`static`, the `verify` pass) — clears `SOL-V001`.
 - `Q-001` resolved out-of-band (decision: redirect to `/login`) and removed — clears the
   `SOL-O003` risk before lowering.
 
@@ -66,7 +66,7 @@ All three BLOCKING diagnostics clear and no blocking `QUESTION` remains:
 
 `IF-001` (the interface contract), `AC-001`, and `I-001` are clean `PASS`. `AC-002` is `PASS (STALE …)`: its bound test PASSed, but
 `web/src/http/client.ts` was edited after the recorded PASS, so its source no longer matches
-([`../../../passes/review.md`](../../../passes/review.md)). A STALE required obligation is not mergeable.
+(the `review` pass). A STALE required obligation is not mergeable.
 
 ```text
 Gate (first evaluation): BLOCKED — AC-002 is STALE.
@@ -76,7 +76,7 @@ Final outcome:              PASS.
 ```
 
 **Final gate: BLOCKED → (reconcile) → PASS.** A STALE verdict is never silently re-blessed
-([`../../../passes/review.md`](../../../passes/review.md)); the reconcile re-ran the proof and produced a fresh matching PASS.
+(the `review` pass); the reconcile re-ran the proof and produced a fresh matching PASS.
 
 ## Stable identifiers and hashes (consistent across all stages)
 
