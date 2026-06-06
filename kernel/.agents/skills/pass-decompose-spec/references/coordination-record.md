@@ -2,7 +2,7 @@
 
 Deep field detail for step 8 of the `decompose` pass guide. The `SKILL.md` body carries the load-bearing discipline; this file is the field-by-field contract and a worked fan-out. The contract is fixed by the the `decompose` pass (orchestration); this reference applies it, never redefines it.
 
-A `task-orchestration.md` is **generated execution material** — emitted by the lead during `decompose` and updated as the parallel run proceeds. It is a plain `.md` working artifact: it MUST NOT carry the `.swarm.` infix (the infix is the sole discriminator for compiler-parsed/emitted files; a coordination record is neither a source spec nor a compiler output). It lives under `.swarm/generated/` (recreatable), never `.swarm/sources/` (durable intent). It is disposable: on reconciliation the durable record is the compacted ledger entry, the updated status, and any promoted findings.
+A `task-orchestration.md` is **generated execution material** — emitted by the lead during `decompose` and updated as the parallel run proceeds. It is a plain `.md` working artifact: it MUST NOT carry the `.swarm.` infix (the infix is the sole discriminator for compiler-parsed/emitted files; a coordination record is neither a source spec nor a compiler output). It is recreatable execution material (created on first write, not a pre-built location), never a durable source artifact. It is disposable: on reconciliation the durable record is the compacted promotions-history entry, the updated status, and any promoted findings.
 
 It MAY embed SOL surface keywords (the `WRITES`-projected OWNED paths, preserved constraints/invariants) as **quoted data**; embedding them does not make it a SOL source, and a conformant tool MUST NOT parse it as a spec.
 

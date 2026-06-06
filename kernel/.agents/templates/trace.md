@@ -1,7 +1,7 @@
 ---
 type: trace
 id: {{slug}}-trace
-source_task: .swarm/generated/tasks/{{slug}}.md
+source_task: {{task-frame-path}}
 source_spec: {{spec-id}}.swarm.md
 created: {{createdAt}}
 ---

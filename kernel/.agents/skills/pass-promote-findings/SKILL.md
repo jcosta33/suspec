@@ -33,7 +33,7 @@ Like every Swarm pass, `promote` has **no runtime**: a contract a human, agent, 
 
 ## Produces
 
-- Durable writes to `.swarm/sources/` (findings, ADRs, audits, bug-reports) and `.swarm/memory/` (patterns, glossary), routed per the table in rule 2.
+- Durable writes: source artifacts (findings, ADRs, audits, bug-reports — each a `type:`-tagged document kept in your repo's docs/sources location) and memory (patterns, glossary), routed per the table in rule 2.
 - An updated `memory/INDEX.md`: a new `Load when` row for every `promoted` finding, a retraction row for every `rolled-back` finding.
 - A **fully-resolved promotion queue**: every item carries one of the seven canonical statuses, and **no item is `pending`**.
 - A **`promotions/` ledger entry** recording the resolved queue as compact, immutable history (rule 11).
@@ -51,10 +51,10 @@ The kinds are mutually exclusive by intent. A discovery with two faces (e.g. bot
 | Discovery | Promote to |
 |---|---|
 | New intended behaviour (a real obligation to build against) | `spec.swarm.md` (new/amended `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`), or an ADR when gated on an undecided architectural/product choice |
-| Durable architectural/product decision (choice + alternatives + trade-offs) | An ADR (`.swarm/sources/adrs/<nnnn>-<slug>.md`) |
-| Present-state risk or debt (what *is*, observed, not yet a chosen change) | An audit (`.swarm/sources/audits/<slug>.md`) — observation-only, never prescriptive |
-| Reproduced defect evidence (root cause + expected vs actual) | A bug-report (`.swarm/sources/bugs/<slug>.md`) — diagnosis-only; the fix promotes onward to a `task_kind: fix` task |
-| Reusable project fact (durable evidenced claim) | A finding (`.swarm/sources/findings/<slug>.md`), indexed in `memory/INDEX.md` with `Load when` + full provenance |
+| Durable architectural/product decision (choice + alternatives + trade-offs) | An ADR (`type: adr`), kept with your repo's ADRs |
+| Present-state risk or debt (what *is*, observed, not yet a chosen change) | An audit (`type: audit`) — observation-only, never prescriptive |
+| Reproduced defect evidence (root cause + expected vs actual) | A bug-report (`type: bug-report`) — diagnosis-only; the fix promotes onward to a `task_kind: fix` task |
+| Reusable project fact (durable evidenced claim) | A finding (`type: finding`), indexed in the memory index with `Load when` + full provenance |
 | Repeated cross-task pattern (recurring solution shape across >1 task) | `memory/patterns/*.md` |
 | Terminology clarification (ambiguous/drifted term) | `memory/glossary.md` (resolves `SOL-P006` undefined-term / `SOL-P057` terminology-drift at the source) |
 | Universal workflow rule (a procedure for every future task) | A **pass-guide edit (the procedure) PLUS at most a one-line `AGENTS.md` pointer** — never inline procedure |
@@ -118,7 +118,7 @@ Disposition every queue item to one of the **seven** canonical statuses. A task 
 
 ### 11. Record the resolved queue in the `promotions/` ledger
 
-Once the queue is fully resolved, write a `promotions/` ledger entry under `.swarm/ledger/promotions/`: the durable target each promoted discovery landed at, and the disposition of every queue item. The entry is **immutable and append-only** — a correction is a *new* entry referencing the one it amends, never an in-place edit. **Rationale:** memory preserves *durable facts*; the ledger preserves *compact reconciled history* — the audit trail letting a project discard verbose `.swarm/generated/` packets without losing the backward trace from today's code to the discoveries it produced. Because a task cannot close with any `pending` item, the ledger entry records a fully-resolved queue *by construction*. It introduces no new evidence type — a projection of the resolved queue this pass already produced.
+Once the queue is fully resolved, write a promotions-history entry (a compact, committed log your project keeps — created on first promote, never pre-stubbed): the durable target each promoted discovery landed at, and the disposition of every queue item. The entry is **immutable and append-only** — a correction is a *new* entry referencing the one it amends, never an in-place edit. **Rationale:** memory preserves *durable facts*; this history preserves *compact reconciled record* — the audit trail letting a project discard verbose throwaway execution packets without losing the backward trace from today's code to the discoveries it produced. Because a task cannot close with any `pending` item, the entry records a fully-resolved queue *by construction*. It introduces no new evidence type — a projection of the resolved queue this pass already produced.
 
 ## What does not belong
 
