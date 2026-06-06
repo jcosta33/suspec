@@ -6,7 +6,7 @@ Superseded by [0036](./0036-heuristic-profile-model.md) — a standalone file be
 
 ## Context
 
-The persona catalogue describes **13 mindsets** ([`docs/personas/`](../personas/)). One option is to pack the canonical persona payloads into a single consolidated `personas/SKILL.md`. But that single file would force a consumer to load all personas to get any one of them, contradicting selective vendoring, and it would carry mindsets that duplicate a workflow skill — a "Builder" persona says little that `write-feature` doesn't already say.
+The persona catalogue describes **13 mindsets** (`docs/personas/`). One option is to pack the canonical persona payloads into a single consolidated `personas/SKILL.md`. But that single file would force a consumer to load all personas to get any one of them, contradicting selective vendoring, and it would carry mindsets that duplicate a workflow skill — a "Builder" persona says little that `write-feature` doesn't already say.
 
 With no always-loaded skills ([0017](./0017-no-always-load-skills.md)) and activation by self-assessment ([0020](./0020-activation-by-self-assessment.md)), each persona that ships needs its own directive `description` so the agent can load *that* mindset when the work calls for it — which a consolidated file cannot provide.
 
@@ -22,7 +22,7 @@ The other **5 mindsets do not ship as skills** — each is carried by the matchi
 
 **Lead Engineer ships** (`persona-lead-engineer`) precisely *because* it has no workflow skill — orchestration ships none — so the coordination mindset (disjoint-scope decomposition, the hand-off contract, liveness, verified merge) *is* the discipline and clears the bar. See [0025](./0025-orchestration-coordination-artifact.md).
 
-The [`docs/personas/`](../personas/) catalogue still documents all 13 mindsets and marks which 7 ship as skills. Each shipped persona body uses the fixed shape from [0013](./0013-iron-law-red-flags-pattern.md): Role / Mindset / Hard constraints / Forbidden actions / Red flags / Persona discipline.
+The `docs/personas/` catalogue still documents all 13 mindsets and marks which 7 ship as skills. Each shipped persona body uses the fixed shape from [0013](./0013-iron-law-red-flags-pattern.md): Role / Mindset / Hard constraints / Forbidden actions / Red flags / Persona discipline.
 
 ## Consequences
 

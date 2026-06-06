@@ -8,7 +8,7 @@ A verdict is only as trustworthy as the proof behind it. `VERIFY BY` is the clau
 
 ## The nine proof types (closed)
 
-`VERIFY BY` binds an obligation to **exactly one** of nine proof types. The set is closed: a conformant linter MUST reject any `<type>` outside it as `SOL-V009` (unknown-proof-type). This canonical set resolves the earlier 11-type and 7-type proposals into one.
+`VERIFY BY` binds an obligation to **exactly one** of nine proof types. The set is closed: a conformant linter MUST reject any `<type>` outside it as `SOL-V009` (unknown-proof-type).
 
 | # | Proof type | One-line definition |
 | --- | --- | --- |

@@ -87,7 +87,7 @@ That template is the skeleton you copy to start a new audit; **this page is its 
 
 - [`finding.md`](finding.md) — a single durable, evidenced fact; an audit observation may be extracted into one.
 - [`bug-report.md`](bug-report.md) — the sibling diagnosis-only source artifact; where an audit observes standing risk, a bug-report diagnoses a reproduced defect and promotes into a fix task.
-- [`spec.swarm.md`](spec.swarm.md) — the obligation-bearing source an audit promotes INTO; the only place observed risk acquires obligation force.
+- [`spec.swarm.md`](spec.md) — the obligation-bearing source an audit promotes INTO; the only place observed risk acquires obligation force.
 - [`research.md`](research.md) / [`prd.md`](prd.md) / [`rfc.md`](rfc.md) — the other parents of a spec, each with its own preserved epistemic stance.
 - [The `author` pass](../passes/author.md) — the pass that promotes an audit's recommended obligations into a spec's SOL blocks.
 - [The `promote` pass](../passes/promote.md) — routes durable discovery (including findings extracted from audits) into memory and sources.

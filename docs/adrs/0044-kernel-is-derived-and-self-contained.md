@@ -68,9 +68,9 @@ under this decision.)
    `conformance.yaml`/`kernel/AGENTS.md` reference no `docs/` paths. The gate is a grep: fail if any shipped
    file carries a `§N`/`Appendix` token not defined as a heading in its own tree, or a `docs/` path.
 
-7. **Execution discipline:** the merge runs **pair-by-pair** (the merge direction differs per pair —
+6. **Execution discipline:** the merge runs **pair-by-pair** (the merge direction differs per pair —
    `decompose.md` regenerates the kernel *from* docs; `errors.md`/`lint.md`/`promote.md` merge kernel→docs),
-   running the equality check **after each pair**. Never a single bulk copy — that would destroy the
+   running the eyeball-diff check **after each pair**. Never a single bulk copy — that would destroy the
    more-current side. `conformance.yaml` and `kernel/AGENTS.md` (always-loaded entry points) are fixed
    **first**.
 
@@ -100,10 +100,11 @@ under this decision.)
 ### Negative
 
 - The one-time K2 reconciliation is **large and high-risk** (shipped normative content across 13 pairs +
-  a 614-reference §-rewrite + `conformance.yaml`/`AGENTS.md`); it must run pair-by-pair with the equality
-  check after each, never bulk.
-- The derivation transform is mostly mechanical but has **one non-mechanical rule** (the LINK-4 re-home
-  table), which must be maintained by hand as the docs-only tree evolves.
+  a 614-reference §-rewrite + `conformance.yaml`/`AGENTS.md`); it must run pair-by-pair with the
+  eyeball-diff check after each, never bulk.
+- The derivation transform is mostly mechanical but has **one non-mechanical rule** — re-homing a
+  docs-only-tree link or cross-document `§N`/`Appendix` ref to the kernel file that owns the content
+  (item 4) — which must be maintained by hand as the docs-only tree evolves.
 
 ### Neutral / tradeoffs
 

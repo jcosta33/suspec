@@ -42,8 +42,9 @@ Every obligation block (REQ, CONSTRAINT, INVARIANT) MAY carry scope-declaration 
 |---|---|---|---|
 | `WRITES <surface-list>` | `writes` | The write surfaces (named SURFACEs or paths/globs) the obligation mutates. | Write-surface conflict graph. |
 | `READS <surface-list>` | `reads` | The read set the obligation depends on but does not mutate. | Read/write conflict edges. |
-| `DEPENDS ON <id-list>` | `depends_on` | Hard ordering: this obligation MUST be satisfied after the listed obligations. | Dependency DAG. |
-| `AFFECTS <id-list-or-surface>` | `affects` | The impact set: obligations or surfaces that may be perturbed but are not directly written. | Soft `affects` conflict edge. |
+| `TOUCHES <surface-list>` | `touches` | Surfaces the obligation touches but does not own or write. | Advisory; outside the write-disjointness predicate. |
+| `DEPENDS ON <id-list>` | `depends_on` **edge** | Hard ordering: this obligation MUST be satisfied after the listed obligations. | Dependency DAG. |
+| `AFFECTS <id-list-or-surface>` | `affects` **edge** | The impact set: obligations or surfaces that may be perturbed but are not directly written. | Soft `affects` conflict edge. |
 | `OWNED BY <worker>` | `owner` | The execution-tier projection: the worker/packet that owns this obligation's write surfaces. Produced by `decompose`, not authored on the source obligation. | Subject to OWNED ⊆ WRITES (lint `SOL-O005`). |
 
 `AFFECTS` MUST lower to an `affects` edge in the IR, never folded into `writes` or `depends_on`. `DEPENDS_ON` (underscore) is **not** a surface keyword — it is only the IR edge-type transcription; a source author writing `DEPENDS_ON` in `.swarm.md` is a keyword-form error (`SOL-S002`-adjacent). The surface keyword is exactly `DEPENDS ON` (two words). Relationships are emitted **once**, as IR `edges[]`, never duplicated as node scalars in the conflict analysis.
@@ -67,13 +68,11 @@ REQ AC-014:
   "id": "REQ.auth-refresh.AC-014",
   "kind": "REQ",
   "writes": ["auth.client.code"],
-  "reads": ["auth.config"],
-  "depends_on": ["AC-010"],
-  "affects": ["AC-022"]
+  "reads": ["auth.config"]
 }
 ```
 
-with the relationships carried as edges (the single source of relationship truth):
+The node carries only its intrinsic scope sets; the `DEPENDS ON`/`AFFECTS` relationships are **not** node scalars — they are carried as edges (the single source of relationship truth):
 
 ```json
 {"from": "REQ.auth-refresh.AC-014", "to": "REQ.auth-refresh.AC-010", "type": "depends_on", "hard": true},

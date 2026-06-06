@@ -50,6 +50,8 @@ The two `.json` variants are **documented-as-contract names only**: the kernel p
 | `task.md` | Lowered work packet / pass frame for one pass (§28). | Tier 1 — core (required) |
 | `trace.md` | Implementation/preservation claims + evidence against obligations. | Tier 1 — core (required) |
 | `review.md` | The verdict record: per-obligation `VERDICT` blocks + matrix + final verdict. | Tier 1 — core (required) |
+| `status.md` | Observed-state read-model: per-obligation latest verdict + drift, for one spec. | Execution — derived (conditional) |
+| `task-orchestration.md` | Coordination record for one parallel decomposition: owned surfaces, hand-offs, liveness, merge log. | Execution — orchestration (conditional) |
 | `finding.md` | One durable, provenance-anchored project fact. | Tier 1 — core (required) |
 | `adr.md` | An immutable architecture decision record (Nygard form). | Tier 1 — core (required) |
 | `memory/INDEX.md` | Compact recall map (links + a "Load when" per entry). | Tier 1 — core (required) |

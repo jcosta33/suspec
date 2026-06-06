@@ -75,6 +75,7 @@ Each element of `nodes[]` is one **merged obligation record**: the fully normali
 | `risk` | string \| null | MAY | One of `low`, `medium`, `high`, `critical` — lowering of `RISK`. |
 | `reads` | array of string | MUST (MAY be empty) | The **read** scope set — lowering of `READS`. |
 | `writes` | array of string | MUST (MAY be empty) | The **write** scope set — lowering of `WRITES`. Surface names are `SURFACE` ids; there is no `locks` field. |
+| `touches` | array of string | MAY (defaults `[]`) | The **touch** scope set — lowering of `TOUCHES`: surfaces the obligation touches but does not own or write. Does not participate in the write-disjointness half of the safe-parallelism predicate. |
 | `verify_by` | array of object | MUST (MAY be empty) | Normalized proof bindings (§1.2.2) — lowering of `VERIFY BY`. |
 | `status` | string | MUST | The node's **core** verdict: one of `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`. Closed over the four core values only; defaults to `UNVERIFIED` before a verdict exists. |
 | `lifecycle` | array of string | MUST (MAY be empty) | Lifecycle decorators in effect — a subset of `{WAIVED, STALE, CONTRADICTED}`. Carried as a separate field, never fused into `status`. |
@@ -161,7 +162,7 @@ Every relationship between two nodes is one typed directed edge.
 
 > **Edges are the single source of relationship truth.** A relationship between two nodes MUST be represented exactly once, as an edge, and MUST NOT also be duplicated as a node scalar — there is no `depends_on`, `blocks`, `conflicts_with`, `verified_by`, `affects`, `implements`, or `preserves` field on a node. A consumer computing dependency order, conflict, or traceability MUST read `edges[]` and MUST NOT reconstruct relationships from node fields. Design rationale: a relationship stored twice can disagree; one representation cannot.
 
-This is distinct from the **scope sets** on a node (`reads`, `writes`): a scope set answers "what region of the world does this single obligation touch?" — intrinsic node data — while an edge answers "how do two nodes relate?" The lowering pass *derives* `conflicts_with` and `affects` edges *from* scope sets (e.g. two nodes sharing a write surface yield a `conflicts_with` edge), keeping the raw declaration on the node and the computed relationship in the graph so the derivation is auditable and the two never silently disagree. `affects` is purely an edge type (a resolved node→node impact link); it is not also a node scope set.
+This is distinct from the **scope sets** on a node (`reads`, `writes`, `touches`): a scope set answers "what region of the world does this single obligation touch?" — intrinsic node data — while an edge answers "how do two nodes relate?" The lowering pass *derives* `conflicts_with` and `affects` edges *from* scope sets (e.g. two nodes sharing a write surface yield a `conflicts_with` edge), keeping the raw declaration on the node and the computed relationship in the graph so the derivation is auditable and the two never silently disagree. `affects` is purely an edge type (a resolved node→node impact link); it is not also a node scope set.
 
 ### 1.4 `diagnostics[]`
 
