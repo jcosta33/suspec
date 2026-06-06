@@ -260,6 +260,11 @@ requires changing a verified number; all are attribution/labeling/citation hygie
    since-rejected figures — see `docs/research/sources.md` Rejected" banner to `_legacy/README.md`
    and the affected `building/` files, or drop the fabricated-figure paragraphs, or remove `_legacy/`
    from the tracked tree.
+   *(Resolved by the third option: `docs/_legacy/` was removed from the tracked tree, closing the
+   contamination channel. An 11-agent integration audit first confirmed its salvageable substance is
+   represented in the live docs; the two genuine orphans — the monorepo nested-`AGENTS.md` closest-wins
+   rule and the `constitution` doc-type — were migrated to `model/workspace.md` and decided in ADR-0030
+   before removal.)*
 
 ---
 

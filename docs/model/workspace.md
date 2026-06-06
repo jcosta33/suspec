@@ -105,6 +105,10 @@ A canonical artifact that exists *only* under `.agents/` is a layout defect, not
 
 Swarm coordinates agent-CLI workers and **prepares and validates** work; it does **not** own the model loop, the file-editing mechanics, or the provider/MCP runtime, and it MUST NOT replace an agent CLI. The future launcher is a contract a toolchain builds against — it would scaffold task frames, bind `VERIFY BY` adapters through `AGENTS.md > Commands`, serialize write surfaces, and reconcile the ledger — all consistent with the orchestrator-worker, single-threaded-writes boundary. No canonical page implies Swarm is an agent runtime: there is no "Swarm is an agent CLI" and no "agent runtime" here. Every "runs" verb resolves to that future-launcher contract (Invariant 1).
 
+## Monorepo: nested `AGENTS.md` (closest-wins)
+
+In a multi-package repo more than one `AGENTS.md` may coexist: the repo-root file carries the shared bindings and conventions, and a per-workspace file (e.g. `packages/api/AGENTS.md`) adds to or overrides them. An agent working inside a workspace reads the **closest** `AGENTS.md` up the directory tree — the nearest file wins, with the root as fallback; a workspace with no `AGENTS.md` inherits the root. Only the `## Commands` bindings and standing project facts differ per workspace: the `.swarm/` workspace (the installed kernel, memory, overlays, sources/status/generated) stays at the repo root and is shared, as does the `.agents/` (or `.claude/`) skill bridge. This is purely a bootloader-resolution rule for monorepos; it changes nothing about the obligation model.
+
 ## Commit policy (informative)
 
 An adopted project SHOULD gitignore execution-local and scratch state while committing everything that defines, tracks, or reconciles intent:

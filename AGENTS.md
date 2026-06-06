@@ -17,8 +17,9 @@ contract a future tool builds against, never code this repo runs.
 - `kernel/` — the installable payload a consuming repo adopts into `.swarm/kernel/`:
   `kernel/.agents/{language,templates,passes,skills,overlays,conformance,memory}` + `kernel/AGENTS.md`.
 - `evals/` — rubrics.
-- `.agents/` — this repo's agent-tool surface: `skills/` (the 34 skills, mirroring the kernel
-  payload), `specs/swarm/` (the **frozen** build source), `audits/` (dev audits).
+- `.agents/` — this repo's agent-tool surface: `skills/` (a **curated subset** of the kernel skills —
+  only the ones useful for developing *this* repo, not a full mirror; the complete 34-skill payload is
+  `kernel/.agents/skills/`), `specs/swarm/` (the **frozen** build source), `audits/` (dev audits).
 
 ## Startup
 1. Read the current task / request first.
@@ -55,7 +56,7 @@ contract a future tool builds against, never code this repo runs.
   9 passes · 10 improve operations · 5 lint layers (S/P/M/V/O) · 7 edge types · 17 `task_kind` values.
 
 ## Pointers
-- Skills (pass guides, per-kind implement, author, fragments, 13 personas): `.agents/skills/`
+- Skills — the full catalogue (pass guides, per-kind implement, author, fragments, 13 personas) is the kernel payload `kernel/.agents/skills/`; `.agents/skills/` holds only the curated subset imported for developing this repo
 - Language reference (SOL / APS / errors / versioning): `docs/language/`
 - The pipeline, artifacts, conformance: `docs/model/`, `docs/artifacts/`
 - The evidence base (verified / caveated / rejected sources): `docs/research/sources.md`
