@@ -1,6 +1,6 @@
 # Principles
 
-> Swarm's reference for the load-bearing invariants and standing principles of the kernel: the tiebreakers that decide cases when two design choices collide. The installable payload that carries these principles into an adopted project ships under [`starter-kit/`](../starter-kit/).
+> Swarm's reference for the load-bearing invariants and standing principles of the framework: the tiebreakers that decide cases when two design choices collide. The installable files that carry these principles into an adopted project ship under [`starter-kit/`](../starter-kit/).
 
 Swarm treats a **specification as source code** and a **fleet of agents as the compiler**. Human intent is written as controlled markdown (the source); agents compile it into work that is implemented, verified against the original obligations, and promoted into durable memory. Everything below holds in *every* part of the framework — no construct may contradict an invariant.
 
@@ -16,7 +16,7 @@ These are absolute. No later rule, template, pass guide, or profile may weaken t
 
 Swarm is **markdown-only**. Everything that "runs" — parser, normalizer, planner, scheduler, differ, checker, LSP, CLI — is documented as a **contract a future tool builds against**, never as software this repository ships.
 
-- **Rationale.** The repository is documentation plus a kernel payload. Shipping a runtime would couple Swarm to one environment and break provider-neutrality.
+- **Rationale.** The repository is documentation plus the starter kit. Shipping a runtime would couple Swarm to one environment and break provider-neutrality.
 - **Consequence.** Any section describing tool behavior frames it as "the contract a future tool builds against." No file may claim a CLI is required, or that automation already exists. Every "runs" verb resolves to a future-tool contract.
 
 > **Tiebreaker.** When tempted to describe a capability as something Swarm *does*: ask whether this repository ships code that does it. It does not. Restate it as a contract a future tool must satisfy.
@@ -66,12 +66,12 @@ Swarm makes **no assumption about which model or agent** executes it — not Cla
 - **Rationale.** The contracts must outlive any single vendor and any single capability ceiling.
 - **Consequence.** No section may hard-code provider-specific behavior; capability claims must be dated and treated as evidence, not load-bearing assumptions.
 
-### Markdown-only with a self-contained kernel payload
+### Markdown-only with a self-contained starter kit
 
-Swarm is delivered as markdown, and the kernel payload must be **self-contained**: its SOL and APS references must not depend on the repository's `docs/` tree.
+Swarm is delivered as markdown, and the starter kit must be **self-contained**: its SOL and APS references must not depend on the repository's `docs/` tree.
 
-- **Rationale.** A vendored kernel payload travels into a foreign repository where `docs/` will not exist.
-- **Consequence.** The language references are duplicated into the kernel payload, and the duplication is kept consistent by the conformance contract.
+- **Rationale.** A vendored starter kit travels into a foreign repository where `docs/` will not exist.
+- **Consequence.** The language references are duplicated into the starter kit, and the duplication is kept consistent by the conformance contract.
 
 ### Edges are the single source of relationship truth
 
@@ -169,6 +169,6 @@ Swarm owns the **intent structure** — language, artifacts, passes, templates, 
 
 - [Non-goals](./NON-GOALS.md) — what Swarm deliberately is not, the negative space these principles protect.
 - [The compiler pipeline](./model/compiler-pipeline.md) — the seven phases and nine passes the obligation graph flows through.
-- [The `.swarm/` workspace](./model/workspace.md) — how the source / status / generated categories above lay out on disk.
+- [The workspace model](./model/workspace.md) — how the source / status / generated categories above lay out on disk.
 - [Source authority](./model/source-authority.md) — the amendment and authority rules an ADR cites when changing a principle.
 - [Architecture decision records](./adrs/README.md) — the recorded amendments; a change to any invariant or principle lands as a new ADR.

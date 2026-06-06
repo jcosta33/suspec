@@ -8,7 +8,7 @@ Like every Swarm pass, `review` has **no runtime**: it is a contract a human, an
 
 ## What the pass does
 
-The `review` pass **renders the merge-gate judgment**: it compares trace claims against the obligations they purport to satisfy, records one `VERDICT` per required proof binding, and decides — for the whole change set — whether promotion is permitted. Its single durable artifact is `review.md`, and **that artifact *is* the verdict record**. The kernel ships **no** `verdict.md`; a repo that records verdicts in a standalone `verdict.md` is non-conformant.
+The `review` pass **renders the merge-gate judgment**: it compares trace claims against the obligations they purport to satisfy, records one `VERDICT` per required proof binding, and decides — for the whole change set — whether promotion is permitted. Its single durable artifact is `review.md`, and **that artifact *is* the verdict record**. Swarm ships **no** `verdict.md`; a repo that records verdicts in a standalone `verdict.md` is non-conformant.
 
 | Aspect | Value |
 |---|---|

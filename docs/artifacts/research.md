@@ -28,17 +28,9 @@ Because research is the *detached* evidence store, its scope is wider than a sin
 
 A research artifact is structured Markdown governed by this contract; it is **not** parsed as SOL source, and it **MUST NOT** be given a per-artifact `.swarm.*` name. A conformant tool treats the missing infix as sufficient proof not to parse the file as a spec.
 
-In an adopted `.swarm/` workspace, research is a durable source artifact — it is desired-truth-adjacent evidence, committed and never recreated — and lives under `sources/`:
+In an adopted project, research is a durable source artifact — a `type: research` document committed to the spec repo: desired-truth-adjacent evidence, committed and never recreated. It sits beside its source-doc neighbors — the accepted `R-NNN` findings it promotes into (as `finding.md` instances) and the `*.swarm.md` a research artifact promotes INTO.
 
-```text
-.swarm/
-  sources/
-    research/        # research.md instances live here (detached evidence)
-    findings/        # accepted R-NNN findings promote to finding.md here
-    specs/           # the *.swarm.md a research artifact promotes INTO
-```
-
-It is **not** generated material: it never lives in `generated/` (recreatable execution packets) or `tmp/` (scratch). As a Tier-3 stdlib source-doc it is **conditional** — a conformant kernel payload MUST ship the template, but a conformant repo need not have instantiated any research artifact, and a missing instance is not a conformance gap.
+It is **not** execution scratch: it is never one of the recreatable execution packets (task frames, traces, reviews) or transient scratch. As a Tier-3 stdlib source-doc it is **conditional** — the starter kit MUST ship the template, but a conformant repo need not have instantiated any research artifact, and a missing instance is not a conformance gap.
 
 ## Required sections & fields, in order
 
@@ -66,7 +58,7 @@ The `R-NNN` finding ids and `Q-NNN` question ids are the load-bearing local hand
 
 ## Copyable template
 
-The copyable skeleton is `starter-kit/.agents/templates/research.md`. That file is the empty starting point an author copies to create a new research artifact; **this page is its contract** — the meaning of each section and field, the epistemic boundary (inquiry, never decision; no obligation blocks), and the placement rules the skeleton is filled in against. In an adopted project the same skeleton is installed at `.swarm/kernel/templates/research.md`.
+The copyable skeleton is `starter-kit/.agents/templates/research.md`. That file is the empty starting point an author copies to create a new research artifact; **this page is its contract** — the meaning of each section and field, the epistemic boundary (inquiry, never decision; no obligation blocks), and the placement rules the skeleton is filled in against. In an adopted project the same skeleton ships with the installed starter kit.
 
 ## Related
 

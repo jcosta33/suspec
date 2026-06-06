@@ -27,18 +27,13 @@ Where a finding governs once accepted: it carries weight as durable evidence in 
 
 A finding is structured Markdown governed by this contract; it is **not** parsed as SOL source, and it **MUST NOT** be given a per-artifact `.swarm.*` name. A conformant tool treats the missing infix as sufficient proof not to parse the file as a spec.
 
-In an adopted `.swarm/` workspace, a finding is a durable source artifact and lives under `sources/`:
+In an adopted project, a finding is a durable source artifact — a `type: finding` document committed to the spec repo, where the recall map indexes it and patterns generalize from it:
 
-```text
-.swarm/
-  sources/
-    findings/        # finding.md instances live here (durable discovery)
-  memory/
-    INDEX.md         # Tier-1 recall map: links each promoted finding with a "Load when"
-    patterns/        # Tier-2 recurring knowledge that GENERALIZES several findings
-```
+- A finding is durable discovery, committed alongside the other source-docs.
+- The Tier-1 recall map (`memory/INDEX.md`) links each promoted finding with a "Load when".
+- A Tier-2 pattern is recurring knowledge that **generalizes** several findings.
 
-A finding is **not** generated material: it is desired-truth-adjacent durable knowledge, committed, and never placed in `generated/` (recreatable execution packets) or `tmp/` (scratch). It is the Tier-2 evidence store that the Tier-1 `memory/INDEX.md` map points at; the index links into a finding's body but never duplicates it. A single finding is **never** promoted directly to a `memory/patterns/*.md` pattern — a pattern distills two or more corroborating findings and must cite the findings it generalizes.
+A finding is **not** execution scratch: it is desired-truth-adjacent durable knowledge, committed, and never one of the recreatable execution packets (task frames, traces, reviews) or transient scratch. It is the Tier-2 evidence store that the Tier-1 recall map points at; the index links into a finding's body but never duplicates it. A single finding is **never** promoted directly to a pattern — a pattern distills two or more corroborating findings and must cite the findings it generalizes.
 
 ## Required sections and fields, in order
 
@@ -76,7 +71,7 @@ The full provenance set is **mandatory on every finding that reaches `accepted` 
 
 ## Copyable template
 
-The copyable skeleton is `starter-kit/.agents/templates/finding.md`. That file is the empty starting point an author copies to create a new finding; **this page is its contract** — the meaning of each field, the epistemic boundary, and the placement rules the skeleton is filled in against. In an adopted project the same skeleton is installed at `.swarm/kernel/templates/finding.md`.
+The copyable skeleton is `starter-kit/.agents/templates/finding.md`. That file is the empty starting point an author copies to create a new finding; **this page is its contract** — the meaning of each field, the epistemic boundary, and the placement rules the skeleton is filled in against. In an adopted project the same skeleton ships with the installed starter kit.
 
 ## Related
 

@@ -4,7 +4,7 @@
 
 This page is the reader's first map of *which files a Swarm repository may contain* and *how the framework tells them apart*. Swarm is markdown-only and provider-neutral, with **no runtime** (Invariant 1, §2): every actor named below ("compiler", "parser", "linter", "planner", "checker") is a CONTRACT a future tool would build against, never shipped code — every artifact is inert reference data, a copyable template, or a file a human or agent populates by hand.
 
-This page covers the artifact *set*, its two-class partition, and the *tiers* on which conformance is defined. Adjacent material lives on sibling pages: repository layout and the adopted-project `.swarm/` workspace, the per-artifact contracts and copyable templates under [docs/artifacts/](../artifacts/), and the mechanically-checkable conformance procedure in [docs/model/conformance.md](conformance.md).
+This page covers the artifact *set*, its two-class partition, and the *tiers* on which conformance is defined. Adjacent material lives on sibling pages: repository layout and the adopted-project workspace model, the per-artifact contracts and copyable templates under [docs/artifacts/](../artifacts/), and the mechanically-checkable conformance procedure in [docs/model/conformance.md](conformance.md).
 
 ## 1. Two classes, one discriminator: the `.swarm.` infix
 
@@ -23,12 +23,12 @@ The only **human-authored** `.swarm.` artifact is `*.swarm.md` (the source spec)
 
 ## 2. The artifact set is built from 7 block types and 7 verdicts
 
-The working artifacts on this page are containers for the language defined elsewhere in the kernel. Two counts are load-bearing here:
+The working artifacts on this page are containers for the language defined elsewhere in Swarm. Two counts are load-bearing here:
 
 - **7 block types** — the SOL surface-language blocks (`REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`, `TRACE`, `VERDICT`; §5–§6) are what a `*.swarm.md` source carries and what working artifacts embed as quoted data.
 - **7 verdicts** (4 core + 3 lifecycle; §14) — core ∈ {`PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`}; lifecycle ∈ {`WAIVED`, `STALE`, `CONTRADICTED`}. A `VERDICT` is a SOL *block*, never a file (see §3.3 below).
 
-This page does not re-enumerate the broader kernel taxonomies (5 modals, 9 proof types, 7 phases / 9 passes, 10 improve ops, 5 lint layers S/P/M/V/O); they live in their own reference pages. They are named only to anchor that the artifacts here are the *carriers* of that vocabulary, not new vocabulary.
+This page does not re-enumerate the broader Swarm taxonomies (5 modals, 9 proof types, 7 phases / 9 passes, 10 improve ops, 5 lint layers S/P/M/V/O); they live in their own reference pages. They are named only to anchor that the artifacts here are the *carriers* of that vocabulary, not new vocabulary.
 
 ## 3. Canonical filenames by class
 
@@ -41,7 +41,7 @@ This page does not re-enumerate the broader kernel taxonomies (5 modals, 9 proof
 | `*.swarm.plan.json` | Emitted plan (lowered, schedulable work packets + graphs). | Compiler/planner (future tool) | Plan envelope (§13) | **Reserved contract name.** Not written by any shipped tool. |
 | `*.swarm.trace.md` | Emitted/instantiated trace for a built spec. | Implement/verify pass (today: agent by hand) | Trace contract (§21.4) + §16 provenance | Copyable template is `trace.md` (plain); built *instances* MAY take the `*.swarm.trace.md` name. |
 
-The two `.json` variants are **documented-as-contract names only**: the kernel pins their shape so a future launcher can build against a stable target, but Swarm ships no parser, emitter, planner, or checker (Invariant 1, §2). A v0.1 repository MUST NOT claim that any `*.swarm.ir.json` or `*.swarm.plan.json` is *produced* by a Swarm tool; it MAY hold hand-written examples in the golden corpus (§33).
+The two `.json` variants are **documented-as-contract names only**: Swarm pins their shape so a future launcher can build against a stable target, but Swarm ships no parser, emitter, planner, or checker (Invariant 1, §2). A v0.1 repository MUST NOT claim that any `*.swarm.ir.json` or `*.swarm.plan.json` is *produced* by a Swarm tool; it MAY hold hand-written examples in the golden corpus (§33).
 
 ### 3.2 Working artifacts (plain `.md`)
 
@@ -65,13 +65,13 @@ The two `.json` variants are **documented-as-contract names only**: the kernel p
 
 A repository MUST NOT contain a standalone `verdict.md`, and no tool MAY emit one (§20.2.3). `VERDICT` is a SOL *language block* (§6), not a file; `review.md` is its canonical *container* (§21.5).
 
-*Rationale:* a verdict is the output of the review pass, and like a SARIF `result` that lives inside a `run` rather than as a free-standing file, it belongs inside its container record, not on its own. The kernel ships documentation of the `VERDICT` block and the verdict taxonomy (§14) as a reference page, not as a copyable artifact template.
+*Rationale:* a verdict is the output of the review pass, and like a SARIF `result` that lives inside a `run` rather than as a free-standing file, it belongs inside its container record, not on its own. Swarm ships documentation of the `VERDICT` block and the verdict taxonomy (§14) as a reference page, not as a copyable artifact template.
 
 ## 4. The tiered required-artifact set
 
 The required set is partitioned into **three tiers**. Only Tiers 1 and 2 are load-bearing for conformance; Tier 3 is shipped but conditional (§20.3).
 
-### 4.1 Tier 1 — kernel-required pipeline core (7 artifacts)
+### 4.1 Tier 1 — Swarm-required pipeline core (7 artifacts)
 
 Seven artifacts. Each MUST ship both (a) a documented contract and (b) a copyable template skeleton; all seven are given in §21.
 
@@ -85,7 +85,7 @@ Seven artifacts. Each MUST ship both (a) a documented contract and (b) a copyabl
 | 6 | `adr.md` | working | Immutable decision. |
 | 7 | `memory/INDEX.md` | working | Recall map (memory Tier-1). |
 
-### 4.2 Tier 2 — kernel-required language / reference docs (6 docs)
+### 4.2 Tier 2 — Swarm-required language / reference docs (6 docs)
 
 Six *prose-and-table reference pages* (not copyable templates). A conformant repo MUST contain a self-contained copy of each, so the repository explains its own language without external dependency (§20.3.2).
 
@@ -110,7 +110,7 @@ These are *source documents* that promote into the pipeline. They are **conditio
 
 The spec extends this minimum: per §20.3.4, a conformant repository SHOULD also ship `prd.md` (stance: **intent**) and `rfc.md` (stance: **proposal**) templates alongside the three above — extending the Tier-3 set to five — and MAY additionally ship a `use-case.md` or `nfr.md` template. None of these is ever conformance-required.
 
-Beyond these, the stdlib SHOULD make available a **conditional `threat-model.md`** source-doc for changes whose domain is `security` or that touch an attack surface (mapped to OWASP-LLM01). It sits **outside** the five-template Tier-3 inventory the conformance definition counts — it is never conformance-required, so a kernel MAY ship it as an optional security extension and a conformant repo MAY have zero instances. Like the other source-docs it is plain `.md` with `type` + `id` frontmatter, holds **no obligation blocks** (stance: *threat observation*, not intent), and promotes forward only through an `author` pass that re-states each modelled threat as a `CONSTRAINT`/`INVARIANT` with its own id, modality, and a (typically `security`) `VERIFY BY` — subject, as an externally-informed observation, to the source-authority rule for untrusted sources before any obligation it implies becomes binding. Its contract is [`docs/artifacts/threat-model.md`](../artifacts/threat-model.md).
+Beyond these, the stdlib SHOULD make available a **conditional `threat-model.md`** source-doc for changes whose domain is `security` or that touch an attack surface (mapped to OWASP-LLM01). It sits **outside** the five-template Tier-3 inventory the conformance definition counts — it is never conformance-required, so the starter kit MAY ship it as an optional security extension and a conformant repo MAY have zero instances. Like the other source-docs it is plain `.md` with `type` + `id` frontmatter, holds **no obligation blocks** (stance: *threat observation*, not intent), and promotes forward only through an `author` pass that re-states each modelled threat as a `CONSTRAINT`/`INVARIANT` with its own id, modality, and a (typically `security`) `VERIFY BY` — subject, as an externally-informed observation, to the source-authority rule for untrusted sources before any obligation it implies becomes binding. Its contract is [`docs/artifacts/threat-model.md`](../artifacts/threat-model.md).
 
 ### 4.4 The recognized parents of a spec (§20.3.4)
 
@@ -119,7 +119,7 @@ A spec is not born only from research. Swarm normalizes many requirements-practi
 - **Shipped Tier-3 source-doc templates** (conditional, never required): `audit.md`, `research.md`, `bug-report.md`, and — per §20.3.4 — `prd.md` and `rfc.md`.
 - **Recognized inputs that normalize INTO a spec** during the `author` pass (§9), emitting `REQ` / `CONSTRAINT` / `INVARIANT` / `INTERFACE` blocks plus verification-matrix rows directly, and not necessarily shipped as separate templates: `use-case.md` / examples (scenario), `nfr.md` / SLOs (quality attributes), and interface sources (OpenAPI / GraphQL / DB schema).
 
-`research.md` holds a special role as the kernel's **detached first-class evidence store** (§20.3.4): it is not bound to one downstream artefact — one research artefact MAY feed many PRDs, specs, ADRs, findings, or audits at once — which minimizes copying, preserves provenance, and reduces distillation loss (§24) when upstream facts evolve.
+`research.md` holds a special role as Swarm's **detached first-class evidence store** (§20.3.4): it is not bound to one downstream artefact — one research artefact MAY feed many PRDs, specs, ADRs, findings, or audits at once — which minimizes copying, preserves provenance, and reduces distillation loss (§24) when upstream facts evolve.
 
 ## 5. What conformance requires (pointer)
 

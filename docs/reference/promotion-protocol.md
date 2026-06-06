@@ -1,6 +1,6 @@
 # Promotion Protocol
 
-A discovery made during a task does **not** become memory by being written down. It becomes memory by being **promoted** — an explicit, recorded act that moves a fact from a task's ephemeral scratch into a durable, indexed, provenanced artifact. This page is the promotion protocol the kernel references by name: the seven-value status enum, the mandatory-before-close gate, the discovery-to-target routing table, the validation/rollback discipline, and the **ledger** that records the disposition of every promotion as compact, immutable history.
+A discovery made during a task does **not** become memory by being written down. It becomes memory by being **promoted** — an explicit, recorded act that moves a fact from a task's ephemeral scratch into a durable, indexed, provenanced artifact. This page is the promotion protocol Swarm references by name: the seven-value status enum, the mandatory-before-close gate, the discovery-to-target routing table, the validation/rollback discipline, and the **ledger** that records the disposition of every promotion as compact, immutable history.
 
 Promotion exists because chat transcripts and inline prose are *not* memory — they are unindexed, unprovenanced, and unfalsifiable. Memory is a promotion system (a fact earns durability through a recorded promotion) backed by an immutable evidence store, with a compact index over it [[CTXENG]](../research/sources.md#CTXENG). The protocol is markdown-only and NO-RUNTIME: it describes the *files and the discipline* a future retrieval/checker tool would build against, not a shipped engine — nothing here ships a retrieval engine, a compactor, or a git driver.
 
@@ -43,10 +43,10 @@ Given the *kind* of discovery, the protocol fixes the single durable target the 
 | Discovery | Promote to |
 | --------- | ---------- |
 | New intended behaviour (a real obligation/constraint to build against) | `spec.swarm.md` (a new or amended `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`), or an ADR when the behaviour is gated on an undecided architectural/product choice. |
-| Durable architectural or product decision (a choice with consequences, alternatives, trade-offs) | An ADR (`.swarm/sources/adrs/<nnnn>-<slug>.md`). |
-| Present-state risk or debt (what *is*, observed but not yet a chosen change) | An audit (`.swarm/sources/audits/<slug>.md`) — observation-only, never prescriptive. |
-| Reproduced defect evidence (root cause + expected vs actual, reproducible) | A bug-report (`.swarm/sources/bugs/<slug>.md`) — diagnosis-only; the fix promotes onward to a `task_kind: fix` task. |
-| Reusable project fact (a durable claim learned during work, with evidence) | A finding (`.swarm/sources/findings/<slug>.md`), indexed in `memory/INDEX.md` with a `Load when` and full provenance. |
+| Durable architectural or product decision (a choice with consequences, alternatives, trade-offs) | An ADR — a `type: adr` doc kept under `.agents/`. |
+| Present-state risk or debt (what *is*, observed but not yet a chosen change) | An audit — a `type: audit` doc, observation-only, never prescriptive. |
+| Reproduced defect evidence (root cause + expected vs actual, reproducible) | A bug-report — a `type: bug-report` doc, diagnosis-only; the fix promotes onward to a `task_kind: fix` task. |
+| Reusable project fact (a durable claim learned during work, with evidence) | A finding — a `type: finding` doc, indexed in `memory/INDEX.md` with a `Load when` and full provenance. |
 | Repeated cross-task pattern (a recurring solution shape seen across more than one task) | `memory/patterns/*.md`. |
 | Terminology clarification (a term whose meaning was ambiguous or drifted) | `memory/glossary.md` (the canonical lexicon; resolves `SOL-P`-layer terminology drift — `SOL-P006` undefined-term, `SOL-P057` terminology-drift — at the source). |
 | Universal workflow rule (a procedure that should apply to every future task) | A pass-guide edit (the procedure) **plus at most a one-line `AGENTS.md` pointer** — NEVER inline procedure in `AGENTS.md`; the bootloader holds persistent facts, not steps. |
@@ -59,7 +59,7 @@ Two normative consequences hold across **every** row:
 
 ### The "universal workflow rule" tie-break
 
-Routing a *universal workflow rule* toward `AGENTS.md` collides with the ≤200-line bootloader cap [[LOSTMID]](../research/sources.md#LOSTMID) and the rule that only persistent **facts** belong in `AGENTS.md` while **procedures** belong in pass guides [[AGENTSMD-HARM]](../research/sources.md#AGENTSMD-HARM). The kernel resolves this normatively:
+Routing a *universal workflow rule* toward `AGENTS.md` collides with the ≤200-line bootloader cap [[LOSTMID]](../research/sources.md#LOSTMID) and the rule that only persistent **facts** belong in `AGENTS.md` while **procedures** belong in pass guides [[AGENTSMD-HARM]](../research/sources.md#AGENTSMD-HARM). Swarm resolves this normatively:
 
 > A "universal workflow rule" promotion MUST become **a pass-guide edit (the procedure) PLUS at most a one-line `AGENTS.md` pointer (the fact that the guide exists and when to load it).** It MUST NOT inline the procedure into `AGENTS.md`.
 
@@ -104,20 +104,20 @@ The two-tier index/store split is a deliberate **design choice**, not a measured
 
 A `promoted` finding does not stay authoritative forever. A finding becomes **`stale`** when its `content_hash` no longer matches the cited source/surfaces — the same drift signal that produces the `STALE` verdict lifecycle decorator and the spec↔code drift reconcile. A `stale` finding MUST NOT be relied on as authority; it is routed to re-verification or supersession, and a `superseded` finding records its replacement in `memory/INDEX.md`'s stale/superseded table.
 
-The kernel ships the **fields** that make staleness computable (`content_hash`, `origin_traces`); it does **not** ship the comparator. Recomputing the hash and flipping `accepted → stale` is a harness/CLI concern, aspirational and manual today (NO-RUNTIME).
+Swarm ships the **fields** that make staleness computable (`content_hash`, `origin_traces`); it does **not** ship the comparator. Recomputing the hash and flipping `accepted → stale` is a harness/CLI concern, aspirational and manual today (NO-RUNTIME).
 
 ## The ledger — compact reconciled history
 
-Memory preserves *durable facts*; the **ledger** preserves *compact reconciled history* — the audit trail of completed work after its execution material has been thrown away. The two are complementary, not redundant: a `finding.md` records *what we learned* and is loaded *when its `Load when` fires*; a ledger entry records *what a task did, covered, and proved* and is read *when an auditor reconstructs why the codebase is the way it is*. The ledger is the bright line that lets Swarm discard task scratch without losing auditability: a task surfaces a `task.md` frame, one or more `*.swarm.trace.md` implementation claims, and a `review.md` verdict record (all execution packets under `.swarm/generated/`); once the work is merged or abandoned and its discoveries are promoted, those packets have served their purpose, and their load-bearing content is **compacted into** a ledger entry on reconciliation. Keeping the verbose packets indefinitely would re-create exactly the unindexed accumulation that promotion rejects for chat transcripts.
+Memory preserves *durable facts*; the **ledger** preserves *compact reconciled history* — the audit trail of completed work after its execution material has been thrown away. The two are complementary, not redundant: a `finding.md` records *what we learned* and is loaded *when its `Load when` fires*; a ledger entry records *what a task did, covered, and proved* and is read *when an auditor reconstructs why the codebase is the way it is*. The ledger is the bright line that lets Swarm discard task scratch without losing auditability: a task surfaces a `task.md` frame, one or more `*.swarm.trace.md` implementation claims, and a `review.md` verdict record (all execution packets — gitignored scratch, or recreatable from sources); once the work is merged or abandoned and its discoveries are promoted, those packets have served their purpose, and their load-bearing content is **compacted into** a ledger entry on reconciliation. Keeping the verbose packets indefinitely would re-create exactly the unindexed accumulation that promotion rejects for chat transcripts.
 
 This is design rationale, not an empirical claim — it specifies the files and the append-only discipline a future reconciliation tool builds against (NO-RUNTIME); nothing here ships a reconciliation engine, a compactor, or a git driver.
 
 ### Location and shape
 
-The ledger lives in the canonical Swarm workspace under three categories, introduced in [docs/model/workspace.md](../model/workspace.md):
+The ledger is compacted history a future reconciliation tool keeps — not a mounted tree a project materializes up front; it is created lazily on first write (per the reconciliation design in [docs/model/workspace.md](../model/workspace.md)). It carries three categories of entry:
 
 ```text
-.swarm/ledger/
+ledger/
   changes/          # one entry per completed change set (covered obligations, surfaces, proofs, verdicts)
   merges/           # one entry per merge-gate decision at the change-set level
   promotions/       # one entry per resolved promotion queue
@@ -127,15 +127,15 @@ A **ledger entry is an immutable, append-only record** under the same discipline
 
 ### What is ephemeral vs. what is durable
 
-The ledger fixes the durability boundary across the three workspace knowledge layers:
+The ledger fixes the durability boundary across the three knowledge layers:
 
-| Layer | Path | Durability | Git disposition |
-| ----- | ---- | ---------- | --------------- |
-| Execution packets | `.swarm/generated/{tasks,traces,reviews}/` | **Ephemeral** — recreatable from sources; compacted into the ledger on reconciliation | MAY be gitignored (`.swarm/generated/tasks/` and, optionally, `traces/`/`reviews/` once governance accepts ledger compaction as the system of record) |
-| Ledger | `.swarm/ledger/{changes,merges,promotions}/` | **Durable** — the compact audit trail that outlives the packets | Committed |
-| Memory + sources | `.swarm/memory/`, `.swarm/sources/` | **Durable** — recall + desired truth | Committed |
+| Layer | What it is | Durability | Git disposition |
+| ----- | ---------- | ---------- | --------------- |
+| Execution packets | task frames, traces, reviews (`{tasks,traces,reviews}`) | **Ephemeral** — recreatable from sources; compacted into the ledger on reconciliation | Gitignored (task frames always, and optionally traces/reviews once governance accepts ledger compaction as the system of record) |
+| Ledger | the compacted history (`{changes,merges,promotions}`) | **Durable** — the compact audit trail that outlives the packets | Committed |
+| Memory + sources | the `memory/` recall and the `type:`-tagged source docs under `.agents/` | **Durable** — recall + desired truth | Committed |
 
-Because the ledger captures the load-bearing summary of a trace/review on reconciliation, a project MAY gitignore the verbose `.swarm/generated/` packets without losing auditability — the ledger is what survives. By contrast, `.swarm/ledger/`, `.swarm/memory/`, and `.swarm/sources/` are never gitignored as a matter of governance: deleting them deletes the project's reconciled history, durable recall, and desired truth respectively. Whether a given repo gitignores active `traces/`/`reviews/` is a per-project governance choice, not a kernel mandate; the kernel mandate is only that *if* they are dropped, their load-bearing content MUST first have compacted into a ledger entry.
+Because the ledger captures the load-bearing summary of a trace/review on reconciliation, a project MAY gitignore the verbose execution packets without losing auditability — the ledger is what survives. By contrast, the ledger, the memory, and the source docs are never gitignored as a matter of governance: deleting them deletes the project's reconciled history, durable recall, and desired truth respectively. Whether a given repo gitignores active traces/reviews is a per-project governance choice, not a Swarm mandate; the only mandate is that *if* they are dropped, their load-bearing content MUST first have compacted into a ledger entry.
 
 ### What a `changes/` ledger entry records
 
@@ -159,28 +159,28 @@ The merge-gate decision and the unauthorized-change list are precisely what make
 
 ### What a `promotions/` entry records
 
-A `promotions/` entry records the durable targets each promoted discovery landed at — the same routing the discovery-to-promotion-target table above fixes: a spec amendment, an ADR, a finding, a pattern, a glossary entry, or a pass-guide-plus-pointer. It closes the loop between a task's discoveries and `.swarm/memory/` + `.swarm/sources/`.
+A `promotions/` entry records the durable targets each promoted discovery landed at — the same routing the discovery-to-promotion-target table above fixes: a spec amendment, an ADR, a finding, a pattern, a glossary entry, or a pass-guide-plus-pointer. It closes the loop between a task's discoveries and the durable memory + source docs.
 
 ### Why the ledger introduces no new evidence
 
-Every field above is **compacted from artifacts the kernel already specifies** — the trace-provenance schema, the verdict model, the review's unauthorized-change and final-verdict sections, and the promotion queue. The ledger introduces no new evidence type and no new empirical claim. It is a projection of the existing reconciliation outputs into a compact, immutable, committed history, so that `.swarm/generated/` may be discarded without severing the backward trace from today's code to the obligations, proofs, and verdicts that produced it.
+Every field above is **compacted from artifacts Swarm already specifies** — the trace-provenance schema, the verdict model, the review's unauthorized-change and final-verdict sections, and the promotion queue. The ledger introduces no new evidence type and no new empirical claim. It is a projection of the existing reconciliation outputs into a compact, immutable, committed history, so that the execution packets may be discarded without severing the backward trace from today's code to the obligations, proofs, and verdicts that produced it.
 
-## How the protocol joins the rest of the kernel
+## How the protocol joins the rest of Swarm
 
-The block-type, modal, verdict, and lint-layer counts named below are the kernel's fixed vocabulary — **7 block types, 5 modals, 7 verdicts (4 core + 3 lifecycle), 5 lint layers S/P/M/V/O**; this page reproduces them by reference, it does not redefine them.
+The block-type, modal, verdict, and lint-layer counts named below are Swarm's fixed vocabulary — **7 block types, 5 modals, 7 verdicts (4 core + 3 lifecycle), 5 lint layers S/P/M/V/O**; this page reproduces them by reference, it does not redefine them.
 
 - **The verdict model.** The `promote` pass runs after the change-set verdict is recorded. Rollback triggers (`CONTRADICTED`, `STALE`) are two of the **three lifecycle verdicts** in the 4-core + 3-lifecycle (= 7-verdict) model.
 - **Source authority.** `memory` is the floor domain on Axis B, which is *why* a promotion can never weaken an obligation — that path is a `SOL-M004` authority-conflict routed to amendment.
-- **The ledger.** Every promotion disposition lands in `.swarm/ledger/` as compact, immutable history; because a task cannot close with any `pending` item, a ledger entry records a fully-resolved queue *by construction* (see [The ledger — compact reconciled history](#the-ledger--compact-reconciled-history) above).
+- **The ledger.** Every promotion disposition lands in the ledger as compact, immutable history; because a task cannot close with any `pending` item, a ledger entry records a fully-resolved queue *by construction* (see [The ledger — compact reconciled history](#the-ledger--compact-reconciled-history) above).
 - **The loss budget.** The `task.md → finding.md` boundary is a distillation boundary: the step-by-step execution log MAY be dropped, but the evidence for the durable claim MUST survive. Promotion is one of the two boundaries (with spec→task lowering) the loss budget most acutely governs.
 
 ## Open question — the staleness comparator
 
-The kernel ships the **fields** that make staleness computable (`content_hash`, `origin_traces`) but not the **comparator** that recomputes the hash and flips `accepted → stale`; that is a harness/CLI concern, aspirational and manual today (NO-RUNTIME). Likewise, automated validation *scoring*, decay, and embedding retrieval are deferred: the `validated` status today is satisfied by human / second-finding / re-run corroboration, not a scored gate.
+Swarm ships the **fields** that make staleness computable (`content_hash`, `origin_traces`) but not the **comparator** that recomputes the hash and flips `accepted → stale`; that is a harness/CLI concern, aspirational and manual today (NO-RUNTIME). Likewise, automated validation *scoring*, decay, and embedding retrieval are deferred: the `validated` status today is satisfied by human / second-finding / re-run corroboration, not a scored gate.
 
 ## Related
 
-- [docs/model/workspace.md](../model/workspace.md) — the canonical `.swarm/` workspace; introduces `.swarm/ledger/` (`changes/ merges/ promotions/`) and the ephemeral-vs-durable boundary this page's ledger section specifies.
+- [docs/model/workspace.md](../model/workspace.md) — the workspace model and reconciliation design; introduces the ledger (`changes/ merges/ promotions/`) as compacted history a future tool keeps, and the ephemeral-vs-durable boundary this page's ledger section specifies.
 - [docs/reference/distillation-loss-budget.md](distillation-loss-budget.md) — what MAY be dropped vs. what MUST survive at the `task.md → finding.md` promotion boundary.
 - [docs/reference/drift-and-staleness.md](drift-and-staleness.md) — the `STALE`/`CONTRADICTED` lifecycle verdicts that trigger rollback, and the `content_hash` drift signal that flips a finding `stale`.
 - [docs/model/source-authority.md](../model/source-authority.md) — why `memory` (Axis B floor) can never weaken an obligation, and the `SOL-M004` authority-conflict route.

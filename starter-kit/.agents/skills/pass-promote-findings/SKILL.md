@@ -14,7 +14,7 @@ description: >-
 
 # Pass guide: promote
 
-> **Scope of this file.** A *pass guide*: a procedural how-to for running the `promote` pass well. SOFT control — it conditions *how* an agent runs the pass; it constrains nothing and defines no kernel semantics. The seven-value promotion-status enum, discovery-to-target routing, mandatory provenance fields, authority floor, loss budget, validation/rollback, and ledger shape are canonical Swarm rules; this guide *applies* them and restates their load-bearing meaning inline so the pass runs from this file alone — never redefining them.
+> **Scope of this file.** A *pass guide*: a procedural how-to for running the `promote` pass well. SOFT control — it conditions *how* an agent runs the pass; it constrains nothing and defines no Swarm semantics. The seven-value promotion-status enum, discovery-to-target routing, mandatory provenance fields, authority floor, loss budget, validation/rollback, and ledger shape are canonical Swarm rules; this guide *applies* them and restates their load-bearing meaning inline so the pass runs from this file alone — never redefining them.
 
 ## Purpose
 
@@ -22,7 +22,7 @@ description: >-
 
 The failure mode it prevents: chat transcripts and inline prose are not memory — they are unindexed, unprovenanced, unfalsifiable. The procedure earns durability through a *recorded* promotion into a two-tier, provenance-anchored model — a compact Tier-1 map (`memory/INDEX.md` + `memory/glossary.md`) over an immutable Tier-2 evidence store (`finding.md` / `adr.md` / `audit.md` / `bug-report.md` / `memory/patterns/*.md`).
 
-Like every Swarm pass, `promote` has **no runtime**: a contract a human, agent, or future tool performs by hand against the files the kernel ships. One borrowed discipline applies throughout, restated rather than linked: at the `task.md → finding.md` boundary, distillation MAY drop the step-by-step execution log but MUST preserve the actionable claim, its applicability envelope, and its evidence — silent loss of any of the three is not compression, it changes what becomes memory (the loss-budget discipline).
+Like every Swarm pass, `promote` has **no runtime**: a contract a human, agent, or future tool performs by hand against the files Swarm ships. One borrowed discipline applies throughout, restated rather than linked: at the `task.md → finding.md` boundary, distillation MAY drop the step-by-step execution log but MUST preserve the actionable claim, its applicability envelope, and its evidence — silent loss of any of the three is not compression, it changes what becomes memory (the loss-budget discipline).
 
 ## Consumes
 
@@ -122,8 +122,8 @@ Once the queue is fully resolved, write a promotions-history entry (a compact, c
 
 ## What does not belong
 
-- **Kernel semantics.** Modality, the source-authority order, verification verdicts, the routing/status definitions, and the lint codes are fixed by SOL and the reference layer. This guide *applies*, never redefines them. If you are explaining *what* `SOL-M004` means rather than *how* to act on it, that text belongs in the reference.
-- **The staleness comparator and any automation.** The kernel ships the *fields* that make staleness computable (`content_hash`, `origin_traces`); it does **not** ship the comparator. Recomputing the hash and flipping `accepted → stale` is a harness/CLI concern, manual today. Embedding retrieval, automatic eviction, validation *scoring*, and memory analytics are deferred post-v0.1 — `validated` today is satisfied by human / second-finding / re-run corroboration, not a scored gate.
+- **Swarm semantics.** Modality, the source-authority order, verification verdicts, the routing/status definitions, and the lint codes are fixed by SOL and the reference layer. This guide *applies*, never redefines them. If you are explaining *what* `SOL-M004` means rather than *how* to act on it, that text belongs in the reference.
+- **The staleness comparator and any automation.** Swarm ships the *fields* that make staleness computable (`content_hash`, `origin_traces`); it does **not** ship the comparator. Recomputing the hash and flipping `accepted → stale` is a harness/CLI concern, manual today. Embedding retrieval, automatic eviction, validation *scoring*, and memory analytics are deferred post-v0.1 — `validated` today is satisfied by human / second-finding / re-run corroboration, not a scored gate.
 - **Spec authoring, verdict rendering, implementation.** Amending a spec, deciding the merge gate, or writing code are other passes; promotion only *routes* discoveries to their inputs.
 
 ## Anti-patterns

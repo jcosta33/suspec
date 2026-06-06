@@ -442,7 +442,7 @@ A document is a conformant SOL/0.1 IR iff it: (1) has exactly the five top-level
 
 ## 2. The plan envelope
 
-The plan is the schedulable projection of the IR — derived from it by the `decompose` pass — and carries the **same contract-only status**: no tool emits it, no scheduler executes it. What is out of scope here is the live scheduler/harness that would execute the work packets across agents; the plan itself is the kernel's *static* coordination contract.
+The plan is the schedulable projection of the IR — derived from it by the `decompose` pass — and carries the **same contract-only status**: no tool emits it, no scheduler executes it. What is out of scope here is the live scheduler/harness that would execute the work packets across agents; the plan itself is Swarm's *static* coordination contract.
 
 A SOL plan document MUST be a single JSON object with **exactly four top-level keys**:
 
@@ -482,7 +482,7 @@ The plan reuses the IR's structural discipline: relationships between packets li
 | `derived_from` | string | MUST | Path to the `*.swarm.ir.json` this plan was lowered from. |
 | `language` | string | MUST | The SOL discriminator (`SOL/0.1`); same axis as the IR `meta.language`. |
 | `version` | string | MUST | The spec content version this plan reflects. Pattern `^[0-9]+\.[0-9]+\.[0-9]+$`. |
-| `max_parallel` | integer \| null | MAY (defaults `null`) | An advisory parallelism hint for a launcher; `null` = unspecified. The kernel computes *safety* (§2.3); concurrency *limits* are a launcher policy. |
+| `max_parallel` | integer \| null | MAY (defaults `null`) | An advisory parallelism hint for a launcher; `null` = unspecified. Swarm computes *safety* (§2.3); concurrency *limits* are a launcher policy. |
 
 ### 2.2 `packets[]` — work packets
 
@@ -516,7 +516,7 @@ A **work packet** is one schedulable unit: a single pass applied (under an optio
 | `depends_on` | array of string | MUST (MAY be empty) | Packet ids that MUST complete before this packet; the merge-order partial order. Each entry MUST also appear as a `depends_on` edge. |
 | `lane` | string \| null | MAY (defaults `null`) | A suggested execution lane/worker label. A launcher hint only; absence does not affect safety. |
 | `batch` | integer \| null | MAY (defaults `null`) | A suggested wave/round index for staged fan-out. Launcher hint only. |
-| `merge_safe` | boolean | MUST | The kernel's verdict on whether this packet may run concurrently with its batch-mates: `true` iff it is dependency-independent of and write-disjoint from every other packet it would run alongside (§2.3). |
+| `merge_safe` | boolean | MUST | Swarm's verdict on whether this packet may run concurrently with its batch-mates: `true` iff it is dependency-independent of and write-disjoint from every other packet it would run alongside (§2.3). |
 
 #### 2.2.1 Packet edges
 
@@ -524,11 +524,11 @@ Inter-packet relationships use the same edge object as the IR — `{ from, to, t
 
 ### 2.3 The safe-parallelism predicate
 
-The plan's `merge_safe` flag is the surface of the kernel's single canonical safe-parallelism predicate:
+The plan's `merge_safe` flag is the surface of Swarm's single canonical safe-parallelism predicate:
 
 > Two work packets MAY run in parallel **iff** they are **dependency-independent** (neither is reachable from the other along `depends_on` edges) **AND write-disjoint** (their `writes` sets share no `SURFACE`, there is no read/write conflict on a shared surface, and they share no interface/migration node). Anything unscoped or sharing a surface **serializes by default**.
 
-A packet's `merge_safe` MUST be `false` if it has any unresolved `conflicts_with` edge to a packet in the same `batch`, or if any of its `inputs` is unscoped (empty `writes` where a write is implied). `merge_safe` is the kernel's *static* verdict; a launcher MAY further serialize for its own reasons but MUST NOT parallelize two packets the plan marks unsafe. Design rationale: review entropy and merge collisions, not agent count, are the binding constraint on safe parallelism.
+A packet's `merge_safe` MUST be `false` if it has any unresolved `conflicts_with` edge to a packet in the same `batch`, or if any of its `inputs` is unscoped (empty `writes` where a write is implied). `merge_safe` is Swarm's *static* verdict; a launcher MAY further serialize for its own reasons but MUST NOT parallelize two packets the plan marks unsafe. Design rationale: review entropy and merge collisions, not agent count, are the binding constraint on safe parallelism.
 
 ### 2.4 The plan JSON Schema (normative)
 
@@ -571,7 +571,7 @@ A packet's `merge_safe` MUST be `false` if it has any unresolved `conflicts_with
           "depends_on": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Packet ids; each MUST also appear as a depends_on edge." },
           "lane":       { "type": ["string", "null"], "default": null, "description": "Launcher hint only." },
           "batch":      { "type": ["integer", "null"], "default": null, "description": "Launcher hint only." },
-          "merge_safe": { "type": "boolean", "description": "Kernel verdict: dependency-independent + write-disjoint from batch-mates." }
+          "merge_safe": { "type": "boolean", "description": "Swarm verdict: dependency-independent + write-disjoint from batch-mates." }
         }
       }
     },

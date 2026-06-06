@@ -15,7 +15,7 @@ type: task
 id: payment-5xx-charge
 status: active
 task_kind: feature
-source: .swarm/sources/specs/payment-5xx.swarm.md
+source: .agents/specs/payment-5xx.swarm.md
 assigned_obligations: [AC-020, AC-021]
 invariants: [I-001]
 interfaces: [IF-001]

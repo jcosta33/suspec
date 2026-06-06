@@ -20,13 +20,7 @@ The RFC obeys the `.swarm.` infix partition that separates compiler-visible file
 - An `rfc.md` is a **working artifact**: its filename **MUST NOT** contain the `.swarm.` infix, and it uses a plain `.md` extension. It is structured Markdown governed by this artifact contract, not by the SOL grammar, and it is never parsed or emitted by a compiler.
 - The one human-authored compiler-visible spec is `*.swarm.md`; emitted artifacts take a `*.swarm.*` name (e.g. `*.swarm.ir.json`, `*.swarm.trace.md`). An RFC is neither — it is a hand-authored source that *feeds* a spec and/or an ADR, so it stays plain `.md`.
 
-In an adopted project's `.swarm/` workspace, an RFC is a durable source artifact and lives under `sources/`:
-
-```
-.swarm/sources/rfcs/<slug>.md
-```
-
-It sits beside the other parents of a spec — `sources/specs/` (the `*.swarm.md` it can promote into), `sources/prds/`, `sources/research/`, `sources/audits/`, `sources/bugs/`, `sources/findings/`, and `sources/adrs/` (the decision it can promote into). RFCs are **never** placed under `generated/` (that directory holds derived execution packets — task frames, traces, reviews — recreatable from sources) and **never** under `memory/` (durable recall; the index, glossary, patterns, and stale records). An RFC is a proposed-design source, so `sources/` is its only home.
+In an adopted project, an RFC is a durable source artifact — a `type: rfc` document committed to the spec repo. It sits beside the other parents of a spec — the `*.swarm.md` it can promote into, plus PRDs, research, audits, bug-reports, findings, and ADRs (the decision it can promote into). An RFC is **never** execution scratch (the derived task frames, traces, and reviews a run produces, recreatable from sources) and **never** durable recall (the index, glossary, patterns, and stale records). An RFC is a proposed-design source, so the committed source-docs are its only home.
 
 ## Required sections / fields, in order
 
@@ -57,7 +51,7 @@ The `## Alternatives` section is a table — `Alternative | Why weaker than the 
 
 ## Copyable template
 
-The copyable skeleton ships in the kernel at:
+The copyable skeleton ships in the starter kit at:
 
 ```
 starter-kit/.agents/templates/rfc.md

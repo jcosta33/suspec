@@ -7,7 +7,7 @@ definition. A term whose meaning is contested MUST be *split* into distinct term
 overloaded. This glossary is the project-level fallback for term resolution; an in-file `TERM`
 definition in a `spec.swarm.md` takes precedence over the glossary for that spec.
 
-**This file ships as a seed.** It starts with a few kernel terms; a consumer extends it whenever a
+**This file ships as a seed.** It starts with a few core Swarm terms; a consumer extends it whenever a
 term's meaning was ambiguous or drifted (the terminology-clarification promotion target). Keep
 entries to one line each.
 

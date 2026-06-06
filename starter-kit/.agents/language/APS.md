@@ -88,7 +88,7 @@ BINDING (full force — an unobservable word here is blocking SOL-P005):
 
 A **high-risk word** is a word or phrase that, used in a binding clause without a same-line observable criterion, leaves *what gets built* underdetermined. The catalogue draws on established requirement-smell vocabularies, extended with companion quantifier, connective, and pronoun lists.
 
-It is **closed for v0.1**: these families are the lint-checked set. A project MAY extend its own list via configuration, but MUST NOT shrink the kernel set.
+It is **closed for v0.1**: these families are the lint-checked set. A project MAY extend its own list via configuration, but MUST NOT shrink Swarm's set.
 
 | Family | Examples (non-exhaustive within family) | Default lint |
 |---|---|---|

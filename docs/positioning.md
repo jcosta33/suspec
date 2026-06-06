@@ -19,22 +19,22 @@ The agentic-tooling landscape sorts into four families. Swarm overlaps each one 
 
 Three differences recur across every row, and together they are the position:
 
-1. **Obligation graph as the IR.** Other families center a document, an agent, a library, or a notation. Swarm centers a typed graph of obligations and the verdicts rendered on them. Every pass reduces to an operation on that graph. The design rationale is that a graph is the only object that can answer the one question the merge gate asks — *is every required obligation satisfied?* — without a human re-reading the whole spec. (See [overlays](./library/overlays.md) for why the portable *methods* stay separate from this graph.)
+1. **Obligation graph as the IR.** Other families center a document, an agent, a library, or a notation. Swarm centers a typed graph of obligations and the verdicts rendered on them. Every pass reduces to an operation on that graph. The design rationale is that a graph is the only object that can answer the one question the merge gate asks — *is every required obligation satisfied?* — without a human re-reading the whole spec. (See [project conventions](./library/overlays.md) for why the portable *methods* stay separate from this graph.)
 
 2. **Verified output, not trusted output.** Swarm's confidence gate is not "the agent says it's done" and not "the document looks complete." It is a bound proof — across the proof types (`static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`) — declared with `VERIFY BY` and judged into one of the verdicts (`PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`, plus the lifecycle verdicts `WAIVED`, `STALE`, `CONTRADICTED`). A "tests passed" message is not, by itself, proof; proof is bound explicitly to an obligation. [[REFLEXION]](research/sources.md#REFLEXION)
 
-3. **No runtime.** Swarm ships markdown and an inert kernel payload. The thing that would schedule passes, diff specs, or check conformance is a contract a future tool builds against — never software this repository provides. This is what keeps Swarm provider-neutral; the other families each couple to a harness, a model, or a stack. The full boundary is in [`NON-GOALS.md`](./NON-GOALS.md).
+3. **No runtime.** Swarm ships markdown and an inert set of installed files. The thing that would schedule passes, diff specs, or check conformance is a contract a future tool builds against — never software this repository provides. This is what keeps Swarm provider-neutral; the other families each couple to a harness, a model, or a stack. The full boundary is in [`NON-GOALS.md`](./NON-GOALS.md).
 
 ---
 
 ## The failure modes Swarm positions against
 
-Coding agents fail in predictable ways. The brittleness is not random — it recurs as a small set of patterns, and each one is the reason a corresponding part of the kernel exists. Swarm's whole shape is a response to this taxonomy.
+Coding agents fail in predictable ways. The brittleness is not random — it recurs as a small set of patterns, and each one is the reason a corresponding part of Swarm exists. Swarm's whole shape is a response to this taxonomy.
 
-| Failure mode | What it looks like | What in the kernel answers it |
+| Failure mode | What it looks like | What in Swarm answers it |
 |---|---|---|
 | **Drift** | The agent solves *a* problem, not *the* problem; the work wanders away from the ask. | Obligations are the named, typed unit of intent; a task frame carries exactly the obligations it must satisfy, so there is nothing to drift *toward*. (See [the verify pass](./passes/verify.md) for why even a loaded guide's steps get skipped without forced evidence.) |
-| **Architecture conflict** | The agent introduces a pattern the codebase has explicit rules against — because nobody told it the rules. | `CONSTRAINT` and `INVARIANT` obligations make the house rules first-class and reviewable; overlays carry project-local rules into the relevant pass. |
+| **Architecture conflict** | The agent introduces a pattern the codebase has explicit rules against — because nobody told it the rules. | `CONSTRAINT` and `INVARIANT` obligations make the house rules first-class and reviewable; project conventions in `AGENTS.md` carry project-local rules into the relevant pass. |
 | **Hallucinated completion** | "Done." The build was never checked, the tests never ran — and the agent believes it shipped. | The merge gate is a property of the obligation graph, not a self-report: every required obligation must carry a passing verdict bound to a proof that actually ran. Schema-valid is not verified. |
 | **No resumable trail** | The session ends mid-stride; the next session starts from scratch and re-discovers the same things. | State is externalised to durable artifacts — sources, status, traces, reviews — rather than held in a conversation [[SCRATCHPAD]](research/sources.md#SCRATCHPAD). (See [the workspace](./model/workspace.md) for the resumption record.) |
 | **Repeated mistakes** | The same class of bug reappears across sessions because nothing captured the lesson. | The `promote` pass folds durable discoveries back into project memory, so a lesson learned once is recallable. |

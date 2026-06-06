@@ -29,21 +29,15 @@ A status is a **working artifact**, not a compiler-visible source. Swarm partiti
 
 A status is the latter: it is named `*.status.md` (plain `.md`, no `.swarm.` infix). It MUST NOT be named `*.swarm.md` — that would mark an observation as a compiler-visible source spec and is a placement defect, exactly the corruption the desired/observed split exists to prevent.
 
-In an adopted project's `.swarm/` workspace, a status is **observed state** and lives under `status/`, beside neither the desired sources nor the derived execution packets:
+In an adopted project, a status is **observed state**, distinct from both the desired sources and the recreatable execution packets. In a **code repo** this read-model is the spec repo's lightweight coverage record (the PR's CI + review approval being the per-change verdict it aggregates); a structured `*.status.md` is the contract shape that read-model satisfies when one is kept:
 
-```text
-.swarm/
-  sources/        # DESIRED truth (specs, audits, findings) — a status does NOT live here
-    specs/<ctx>/<slug>.swarm.md      # the spec this status observes
-  generated/      # recreatable execution packets (tasks, traces, reviews)
-    reviews/      # the review.md whose verdicts this status projects
-  status/
-    specs/<ctx>/<slug>.status.md     # OBSERVED satisfaction + drift (THIS artifact)
-```
+- A status asserts no durable intent, so it is **not** a committed source-doc (the spec it observes lives there as `<ctx>/<slug>.swarm.md`).
+- It projects the verdicts a `review.md` renders, but it is not itself one of the recreatable execution packets (tasks, traces, reviews) — it accumulates the *latest* verdict per obligation across passes.
+- Its name mirrors the spec it observes: a status is the observed-state twin of the one spec whose satisfaction it projects.
 
-A status observes **exactly one** spec: the path mirrors the spec's path, so `status/specs/<ctx>/<slug>.status.md` is the observed-state twin of `sources/specs/<ctx>/<slug>.swarm.md`. It does not live in `sources/` (it asserts no durable intent) and it does not live in `generated/` (it is not a one-pass execution packet — it accumulates the *latest* verdict per obligation across passes).
+A status observes **exactly one** spec. It is neither a durable source-doc (it asserts no durable intent) nor a one-pass execution packet (it accumulates the *latest* verdict per obligation across passes).
 
-A status has **no copyable template among the kernel artifact skeletons**: unlike an audit, a finding, or a task, you do not start one from a blank skeleton you fill in. It is generated — emitted and updated from the trace and review record by the verify, review, and promote passes. The shape below is its contract; the values are observed, never authored.
+A status has **no copyable template among the starter-kit artifact skeletons**: unlike an audit, a finding, or a task, you do not start one from a blank skeleton you fill in. It is generated — emitted and updated from the trace and review record by the verify, review, and promote passes. The shape below is its contract; the values are observed, never authored.
 
 ## Required sections / fields, in order
 
@@ -119,7 +113,7 @@ the latest observed verdict, drift, and coverage.
 
 ## Copyable template
 
-**There is no copyable skeleton for this artifact.** A status is not started from a blank template you fill in — it is *generated* and *updated* from upstream records (the trace provenance and the review verdicts) by the verify, review, and promote passes, and it lives under `.swarm/status/specs/<ctx>/<slug>.status.md`. The observed shape above is the **contract** every generated status MUST satisfy; this page is that contract. Do not hand-author a status as intent, and do not introduce a `*.status.swarm.md` form — the status is observed state, never a compiler-visible source.
+**There is no copyable skeleton for this artifact.** A status is not started from a blank template you fill in — it is *generated* and *updated* from upstream records (the trace provenance and the review verdicts) by the verify, review, and promote passes, and its name mirrors the spec it observes (`<ctx>/<slug>.status.md`). The observed shape above is the **contract** every generated status MUST satisfy; this page is that contract. Do not hand-author a status as intent, and do not introduce a `*.status.swarm.md` form — the status is observed state, never a compiler-visible source.
 
 ## Related
 

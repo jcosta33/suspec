@@ -2,7 +2,7 @@
 
 `decompose` is the fifth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It shares the `LOWER` phase with [`lower`](lower.md): where `lower` builds the IR obligation graph, `decompose` **partitions that graph into schedulable work packets** and produces the write-surface partition on which all safe parallelism rests. This is the page that defines that partition.
 
-Like every Swarm pass, `decompose` has **no runtime**. It is a contract a human, an agent following a pass guide, or a future tool performs. The plan it produces is documented, versioned data — the shape a launcher would consume — never the output of a shipped emitter, and never a live scheduler. Plan derivation *is* the `decompose` pass; what stays out of the kernel is the scheduler/harness that would execute the plan's packets live across agents (a launcher concern).
+Like every Swarm pass, `decompose` has **no runtime**. It is a contract a human, an agent following a pass guide, or a future tool performs. The plan it produces is documented, versioned data — the shape a launcher would consume — never the output of a shipped emitter, and never a live scheduler. Plan derivation *is* the `decompose` pass; what stays out of Swarm is the scheduler/harness that would execute the plan's packets live across agents (a launcher concern).
 
 ## What the pass does
 
@@ -113,7 +113,7 @@ The attributes exist because shared/global/append-only files (lockfiles, CI defi
 
 ### The two derived graphs
 
-From the scope clauses and SURFACE declarations, `decompose` consumes (and `lower` emits) exactly **two coordination graphs** in the IR `edges[]`. These two graphs are the entire mechanical substrate of safe parallelism; the kernel derives them, it never schedules against them.
+From the scope clauses and SURFACE declarations, `decompose` consumes (and `lower` emits) exactly **two coordination graphs** in the IR `edges[]`. These two graphs are the entire mechanical substrate of safe parallelism; Swarm derives them, it never schedules against them.
 
 1. **The dependency DAG** — built from every `DEPENDS ON` clause as `depends_on` edges. It MUST be acyclic; a cycle is an ORCHESTRATION-layer error (`SOL-O002`). Topologically sorting it yields the **legal partial order of work** — the merge order packets must respect.
 2. **The write-surface conflict graph** — an undirected graph whose nodes are obligations and whose edges connect any two obligations that are **not write-disjoint**. Two obligations share an edge iff they write the same exclusive surface, or both write a `shared`/`integration` surface, or stand in a read/write conflict on the same surface. This graph is the proof that any two packets `decompose` marks parallel-safe have pairwise-disjoint owned paths.
@@ -143,9 +143,9 @@ Worked: `AC-014` (`READS auth.config`) and `AC-031` (`WRITES auth.config`) MUST 
 
 ## The plan: the schedulable projection of the IR
 
-The **plan** takes the IR obligation graph and groups the work needed to discharge those obligations into work packets. Where the IR answers "what must hold and how do the obligations relate," the plan answers **"what units of work exist, in what order, on which surfaces, and which of them are safe to run at the same time."** The plan is the kernel's static coordination contract; it is *not* a running scheduler.
+The **plan** takes the IR obligation graph and groups the work needed to discharge those obligations into work packets. Where the IR answers "what must hold and how do the obligations relate," the plan answers **"what units of work exist, in what order, on which surfaces, and which of them are safe to run at the same time."** The plan is Swarm's static coordination contract; it is *not* a running scheduler.
 
-> **Contract, not executor (normative).** Plan derivation *is* the `decompose` pass — there is no separate "planner" step. What is **out of the kernel** is the scheduler/harness that would execute the plan's packets live across agents (a launcher concern). A conformant repository MUST include the documented plan schema and MUST frame any `.swarm.plan.json` as the contract a future tool emits and a future launcher consumes, never as the output of a shipped tool.
+> **Contract, not executor (normative).** Plan derivation *is* the `decompose` pass — there is no separate "planner" step. What is **out of Swarm** is the scheduler/harness that would execute the plan's packets live across agents (a launcher concern). A conformant repository MUST include the documented plan schema and MUST frame any `.swarm.plan.json` as the contract a future tool emits and a future launcher consumes, never as the output of a shipped tool.
 
 ### Top-level envelope
 
@@ -162,7 +162,7 @@ Relationships between packets live **only** in `edges[]`, never duplicated as pa
 
 ### `meta`
 
-`meta` carries `id` (matches the source IR's `meta.id`), `derived_from` (path to the `*.swarm.ir.json`), `language` (`SOL/0.1`), `version` (the spec content version), and an optional `max_parallel` (`integer|null`). `max_parallel` is an **advisory parallelism hint for a launcher**; `null` = unspecified. The kernel computes *safety*; concurrency *limits* are launcher policy, not kernel concern.
+`meta` carries `id` (matches the source IR's `meta.id`), `derived_from` (path to the `*.swarm.ir.json`), `language` (`SOL/0.1`), `version` (the spec content version), and an optional `max_parallel` (`integer|null`). `max_parallel` is an **advisory parallelism hint for a launcher**; `null` = unspecified. Swarm computes *safety*; concurrency *limits* are launcher policy, not a Swarm concern.
 
 ### `packets[]` — work packets
 
@@ -180,7 +180,7 @@ A **work packet** is one schedulable unit: a single pass applied (under an optio
 | `depends_on` | MUST (MAY be empty) | Packet ids that MUST complete first — the merge-order partial order. Each entry MUST also appear as a `depends_on` edge. |
 | `lane` | MAY | Suggested execution lane/worker label. Launcher hint only; absence does not affect safety. |
 | `batch` | MAY | Suggested wave/round index for staged fan-out. Launcher hint only. |
-| `merge_safe` | MUST | The kernel's verdict on whether the packet may run concurrently with its batch-mates. |
+| `merge_safe` | MUST | Swarm's verdict on whether the packet may run concurrently with its batch-mates. |
 
 There is **no `locks` field anywhere** in the record: a lock group *is* a named write SURFACE, so lock-set analysis reduces to the write-set analysis already computed over the conflict graph. The record carries both the *pass/profile* dimension (what work, under which profile) and the *scope/dependency* dimension (which surfaces, in what order) in one shape.
 
@@ -188,7 +188,7 @@ Inter-packet edges use the IR edge object `{from, to, type, hard}`. The relevant
 
 ## The safe-parallelism predicate (single, canonical)
 
-`merge_safe` is the surface of the kernel's **one** safe-parallelism predicate. Conformant tools and authors MUST use it verbatim; no alternative or relaxed predicate is permitted in v0.1.
+`merge_safe` is the surface of Swarm's **one** safe-parallelism predicate. Conformant tools and authors MUST use it verbatim; no alternative or relaxed predicate is permitted in v0.1.
 
 > **Two work packets MAY run in parallel if and only if they are dependency-independent AND write-disjoint** — neither is reachable from the other in the dependency DAG, **and** they share no write surface and no shared boundary node (a shared `INTERFACE` referenced via `DEPENDS ON`/`AFFECTS`, or a shared `integration`/`shared` surface). Anything unscoped or shared **serializes by default**.
 
@@ -209,7 +209,7 @@ Two defaults are normative and MUST NOT be weakened:
 
 Read-only passes ([`lint`](lint.md), [`review`](review.md), and any pass declaring only `READS`) MAY run broadly in parallel, because read/read never conflicts.
 
-`merge_safe` MUST be `false` if a packet has any unresolved `conflicts_with` edge to a batch-mate, or if any of its inputs is unscoped (empty `writes` where a write is implied). It is the kernel's *static* verdict: a launcher MAY further serialize for its own reasons but **MUST NOT parallelize two packets the plan marks unsafe.** The binding constraint on safe parallelism is review entropy and merge collisions, not agent count.
+`merge_safe` MUST be `false` if a packet has any unresolved `conflicts_with` edge to a batch-mate, or if any of its inputs is unscoped (empty `writes` where a write is implied). It is Swarm's *static* verdict: a launcher MAY further serialize for its own reasons but **MUST NOT parallelize two packets the plan marks unsafe.** The binding constraint on safe parallelism is review entropy and merge collisions, not agent count.
 
 ### Surface comparison semantics
 
@@ -296,6 +296,6 @@ A document is a conformant SOL/0.1 plan iff it: (1) has exactly the four top-lev
 
 What is **not** fixed here:
 
-- The decomposition *heuristic* — how a Lead Engineer partitions a given obligation graph into the smallest set of write-disjoint packets — is a [pass-guide / profile](../artifacts/task.md) concern, not a kernel rule; the kernel fixes only the predicate the partition must satisfy.
-- How a launcher chooses `lane`, `batch`, and `max_parallel` values, and any live scheduling/replanning over the plan — explicitly a launcher concern, outside the kernel.
+- The decomposition *heuristic* — how a Lead Engineer partitions a given obligation graph into the smallest set of write-disjoint packets — is a [pass-guide / profile](../artifacts/task.md) concern, not a Swarm rule; Swarm fixes only the predicate the partition must satisfy.
+- How a launcher chooses `lane`, `batch`, and `max_parallel` values, and any live scheduling/replanning over the plan — explicitly a launcher concern, outside Swarm.
 - The IR construction `decompose` consumes (node ids, typed edges, `verify_by` normalization, `AND THE` chaining, the two derived graphs as emitted) belongs to [`lower`](lower.md); the per-obligation scope clauses and the SURFACE grammar belong to the [SOL language](../language/SOL.md). This page consumes both and partitions over them.

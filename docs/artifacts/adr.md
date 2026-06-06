@@ -24,7 +24,7 @@ An accepted ADR is a **dated record of a decision in its context**. Rewriting it
 
 > An accepted ADR MUST NOT be edited in place. Amending an ADR means publishing a **new, superseding ADR**; the original keeps its body and gains only a `Superseded by ADR-NNNN` status line. The truth of any decision is the **full chain** of ADRs, not the latest one alone.
 
-The amended ADR's body stays frozen; only its `status` becomes `superseded` and its `superseded_by` link is filled in. The superseding ADR carries the new decision and points back via `supersedes`. This is the same append-only-with-supersession discipline the kernel applies to its change ledger and to promoted memory: a fact is replaced by a better fact, never quietly overwritten.
+The amended ADR's body stays frozen; only its `status` becomes `superseded` and its `superseded_by` link is filled in. The superseding ADR carries the new decision and points back via `supersedes`. This is the same append-only-with-supersession discipline Swarm applies to its change ledger and to promoted memory: a fact is replaced by a better fact, never quietly overwritten.
 
 ## Filename & placement
 
@@ -38,7 +38,7 @@ Concretely, the class boundary is:
 | Compiler-emitted (future tool) | `*.swarm.*` | `auth.swarm.ir.json`, `auth.swarm.trace.md` |
 | Working artifact (this class) | plain `.md` | `adr.md`, `0027-sol-is-the-language.md` |
 
-In an adopted `.swarm/` workspace, an ADR is a **durable source artifact**: it lives under `sources/adrs/`, committed to the repository, alongside the other recognized parents of a spec (`sources/specs/`, `sources/prds/`, `sources/rfcs/`, `sources/research/`, `sources/audits/`, `sources/bugs/`, `sources/findings/`). It does **not** live in `generated/` (which holds recreatable execution packets — task frames, traces, reviews — and may be gitignored) nor in `memory/` (the compact recall map links *to* ADRs but does not store their bodies). A retired ADR moves to `archive/`, linked to the decision that replaced it; it is never silently deleted, because the chain must stay auditable. ADRs are conventionally numbered (`0027-…`, `0028-…`) so the chain reads in decision order; vacated numbers are left unfilled rather than reused, so higher references do not shift.
+In an adopted project, an ADR is a **durable source artifact** — a `type: adr` document committed to the spec repo alongside the other recognized parents of a spec (specs, PRDs, RFCs, research, audits, bug-reports, findings). It is **not** execution scratch (the recreatable task frames, traces, and reviews a run produces, which are gitignored or created lazily) and it is not the compact recall map (which links *to* ADRs but does not store their bodies). A retired ADR is marked superseded and linked to the decision that replaced it; it is never silently deleted, because the chain must stay auditable. ADRs are conventionally numbered (`0027-…`, `0028-…`) so the chain reads in decision order; vacated numbers are left unfilled rather than reused, so higher references do not shift.
 
 ## Required sections & fields
 

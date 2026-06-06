@@ -109,7 +109,7 @@ when both proofs agree after a recorded reconciliation.
   `sha256:6b22…9f` in the recorded trace.
 - Proof types span three of the nine (see the `verify` pass): `contract` (`IF-001`), `test` (`AC-020`/`AC-021`),
   and `monitor` (`I-001`) — the production observation that drives the contradiction.
-- Adopted-project paths use `.swarm/` throughout (e.g. `.swarm/sources/specs/payment-5xx.swarm.md`).
+- Source specs live under `.agents/specs/`; task/trace scratch is gitignored (e.g. `.agents/specs/payment-5xx.swarm.md`).
 
 ## How this is validated (no runtime)
 

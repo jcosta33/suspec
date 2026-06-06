@@ -169,7 +169,7 @@ A future toolchain would expose this verb set. Each verb is a transformation a h
 
 | Verb | Phase(s) it drives | What it would do |
 |---|---|---|
-| `init` | adoption | starter-kit/refresh the kernel payload into a project's `.swarm/kernel/` and adopt `AGENTS.md` |
+| `init` | adoption | install or refresh the starter kit's files into a project (under `.agents/`) and adopt `AGENTS.md` |
 | `lint` | PARSE, NORMALIZE | emit `SOL-<LAYER>NNN` diagnostics against a `*.swarm.md` source |
 | `format` | NORMALIZE | apply the canonical surface form without changing intent |
 | `improve` | NORMALIZE | apply intent-preserving spec edits (the closed improve-operation set) |
@@ -180,7 +180,7 @@ A future toolchain would expose this verb set. Each verb is a transformation a h
 | `review` | REVIEW | assemble the review packet from trace + obligation set; record the verdict |
 | `promote` | PROMOTE | apply the promotion protocol to findings; update `memory/INDEX.md` |
 
-The checker that would consume `conformance.yaml` is itself part of this deferred surface (a `swarm conform`-class verb). Until a launcher exists the contract still serves: a human validates a repository against it by hand, and the golden corpus pins the expected verdicts independently of any tool.
+The checker that would consume `conformance.yaml` is itself part of this deferred surface (a `swarm conform`-class verb).
 
 ### What the toolchain owns vs what the agent CLI owns
 
@@ -206,7 +206,7 @@ It MUST NOT own the **model-execution** lane. These concerns belong to the agent
 | the MCP runtime and the tool-calling runtime |
 | prompt-streaming UX |
 
-A toolchain that absorbed any model-execution concern would **become an agent CLI** — which the no-runtime invariant forecloses for this repo and which the boundary forbids for any future toolchain. The placement is the toolchain projection of the kernel's own scope: the [kernel owns a coordination contract, not a scheduler](../artifacts/task-orchestration.md), and a future toolchain owns the obligation boundary on either side of the coding loop, not the loop itself.
+A toolchain that absorbed any model-execution concern would **become an agent CLI** — which the no-runtime invariant forecloses for this repo and which the boundary forbids for any future toolchain. The placement is the toolchain projection of Swarm's own scope: [Swarm owns a coordination contract, not a scheduler](../artifacts/task-orchestration.md), and a future toolchain owns the obligation boundary on either side of the coding loop, not the loop itself.
 
 ### The agent-CLI adapter contract
 
@@ -235,9 +235,9 @@ agents:
     startup_instruction: "Read the Swarm task file first."
 ```
 
-The division of labour reduces to one rule: **Swarm prepares the work** (init / lower / decompose / task generation / worktree / branch / adapter invocation), **the agent CLI performs the coding loop** (the model loop, file edits, tool/MCP/provider runtime), and **Swarm validates trace / review / promotion**. This "prepare → delegate → reconcile" split is why Swarm MUST NOT become an agent CLI: the worker does the actual coding, and the entire surface of this section is a documented contract a future tool builds against, never shipped here.
+This "prepare → delegate → reconcile" split (the two OWNS tables above) is why Swarm MUST NOT become an agent CLI: the worker does the actual coding, and the entire surface of this section is a documented contract a future tool builds against, never shipped here.
 
-> **Integrity.** `AGENTS.md`, the `.agents/` compatibility mirror, and `.swarm/config.yaml` are auto-loaded instruction/config surfaces, and the adapter `startup_instruction` propagates `AGENTS.md` into every worker — so the untrusted-source boundary applies to all of them: non-printing / bidirectional / homoglyph bytes are rejected (`SOL-S013`), and an externally-authored source is approval-required before it can govern.
+> **Integrity.** `AGENTS.md`, the `.agents/` directory, and the Swarm config are auto-loaded instruction/config surfaces, and the adapter `startup_instruction` propagates `AGENTS.md` into every worker — so the untrusted-source boundary applies to all of them: non-printing / bidirectional / homoglyph bytes are rejected (`SOL-S013`), and an externally-authored source is approval-required before it can govern.
 
 ## Related
 

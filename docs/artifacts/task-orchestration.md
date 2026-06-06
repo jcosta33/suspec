@@ -13,7 +13,7 @@ The reason the partition is *recorded* rather than *invented* here is the write-
 What a `task-orchestration.md` MUST do:
 
 - **Record a disjoint partition.** The set of OWNED paths across all workers MUST be pairwise non-overlapping, and that pairwise-disjointness MUST be confirmed *before* any worker is spawned. Two sub-tasks that need the same file are not independent and MUST be sequenced (a `DEPENDS ON` edge / serial order), never run in the same parallel batch.
-- **Record each worker's hand-off** — objective, expected deliverable, acceptance bar, and boundaries — as data, not prose. Vague subtask descriptions and inter-agent misalignment are the dominant multi-agent failure mode; a recorded hand-off contract is the kernel's countermeasure, so it MUST be written down.
+- **Record each worker's hand-off** — objective, expected deliverable, acceptance bar, and boundaries — as data, not prose. Vague subtask descriptions and inter-agent misalignment are the dominant multi-agent failure mode; a recorded hand-off contract is Swarm's countermeasure, so it MUST be written down.
 - **Record liveness as data** — a per-worker progress marker, a documented stall threshold and status, and the action taken on a stall — because a worker hung in progress or silently diverging is otherwise an invisible state.
 - **Record the merge history** — the order branches merged, conflicts seen, and how each was resolved, with an INTENT-PRESERVED-PROOF for every non-trivial conflict.
 
@@ -38,22 +38,14 @@ This stance is held by the surrounding write-surface discipline of the framework
 
 A `task-orchestration.md` MAY embed SOL surface keywords (the `WRITES`-projected OWNED paths, the preserved constraints/invariants) as **quoted data**; embedding them does not make the file a SOL source, and a conformant tool MUST NOT parse a plain `task-orchestration.md` as a spec.
 
-In an adopted project's `.swarm/` workspace, a coordination record is **generated execution material** — emitted by the lead during the decompose pass and recreatable from the source spec's obligation graph — so it lives under `generated/`:
+In an adopted project, a coordination record is **generated execution material** — emitted by the lead during the decompose pass and recreatable from the source spec's obligation graph — so it is execution scratch, gitignored or created lazily by a future tool. It sits beside the other recreatable packets a parallel run produces:
 
-```text
-.swarm/
-  sources/        # DESIRED truth (specs, audits, findings) — a coordination record does NOT live here
-    specs/<ctx>/<slug>.swarm.md            # the spec whose obligations the workers cover
-  generated/      # recreatable execution material
-    tasks/        # the per-worker child task frames (each carrying a ## Parent contract)
-    traces/       # the trace each worker emits on completion
-    reviews/      # the review whose verdicts the per-task merge gate reads
-    task-orchestration.md                  # the coordination record for this parallel run (THIS artifact)
-```
+- The spec whose obligations the workers cover is a committed source-doc — the coordination record asserts no durable intent, so it is **not** a source-doc itself.
+- The per-worker child task frames (each carrying a `## Parent contract`), the trace each worker emits on completion, and the review whose verdicts the per-task merge gate reads are all recreatable execution scratch.
 
-It does not live in `sources/` (it asserts no durable intent) and it is not kept as a permanent record: the generated coordination record is disposable, and the durable record of the run is compacted into `.swarm/ledger/` on reconciliation.
+A coordination record is not a durable source-doc (it asserts no durable intent) and it is not kept as a permanent record: it is disposable, and the durable record of the run is compacted into the durable ledger — or flows back to the spec repo as a linked PR — on reconciliation.
 
-A `task-orchestration.md` has **no copyable template among the kernel artifact skeletons**: unlike a task, an audit, or a finding, you do not start one from a blank skeleton you fill in. It is *generated* — emitted by the lead during the decompose pass and updated as the run proceeds. The schema below is its contract; the worker partition is lowered from the obligations, and the hand-offs, progress, and merge rows are recorded as the run unfolds.
+A `task-orchestration.md` has **no copyable template among the starter-kit artifact skeletons**: unlike a task, an audit, or a finding, you do not start one from a blank skeleton you fill in. It is *generated* — emitted by the lead during the decompose pass and updated as the run proceeds. The schema below is its contract; the worker partition is lowered from the obligations, and the hand-offs, progress, and merge rows are recorded as the run unfolds.
 
 ## Required sections & fields, in order
 
@@ -122,11 +114,11 @@ When the lead spawns a worker, that worker's child `task.md` MUST contain a `## 
 
 ### The liveness record, STALL threshold, and STALL action
 
-The coordination record MUST record liveness as data, because a worker hung `in-progress` or silently diverging is otherwise invisible state — the kernel has no runtime to detect it.
+The coordination record MUST record liveness as data, because a worker hung `in-progress` or silently diverging is otherwise invisible state — Swarm has no runtime to detect it.
 
 - **Liveness marker** — the `Last progress` column. The lead updates it each time it checks the worker.
 - **STALL threshold** — a worker whose `Last progress` has **not advanced across two consecutive checks** is `stalled`. The two-consecutive-checks threshold is a chosen design constant for the recorded liveness marker; it is the recorded form a future launcher's stall detector reads, not an empirical borrowing.
-- **STALL action** — on `stalled`, the lead MUST take one recorded action: **re-plan**, **re-scope**, **escalate**, or **abandon**. The chosen action and its rationale MUST be written to `## Decisions` so the run is reconstructable. This is a recorded contract a future launcher could automate, not a stall detector the kernel runs.
+- **STALL action** — on `stalled`, the lead MUST take one recorded action: **re-plan**, **re-scope**, **escalate**, or **abandon**. The chosen action and its rationale MUST be written to `## Decisions` so the run is reconstructable. This is a recorded contract a future launcher could automate, not a stall detector Swarm runs.
 
 ### The merge log and the INTENT-PRESERVED-PROOF column
 
@@ -136,16 +128,16 @@ The INTENT-PRESERVED-PROOF column MUST show that the conflict resolution kept **
 
 ## The task lifecycle, worktrees, and the per-task merge gate
 
-A worker the coordination record tracks is one **task**, and it moves through four recorded phases. Per the no-runtime invariant, every "the toolchain prepares… / removes…" clause below is the recorded shape of an action a future launcher MAY one day perform; the kernel fixes the artifacts and the gate predicate that action must respect, and nothing more. The branch/worktree/commit conventions are design rationale, not normative grammar.
+A worker the coordination record tracks is one **task**, and it moves through four recorded phases. Per the no-runtime invariant, every "the toolchain prepares… / removes…" clause below is the recorded shape of an action a future launcher MAY one day perform; Swarm fixes the artifacts and the gate predicate that action must respect, and nothing more. The branch/worktree/commit conventions are design rationale, not normative grammar.
 
 ### The four phases
 
 | Phase | What is read | What is produced | Where |
 | --- | --- | --- | --- |
-| **1. Creation** | the source spec (`spec.swarm.md`) | the lowered chain source spec → obligation graph → task graph → generated task frame | task frame under `.swarm/generated/tasks/<task-slug>.md` |
+| **1. Creation** | the source spec (`spec.swarm.md`) | the lowered chain source spec → obligation graph → task graph → generated task frame | task frame as gitignored execution scratch (`<task-slug>.task.md`) |
 | **2. Execution** | the task frame + the source spec | the toolchain prepares the task frame, a worktree, a branch, the agent startup context (the `## Parent contract` carried verbatim into the child task), the verification matrix, and the promotion queue | worktree at `.worktrees/swarm/<spec-slug>/<task-slug>`, branch `swarm/<spec-slug>/<task-slug>` |
-| **3. Completion** | the worktree diff + proof evidence | the worker emits a **trace**; review emits a **review** with one verdict per required `VERIFY BY` binding | trace under `.swarm/generated/traces/`, review under `.swarm/generated/reviews/` |
-| **4. Reconciliation** | the trace + review | compact trace/review into the ledger; drain the promotion queue; update the status artifact; remove or archive the generated files; remove the worktree | ledger under `.swarm/ledger/`, status under `.swarm/status/`, worktree removed |
+| **3. Completion** | the worktree diff + proof evidence | the worker emits a **trace**; review emits a **review** with one verdict per required `VERIFY BY` binding | trace and review as execution scratch (or, in a code repo, the PR itself) |
+| **4. Reconciliation** | the trace + review | compact trace/review into the ledger; drain the promotion queue; update the status read-model; remove or archive the scratch files; remove the worktree | durable ledger entry (or a linked PR back to the spec repo) and updated status, worktree removed |
 
 Reconciliation is the only phase that produces durable record. A task MUST NOT be treated as closed while any promotion-queue item is still pending.
 
@@ -157,7 +149,7 @@ The worktree convention makes the single-writer discipline concrete on disk. The
 
 The write side stays single-threaded: one writer per surface, and the worktrees are the physical enforcement of the OWNED-paths pairwise-disjointness invariant — two tasks that would write the same surface are not write-disjoint, hence not parallel-safe, hence MUST NOT be given concurrent worktrees but sequenced via a `DEPENDS ON` edge. A worktree MUST NOT be reused across tasks, and on completion the toolchain removes the worktree so a stale worktree never masquerades as a live writer.
 
-> **Scope of the worktree guarantee.** A worktree enforces **file/path** disjointness (the OWNED-paths invariant), not **runtime-resource** disjointness: two write-disjoint parallel tasks can still collide on shared ports, dev databases, caches, secrets, or test state. Runtime-resource isolation is out of scope for the kernel's write-surface model and is a launcher concern.
+> **Scope of the worktree guarantee.** A worktree enforces **file/path** disjointness (the OWNED-paths invariant), not **runtime-resource** disjointness: two write-disjoint parallel tasks can still collide on shared ports, dev databases, caches, secrets, or test state. Runtime-resource isolation is out of scope for Swarm's write-surface model and is a launcher concern.
 
 ### The per-task merge gate
 
@@ -174,7 +166,7 @@ A task **MUST NOT merge** if any of the following holds:
 | 5 | A **write-surface conflict remains** — a worker's OWNED path overlaps that of another worker still scheduled concurrently (`SOL-O001`), or a worker owns a path outside its obligations' declared `WRITES` (`SOL-O005`), or an unmerged `DEPENDS ON` dependency in the merge order remains. |
 | 6 | The **base branch is dirty or out of policy** — uncommitted changes on the base, or the base violates a branch-protection / merge policy. |
 
-Conditions 1–4 are the merge gate read at task scope. Condition 5 is the orchestration overlay: the per-task gate additionally requires that the write-disjoint invariant still holds at merge time, because two tasks that have silently drifted into the same surface produce exactly the hard-to-review merge corruption that `SOL-O001` was raised to ERROR to prevent. When all conditions clear, the branch merges, its resolution is recorded in `## Merge log` (with an INTENT-PRESERVED-PROOF for every non-trivial conflict), and the task advances to reconciliation. This is a recorded contract a future launcher (or eventual checker) reads and could one day enforce — it is not a gate the kernel runs.
+Conditions 1–4 are the merge gate read at task scope. Condition 5 is the orchestration overlay: the per-task gate additionally requires that the write-disjoint invariant still holds at merge time, because two tasks that have silently drifted into the same surface produce exactly the hard-to-review merge corruption that `SOL-O001` was raised to ERROR to prevent. When all conditions clear, the branch merges, its resolution is recorded in `## Merge log` (with an INTENT-PRESERVED-PROOF for every non-trivial conflict), and the task advances to reconciliation. This is a recorded contract a future launcher (or eventual checker) reads and could one day enforce — it is not a gate Swarm runs.
 
 ## Observed shape
 
@@ -233,7 +225,7 @@ And the `## Parent contract` each child task carries verbatim:
 
 ## Copyable template
 
-**There is no copyable skeleton for this artifact.** A coordination record is not started from a blank template you fill in — it is *generated* by the lead during the decompose pass and updated as the parallel run proceeds, and it lives under `.swarm/generated/task-orchestration.md`. The worker partition is lowered from the obligations' declared `WRITES` surfaces; the hand-offs, liveness, decisions, and merge log are recorded as the run unfolds. The observed shape above is the **contract** every generated coordination record MUST satisfy; this page is that contract. Do not hand-author it as intent, and do not introduce a `task-orchestration.swarm.md` form — it is generated execution material, never a compiler-visible source.
+**There is no copyable skeleton for this artifact.** A coordination record is not started from a blank template you fill in — it is *generated* by the lead during the decompose pass and updated as the parallel run proceeds, and it is gitignored execution scratch (`task-orchestration.md`), created lazily by a future tool. The worker partition is lowered from the obligations' declared `WRITES` surfaces; the hand-offs, liveness, decisions, and merge log are recorded as the run unfolds. The observed shape above is the **contract** every generated coordination record MUST satisfy; this page is that contract. Do not hand-author it as intent, and do not introduce a `task-orchestration.swarm.md` form — it is generated execution material, never a compiler-visible source.
 
 ## Related
 

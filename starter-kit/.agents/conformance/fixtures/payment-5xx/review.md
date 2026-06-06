@@ -17,8 +17,8 @@ agree — after which the CONTRADICTED decorator drops and the gate opens. Inert
 ---
 type: review
 id: payment-5xx-charge-review
-source_trace: .swarm/generated/traces/payment-5xx-charge-trace.md
-source_spec: .swarm/sources/specs/payment-5xx.swarm.md
+source_trace: traces/payment-5xx-charge-trace.md
+source_spec: .agents/specs/payment-5xx.swarm.md
 ---
 
 # Review: payment-5xx charge

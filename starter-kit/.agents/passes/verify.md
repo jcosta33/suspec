@@ -112,7 +112,7 @@ The gate is **enforced by a deterministic check outside the model** when one exi
 
 ### 4.1 `review.md` is the verdict container (there is no `verdict.md`)
 
-A `VERDICT` is a SOL language block, not a file. The kernel ships **no** `verdict.md` template. Verdicts live in the **`review.md`** artifact, which when filled *is* the verdict record. A conformant `review.md` contains at minimum: claimed coverage, per-obligation `VERDICT` blocks (one per required binding), an obligation-verdict matrix, constraint/invariant/interface verdicts, an unauthorized-change list, a final change-set-level merge-gate verdict, and the promotion queue. A repo recording verdicts in a standalone `verdict.md` is **non-conformant**.
+A `VERDICT` is a SOL language block, not a file. Swarm ships **no** `verdict.md` template. Verdicts live in the **`review.md`** artifact, which when filled *is* the verdict record. A conformant `review.md` contains at minimum: claimed coverage, per-obligation `VERDICT` blocks (one per required binding), an obligation-verdict matrix, constraint/invariant/interface verdicts, an unauthorized-change list, a final change-set-level merge-gate verdict, and the promotion queue. A repo recording verdicts in a standalone `verdict.md` is **non-conformant**.
 
 ---
 

@@ -1,8 +1,8 @@
 # Drift and Staleness
 
-A proof's `PASS` is a statement about a *moment*: the obligation said X, the code did Y, and the proof confirmed Y satisfies X. The instant either the obligation text or the code changes, that confirmation may no longer hold. **Drift** is the divergence between an obligation and its implementation after a recorded `PASS`; **staleness** is drift made machine-detectable. This page fixes how Swarm catches drift, the closed schema each `PASS` records so it *can* be caught, the four conditions that turn a `PASS` `STALE`, and the three-way reconcile a `STALE` verdict forces.
+A proof's `PASS` is a statement about a *moment*: the obligation said X, the code did Y, and the proof confirmed Y satisfies X. The instant either the obligation text or the code changes, that confirmation may no longer hold. **Drift** is the divergence between an obligation and its implementation after a recorded `PASS`; **staleness** is drift made machine-detectable. This page fixes the contract a future drift detector builds against: the closed schema each `PASS` records so drift *can* be caught, the four conditions that turn a `PASS` `STALE`, and the three-way reconcile a `STALE` verdict forces.
 
-Swarm is markdown-only and has **no runtime**. Nothing here is shipped code: the content-hasher, the staleness check, and the reconcile workflow are all **contracts a future harness builds against**. Because there is no runtime, drift is detected from **content hashes recorded in the trace/IR** at the time of each `PASS`, and the differ that compares those hashes against the working tree is a harness/CLI concern. What this page defines is the schema those hashes live in and the rules that read them.
+> **Future toolchain — not a shipped detector.** Swarm is markdown-only and has **no runtime**. Nothing on this page is shipped code: the content-hasher, the staleness check, the differ that compares recorded hashes against the working tree, and the reconcile workflow are all **contracts a future harness would build against**. Every "Swarm detects / the rule fires / `STALE` blocks the gate" below describes what a conformant tool — or a human, today — would do given these records; it does not describe a process Swarm runs. What this page defines is the schema the hashes live in and the rules that read them. Drift is read from **content hashes recorded in the trace/IR** at the time of each `PASS`; there is no live observation of behavior.
 
 The governing doctrine is **CODE IS REALITY** (Invariant 4): specs are primary for *intent*, code is primary for *implementation reality*, and the trace/review/status layer reconciles the two. Code can *falsify* an obligation — forcing a fix or an amendment — but a passing run may never *silently re-bless* either side. Staleness is the mechanism that refuses to let a stale `PASS` masquerade as a current one. A green build is *shape*, not truth; staleness asks whether the evidence still matches reality, not whether the suite still exits zero [[REFLEXION]](../research/sources.md#REFLEXION).
 
@@ -35,7 +35,7 @@ Every `VERIFY BY` binding's **last `PASS`** records enough provenance to detect 
 | `origin_obligations[]` | The obligation ids this `PASS` judged. |
 | `origin_traces[]` | The trace(s) that produced the change being judged. |
 
-The IR field names are snake_case. Hashes are recorded in markdown (`*.swarm.trace.md`) and/or the emitted IR (`*.swarm.ir.json`). Computing them is a future-tool concern; the **schema is the kernel contract** today. The two surfaces in the example above illustrate the central distinction the rest of this page turns on: `src/auth/client.ts` was `exercised: true` (it is on the evidence path), while `src/auth/session-store.ts` was declared but `exercised: false` (the proof never touched it).
+The IR field names are snake_case. Hashes are recorded in markdown (`*.swarm.trace.md`) and/or the emitted IR (`*.swarm.ir.json`). Computing them is a future-tool concern; the **schema is the Swarm contract** today. The two surfaces in the example above illustrate the central distinction the rest of this page turns on: `src/auth/client.ts` was `exercised: true` (it is on the evidence path), while `src/auth/session-store.ts` was declared but `exercised: false` (the proof never touched it).
 
 ## The staleness rule
 
@@ -84,9 +84,9 @@ With participation defined, the base pair (a)/(b) extends to a closed set of **f
 
 Condition (c) makes read-side behavioral drift detectable to the same degree write-side drift already is: the `READS` surfaces the proof exercised are hashed into `per_surface_hash[]` alongside its `WRITES` set, so the recorded evidence path is complete. Condition (d) catches the case where the proof itself moved underneath an unchanged obligation and unchanged code. All four are **content-hash** comparisons computed by a future harness — none requires a runtime. Each surfaces as the same `STALE` verdict, and a `STALE` raised under (c) or (d) MUST still carry its prior-verdict ref and the changed `READS`-surface or adapter in the **changed-surface** field, so the reconcile can act on it.
 
-**Scope limit (honesty).** This rule detects **declared-write, declared-read, and adapter drift** — drift reachable through a surface or adapter recorded on the last `PASS`'s evidence path. It does **not** and **cannot** detect behavioral drift through an *undeclared* dependency, a hidden global, or an environmental input the obligation never declared and the proof never recorded: a missing `READS` declaration means a missing hash, and what is unhashed is unseen. Closing that residual gap requires observing behavior, which has no home in a markdown-only kernel. Swarm therefore claims **declared-drift detection**, never full behavioral-drift detection. An obligation whose true read set exceeds its declared `READS` is a soft-control gap to be caught in review, not a guarantee this page makes. `property` and `metamorphic` oracles narrow the residual by checking behavioral relations rather than syntactic equality; they reduce the gap, they do not erase it.
+**Scope limit (honesty).** This rule detects **declared-write, declared-read, and adapter drift** — drift reachable through a surface or adapter recorded on the last `PASS`'s evidence path. It does **not** and **cannot** detect behavioral drift through an *undeclared* dependency, a hidden global, or an environmental input the obligation never declared and the proof never recorded: a missing `READS` declaration means a missing hash, and what is unhashed is unseen. Closing that residual gap requires observing behavior, which has no home in a markdown-only framework. Swarm therefore claims **declared-drift detection**, never full behavioral-drift detection. An obligation whose true read set exceeds its declared `READS` is a soft-control gap to be caught in review, not a guarantee this page makes. `property` and `metamorphic` oracles narrow the residual by checking behavioral relations rather than syntactic equality; they reduce the gap, they do not erase it.
 
-A worked contrast: a tool that bumps a lockfile no proof exercised leaves drift coverage unchanged; an in-place edit to a CI step that an obligation's proof *did* exercise raises that obligation to `STALE`. Whether to recompute participation incrementally or on demand is a harness concern; the participation rule, the four conditions, and the scope limit are the kernel contract.
+A worked contrast: a tool that bumps a lockfile no proof exercised leaves drift coverage unchanged; an in-place edit to a CI step that an obligation's proof *did* exercise raises that obligation to `STALE`. Whether to recompute participation incrementally or on demand is a harness concern; the participation rule, the four conditions, and the scope limit are the Swarm contract.
 
 ## The three-way reconcile
 
@@ -113,18 +113,18 @@ The staleness rule detects drift *after* a `PASS`. *Before* any of that, a **sur
 
 A code region declares **exactly one** policy from a closed set of five: `generated`, `governed`, `observed`, `external`, `deprecated`. The full taxonomy — what each policy means, which manual edits each permits, and the rejected "code is disposable" doctrine — is defined in the [Workspace Model](../model/workspace.md). The policy load-bearing for drift is `governed`.
 
-Surface policies are declared as a `surfaces:` map: each path maps to `{policy, source, manual_edits}` plus any policy-specific fields. Computing and enforcing this map is a future-tool concern; the **map shape is the kernel contract** today.
+Surface policies are declared as a `surfaces:` map: each path maps to `{policy, source, manual_edits}` plus any policy-specific fields. Computing and enforcing this map is a future-tool concern; the **map shape is the Swarm contract** today.
 
 ```yaml
 surfaces:
   src/generated/api-client:
     policy: generated
-    source: .swarm/sources/interfaces/payments.openapi.yaml
+    source: .agents/interfaces/payments.openapi.yaml
     manual_edits: forbidden
 
   src/auth/client.ts:
     policy: governed
-    source: .swarm/sources/specs/auth/auth-refresh.swarm.md
+    source: .agents/specs/auth/auth-refresh.swarm.md
     manual_edits: allowed_with_trace
 
   src/legacy:

@@ -36,19 +36,13 @@ The `.swarm.` infix discriminates **compiler-visible** files (parsed or emitted 
 
 The template itself is the only *plain* form; a built instance MAY take the `*.swarm.trace.md` name so a future tool can select traces by the stable, greppable infix without inspecting content. The hashes a trace records live in the markdown trace and/or the emitted IR (`*.swarm.ir.json`); both are contract shapes today, computed by no shipped tool.
 
-In an adopted `.swarm/` workspace, a trace is an **execution packet** — generated/derived from a source spec and a task, recreatable from them — and lives under:
+In a **code repo**, the PR is the default trace (above), so no structured trace file is written by default. When you *do* keep a structured `trace.md` (audit/compliance, or once a tool consumes it), it is an **execution packet** — generated/derived from a source spec and a task, recreatable from them — and is execution scratch, gitignored or created lazily by a future tool:
 
-```text
-.swarm/
-  sources/        # DESIRED truth (specs, audits, findings) — a trace does NOT live here
-  generated/
-    traces/       # *.swarm.trace.md / trace.md — implementation claims (THIS artifact)
-    tasks/        # the task.md pass frame the trace's source_task points back to
-    reviews/      # the review.md that judges this trace
-  status/         # OBSERVED satisfaction + drift — derived from reviews, not the trace
-```
+- A trace asserts no durable intent, so it is **not** a committed source-doc (specs, audits, findings).
+- It sits beside the other recreatable packets a run produces: the `task.md` pass frame its `source_task` points back to, and the `review.md` that judges it.
+- The observed-state status (satisfaction + drift) is derived from reviews, not from the trace.
 
-A trace never belongs in `sources/`: it asserts no durable intent. It belongs in `generated/traces/` because it is a derivable record of one pass over already-existing intent.
+A trace is never a durable source-doc: it asserts no durable intent. It is a derivable record of one pass over already-existing intent — and a durable trace outcome can be contributed back to the spec repo as a linked PR.
 
 ## Required sections and fields, in order
 
@@ -58,7 +52,7 @@ A trace never belongs in `sources/`: it asserts no durable intent. It belongs in
 | --- | --- |
 | `type: trace` | Fixes the artifact class. Required. |
 | `id` | Stable identifier for this trace (conventionally `{{slug}}-trace`). Required. |
-| `source_task` | Path to the `task.md` pass frame this trace was produced under (e.g. `.swarm/generated/tasks/{{slug}}.md`). Required. |
+| `source_task` | Path to the `task.md` pass frame this trace was produced under (e.g. `{{slug}}.task.md`). Required. |
 | `source_spec` | The `*.swarm.md` source spec whose obligations this trace claims against (e.g. `{{spec-id}}.swarm.md`). Required. |
 | `created` | Recording timestamp. This is where the "when" of the trace lives — the provenance fields below carry *content state*, never a timestamp. Required. |
 
@@ -92,7 +86,7 @@ Two optional adjuncts MAY extend a verdict's provenance without altering this ba
 
 ## Copyable template
 
-The copyable skeleton is the framework template at **`starter-kit/.agents/templates/trace.md`** (installed into an adopted project at `.swarm/kernel/templates/trace.md`). Copy that file to start a new trace; this page is its contract. A shipped, uninstantiated template MAY leave `{{...}}` placeholders, but a *built* trace MUST NOT leave a binding clause as a `{{...}}` placeholder, and an unfilled `VERIFY BY`/`PROOF` clause in a built trace is a `SOL-V001` defect.
+The copyable skeleton is the framework template at **`starter-kit/.agents/templates/trace.md`** (it ships with the installed starter kit). Copy that file to start a new trace; this page is its contract. A shipped, uninstantiated template MAY leave `{{...}}` placeholders, but a *built* trace MUST NOT leave a binding clause as a `{{...}}` placeholder, and an unfilled `VERIFY BY`/`PROOF` clause in a built trace is a `SOL-V001` defect.
 
 ## Related
 

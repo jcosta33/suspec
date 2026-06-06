@@ -11,7 +11,7 @@ type: task
 id: export-json-flag
 status: done # active | blocked | done | abandoned (done is terminal)
 task_kind: feature
-source: .swarm/sources/specs/export-json-flag.swarm.md
+source: .agents/specs/export-json-flag.swarm.md
 assigned_obligations: [AC-001, AC-002]
 constraints: [C-001]
 invariants: [I-001]
@@ -24,7 +24,7 @@ verification_bindings:
   - I-001:  property:cmdTest:tests/export.properties.ts#default-output-unchanged
 parallel_group: cli-edits
 blocked_by: []
-produces: [.swarm/generated/traces/export-json-flag.trace.md]
+produces: [traces/export-json-flag.trace.md]
 created: 2026-05-30
 ---
 

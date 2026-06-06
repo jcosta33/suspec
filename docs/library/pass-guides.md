@@ -2,7 +2,7 @@
 
 > Swarm's reference for **pass guides**: the reusable, lazily-loaded procedural modules that document *how* to run a named pass — never *what the language means* — together with how procedural modules map onto the nine passes, the loading doctrine, the cross-cutting fragments, and the pass-guide contract.
 
-A **pass guide** is a procedural module that documents how to perform one of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`) — and nothing more. It is a reusable *method* an agent loads when a task names it: the prose recipe for executing a pass well, the questions to ask, the order to work in, the evidence to gather. It is **SOFT control** (Invariant 2): it influences how an agent works but binds nothing the kernel marks authoritative. Where a guide and the language reference disagree, the language reference governs.
+A **pass guide** is a procedural module that documents how to perform one of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`) — and nothing more. It is a reusable *method* an agent loads when a task names it: the prose recipe for executing a pass well, the questions to ask, the order to work in, the evidence to gather. It is **SOFT control** (Invariant 2): it influences how an agent works but binds nothing Swarm marks authoritative. Where a guide and the language reference disagree, the language reference governs.
 
 Like everything in Swarm, a pass guide has **no runtime**: it is text a human, an agent, or a future harness reads. Loading a guide changes how work gets done; it never executes anything and never enforces anything.
 
@@ -119,7 +119,7 @@ Guide bodies are **self-contained**: a reader following one guide should not hav
 - **MUST NOT introduce a circular dependency.** Dependency direction is one-way and acyclic:
 
   ```text
-  language definitions -> artifact contracts -> pass contracts -> pass guides -> heuristic profiles -> project overlays
+  language definitions -> artifact contracts -> pass contracts -> pass guides -> heuristic profiles -> project conventions
   ```
 
   A guide depends only on nodes to its left; nothing to its left depends on a guide.
@@ -186,7 +186,7 @@ The four pass guides, the nine per-kind `implement` guides, the six author guide
 | `starter-kit/.agents/skills/empirical-proof/` | cross-cutting fragment | `verify`, `review` |
 | `starter-kit/.agents/skills/distillation-discipline/` | cross-cutting fragment | `lower`, `decompose`, `promote` |
 
-These directories sit under a `skills/` path for cross-tool compatibility; in kernel vocabulary they are pass guides, per-kind implement guides, author guides, and fragments. The two guide-less passes (`improve`, `lower`) ship no module here — their pass contracts stand on their own.
+These directories sit under a `skills/` path for cross-tool compatibility; in Swarm's vocabulary they are pass guides, per-kind implement guides, author guides, and fragments. The two guide-less passes (`improve`, `lower`) ship no module here — their pass contracts stand on their own.
 
 ## Related
 

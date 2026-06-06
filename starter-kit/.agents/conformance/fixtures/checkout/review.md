@@ -14,8 +14,8 @@ oracle data.
 ---
 type: review
 id: checkout-review
-source_trace: .swarm/generated/traces/checkout-trace.md
-source_spec: .swarm/sources/specs/checkout.swarm.md
+source_trace: traces/checkout-trace.md
+source_spec: .agents/specs/checkout.swarm.md
 ---
 
 # Review: checkout

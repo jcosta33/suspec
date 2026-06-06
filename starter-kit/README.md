@@ -43,10 +43,10 @@ repo. Append [`.gitignore.additions`](./.gitignore.additions) to keep the scratc
 
 ## What does NOT install (reference, kept here)
 
-`starter-kit/.agents/{passes,language,conformance}` and `starter-kit/overlays/` are **not** copied into any
-adopter. The skills carry their procedure inline and the `reference/` cards carry the shared rules, so an
-adopter needs none of the full manuals or the golden corpus; project conventions go in `AGENTS.md`. These
-stay here as the framework's human reference / derived twins / corpus.
+`starter-kit/.agents/{passes,language,conformance}` are **not** copied into any adopter. The skills carry
+their procedure inline and the `reference/` cards carry the shared rules, so an adopter needs none of the
+full manuals or the golden corpus; project conventions go in `AGENTS.md` (there is no overlays directory).
+These stay here as the framework's human reference / derived twins / corpus.
 
 ## Folder contents
 

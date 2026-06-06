@@ -4,7 +4,7 @@
 
 `promote` is the last of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This page is the reference for that single pass.
 
-Like every Swarm pass, `promote` has **no runtime** ([Principle 1: NO RUNTIME](../PRINCIPLES.md#1-no-runtime)): it is a contract a human, an agent following a pass guide, or a future tool performs. The kernel ships the *files and the discipline* a retrieval/promotion tool would build against — not a retrieval engine, validation scorer, or eviction manager. Nothing here is shipped code.
+Like every Swarm pass, `promote` has **no runtime** ([Principle 1: NO RUNTIME](../PRINCIPLES.md#1-no-runtime)): it is a contract a human, an agent following a pass guide, or a future tool performs. Swarm ships the *files and the discipline* a retrieval/promotion tool would build against — not a retrieval engine, validation scorer, or eviction manager. Nothing here is shipped code.
 
 ## What the pass does
 
@@ -16,7 +16,7 @@ The model is **two-tier and provenance-anchored**. Rationale: chat transcripts a
 |---|---|
 | Phase | **PROMOTE** — the seventh and final phase |
 | Input | the task's discoveries + the resolved-or-pending promotion queue |
-| Output | durable writes to `.swarm/memory/` and `.swarm/sources/` (plus the `AGENTS.md` pointer case) and a fully-resolved promotion queue |
+| Output | durable writes to `.agents/memory/` and the durable source artifacts under `.agents/` (plus the `AGENTS.md` pointer case) and a fully-resolved promotion queue |
 | Close gate | a task MUST NOT close while any promotion item is `pending` |
 | Ships a stdlib pass guide in v0.1? | **Yes** — `promote` ships a dedicated pass guide, as do `lint`, `decompose`, and `review`; `implement` is served by the nine per-`task_kind` guides, `author` by the six author guides, and `verify` by the `empirical-proof` fragment; `improve` and `lower` ship none ([ADR-0042](../adrs/0042-skill-carrier-and-standalone-conditioning.md)) |
 
@@ -85,10 +85,10 @@ The kinds are mutually exclusive by intent; a discovery with two faces (e.g. bot
 | Discovery | Promote to |
 |---|---|
 | New intended behaviour (a real obligation to build against) | `spec.swarm.md` (new/amended `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`), or an ADR when gated on an undecided architectural/product choice |
-| Durable architectural/product decision (choice + alternatives + trade-offs) | An ADR (`.swarm/sources/adrs/<nnnn>-<slug>.md`) |
-| Present-state risk or debt (what *is*, observed, not yet a chosen change) | An audit (`.swarm/sources/audits/<slug>.md`) — observation-only, never prescriptive |
-| Reproduced defect evidence (root cause + expected vs actual) | A bug-report (`.swarm/sources/bugs/<slug>.md`) — diagnosis-only; the fix promotes onward to a `task_kind: fix` task |
-| Reusable project fact (durable evidenced claim) | A finding (`.swarm/sources/findings/<slug>.md`), indexed in `memory/INDEX.md` with `Load when` + full provenance |
+| Durable architectural/product decision (choice + alternatives + trade-offs) | An ADR (a `type: adr` doc under `.agents/`, `<nnnn>-<slug>.md`) |
+| Present-state risk or debt (what *is*, observed, not yet a chosen change) | An audit (a `type: audit` doc under `.agents/`, `<slug>.md`) — observation-only, never prescriptive |
+| Reproduced defect evidence (root cause + expected vs actual) | A bug-report (a `type: bug-report` doc under `.agents/`, `<slug>.md`) — diagnosis-only; the fix promotes onward to a `task_kind: fix` task |
+| Reusable project fact (durable evidenced claim) | A finding (a `type: finding` doc under `.agents/`, `<slug>.md`), indexed in `memory/INDEX.md` with `Load when` + full provenance |
 | Repeated cross-task pattern (recurring solution shape across >1 task) | `memory/patterns/*.md` |
 | Terminology clarification (ambiguous/drifted term) | `memory/glossary.md` (resolves `SOL-P006` undefined-term / `SOL-P057` terminology-drift at the source) |
 | Universal workflow rule (a procedure for every future task) | A **pass-guide edit (the procedure) PLUS at most a one-line `AGENTS.md` pointer** — never inline procedure in `AGENTS.md` (the G9 tie-break) |
@@ -116,7 +116,7 @@ Authorization is not validation. A memory write MUST pass consistency verificati
 
 ## Staleness
 
-A finding's `status` enum is `candidate | accepted | promoted | rejected | stale | superseded`. A finding becomes **`stale`** when its `content_hash` no longer matches the cited source/surfaces — the same drift signal behind the `STALE` verdict decorator and the spec↔code reconcile. A `stale` finding MUST NOT be relied on as authority; it routes to re-verification or supersession. A `superseded` finding records its replacement in the INDEX stale/superseded table. The kernel ships the **fields** that make staleness computable (`content_hash`, `origin_traces`); it does **not** ship the comparator — recomputing the hash and flipping `accepted -> stale` is a harness/CLI concern, aspirational/manual today ([Principle 1: NO RUNTIME](../PRINCIPLES.md#1-no-runtime)).
+A finding's `status` enum is `candidate | accepted | promoted | rejected | stale | superseded`. A finding becomes **`stale`** when its `content_hash` no longer matches the cited source/surfaces — the same drift signal behind the `STALE` verdict decorator and the spec↔code reconcile. A `stale` finding MUST NOT be relied on as authority; it routes to re-verification or supersession. A `superseded` finding records its replacement in the INDEX stale/superseded table. Swarm ships the **fields** that make staleness computable (`content_hash`, `origin_traces`); it does **not** ship the comparator — recomputing the hash and flipping `accepted -> stale` is a harness/CLI concern, aspirational/manual today ([Principle 1: NO RUNTIME](../PRINCIPLES.md#1-no-runtime)).
 
 ## Deferred to post-v0.1
 

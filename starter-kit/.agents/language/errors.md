@@ -85,7 +85,7 @@ Two position-sensitive rules are re-classified by the binding-clause vs commenta
 
 ### Severity overrides and the waiver record
 
-Default severities here are the normative defaults. A project may adjust them through one configuration surface — a root `swarm.config.json` / `swarm.config.yaml`, or equivalently the `lint:` section of an adopted project's `.swarm/config.yaml` — validated against the shape below. There are exactly two legal moves:
+Default severities here are the normative defaults. A project may adjust them through one configuration surface — a root `swarm.config.json` / `swarm.config.yaml`, or equivalently the `lint:` section of an adopted project's `.agents/swarm.config.yaml` — validated against the shape below. There are exactly two legal moves:
 
 1. **Promote (strict mode):** raise an ADVISORY code to `error`. Always permitted; no record needed beyond the config entry.
 2. **Demote (waiver):** lower a BLOCKING code to `warning` or `off`. Permitted **only** with a recorded waiver. A demotion without a complete waiver record is itself a conformance defect.

@@ -15,8 +15,8 @@ below are recorded, not executed here.
 ---
 type: trace
 id: payment-5xx-charge-trace
-source_task: .swarm/generated/tasks/payment-5xx-charge.md
-source_spec: .swarm/sources/specs/payment-5xx.swarm.md
+source_task: tasks/payment-5xx-charge.md
+source_spec: .agents/specs/payment-5xx.swarm.md
 ---
 
 # Trace: payment-5xx charge

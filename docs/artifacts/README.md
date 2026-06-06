@@ -32,7 +32,7 @@ There are three filename shapes, and the infix tells them apart:
 | `*.swarm.plan.json` | Emitted plan (lowered, schedulable work packets + graphs). | Compiler / planner (future tool) | Plan envelope | **Reserved contract name.** Not written by any shipped tool. |
 | `*.swarm.trace.md` | Emitted / instantiated trace for a built spec. | Implement / verify pass (today: agent by hand) | Trace contract + provenance | Copyable template is `trace.md` (plain); built *instances* MAY take the `*.swarm.trace.md` name. |
 
-The two `.json` variants are **documented-as-contract names only**: the kernel pins their shape so a future launcher can build against a stable target, but Swarm ships no parser, emitter, planner, or checker. A repository MUST NOT claim that any `*.swarm.ir.json` or `*.swarm.plan.json` is *produced* by a Swarm tool; it MAY hold hand-written examples in the conformance corpus.
+The two `.json` variants are **documented-as-contract names only**: Swarm pins their shape so a future launcher can build against a stable target, but Swarm ships no parser, emitter, planner, or checker. A repository MUST NOT claim that any `*.swarm.ir.json` or `*.swarm.plan.json` is *produced* by a Swarm tool; it MAY hold hand-written examples in the conformance corpus.
 
 ### 2.2 Working artifacts (plain `.md`)
 
@@ -57,7 +57,7 @@ The two `.json` variants are **documented-as-contract names only**: the kernel p
 
 ### 2.3 There is NO `verdict.md` (normative)
 
-A repository MUST NOT contain a standalone `verdict.md`, and no tool MAY emit one. `VERDICT` is a SOL *language block*, not a file; `review.md` is its canonical *container*. *Rationale:* a verdict is the output of the review pass, exactly as a SARIF `result` lives inside a `run` and never as a free-standing file. The kernel ships documentation of the `VERDICT` block and the verdict taxonomy as a reference page, not as a copyable artifact template.
+A repository MUST NOT contain a standalone `verdict.md`, and no tool MAY emit one. `VERDICT` is a SOL *language block*, not a file; `review.md` is its canonical *container*. *Rationale:* a verdict is the output of the review pass, exactly as a SARIF `result` lives inside a `run` and never as a free-standing file. Swarm ships documentation of the `VERDICT` block and the verdict taxonomy as a reference page, not as a copyable artifact template.
 
 ## 3. The recognized parents of a spec
 
@@ -81,9 +81,9 @@ Two epistemic-stance invariants follow and are normative:
 - An `audit.md` MUST NOT carry `REQ` / `CONSTRAINT` / `INVARIANT` obligation blocks of its own intent — observed risk is promoted *into* a spec, where it acquires obligation force.
 - A `bug-report.md` MUST NOT prescribe an implementation — its diagnosis promotes *into* a fix task.
 
-`research.md` holds a special role as the kernel's **detached first-class evidence store**: it is not bound to one downstream artefact — one research artefact MAY feed many PRDs, specs, ADRs, findings, or audits at once — which minimizes copying, preserves provenance, and reduces distillation loss when upstream facts evolve.
+`research.md` holds a special role as Swarm's **detached first-class evidence store**: it is not bound to one downstream artefact — one research artefact MAY feed many PRDs, specs, ADRs, findings, or audits at once — which minimizes copying, preserves provenance, and reduces distillation loss when upstream facts evolve.
 
-Of these parents, five are shipped as **stdlib source-doc templates** — `audit.md`, `research.md`, `bug-report.md`, `prd.md`, and `rfc.md`. They are **conditional**: a repository need not have instantiated any of them to be conformant, but a conformant kernel payload MUST ship each template. The remaining parents — `use-case.md` / examples, `nfr.md` / SLOs, and interface sources — are **recognized inputs that normalize INTO a spec** during the `author` pass and are not necessarily shipped as separate templates. A conformant kernel payload MAY additionally ship a `use-case.md` or `nfr.md` template, but MUST NOT treat any source-doc as required for conformance.
+Of these parents, five are shipped as **stdlib source-doc templates** — `audit.md`, `research.md`, `bug-report.md`, `prd.md`, and `rfc.md`. They are **conditional**: a repository need not have instantiated any of them to be conformant, but the starter kit MUST ship each template. The remaining parents — `use-case.md` / examples, `nfr.md` / SLOs, and interface sources — are **recognized inputs that normalize INTO a spec** during the `author` pass and are not necessarily shipped as separate templates. The starter kit MAY additionally ship a `use-case.md` or `nfr.md` template, but MUST NOT treat any source-doc as required for conformance.
 
 ## 4. General template conventions
 
@@ -94,19 +94,19 @@ These conventions are normative and apply to **every** artifact template in the 
 - Tables are the required carrier for every matrix (verification, obligation-verdict, promotion queue). A row whose status cell is empty in a *built* artifact is treated as `UNVERIFIED`.
 - Surface SOL blocks embedded in a working artifact (`TRACE` in `trace.md`, `VERDICT` in `review.md`) are quoted SOL data and MUST obey the SOL block grammar — including the canonical vocabulary: the 7 block types, the 5 modal keywords (`MUST` / `MUST NOT` / `SHOULD` / `SHOULD NOT` / `MAY`), the 7 verdicts (4 core `PASS` / `FAIL` / `BLOCKED` / `UNVERIFIED` + 3 lifecycle `WAIVED` / `STALE` / `CONTRADICTED`), the 9 proof types, and the `VERIFY BY <type>:<adapter>:<artifact>` form.
 
-The copyable skeleton for each artifact lives in the kernel payload under `starter-kit/.agents/templates/`. Each per-artifact page below is the **contract** for one of those skeletons: the page defines what the artifact means and what its sections require; the template is the file you copy and fill.
+The copyable skeleton for each artifact lives in the starter kit under `starter-kit/.agents/templates/`. Each per-artifact page below is the **contract** for one of those skeletons: the page defines what the artifact means and what its sections require; the template is the file you copy and fill.
 
-## 5. Filename and placement in an adopted workspace
+## 5. Filename and placement in an adopted project
 
 Each page restates the `.swarm.` infix rule for its own class: `spec.swarm.md` is the one human-authored compiler-visible source (`.swarm.md`); a built trace MAY take the emitted `*.swarm.trace.md` name; every other working artifact and source document is a plain `.md`.
 
-In an adopted project, the canonical workspace is `.swarm/`, and artifacts live by role:
+In an adopted project, artifacts are not held in any imposed tree; they live by role:
 
-- **`.swarm/sources/`** — durable source documents and the obligation source: `specs/` (`*.swarm.md`), `prds/`, `rfcs/`, `research/`, `audits/`, `bugs/`, `findings/`, `adrs/`, `interfaces/`, `nfrs/`.
-- **`.swarm/generated/`** — recreatable execution packets: `tasks/` (`task.md`), `traces/` (`trace.md`), `reviews/` (`review.md`), generated tests and docs.
-- **`.swarm/memory/`** — durable recall: `INDEX.md`, `glossary.md`, `patterns/`, and `stale/`.
+- **Durable source documents** (the obligation source) — `type`-tagged docs committed to the spec repo: specs (`*.swarm.md`), PRDs, RFCs, research, audits, bug-reports, findings, ADRs, interfaces, NFRs.
+- **Recreatable execution packets** — task frames (`task.md`), traces (`trace.md`), reviews (`review.md`), generated tests and docs: execution scratch, gitignored or created lazily by a future tool.
+- **Durable recall** — `INDEX.md`, `glossary.md`, `patterns/`, and `stale/`, committed.
 
-The copyable templates themselves install under `.swarm/kernel/templates/`.
+The copyable templates themselves ship with the installed starter kit.
 
 ## 6. The artifact contract pages
 

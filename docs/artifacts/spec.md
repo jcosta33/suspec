@@ -31,19 +31,11 @@ The spec is the **only** human-authored file that carries the `.swarm.` infix. T
 
 So the spec is named `<slug>.swarm.md` (e.g. `auth.swarm.md`, `checkout.swarm.md`). The sibling source artifacts that promote into it — audit, research, bug-report, PRD, RFC, finding, ADR — are all plain `.md`; no per-artifact `.swarm.*` name is introduced for any of them.
 
-In an adopted project's `.swarm/` workspace, the spec lives under **`sources/`** — the layer holding canonical, hand-authored intent:
+In an adopted project, the spec is **canonical, hand-authored intent**, committed to the spec repo:
 
-```text
-project/
-  .swarm/
-    sources/                 # human-authored intent — specs live HERE
-      auth.swarm.md          # the source spec
-      auth-audit.md          # a plain-.md parent that promotes into it
-    generated/               # emitted, recreatable artifacts (IR, plan, traces, reviews, tasks)
-      auth.swarm.ir.json     # the obligation graph emitted FROM the spec (reserved contract name)
-      auth.swarm.plan.json   # the lowered plan (reserved contract name)
-    memory/                  # the recall layer (INDEX, glossary, patterns)
-```
+- The source spec is the `*.swarm.md` (e.g. `auth.swarm.md`), committed beside the plain-`.md` parents that promote into it (e.g. `auth-audit.md`).
+- The emitted, recreatable artifacts a future tool derives from the spec — the obligation graph (`auth.swarm.ir.json`) and the lowered plan (`auth.swarm.plan.json`), both reserved contract names — together with traces, reviews, and task frames are execution scratch, gitignored or created lazily.
+- The recall layer (`INDEX`, glossary, patterns) is durable recall, committed.
 
 The spec is a `sources/` artifact because it is authored by hand and is the durable intent of record. Its emitted projections — the IR obligation graph (`*.swarm.ir.json`) and the plan (`*.swarm.plan.json`) — are `generated/` artifacts, recreatable from the spec and never hand-edited as intent. (Those `.json` names are reserved contracts: the framework ships no parser, emitter, or planner that writes them; a repo MAY hold hand-written examples in its corpus, but MUST NOT claim a Swarm tool produced them.)
 
@@ -98,7 +90,7 @@ The copyable skeleton for this artifact is:
 starter-kit/.agents/templates/spec.swarm.md
 ```
 
-That file is the skeleton you copy and fill — every `{{placeholder}}` and each `<what goes here>` guide is replaced when you author a real spec. **This page is its contract**: the template is the shape, and the sections, ordering, frontmatter, block discipline, and epistemic-stance rules above are the obligations that shape must satisfy. In an adopted project the same skeleton ships under `.swarm/kernel/templates/spec.swarm.md`.
+That file is the skeleton you copy and fill — every `{{placeholder}}` and each `<what goes here>` guide is replaced when you author a real spec. **This page is its contract**: the template is the shape, and the sections, ordering, frontmatter, block discipline, and epistemic-stance rules above are the obligations that shape must satisfy. In an adopted project the same skeleton ships with the installed starter kit.
 
 ## Related
 

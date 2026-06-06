@@ -4,7 +4,7 @@ Source authority is the **deterministic procedure** a conformant Swarm repo uses
 
 Authority is **not** a planning hint and **not** a confidence score. It is the binding precedence order, and it is the only sanctioned alternative to silently letting the most recently written artifact win.
 
-As with everything in the kernel, this is **NO-RUNTIME**: source authority is a contract (a precedence procedure plus lint codes) that a future tool builds against. Nothing here ships a resolver.
+As with everything in Swarm, this is **NO-RUNTIME**: source authority is a contract (a precedence procedure plus lint codes) that a future tool builds against. Nothing here ships a resolver.
 
 ## The two axes
 
@@ -119,7 +119,7 @@ The two axes are the two directions of requirements traceability:
 
 ## The high-oversight band (HITL escalation)
 
-The `RISK` clause is otherwise inert in the kernel; the high-oversight band is where it is wired to a normative obligation. The rationale is that agents are unreliable at knowing **when to stop and ask a human**, so high-stakes work must not proceed on agent self-assessment alone. This too is a contract (a lint plus a verdict-field requirement), not a shipped escalation engine.
+The `RISK` clause is otherwise inert in Swarm; the high-oversight band is where it is wired to a normative obligation. The rationale is that agents are unreliable at knowing **when to stop and ask a human**, so high-stakes work must not proceed on agent self-assessment alone. This too is a contract (a lint plus a verdict-field requirement), not a shipped escalation engine.
 
 **An obligation is in the high-oversight band iff either holds:**
 
@@ -141,7 +141,7 @@ The `RISK` clause is otherwise inert in the kernel; the high-oversight band is w
 | Any tier, `WRITES` an `integration` / `shared` / irreversible surface | `manual @ REVIEW` REQUIRED | Named human (verdict + any waiver) |
 | `RISK low` / `medium` / `high`, ordinary exclusive `WRITES` | Per task-kind default suite | MAY be agent-verified |
 
-The "named human" is **not a new kernel role**: *who* the human is stays unspecified and is bound locally by the adopting repository. Approval **authority** is resolved through the source-authority ladder above — the approver is the owner of the highest-ranked governing artifact in the relevant domain. A waiver on a band obligation is the ordinary `WAIVER` lifecycle, with mandatory `authority + reason + expiry` and auto-expiry on source-hash change; there are no permanent waivers and no agent-self-issued waivers in the band. Recording an agent-only verdict on a band obligation, or letting a skill self-issue a band waiver, is additionally a `SOL-M004` authority-conflict.
+The "named human" is **not a new Swarm role**: *who* the human is stays unspecified and is bound locally by the adopting repository. Approval **authority** is resolved through the source-authority ladder above — the approver is the owner of the highest-ranked governing artifact in the relevant domain. A waiver on a band obligation is the ordinary `WAIVER` lifecycle, with mandatory `authority + reason + expiry` and auto-expiry on source-hash change; there are no permanent waivers and no agent-self-issued waivers in the band. Recording an agent-only verdict on a band obligation, or letting a skill self-issue a band waiver, is additionally a `SOL-M004` authority-conflict.
 
 ## Approval-required changes
 
@@ -168,13 +168,13 @@ The "Yes" rows are exactly the edits that alter what the system must build, what
 
 ### R-APPROVAL-AUTHORITY
 
-The kernel defines **what** requires approval; it is deliberately silent on **who** approves. Approval **authority** for any "Yes" row is resolved through the same source-authority ladder that resolves conflicts: the approver is the **owner of the highest-ranked governing artifact in the relevant domain**.
+Swarm defines **what** requires approval; it is deliberately silent on **who** approves. Approval **authority** for any "Yes" row is resolved through the same source-authority ladder that resolves conflicts: the approver is the **owner of the highest-ranked governing artifact in the relevant domain**.
 
 - An ADR change is approved by the owner of the accepted `adr.md` (Axis-A rank 1).
 - An obligation or `INTERFACE` change is approved by the owner of the approved `spec.swarm.md` (Axis-A rank 2).
 - A cross-domain change is approved by the owner of the governing domain (Axis B) — e.g. a change touching a `security` obligation answers to the security-domain owner, not a `product` owner.
 
-There is **no** undefined "human role" in the kernel. "Approval required: Yes" means precisely "an authoring act by the relevant source-authority owner is required," never an appeal to an unspecified gatekeeper. *Who* that owner is — identity, title, headcount — stays a local org decision bound by the adopting repository, exactly as the high-oversight band's named human does; the kernel fixes only that the act must come from the resolved owner. A change applied without the authority resolved by this ladder is itself a `SOL-M004` authority-conflict: a lower-ranked actor (an agent, a skill, an un-promoted note) silently amending a higher-ranked artifact.
+There is **no** undefined "human role" in Swarm. "Approval required: Yes" means precisely "an authoring act by the relevant source-authority owner is required," never an appeal to an unspecified gatekeeper. *Who* that owner is — identity, title, headcount — stays a local org decision bound by the adopting repository, exactly as the high-oversight band's named human does; Swarm fixes only that the act must come from the resolved owner. A change applied without the authority resolved by this ladder is itself a `SOL-M004` authority-conflict: a lower-ranked actor (an agent, a skill, an un-promoted note) silently amending a higher-ranked artifact.
 
 This is the same authority that governs the high-oversight band above: a band obligation's `manual @ REVIEW` verdict, standing in for an automated proof, is the "Accept a `manual` proof where no automated proof previously existed" row of this table — an approval-required change whose authority is the relevant source-authority owner, not a new role.
 

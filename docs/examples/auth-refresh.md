@@ -224,7 +224,7 @@ Every node enters `lower` at `status: UNVERIFIED` — the default before any ver
 
 ## Stage 5 — `decompose` and `implement`: project a work packet, then build it
 
-`decompose` projects the IR into a `task.md` work packet, and `implement` executes it. The packet's write surfaces MUST be a subset of the assigned obligations' `WRITES` — the two-tier lowering rule. A packet that writes a path outside its declared `write_surfaces` is the hard error `SOL-O005` (owned-path-outside-write-surface). The packet inherits the proof bindings from the obligations it covers and pins its source spec under the adopted-project `.swarm/` tree. Only the load-bearing frame is shown; the verification matrix is filled in by `implement`/`verify` as work lands.
+`decompose` projects the IR into a `task.md` work packet, and `implement` executes it. The packet's write surfaces MUST be a subset of the assigned obligations' `WRITES` — the two-tier lowering rule. A packet that writes a path outside its declared `write_surfaces` is the hard error `SOL-O005` (owned-path-outside-write-surface). The packet inherits the proof bindings from the obligations it covers and names its source spec. Only the load-bearing frame is shown; the verification matrix is filled in by `implement`/`verify` as work lands.
 
 ```text
 ---
@@ -232,7 +232,7 @@ type: task
 id: auth-refresh-client
 status: active
 task_kind: feature
-source: .swarm/sources/specs/auth-refresh.swarm.md
+source: .agents/specs/auth-refresh.swarm.md
 assigned_obligations: [AC-001, AC-002]
 invariants: [I-001]
 interfaces: [IF-001]
@@ -274,8 +274,8 @@ blocked_by: []
 ---
 type: trace
 id: auth-refresh-client-trace
-source_task: .swarm/generated/tasks/auth-refresh-client.md
-source_spec: .swarm/sources/specs/auth-refresh.swarm.md
+source_task: tasks/auth-refresh-client.md
+source_spec: .agents/specs/auth-refresh.swarm.md
 ---
 
 # Trace: auth-refresh client
@@ -306,8 +306,8 @@ PROOF property:cmdTest:web/tests/auth-refresh.properties.ts#no_unbounded_retry p
 ---
 type: review
 id: auth-refresh-client-review
-source_trace: .swarm/generated/traces/auth-refresh-client-trace.md
-source_spec: .swarm/sources/specs/auth-refresh.swarm.md
+source_trace: traces/auth-refresh-client-trace.md
+source_spec: .agents/specs/auth-refresh.swarm.md
 ---
 
 # Review: auth-refresh client
@@ -377,7 +377,7 @@ The finding is then indexed in memory by a single `MAP` line carrying a "Load wh
 
 ```text
 # memory/INDEX.md  (excerpt)
-- Refresh storm on shared 401 — `.swarm/sources/findings/refresh-storm-on-shared-401.md`
+- Refresh storm on shared 401 — `.agents/memory/findings/refresh-storm-on-shared-401.md`
   — Load when: implementing or reviewing concurrent token-refresh paths.
 ```
 

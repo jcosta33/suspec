@@ -91,7 +91,7 @@ by a future toolchain later — **not** a set of directories you create up front
 
 A toolchain that tracks satisfaction, emits task / trace / review packets, or keeps a compacted history MAY
 write them under conventional paths (e.g. `status/`, `generated/`, `ledger/`) — **each created on first
-write**, and gitignored when recreatable from the source. The kernel fixes the *shape* of those records
+write**, and gitignored when recreatable from the source. Swarm fixes the *shape* of those records
 (the obligation graph, the verdict model, the coverage a history entry must preserve), not a directory you
 must materialise to adopt. Recreatable execution state (task frames, scratch) is throwaway; the durable
 record is the source artifact, the memory, and whatever compacted history a tool keeps.

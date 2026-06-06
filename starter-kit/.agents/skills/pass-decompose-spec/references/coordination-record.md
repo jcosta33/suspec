@@ -58,7 +58,7 @@ The same four fields are carried **verbatim** into the worker's child `task.md` 
 
 - **Liveness marker** — the `Last progress` column; the lead updates it each check.
 - **STALL threshold** — a worker whose `Last progress` has not advanced across **two consecutive checks** is `stalled`. (A chosen design constant for the recorded marker, not an empirical borrowing.)
-- **STALL action** — on `stalled`, take one recorded action: **re-plan**, **re-scope**, **escalate**, or **abandon**; write the action and rationale to `## Decisions`. A recorded contract a future launcher could automate, not a stall detector the kernel runs.
+- **STALL action** — on `stalled`, take one recorded action: **re-plan**, **re-scope**, **escalate**, or **abandon**; write the action and rationale to `## Decisions`. A recorded contract a future launcher could automate, not a stall detector Swarm runs.
 
 ## Merge log and INTENT-PRESERVED-PROOF
 
@@ -66,7 +66,7 @@ The merge log records merge order, conflicts, and resolution. The INTENT-PRESERV
 
 ## The per-task merge gate
 
-The per-task merge gate is **not a second gate** — it is the one merge gate ("every required obligation's required `VERIFY BY` bindings are all `PASS`/`WAIVED`") evaluated at the moment a task's branch would merge. `decompose` only fixes the scope (the task's assigned obligations) and the orchestration overlay; the verdicts themselves are `review`'s output. A task MUST NOT merge if: the trace or review is missing (1); any assigned obligation's verdict is `FAIL`/`UNVERIFIED`, including a `PASS (STALE)` (2); a blocking `QUESTION` reaches assigned work (3); the promotion queue is unhandled (4); a write-surface conflict remains — an OWNED overlap with a concurrent worker (`SOL-O001`), an OWNED path outside declared `WRITES` (`SOL-O005`), or an unmerged `DEPENDS ON` dependency (5); or the base branch is dirty / out of policy (6). Conditions 1–4 are the merge gate at task scope; condition 5 is the orchestration overlay; this is a recorded contract a future launcher reads, not a gate the kernel runs.
+The per-task merge gate is **not a second gate** — it is the one merge gate ("every required obligation's required `VERIFY BY` bindings are all `PASS`/`WAIVED`") evaluated at the moment a task's branch would merge. `decompose` only fixes the scope (the task's assigned obligations) and the orchestration overlay; the verdicts themselves are `review`'s output. A task MUST NOT merge if: the trace or review is missing (1); any assigned obligation's verdict is `FAIL`/`UNVERIFIED`, including a `PASS (STALE)` (2); a blocking `QUESTION` reaches assigned work (3); the promotion queue is unhandled (4); a write-surface conflict remains — an OWNED overlap with a concurrent worker (`SOL-O001`), an OWNED path outside declared `WRITES` (`SOL-O005`), or an unmerged `DEPENDS ON` dependency (5); or the base branch is dirty / out of policy (6). Conditions 1–4 are the merge gate at task scope; condition 5 is the orchestration overlay; this is a recorded contract a future launcher reads, not a gate Swarm runs.
 
 ## Worked fan-out (the `auth-refresh` fragment)
 

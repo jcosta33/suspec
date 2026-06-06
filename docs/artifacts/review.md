@@ -2,13 +2,15 @@
 
 `review.md` is the verdict record of the Swarm obligation graph: the working artifact that renders one typed `VERDICT` per required proof binding and decides, for a whole change set, whether the merge gate opens. It is the single place in the framework where the question "did this actually get done?" is answered, and it is the artifact the `promote` pass reads before any change advances.
 
+**Where a verdict lives ([ADR-0050](../adrs/0050-swarm-is-a-spec-repo-discipline.md)).** In a **code repo**, the **PR is the default verdict** — CI is the proof and review approval is the merge gate; this page's structured `review.md` is **opt-in**, for audit/compliance or once a tool consumes it, and is **not** written into a pristine code repo by default. The contract below is what such a structured review MUST satisfy *when you do keep one* (or in a co-located repo); a durable verdict outcome can also be contributed back to the spec repo as a linked PR.
+
 ## Purpose and epistemic stance
 
 A review asserts **adjudication**: it compares the implementation claims recorded in a `trace.md` against the obligations those claims purport to satisfy, weighs them against the recorded verification evidence, and records the verdict. Its epistemic stance is *judgment* — the durable outcome of weighing evidence against intent — not intent itself and not raw observation.
 
 Three discipline lines define what `review.md` is and is not:
 
-- **A `VERDICT` is a SOL block, never a file.** The kernel ships **no** `verdict.md`, and no tool may emit one. A verdict is the *output* of the review pass — exactly as a result lives inside its run and never as a free-standing file — so its only home is a `VERDICT` block inside `review.md`. A repository that records verdicts in a standalone `verdict.md` is non-conformant. The reference documentation of the `VERDICT` block and the verdict taxonomy is documentation, not a copyable template.
+- **A `VERDICT` is a SOL block, never a file.** Swarm ships **no** `verdict.md`, and no tool may emit one. A verdict is the *output* of the review pass — exactly as a result lives inside its run and never as a free-standing file — so its only home is a `VERDICT` block inside `review.md`. A repository that records verdicts in a standalone `verdict.md` is non-conformant. The reference documentation of the `VERDICT` block and the verdict taxonomy is documentation, not a copyable template.
 - **A review MUST NOT carry its own obligation blocks.** It adjudicates obligations; it does not author them. A `review.md` MUST NOT contain `REQ`, `CONSTRAINT`, `INVARIANT`, or `INTERFACE` blocks of its own intent. If review uncovers a gap in what *should* have been required, that discovery is queued for promotion into a spec via the `author` pass — it does not become an obligation by being written down in the review.
 - **A review judges; it does not implement and it does not amend.** A `VERDICT` may falsify an obligation (record `FAIL`), but it MUST NOT silently rewrite the obligation's intent to make a change pass. Where two proofs disagree, the review records `CONTRADICTED` and routes to reconciliation rather than picking the convenient result. Reconciliation that changes intent is an `author`-pass act, not a review act.
 
@@ -23,7 +25,7 @@ Three discipline lines define what `review.md` is and is not:
 
 The only human-authored `.swarm.` artifact is the source spec, `*.swarm.md`; emitted compiler artifacts carry the `*.swarm.*` shape (e.g. `*.swarm.ir.json`, `*.swarm.trace.md`). A review is neither — it is hand- or agent-populated structured markdown that *quotes* `VERDICT` blocks as data.
 
-In an adopted project's `.swarm/` workspace, `review.md` lives under **`generated/`** — specifically `.swarm/generated/reviews/` — because a review is derived execution material, recreatable from the sources and the recorded evidence, and compacted into `.swarm/ledger/` on completion. It is **not** a source artifact: nothing under `.swarm/sources/` (the desired-truth obligation store) is a review, and nothing under `.swarm/memory/` (durable recall) is a review. The companion observed-state satisfaction report it informs lives under `.swarm/status/`; the review that produced the judgment stays in `generated/`.
+When a structured `review.md` is kept, it is **execution scratch** — gitignored or created lazily, recreatable from the sources and the recorded evidence, and compacted into the durable ledger (or back to the spec repo as a linked PR) on completion. It is **not** a source artifact: nothing in the desired-truth obligation store (the committed source-docs) is a review, and nothing in durable recall is a review. The companion observed-state satisfaction status it informs is derived state; the review that produced the judgment stays in the execution scratch.
 
 ## Required sections and fields, in order
 

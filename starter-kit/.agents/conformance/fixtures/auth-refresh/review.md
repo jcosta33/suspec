@@ -12,8 +12,8 @@ current surface); after re-run AC-002 -> PASS and the gate opens. Inert oracle d
 ---
 type: review
 id: auth-refresh-client-review
-source_trace: .swarm/generated/traces/auth-refresh-client-trace.md
-source_spec: .swarm/sources/specs/auth-refresh.swarm.md
+source_trace: traces/auth-refresh-client-trace.md
+source_spec: .agents/specs/auth-refresh.swarm.md
 ---
 
 # Review: auth-refresh client

@@ -1,6 +1,6 @@
 # Promotion mechanics
 
-Deep material for the `promote` pass guide: the full provenance record, the per-status behaviour at the close gate, the two distinct status enums, the validation/rollback mechanics, and a worked queue. This file is referenced by `SKILL.md` rules 4, 5, and 10. It applies the canonical promotion rules — it does not redefine kernel semantics.
+Deep material for the `promote` pass guide: the full provenance record, the per-status behaviour at the close gate, the two distinct status enums, the validation/rollback mechanics, and a worked queue. This file is referenced by `SKILL.md` rules 4, 5, and 10. It applies the canonical promotion rules — it does not redefine Swarm semantics.
 
 ## The full provenance record
 
@@ -43,7 +43,7 @@ The seven promotion statuses do not all play the same role at closure:
 
 ## Staleness of a promoted finding
 
-A `promoted` finding does not stay authoritative forever. It becomes **`stale`** when its `content_hash` no longer matches the cited source/surfaces — the same drift signal behind the `STALE` lifecycle verdict and the spec↔code reconcile. A `stale` finding MUST NOT be relied on as authority; it routes to re-verification or supersession, and a `superseded` finding records its replacement in the INDEX's stale/superseded table. The kernel ships the *fields* (`content_hash`, `origin_traces`); the comparator that recomputes the hash is a harness/CLI concern, manual today.
+A `promoted` finding does not stay authoritative forever. It becomes **`stale`** when its `content_hash` no longer matches the cited source/surfaces — the same drift signal behind the `STALE` lifecycle verdict and the spec↔code reconcile. A `stale` finding MUST NOT be relied on as authority; it routes to re-verification or supersession, and a `superseded` finding records its replacement in the INDEX's stale/superseded table. Swarm ships the *fields* (`content_hash`, `origin_traces`); the comparator that recomputes the hash is a harness/CLI concern, manual today.
 
 ## What the `promotions/` ledger entry records
 

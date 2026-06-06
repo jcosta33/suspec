@@ -26,13 +26,13 @@ An audit is a **working artifact**, not a compiler-visible source. Swarm partiti
 
 Therefore the file is named `audit.md` (or a descriptive `<topic>.audit.md` / `<topic>.md` in a folder that scopes it). It MUST NOT be named `*.swarm.md`; doing so would mark an observation as a compiler-visible source spec and is a placement defect.
 
-In an adopted project's `.swarm/` workspace, an audit is **desired-side durable source material** and lives under sources:
+In an adopted project, an audit is **desired-side durable source material** — a `type: audit` document committed to the spec repo:
 
-- `.swarm/sources/audits/` — the canonical home; an audit defines durable knowledge about the present state and is committed.
-- It does **not** live in `.swarm/generated/` (that holds recreatable execution packets — task frames, traces, reviews) or in `.swarm/status/` (observed satisfaction and drift, which never redefines intent).
-- On resolution, a retired audit moves to `.swarm/archive/`, linked to the spec, finding, or task it promoted into — it is not silently deleted.
+- It is durable knowledge about the present state, committed alongside the other source-docs.
+- It is **not** execution scratch (the recreatable task frames, traces, and reviews a run produces) and it is not an observed-state status (satisfaction and drift, which never redefines intent).
+- On resolution, a retired audit is marked resolved and linked to the spec, finding, or task it promoted into — it is not silently deleted.
 
-A conformant kernel ships the `audit.md` template, but a conformant repository need not contain any audit instance; audits are conditional, written only when a present-state observation is worth recording.
+The starter kit ships the `audit.md` template, but a conformant repository need not contain any audit instance; audits are conditional, written only when a present-state observation is worth recording.
 
 ## Required sections / fields, in order
 

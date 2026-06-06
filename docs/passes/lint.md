@@ -180,7 +180,7 @@ Both gates are **contracts checkable today by review and enforced by a future to
 
 ## Severity overrides and waivers
 
-Default severities are fixed by the spec. A project MAY adjust them only through one configuration surface (a root `swarm.config.json`/`.yaml`, or the `lint:` section of an adopted project's `.swarm/config.yaml`), and only in two legal ways:
+Default severities are fixed by the spec. A project MAY adjust them only through one configuration surface (a root `swarm.config.json`/`.yaml`, in its `lint:` section), and only in two legal ways:
 
 1. **Promote (strict mode):** raise an ADVISORY code to `error`. Always permitted; no record beyond the config entry.
 2. **Demote (waiver):** lower a BLOCKING code to `warning` or `off`. Permitted **only** with a recorded waiver carrying an authority, a reason, and an expiry. A demotion without a complete waiver record is itself a conformance defect.

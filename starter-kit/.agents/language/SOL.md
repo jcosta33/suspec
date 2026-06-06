@@ -464,7 +464,7 @@ The five lint layers are **S/P/M/V/O** (Syntax / Prose / seMantic / Verification
 
 ## Related
 
-Sibling kernel references that extend or consume what this page defines:
+Sibling reference pages that extend or consume what this page defines:
 
 - `./APS.md` — the controlled-prose standard SOL blocks are interleaved with, and the high-risk-word rules.
 - `./errors.md` — the full `SOL-<LAYER><NNN>` catalogue behind the codes cited inline here.

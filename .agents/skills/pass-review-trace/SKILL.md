@@ -36,7 +36,7 @@ The verdict vocabulary, proof-strength order, gate predicate, and waiver/contrad
 
 ## Produces
 
-`review.md` — that artifact **is** the verdict record, the canonical container of `VERDICT` blocks (§14.5, §21.5). The kernel ships **no** `verdict.md`; a repo recording verdicts in a standalone `verdict.md` is non-conformant (§14.5). Do not create one.
+`review.md` — that artifact **is** the verdict record, the canonical container of `VERDICT` blocks (§14.5, §21.5). Swarm ships **no** `verdict.md`; a repo recording verdicts in a standalone `verdict.md` is non-conformant (§14.5). Do not create one.
 
 ## Preserves — the Skeptic review discipline
 

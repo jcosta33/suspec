@@ -7,12 +7,12 @@ A `threat-model.md` is a **conditional Tier-3 source-doc** the stdlib SHOULD mak
 ## Purpose & epistemic stance
 
 - **Stance: threat observation, not intent.** A `threat-model.md` records *what could go wrong* on a surface. It MUST NOT carry its own `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` obligation blocks — observed threat is promoted *into* a spec, where it acquires obligation force. (Same epistemic-stance rule as `audit.md` and `bug-report.md`.)
-- **Conditional — never conformance-required.** It sits **outside** the five-template Tier-3 inventory the conformance definition counts. A conformant kernel MAY ship it as an optional security extension; a conformant repository MAY have zero instances. Its absence is never a conformance failure.
+- **Conditional — never conformance-required.** It sits **outside** the five-template Tier-3 inventory the conformance definition counts. The starter kit MAY ship it as an optional security extension; a conformant repository MAY have zero instances. Its absence is never a conformance failure.
 - **Externally-informed.** Because a threat model draws on outside knowledge (advisories, CVEs, attacker models), an obligation it implies is subject to the source-authority rule for externally-authored sources before it becomes binding — it is corroborated, not auto-trusted.
 
 ## Filename & placement
 
-Plain `.md` (a working source artifact — **no** `.swarm.` infix). In an adopted project it lives under `.swarm/sources/` (alongside the other source-docs). It carries `type` + `id` frontmatter and no obligation blocks.
+Plain `.md` (a working source artifact — **no** `.swarm.` infix). In an adopted project it is a `type: threat-model` document committed to the spec repo, alongside the other source-docs. It carries `type` + `id` frontmatter and no obligation blocks.
 
 ## Required sections
 

@@ -26,13 +26,13 @@ A bug-report is a **working artifact**, not a compiler-visible source. Swarm par
 
 Therefore the file is named `bug-report.md` (or a descriptive `<topic>.bug-report.md` / `<topic>.md` in a folder that scopes it). It MUST NOT be named `*.swarm.md`; doing so would mark a diagnosis as a compiler-visible source spec and is a placement defect. A conformant tool treats the missing infix as sufficient proof not to parse the file as a spec.
 
-In an adopted project's `.swarm/` workspace, a bug-report is **durable source material** and lives under sources:
+In an adopted project, a bug-report is **durable source material** — a `type: bug-report` document committed to the spec repo:
 
-- `.swarm/sources/bug-reports/` — the canonical home; a bug-report records durable diagnostic knowledge about a defect and is committed.
-- It does **not** live in `.swarm/generated/` (that holds recreatable execution packets — task frames, traces, reviews) or in `.swarm/status/` (observed satisfaction and drift, which never redefines intent).
-- On resolution, a retired bug-report moves to `.swarm/archive/`, linked to the fix task it promoted into — it is not silently deleted.
+- It records durable diagnostic knowledge about a defect, committed alongside the other source-docs.
+- It is **not** execution scratch (the recreatable task frames, traces, and reviews a run produces) and it is not an observed-state status (satisfaction and drift, which never redefines intent).
+- On resolution, a retired bug-report is marked resolved and linked to the fix task it promoted into — it is not silently deleted.
 
-A conformant kernel ships the `bug-report.md` template, but a conformant repository need not contain any bug-report instance; bug-reports are **conditional** (Tier-3 stdlib source-doc), written only when an observed defect is worth diagnosing and routing to a fix.
+The starter kit ships the `bug-report.md` template, but a conformant repository need not contain any bug-report instance; bug-reports are **conditional** (Tier-3 stdlib source-doc), written only when an observed defect is worth diagnosing and routing to a fix.
 
 ## Required sections / fields, in order
 
@@ -60,7 +60,7 @@ In order, every conformant bug-report MUST contain these four sections:
 
 ## Copyable template
 
-The copyable skeleton is `starter-kit/.agents/templates/bug-report.md`. That file is the empty starting point an author copies to create a new bug-report; **this page is its contract** — the meaning of each field, the diagnosis-only boundary, and the placement rules the skeleton is filled in against. In an adopted project the same skeleton is installed at `.swarm/kernel/templates/bug-report.md`.
+The copyable skeleton is `starter-kit/.agents/templates/bug-report.md`. That file is the empty starting point an author copies to create a new bug-report; **this page is its contract** — the meaning of each field, the diagnosis-only boundary, and the placement rules the skeleton is filled in against. In an adopted project the same skeleton ships with the installed starter kit.
 
 ## Related
 

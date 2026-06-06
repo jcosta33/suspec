@@ -35,15 +35,15 @@ What a `task.md` MUST NOT do:
 
 A `task.md` MAY embed SOL blocks (the assigned obligations, the constraints and invariants it preserves) as **quoted data**; embedding them does not make the file a SOL source, and a conformant tool MUST NOT parse a plain `task.md` as a spec.
 
-In an adopted `.swarm/` workspace, a task is **generated/derived execution material** — recreatable from sources — so it lives under `generated/`:
+In an adopted project, a task is **generated/derived execution material** — recreatable from sources — so it is execution scratch, gitignored or created lazily by a future tool:
 
-| Directory | Holds | Why the task lives (or does not live) here |
+| Layer | Holds | Why the task lives (or does not live) here |
 | --- | --- | --- |
-| `.swarm/sources/` | Desired truth: specs, PRDs, RFCs, research, audits, bugs, findings, ADRs, interfaces, NFRs. | **Not** here — a task carries no original intent. |
-| `.swarm/generated/tasks/` | The lowered task frames (alongside `traces/` and `reviews/`). | **Here** — a task is recreatable from a spec by the `lower`/`decompose` pass. |
-| `.swarm/memory/` | Durable recall (`INDEX.md`, glossary, patterns). | **Not** here — a task is execution material, not durable knowledge. |
+| Durable source-docs | Desired truth: specs, PRDs, RFCs, research, audits, bug-reports, findings, ADRs, interfaces, NFRs. | **Not** here — a task carries no original intent. |
+| Execution scratch | The lowered task frames (alongside the traces and reviews a run produces). | **Here** — a task is recreatable from a spec by the `lower`/`decompose` pass. |
+| Durable recall | The recall map (`INDEX.md`), glossary, and patterns. | **Not** here — a task is execution material, not durable knowledge. |
 
-Generated task frames are mostly gitignored (the active frames, with their in-flight traces/reviews); on completion the durable summary of a task is compacted into `.swarm/ledger/`, not kept as a permanent scratchpad. The bare `.agents/` compatibility surface MAY hold a thin **pointer** file if an agent tool expects `.agents/tasks/`, but that pointer MUST point back to the canonical `.swarm/generated/tasks/…` original; the task itself is never canonical under `.agents/`.
+Generated task frames are gitignored scratch (the active frames, with their in-flight traces/reviews); on completion the durable summary of a task is compacted into the durable ledger — or flows back to the spec repo as a linked PR — not kept as a permanent scratchpad.
 
 ## Required sections & fields, in order
 
@@ -106,4 +106,4 @@ That template is the skeleton you copy to start a task; **this page is its contr
 - **`docs/passes/verify.md`** and **`docs/passes/review.md`** — the passes that consume a task's claimed work and fill the verdict side of its verification matrix; a `FAIL`/`UNVERIFIED` here re-enters `implement` (kickback).
 - **`docs/passes/promote.md`** — the pass that drains a task's promotion queue into specs, ADRs, or memory.
 - **`docs/model/source-artifacts.md`** — the full artifact set, the `.swarm.` infix partition, and the conformance tiers in which `task.md` is a Tier-1 core artifact.
-- **`docs/model/workspace.md`** — the adopted-project `.swarm/` layout (sources / generated / memory) where the task frame lives under `generated/tasks/`.
+- **`docs/model/workspace.md`** — the adopted-project layout (durable sources / execution scratch / durable recall) where the task frame lives as gitignored execution scratch.

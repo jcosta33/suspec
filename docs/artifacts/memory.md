@@ -32,21 +32,13 @@ Two adjacent files complete Tier-1 but are governed by their own contracts, not 
 
 A conformant tool keys off the infix as the sole discriminator for "do I parse this as SOL," so the plain name is load-bearing: it marks the index as a contracted Markdown artifact, never a SOL source.
 
-In an adopted `.swarm/` workspace the index lives under the durable recall directory, beside its Tier-1 and Tier-2 neighbors:
+In an adopted project the index lives in the spec repo's durable recall, beside its Tier-1 and Tier-2 neighbors:
 
-```text
-.swarm/
-  memory/                # DURABLE recall (committed; populated by the promote pass)
-    INDEX.md             # <- this artifact: Tier-1 recall map
-    glossary.md          # Tier-1 one-word-one-meaning term store
-    patterns/            # Tier-2 recurring multi-finding knowledge
-    stale/               # superseded/contradicted memory, linked to replacements
-  sources/               # DESIRED truth + durable source artifacts the index points at
-    findings/  adrs/     # finding.md and adr.md — Tier-2 evidence store
-  generated/             # EPHEMERAL execution packets (task frames, traces, reviews)
-```
+- **`memory/`** — durable recall, committed and populated by the promote pass: `INDEX.md` (this artifact, the Tier-1 recall map), `glossary.md` (the Tier-1 one-word-one-meaning term store), `patterns/` (Tier-2 recurring multi-finding knowledge), and `stale/` (superseded/contradicted memory, linked to replacements).
+- The durable source artifacts the index points at — findings and ADRs (the Tier-2 evidence store) — are committed source-docs.
+- The recreatable execution packets a run produces (task frames, traces, reviews) are ephemeral scratch, gitignored or created lazily by a future tool.
 
-Placement follows one rule: anything that defines, tracks, or reconciles durable project knowledge lives in `.swarm/`. The index is durable recall, so it is committed and lives in `.swarm/memory/`. It points *into* `.swarm/sources/` (the findings and ADRs it indexes) and is never confused with `.swarm/generated/` (recreatable execution packets, often gitignored). It is the `promote` pass that adds, advances, retracts, and supersedes the index's rows.
+Placement follows one rule: anything that defines, tracks, or reconciles durable project knowledge is committed durable recall. The index is durable recall, so it is committed under `memory/`. It points *into* the committed source-docs (the findings and ADRs it indexes) and is never confused with the ephemeral execution scratch. It is the `promote` pass that adds, advances, retracts, and supersedes the index's rows.
 
 ## Required sections and fields, in order
 
@@ -76,13 +68,13 @@ Every row in sections 3–5 MUST carry a `Load when`. The recurring discipline a
 
 ## Copyable template
 
-The copyable skeleton is the kernel template:
+The copyable skeleton is the starter-kit template:
 
 ```text
 starter-kit/.agents/templates/memory/INDEX.md
 ```
 
-That template is the skeleton you copy into a new workspace (it installs to `.swarm/memory/INDEX.md`); **this page is its contract** — what each section and field means and the rules the skeleton must be filled out to satisfy. Copy the template, then populate it under the load-when discipline above: one row per durable artifact, each with the trigger that surfaces it, and remove any row that cannot name when it matters.
+That template is the skeleton you copy into a new project (it installs as the recall map's `INDEX.md`); **this page is its contract** — what each section and field means and the rules the skeleton must be filled out to satisfy. Copy the template, then populate it under the load-when discipline above: one row per durable artifact, each with the trigger that surfaces it, and remove any row that cannot name when it matters.
 
 ## Related
 
