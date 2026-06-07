@@ -102,6 +102,9 @@ Treated as the kernel treats its own non-peer-reviewed sources: usable to *illus
 <a id="ACTIVATION-BLOG"></a>
 **[ACTIVATION-BLOG] Why Claude Code Skills Don't Activate — And How to Fix It.** Seleznov, Medium, 2026. A self-published 650-trial measurement reporting directive descriptions activating far more reliably than passive ones (the "OR ≈ 20.6 / 100% activation" figures). **Non-peer-reviewed; the specific numbers are NOT load-bearing.** The *direction* (directive, exclusion-bearing descriptions help) is used only as illustration; the kernel's primary mechanism is "load what the task names" (§26.4), with description-match as the fallback.
 
+<a id="DORA2025"></a>
+**[DORA2025] DORA 2025 — State of AI-assisted Software Development.** Google Cloud / DevOps Research and Assessment, 2025. *Venue + framing web-verified (June 2026, dora.dev/research/2025); the percentages are the report's own self-reported figures (the public landing pages don't expose them for re-fetch — figures corroborated via the report body in earlier multi-source verification).* **~90%** of technology professionals use AI at work and **>80%** report it improved their productivity (self-reported, not measured); the report's thesis is that **AI is an "amplifier"** of an organization's existing strengths and weaknesses — higher adoption is associated with **both increased delivery throughput and increased instability** absent strong control / internal-platform systems. **Tier: vendor/industry report, correlational, self-reported — never a `MUST`.** Grounds (illustrative): agent adoption raises instability *unless* a verification/control layer exists — the gap Swarm's merge gate fills; pairs with [METR]'s perception-vs-reality gap.
+
 ### Preprints — web-verified arXiv (finding confirmed; cite as preliminary, never a `MUST`)
 
 A web-verified arXiv preprint is stronger than a blog post but is **not peer-reviewed**: it may *corroborate* or *illustrate* a direction, never carry a `MUST`. Each finding below was confirmed against the source (June 2026).
@@ -153,6 +156,26 @@ A web-verified arXiv preprint is stronger than a blog post but is **not peer-rev
 
 <a id="HILBENCH"></a>
 **[HILBENCH] HiL-Bench: Do Agents Know When to Ask for Help?** **arXiv:2604.09408** (preprint; not yet peer-reviewed). *Verified (June 2026).* Frontier agents solve up to ~89% of SWE/SQL tasks with full info, but on messy/ambiguous specs the best model drops to **~24% even when given a tool to ask for help**. Grounds: agents don't reliably self-clarify → clarify-before-lower (the CLARIFY-gate rationale).
+
+> *The six entries below were sourced from an LLM-generated brief whose footnote **numbering** was scrambled (the wrong footnote pointed at each id). Each id was re-fetched and resolves to the **named** paper with a matching venue + finding — so the ids below are the corrected mapping, not the brief's.*
+
+<a id="TERMBENCH"></a>
+**[TERMBENCH] Terminal-Bench: Benchmarking Agents on Hard, Realistic Tasks in Command Line Interfaces.** Merrill et al. **arXiv:2601.11868** (preprint). *Verified (June 2026, direct fetch).* 89 curated hard terminal tasks with human solutions + verification tests; **frontier models/agents score < 65%**. Grounds: agent performance is a *systems* problem, not model-only — the harness/verification layer is where reliability is won (the `verify`/`review` rationale).
+
+<a id="HAL"></a>
+**[HAL] Holistic Agent Leaderboard: The Missing Infrastructure for AI Agent Evaluation.** Kapoor, Stroebl, … Narayanan (Princeton et al.). **arXiv:2510.11977** (preprint). *Verified (June 2026, direct fetch).* A standardized evaluation harness cut evaluation time weeks→hours; **21,730 agent rollouts** analyzed; LLM-aided inspection surfaced previously-unreported failure behaviours. Grounds: a standardized harness + trace inspection (the trace / review / ledger discipline) materially improves agent evaluation.
+
+<a id="HARNESSBENCH"></a>
+**[HARNESSBENCH] Harness-Bench: Measuring Harness Effects across Models in Realistic Agent Workflows.** Yao et al. **arXiv:2605.27922** (preprint). *Verified (June 2026, direct fetch + search).* 106 sandboxed tasks, 5,194 trajectories; configuration-level harness choice produced a **23.8-point** aggregate gap (best configurable harness 76.2 vs worst 52.4) on the same task set + model-backend pool. Grounds: the *harness/system* matters as much as the model — Swarm's leverage is the system layer (specs, verification, trace), not the model.
+
+<a id="AHE"></a>
+**[AHE] Agentic Harness Engineering: Observability-Driven Automatic Evolution of Coding-Agent Harnesses.** Lin et al. **arXiv:2604.25850** (preprint). *Verified (June 2026, direct fetch).* Lifted Terminal-Bench 2 pass@1 **69.7% → 77.0%** over ten iterations; the gains came from **tools, middleware, and long-term memory — not the system prompt**. Grounds: invest in structured persistence (memory, traces, adapters) over prompt cleverness.
+
+<a id="ORCHID"></a>
+**[ORCHID] Assessing the Impact of Requirement Ambiguity on LLM-based Function-Level Code Generation (Orchid).** Yang et al. **arXiv:2604.21505** (preprint). *Verified (June 2026, direct fetch).* 1,304 function-level tasks across four ambiguity types: ambiguity **consistently degrades** generation (worst on the most advanced models); LLMs produce **functionally divergent** implementations from the same ambiguous requirement; and **models cannot reliably identify or resolve ambiguity on their own**. Grounds: SOL/EARS structured obligations + the prose-smell lint (vague terms, missing verification, ambiguous refs) reduce exactly the ambiguity models can't self-fix. Reinforces [SMELLS].
+
+<a id="METR"></a>
+**[METR] Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity.** Becker, Rush, Barnes, Rein (METR). **arXiv:2507.09089** (preprint). *Verified (June 2026, direct fetch).* RCT, 16 experienced OSS devs, 246 tasks: allowing early-2025 AI **increased completion time ~19%**, even though devs expected a 24% speedup and *believed afterward* they were 20% faster (experts predicted 38–39% faster). Grounds: **perceived ≠ measured** — a self-reported "done"/"faster" is not evidence; a machine-checkable verdict is. (Scope: experienced devs on mature repos, n=16.)
 
 ## Rejected — DO NOT CITE (fabricated / misattributed / unconfirmed)
 

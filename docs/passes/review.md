@@ -18,6 +18,27 @@ The `review` step **renders the merge-gate judgment**: it compares trace claims 
 | Default proof suite for the `review` task kind | `manual @ REVIEW` over the recorded evidence; re-run of the bound `cmd*` proofs |
 | Lint layer | `SOL-V` (VERIFICATION) — well-formedness of verdicts (see [`lint`](lint.md)) |
 
+## Review as exception-handling
+
+The reason the gate is worth rendering: it turns review from *reading every line of a large agent diff* into
+*inspecting the exceptions*. The reviewer is handed a **review packet** — the spec's obligations, the trace's
+claimed actions, the diff under review, the recorded checks, the open risks, and a promotion recommendation —
+and reads only what the structure flags. Concretely, the **human-attention list** is:
+
+- **Failed or unverified obligations** — every `VERDICT` that is not `PASS`/`WAIVED` (`FAIL`, `BLOCKED`,
+  `UNVERIFIED`, or a `STALE`/`CONTRADICTED` decorator): the obligations the change did not demonstrably satisfy.
+- **Unauthorized changes** — edits not traceable to an in-scope obligation, recorded in `review.md`'s
+  `## Unauthorized changes` table and judged allowed / suspect / reject.
+- **High-risk surfaces** — obligations carrying `RISK high`/`critical`, which the model-judge discipline below
+  already escalates to an independent second judge.
+- **Promotion decisions** — the durable discoveries queued in `review.md`'s `## Promotion queue` (resolved by
+  [`promote`](promote.md)).
+
+Everything else — obligations carrying a passing, non-stale verdict bound to a proof that actually ran — needs
+no line-by-line reading; the gate has already accounted for it. This section only says what a reviewer
+*looks at*; **how** the gate decides is the predicate below, and waiver mechanics stay defined in
+[`verify`](verify.md) — neither is restated here.
+
 ## The verdicts it records
 
 `review` records **verdicts** in the seven-value model defined once in [`verify`](verify.md): a verdict carries **exactly one CORE value** (`PASS` / `FAIL` / `BLOCKED` / `UNVERIFIED`) and **zero or more LIFECYCLE decorators** (`WAIVED` / `STALE` / `CONTRADICTED`). The value meanings, the decoration rules (`WAIVED` only on `FAIL`/`UNVERIFIED`, `STALE` only on a prior `PASS`, `CONTRADICTED` on any core), and the well-formedness lint (`SOL-V005`/`V007`/`V008`) all live in [`verify`](verify.md); `review` applies them.

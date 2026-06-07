@@ -58,6 +58,14 @@ A conformant `spec.swarm.md` MUST carry the following sections in exactly this o
 | 11 | `## Downstream tasks` | Which task frames cover which obligations. | Table: Task → Covers. |
 | 12 | `## Distillation loss statement` | What survived distillation into this spec, and what did not. | Three subsections: `### Preserved`, `### Dropped`, `### Still uncertain`. |
 
+**Optional sections.** A spec MAY include **`## Source inputs`** immediately after `## Context` (before
+`## Interfaces`): a provenance table naming the upstream artifacts this spec normalizes — columns
+**source · class · contribution · must-preserve**, where `class` is one of the recognized source classes
+([README §3](./README.md)). It is **optional** (its absence is never a defect) and **tool-agnostic** — an
+upstream ticket, PRD, RFC, or doc appears only as a plain link row, never through a connector. When present it
+MUST occupy that position; the required-section order checked by `SOL-S012` is otherwise unchanged (an extra
+recognized optional section at its defined position is not a defect).
+
 ### Frontmatter contract
 
 The required frontmatter set is fixed; the rest is optional:

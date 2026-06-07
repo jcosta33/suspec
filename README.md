@@ -5,6 +5,10 @@ controlled Markdown; agents read it, implement it, and prove they met it. The **
 source of truth**, the way OpenAPI, Terraform, and Kubernetes treat a declared `spec` as authoritative and
 reconcile reality against it.
 
+Put another way, it is a **structured specification & review system**: the same structure that lets an agent
+build reliably lets a reviewer check the result by **exception** — the failed or unverified obligations and
+unauthorized changes — instead of re-reading the whole diff.
+
 This repository is **markdown only**. Nothing here runs: every "tool" Swarm describes — a linter, a planner,
 a checker, a CLI — is a *contract a future tool could build against*, never code this repo ships.
 
