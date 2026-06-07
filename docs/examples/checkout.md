@@ -1,6 +1,6 @@
 # Walkthrough: `checkout` — what differs from `auth-refresh`
 
-> A second positive run through all nine Swarm passes — author, lint, improve, lower, decompose, implement, verify, review, promote — for a cart-submission spec. The eight-stage skeleton, the no-runtime framing, and the stage-by-stage mechanics are identical to [`auth-refresh`](./auth-refresh.md); read that page first for the full walkthrough. This page spells out **only what `checkout` teaches that `auth-refresh` does not**: a single obligation that **bundles** three separable responsibilities, and two obligations that **share a write surface** while planned to run in parallel.
+> A second positive run through all nine Swarm steps — author, lint, improve, lower, decompose, implement, verify, review, promote — for a cart-submission spec. The eight-stage skeleton, the no-runtime framing, and the stage-by-stage mechanics are identical to [`auth-refresh`](./auth-refresh.md); read that page first for the full walkthrough. This page spells out **only what `checkout` teaches that `auth-refresh` does not**: a single obligation that **bundles** three separable responsibilities, and two obligations that **share a write surface** while planned to run in parallel.
 
 ## What this case teaches
 
@@ -11,7 +11,7 @@
 
 An open (non-`[blocking]`) `QUESTION` `Q-010` rides alongside — whether the order and inventory writes belong in one transaction or two. Unlike `auth-refresh`'s `[blocking]` `Q-001`, a non-blocking question raises no `SOL-O003` risk and does not gate `lower`; it is recorded as a deferred choice and resolved out of band at `improve`.
 
-Everything else — the three version fields in the frontmatter, the SARIF-shaped `SOL-<LAYER><NNN>` diagnostics, the semantics-preserving `improve` ops, the `snake_case` IR projection, the `UNVERIFIED` default and `null` `compiler_version`, the trace provenance table's seven fields, the per-obligation `VERDICT` model, and the indexed `finding` — works exactly as the `auth-refresh` page describes.
+Everything else — the three version fields in the frontmatter, the SARIF-shaped `SOL-<LAYER><NNN>` diagnostics, the semantics-preserving `improve` ops, the `snake_case` structured-form projection, the `UNVERIFIED` default and `null` `compiler_version`, the trace provenance table's seven fields, the per-obligation `VERDICT` model, and the indexed `finding` — works exactly as the `auth-refresh` page describes.
 
 ## The authored spec (Stage 1)
 
@@ -106,11 +106,11 @@ RISK medium
 
 (`AC-011` and `I-010` are unchanged from Stage 1.) With both blocking diagnostics resolved and `Q-010` closed, the spec is ready to lower.
 
-## What the IR and the plan show (Stages 4–5)
+## What the structured form and the plan show (Stages 4–5)
 
-In the IR, the atomized `AC-010`/`AC-013`/`AC-014` are three independent nodes with their own predicates and proof bindings — the bundle is gone entirely. The load-bearing edges are: three `depends_on` edges from the atoms to `IF-010`; one serializing `depends_on` edge `AC-012 → AC-011` (the `SCOPE` op's `DEPENDS ON`); and one `affects` edge `AC-013 → I-010` recording that the charge obligation touches the at-most-once invariant (`AC-011`, `AC-014`, `AC-010` do not touch the capture path, so they carry no edge to `I-010`).
+In the structured form, the atomized `AC-010`/`AC-013`/`AC-014` are three independent nodes with their own predicates and proof bindings — the bundle is gone entirely. The load-bearing edges are: three `depends_on` edges from the atoms to `IF-010`; one serializing `depends_on` edge `AC-012 → AC-011` (the `SCOPE` op's `DEPENDS ON`); and one `affects` edge `AC-013 → I-010` recording that the charge obligation touches the at-most-once invariant (`AC-011`, `AC-014`, `AC-010` do not touch the capture path, so they carry no edge to `I-010`).
 
-`decompose` is the stage that would have **halted** on the authored spec: the safe-parallelism predicate requires any two parallel packets have pairwise-disjoint write surfaces, and the original `AC-011`/`AC-012` shared `db/orders`. The cleared IR decomposes into two packets:
+`decompose` is the stage that would have **halted** on the authored spec: the safe-parallelism predicate requires any two parallel packets have pairwise-disjoint write surfaces, and the original `AC-011`/`AC-012` shared `db/orders`. The cleared structured form decomposes into two packets:
 
 - **`checkout-submit`** owns `api/src/checkout/submit.ts` + `db/orders`, covering `AC-010`, `AC-013`, `AC-014`, `AC-011`, preserving `I-010`. Its `source` is `specs/checkout.swarm.md`.
 - **`checkout-inventory`** owns the disjoint surface `db/inventory`, covers `AC-012`, and carries `blocked_by: [checkout-submit]` (the lowered form of the `AC-012 DEPENDS ON AC-011` edge). Its single binding is `test:cmdTest:api/tests/inventory.spec.ts#writes-ledger`.
@@ -202,12 +202,12 @@ The finding is indexed in memory by a single `MAP` line carrying a "Load when" c
   — Load when: implementing or reviewing a checkout/payment path that charges then persists.
 ```
 
-That closes the loop: a draft spec with one bundled obligation, a parallel write-surface conflict, and an open question became a normalized, atomized spec, a typed IR with an explicit dependency chain, a write-disjoint and serialized pair of work packets, an implemented and traced change, a reviewed merge that confirmed the partition holds, and a promoted finding that future work on this surface will load on demand.
+That closes the loop: a draft spec with one bundled obligation, a parallel write-surface conflict, and an open question became a normalized, atomized spec, a typed structured form with an explicit dependency chain, a write-disjoint and serialized pair of work packets, an implemented and traced change, a reviewed merge that confirmed the partition holds, and a promoted finding that future work on this surface will load on demand.
 
 ## Related
 
 - [Walkthrough: `auth-refresh`](./auth-refresh.md) — the full eight-stage walkthrough this page is a delta against; the canonical single-packet positive run.
 - [Walkthrough: `payment-5xx`](./payment-5xx.md) — the contradiction case: a production `monitor` proof disagrees with a green harness test at the merge gate.
 - [Golden corpus](../reference/golden-corpus.md) — `checkout` is the positive (`must-compile`) fixture this walkthrough draws from; the authored source trips `SOL-P004` (bundled obligation) and `SOL-O001` (parallel write-surface conflict).
-- Pass references, in pipeline order: [`author`](../passes/author.md), [`lint`](../passes/lint.md), [`improve`](../passes/improve.md), [`lower`](../passes/lower.md), [`decompose`](../passes/decompose.md), [`implement`](../passes/implement.md), [`verify`](../passes/verify.md), [`review`](../passes/review.md), [`promote`](../passes/promote.md)
+- Step references, in flow order: [`author`](../passes/author.md), [`lint`](../passes/lint.md), [`improve`](../passes/improve.md), [`lower`](../passes/lower.md), [`decompose`](../passes/decompose.md), [`implement`](../passes/implement.md), [`verify`](../passes/verify.md), [`review`](../passes/review.md), [`promote`](../passes/promote.md)
 - Artifact references for each stage's output: [`spec`](../artifacts/spec.md), [`task`](../artifacts/task.md), [`trace`](../artifacts/trace.md), [`review`](../artifacts/review.md), [`finding`](../artifacts/finding.md), [`memory`](../artifacts/memory.md)

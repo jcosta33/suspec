@@ -1,14 +1,14 @@
-# The `promote` pass
+# The `promote` step
 
-> Swarm's reference for the `promote` pass: the memory model, the promotion protocol, the seven-value promotion-status enum, the discovery-to-target routing table, and validation & rollback.
+> Swarm's reference for the `promote` step: the memory model, the promotion protocol, the seven-value promotion-status enum, the discovery-to-target routing table, and validation & rollback.
 
-`promote` is the last of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This page is the reference for that single pass.
+`promote` is the last of the **nine steps** of the Swarm flow (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This page is the reference for that single step.
 
-Like every Swarm pass, `promote` has **no runtime** ([Principle 1: NO RUNTIME](../PRINCIPLES.md#1-no-runtime)): it is a contract a human, an agent following a pass guide, or a future tool performs. Swarm ships the *files and the discipline* a retrieval/promotion tool would build against — not a retrieval engine, validation scorer, or eviction manager. Nothing here is shipped code.
+Like every Swarm step, `promote` has **no runtime** ([Principle 1: NO RUNTIME](../PRINCIPLES.md#1-no-runtime)): it is a contract a human, an agent following a step guide, or a future tool performs. Swarm ships the *files and the discipline* a retrieval/promotion tool would build against — not a retrieval engine, validation scorer, or eviction manager. Nothing here is shipped code.
 
-## What the pass does
+## What the step does
 
-A discovery made during a task does **not** become memory by being written down; it becomes memory by being **promoted**. The `promote` pass is the durable feedback loop: it takes each discovery a task surfaced, routes it to a durable target, indexes it, and records its disposition — so a future task can recall it without bloating the always-loaded bootloader.
+A discovery made during a task does **not** become memory by being written down; it becomes memory by being **promoted**. The `promote` step is the durable feedback loop: it takes each discovery a task surfaced, routes it to a durable target, indexes it, and records its disposition — so a future task can recall it without bloating the always-loaded bootloader.
 
 The model is **two-tier and provenance-anchored**. Rationale: chat transcripts and inline prose are not memory — they are unindexed, unprovenanced, and unfalsifiable. Memory MUST be a *promotion system* (a fact earns durability through a recorded promotion) backed by an *immutable evidence store*, with a compact index over it.
 
@@ -18,7 +18,7 @@ The model is **two-tier and provenance-anchored**. Rationale: chat transcripts a
 | Input | the task's discoveries + the resolved-or-pending promotion queue |
 | Output | durable writes to `.agents/memory/` and the durable source artifacts under `.agents/` (plus the `AGENTS.md` pointer case) and a fully-resolved promotion queue |
 | Close gate | a task MUST NOT close while any promotion item is `pending` |
-| Ships a pass guide? | **Yes** — `promote` ships a dedicated pass guide, as do all six analysis passes (`lint`/`improve`/`lower`/`decompose`/`review`/`promote`); `implement` is served by the nine per-`task_kind` guides, `author` by the six author guides, and `verify` by the `empirical-proof` fragment ([ADR-0042](../adrs/0042-skill-carrier-and-standalone-conditioning.md)/[0051](../adrs/0051-complete-the-spec-repo-pivot.md)) |
+| Ships a step guide? | **Yes** — `promote` ships a dedicated step guide, as do all six analysis steps (`lint`/`improve`/`lower`/`decompose`/`review`/`promote`); `implement` is served by the nine per-`task_kind` guides, `author` by the six author guides, and `verify` by the `empirical-proof` fragment ([ADR-0042](../adrs/0042-skill-carrier-and-standalone-conditioning.md)/[0051](../adrs/0051-complete-the-spec-repo-pivot.md)) |
 
 ## The two-tier memory model
 
@@ -53,7 +53,7 @@ Every finding that reaches `accepted` or `promoted` MUST carry the full provenan
 | `evidence` | The file/command/output/source grounding the claim |
 | `origin_obligations[]` | The obligation IDs (`AC-/C-/I-…`) the finding was discovered against |
 | `origin_traces[]` | The `*.swarm.trace.md` entries that produced the evidence |
-| `pass+profile` | The pass + heuristic profile it was found under (e.g. `review[profile: skeptic]`) |
+| `pass+profile` | The step + heuristic profile it was found under (e.g. `review[profile: skeptic]`) |
 | `reviewer_or_tool` | The human reviewer or tool/adapter that confirmed it |
 | `timestamp` | When it was promoted |
 | `content_hash` | Hash of the cited source/surfaces at promotion time (drives staleness) |
@@ -76,7 +76,7 @@ Every promotion item raised during a task MUST resolve to one of these **seven**
 
 **Close gate (normative).** A task MUST NOT close while any promotion item is `pending`. A `promoted` finding MUST appear in `memory/INDEX.md` with a `Load when` and carry full provenance.
 
-**Authority floor (normative).** A promotion that would *weaken* an existing obligation is forbidden at any target — it is a `SOL-M004` authority-conflict routed to amendment, because `memory` is the floor domain on the authority axis. Re-stating a finding as a spec obligation via this pass is a **domain-promotion**: the obligation acquires its *new container's* authority — that is intent acquiring rank, not the `memory` floor being breached.
+**Authority floor (normative).** A promotion that would *weaken* an existing obligation is forbidden at any target — it is a `SOL-M004` authority-conflict routed to amendment, because `memory` is the floor domain on the authority axis. Re-stating a finding as a spec obligation via this step is a **domain-promotion**: the obligation acquires its *new container's* authority — that is intent acquiring rank, not the `memory` floor being breached.
 
 ## Discovery-to-promotion-target routing
 
@@ -91,28 +91,28 @@ The kinds are mutually exclusive by intent; a discovery with two faces (e.g. bot
 | Reusable project fact (durable evidenced claim) | A finding (a `type: finding` doc under `.agents/`, `<slug>.md`), indexed in `memory/INDEX.md` with `Load when` + full provenance |
 | Repeated cross-task pattern (recurring solution shape across >1 task) | `memory/patterns/*.md` |
 | Terminology clarification (ambiguous/drifted term) | `memory/glossary.md` (resolves `SOL-P006` undefined-term / `SOL-P057` terminology-drift at the source) |
-| Universal workflow rule (a procedure for every future task) | A **pass-guide edit (the procedure) PLUS at most a one-line `AGENTS.md` pointer** — never inline procedure in `AGENTS.md` (the G9 tie-break) |
+| Universal workflow rule (a procedure for every future task) | A **step-guide edit (the procedure) PLUS at most a one-line `AGENTS.md` pointer** — never inline procedure in `AGENTS.md` (the G9 tie-break) |
 | Purely local execution detail (relevant only to this run) | Keep in the task only (`task.md`); dispositioned **`rejected`** with reason "execution-local" |
 
 Two consequences hold across every row. First, weakening an obligation is forbidden at any target (the `SOL-M004` floor above). Second, **"keep in the task only" is a real disposition, not an omission**: the item is still recorded in the queue and resolved (`rejected`, with reason), so the mandatory-before-close rule admits no silent drops.
 
 ### G9 — "universal workflow rule" promotions never inline procedure
 
-A universal-workflow-rule promotion collides with the ≤200-line bootloader cap and the fact/procedure split [ADR-0017](../adrs/0017-no-always-load-skills.md): only persistent **facts** belong in `AGENTS.md`; **procedures** belong in pass guides. Swarm resolves it normatively:
+A universal-workflow-rule promotion collides with the ≤200-line bootloader cap and the fact/procedure split [ADR-0017](../adrs/0017-no-always-load-skills.md): only persistent **facts** belong in `AGENTS.md`; **procedures** belong in step guides. Swarm resolves it normatively:
 
 | Where it goes | What goes there |
 |---|---|
-| Pass guide (`docs/library/pass-guides.md`) | The actual procedure / steps |
+| Step guide (`docs/library/pass-guides.md`) | The actual procedure / steps |
 | `AGENTS.md` | One line: the pointer + its load-when, nothing procedural |
 
-> Example — promoting "always run the migration dry-run before applying": the dry-run procedure is added to the `implement` pass guide; `AGENTS.md` gains only `- Before applying a migration, load the implement pass guide (migration section).`
+> Example — promoting "always run the migration dry-run before applying": the dry-run procedure is added to the `implement` step guide; `AGENTS.md` gains only `- Before applying a migration, load the implement step guide (migration section).`
 
 ## Validation and rollback (memory governance)
 
 Authorization is not validation. A memory write MUST pass consistency verification before consolidation, not merely owner approval — owner sign-off establishes *who* may write, never *whether the fact holds*. Three failure points motivate the rule: poisoning at ingestion (a bad fact entering the store), semantic drift at consolidation (a fact's meaning bending as it merges with others), and conflict/hallucination at retrieval (a recalled fact contradicting the store or inventing detail). The v0.1 forward-only `pending -> promoted` model addresses none of these, so two additions close the gap:
 
 - **`validated`.** A high-consequence promotion MUST pass `pending -> validated -> promoted`, where `validated` requires **independent corroboration** — a second finding, a re-run proof, or a reviewer who is not the promoting agent (generalizing the two-finding rule for patterns). A `pending` finding from an externally-authored source MUST NOT skip `validated`: this is the untrusted-source boundary — an agent file, rules file, or `AGENTS.md` supplied outside the project is a known prompt-injection / memory-poisoning vector, so its claims cannot be trusted on authorship alone.
-- **`rolled-back`.** A promoted finding later shown poisoned, `CONTRADICTED`, or `STALE` (the verdict decorators the `review` pass attaches) MUST be withdrawable, recording a **retraction entry in `memory/INDEX.md`** — not a silent delete, so the chain stays auditable (immutable-record discipline, the Nygard sense) — and re-opening any obligation it had narrowed. Supersession replaces a fact with a better one; rollback withdraws a fact that should never have been promoted.
+- **`rolled-back`.** A promoted finding later shown poisoned, `CONTRADICTED`, or `STALE` (the verdict decorators the `review` step attaches) MUST be withdrawable, recording a **retraction entry in `memory/INDEX.md`** — not a silent delete, so the chain stays auditable (immutable-record discipline, the Nygard sense) — and re-opening any obligation it had narrowed. Supersession replaces a fact with a better one; rollback withdraws a fact that should never have been promoted.
 
 ## Staleness
 
@@ -122,12 +122,12 @@ A finding's `status` enum is `candidate | accepted | promoted | rejected | stale
 
 Each of these needs a runtime Swarm does not ship: embedding / dense-vector retrieval; LRU (or any automatic) eviction; automatic staleness hashing (fields shipped, comparator deferred); cross-session agent identity; memory dashboards / analytics. v0.1 ships the two-tier file model, the provenance fields, the promotion statuses, and the `Load when` discipline — automation builds against them later.
 
-This page fixes the *requirements* of the pass, not its step-by-step procedure — the spec-vs-procedure boundary. The exact `validated`-corroboration procedure (what counts as a "second finding" vs a "re-run proof" vs an "independent reviewer") is bound here as a requirement; the `promote` stdlib pass guide supplies the recipe. The mechanics of the staleness comparator (recompute, compare, flip) are likewise deferred to a harness/CLI; this page ships only the fields that make them computable.
+This page fixes the *requirements* of the step, not its step-by-step procedure — the spec-vs-procedure boundary. The exact `validated`-corroboration procedure (what counts as a "second finding" vs a "re-run proof" vs an "independent reviewer") is bound here as a requirement; the `promote` stdlib step guide supplies the recipe. The mechanics of the staleness comparator (recompute, compare, flip) are likewise deferred to a harness/CLI; this page ships only the fields that make them computable.
 
 ## Related
 
-- [`review`](review.md) — the pass before `promote`; its verdicts (`CONTRADICTED`, `STALE`) feed the rollback path.
+- [`review`](review.md) — the step before `promote`; its verdicts (`CONTRADICTED`, `STALE`) feed the rollback path.
 - [`verify`](verify.md) — produces the traces and proofs that become a finding's evidence and corroboration.
 - [`implement`](implement.md) — where universal-workflow-rule procedures land under the G9 tie-break.
-- [`author`](author.md) and [`lint`](lint.md) — the start of the pipeline, where promoted intent re-enters as obligations.
-- [SOL](../language/SOL.md) — the lint codes (`SOL-M004`, `SOL-P006`, `SOL-P057`) this pass resolves or routes to amendment.
+- [`author`](author.md) and [`lint`](lint.md) — the start of the flow, where promoted intent re-enters as obligations.
+- [SOL](../language/SOL.md) — the lint codes (`SOL-M004`, `SOL-P006`, `SOL-P057`) this step resolves or routes to amendment.

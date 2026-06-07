@@ -4,12 +4,12 @@
 
 ## What distillation is
 
-Distillation is the deliberate **dropping of detail** that happens whenever information crosses a boundary in the pipeline. It is most acute at two boundaries:
+Distillation is the deliberate **dropping of detail** that happens whenever information crosses a boundary in the flow. It is most acute at two boundaries:
 
-- the **spec → task lowering boundary** (§11), and
-- the **promotion boundary** (§23.4).
+- the **spec → task structuring boundary** (the `lower` step), and
+- the **promotion boundary** (the `promote` step).
 
-The **loss budget** is the discipline governing *what may be dropped* versus *what must survive*. Its purpose is to let lowering and promotion compress aggressively without ever silently losing binding force.
+The **loss budget** is the discipline governing *what may be dropped* versus *what must survive*. Its purpose is to let structuring and promotion compress aggressively without ever silently losing binding force.
 
 The bright line: a distillation that drops an obligation, its modality, or its verification binding has not *compressed* the spec — it has **changed what gets built**. Compression that changes the build is not compression.
 
@@ -27,14 +27,14 @@ At any distillation boundary, the following MAY be abstracted, summarized, or dr
 
 ## What MUST survive every distillation
 
-The following MUST survive intact across **every** boundary. Dropping or weakening any of them is a **distillation error** — a lint diagnostic in the `SOL-V001` / `SOL-M…` family (§8), not a stylistic choice.
+The following MUST survive intact across **every** boundary. Dropping or weakening any of them is a **distillation error** — a lint diagnostic in the `SOL-V001` / `SOL-M…` family, not a stylistic choice.
 
 | Must survive | Why |
 | ------------ | --- |
-| The obligation itself (its ID) | The traceability key (§4); losing it severs backward trace (§22.5). |
-| Its modality (`MUST` / `MUST NOT` / `SHOULD` / …) | Modality *is* the binding force (§4); losing it neutralizes the obligation. |
-| Its verification bindings (`VERIFY BY …`) | An obligation with no proof path is `UNVERIFIED` (§14, §15). |
-| Its authority and scope | The domain/artifact rank (§22) and `WRITES` / `READS` / `AFFECTS` scope (§18). |
+| The obligation itself (its ID) | The traceability key; losing it severs backward trace. |
+| Its modality (`MUST` / `MUST NOT` / `SHOULD` / …) | Modality *is* the binding force; losing it neutralizes the obligation. |
+| Its verification bindings (`VERIFY BY …`) | An obligation with no proof path is `UNVERIFIED`. |
+| Its authority and scope | The domain/artifact rank and `WRITES` / `READS` / `AFFECTS` scope. |
 | Constraints, invariants, non-goals, unresolved `QUESTION`s | These bound the build; dropping a non-goal silently widens scope. |
 
 ## The per-boundary loss matrix
@@ -54,14 +54,14 @@ The two lists above generalize. This matrix is the canonical per-boundary specia
 
 ## The budget is a discipline, not a gatekeeper
 
-The loss budget is **enforced by source authority (§22) plus lint (§8)**. It is not, and MUST NOT be implemented as, a "documentation-gatekeeper" skill or persona.
+The loss budget is **enforced by source authority plus lint**. It is not, and MUST NOT be implemented as, a "documentation-gatekeeper" skill or persona.
 
-Rationale: a gatekeeper is *soft control* — a model deciding whether to allow a passage (§2 / §17), which can be talked past. A lint rule plus an authority comparison are *deterministic checks* against the typed obligation set. Concretely, the budget is caught two ways:
+Rationale: a gatekeeper is *soft control* — a model deciding whether to allow a passage, which can be talked past. A lint rule plus an authority comparison are *deterministic checks* against the typed obligation set. Concretely, the budget is caught two ways:
 
-- **Lint catches it structurally.** A lowered task that omits an obligation ID its source spec declares, or a `VERIFY BY` binding present in the spec but absent in the task, is a `SOL-V001` / `SOL-M…` diagnostic.
-- **Source authority catches it semantically.** A distilled artifact that contradicts its higher-authority source is a `SOL-M004` authority-conflict (§22.2), routed to amendment — the distillation cannot silently win.
+- **Lint catches it structurally.** A structured task that omits an obligation ID its source spec declares, or a `VERIFY BY` binding present in the spec but absent in the task, is a `SOL-V001` / `SOL-M…` diagnostic.
+- **Source authority catches it semantically.** A distilled artifact that contradicts its higher-authority source is a `SOL-M004` authority-conflict, routed to amendment — the distillation cannot silently win.
 
-The human-authored declaration the lint checks against is the **`spec.swarm.md` distillation loss statement** — the `Preserved / Dropped / Still uncertain` section (§21). It records what the author *intends* to be droppable, so the loss is **auditable rather than accidental**.
+The human-authored declaration the lint checks against is the **`spec.swarm.md` distillation loss statement** — the `Preserved / Dropped / Still uncertain` section. It records what the author *intends* to be droppable, so the loss is **auditable rather than accidental**.
 
 ## Forbidden compositions
 
@@ -74,15 +74,15 @@ A **forbidden composition** is the silent mixing of two distinct epistemic stanc
 These compositions are prevented by the **loss budget + source authority**, NOT by a documentation-gatekeeper:
 
 - The **loss budget** forces the crossing to be explicit. An audit *promotes to* a spec through the `audit.md → spec.swarm.md` row of the matrix above, which is an authoring act that re-states observations as obligations with their own IDs, modality, and verification bindings. There is no path by which an audit's prose becomes binding without that re-statement.
-- **Source authority** ranks the stances. An `audit` (Axis A rank 4, observation) cannot silently amend an approved `spec` (rank 2); if it appears to, that is a `SOL-M004` authority-conflict routed to review (§22.2).
+- **Source authority** ranks the stances. An `audit` (Axis A rank 4, observation) cannot silently amend an approved `spec` (rank 2); if it appears to, that is a `SOL-M004` authority-conflict routed to review.
 
 ### Worked example
 
-An `audit.md` notes "the refresh endpoint currently accepts rotated tokens." This is an **observation**, not intent. To affect the build it must promote into `spec.swarm.md` as a re-stated obligation (`CONSTRAINT C-014`, §22.3) carrying modality and `VERIFY BY`. The audit prose alone has Axis-A rank 4 and `audit` / `security` domain; it never silently overwrites the product spec — the §22 conflict procedure governs, and the loss budget forces the explicit re-statement. The epistemic stance is preserved end-to-end: an observation stays labeled an observation until an author deliberately turns it into intent.
+An `audit.md` notes "the refresh endpoint currently accepts rotated tokens." This is an **observation**, not intent. To affect the build it must promote into `spec.swarm.md` as a re-stated obligation (`CONSTRAINT C-014`) carrying modality and `VERIFY BY`. The audit prose alone has Axis-A rank 4 and `audit` / `security` domain; it never silently overwrites the product spec — the source-authority conflict procedure governs, and the loss budget forces the explicit re-statement. The epistemic stance is preserved end-to-end: an observation stays labeled an observation until an author deliberately turns it into intent.
 
-## Conformance note
+## Validity note
 
-A conformant repo's distillation-loss-budget reference (this document, per §20) MUST state both lists (the MAY-drop list and the MUST-survive list), the per-boundary matrix, the discipline-not-gatekeeper rule, and the forbidden-composition treatment.
+A valid repo's distillation-loss-budget reference (this document) MUST state both lists (the MAY-drop list and the MUST-survive list), the per-boundary matrix, the discipline-not-gatekeeper rule, and the forbidden-composition treatment.
 
 ## Related
 

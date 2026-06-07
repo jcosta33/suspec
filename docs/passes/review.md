@@ -1,14 +1,14 @@
-# The `review` pass
+# The `review` step
 
-> Swarm's reference for the `review` pass: the merge gate, the seven-value verdict vocabulary, the `CONTRADICTED` resolution protocol, the model-judge discipline, the untrusted-source boundary, and the `review.md` verdict record.
+> Swarm's reference for the `review` step: the merge gate, the seven-value verdict vocabulary, the `CONTRADICTED` resolution protocol, the model-judge discipline, the untrusted-source boundary, and the `review.md` verdict record.
 
-`review` is the eighth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This page is the reference for that single pass.
+`review` is the eighth of the **nine steps** of the Swarm flow (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). This page is the reference for that single step.
 
-Like every Swarm pass, `review` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. Nothing here is shipped code (Principle 1: no runtime). Every "gate", "check", or "enforcement" named below is **manual today** — a deterministic home a future harness MUST provide, never a thing Swarm runs.
+Like every Swarm step, `review` has **no runtime**: it is a contract a human, an agent following a step guide, or a future tool performs. Nothing here is shipped code (Principle 1: no runtime). Every "gate", "check", or "enforcement" named below is **manual today** — a deterministic home a future harness MUST provide, never a thing Swarm runs.
 
-## What the pass does
+## What the step does
 
-The `review` pass **renders the merge-gate judgment**: it compares trace claims against the obligations they purport to satisfy, records one `VERDICT` per required proof binding, and decides — for the whole change set — whether promotion is permitted. Its single durable artifact is `review.md`, and **that artifact *is* the verdict record**. Swarm ships **no** `verdict.md`; a repo that records verdicts in a standalone `verdict.md` is non-conformant.
+The `review` step **renders the merge-gate judgment**: it compares trace claims against the obligations they purport to satisfy, records one `VERDICT` per required proof binding, and decides — for the whole change set — whether promotion is permitted. Its single durable artifact is `review.md`, and **that artifact *is* the verdict record**. Swarm ships **no** `verdict.md`; a repo that records verdicts in a standalone `verdict.md` is invalid.
 
 | Aspect | Value |
 |---|---|
@@ -30,11 +30,11 @@ The **merge gate** is the single normative predicate `review` exists to render. 
 
 > **Merge gate (normative).** A change set MAY be promoted **if and only if**, for **every required `VERIFY BY` binding** of every required obligation, the binding's latest verdict is `PASS` or `WAIVED`, **and none** is `STALE`, `CONTRADICTED`, `FAIL`, `BLOCKED`, or `UNVERIFIED`. "Latest" is the verdict from the most recent recorded run.
 
-There is **one `VERDICT` per required binding** — an obligation with three required bindings contributes three, and *all* must pass-or-waive; the node-level `status` is the aggregate (blocking if any binding blocks, else `PASS`). The per-value disposition under the gate is the table in [`verify`](verify.md). A conformant repo MUST NOT promote while any required binding is in a blocking disposition; the gate is **manual today**, with a deterministic home (CI, a PreToolUse hook, a merge-blocking status) when a harness exists. A `WAIVED` verdict passes **only while its waiver is live**: it auto-expires on the next source-hash change of the waived obligation and reverts to its underlying `FAIL`/`UNVERIFIED` — there are **no permanent waivers**.
+There is **one `VERDICT` per required binding** — an obligation with three required bindings contributes three, and *all* must pass-or-waive; the node-level `status` is the aggregate (blocking if any binding blocks, else `PASS`). The per-value disposition under the gate is the table in [`verify`](verify.md). A valid repo MUST NOT promote while any required binding is in a blocking disposition; the gate is **manual today**, with a deterministic home (CI, a PreToolUse hook, a merge-blocking status) when a harness exists. A `WAIVED` verdict passes **only while its waiver is live**: it auto-expires on the next source-hash change of the waived obligation and reverts to its underlying `FAIL`/`UNVERIFIED` — there are **no permanent waivers**.
 
 ## Resolving a `CONTRADICTED` verdict
 
-`CONTRADICTED` arises when two proofs disagree, or when a `TRACE`/code disagrees with the obligation. The `review` pass owns its resolution, which is normative:
+`CONTRADICTED` arises when two proofs disagree, or when a `TRACE`/code disagrees with the obligation. The `review` step owns its resolution, which is normative:
 
 1. **Block at the merge gate.** A `CONTRADICTED` on any required obligation blocks promotion. Contradiction is never resolved by picking the more convenient result.
 2. **Route to review.** The reviewer MUST record **both** conflicting evidence refs (the two `EVIDENCE` lines required by `SOL-V005`).
@@ -71,7 +71,7 @@ Every artifact `review` reads is agent-readable markdown, which is also an attac
 
 ## The `review.md` artifact
 
-`review.md` IS the verdict record — the canonical container of `VERDICT` blocks. A conformant `review.md` MUST contain:
+`review.md` IS the verdict record — the canonical container of `VERDICT` blocks. A valid `review.md` MUST contain:
 
 | Section | Meaning |
 |---|---|
@@ -84,16 +84,16 @@ Every artifact `review` reads is agent-readable markdown, which is also an attac
 | `## Final verdict` | The merge-gate result at the change-set level (PASS / BLOCKED). |
 | `## Promotion queue` | Items to promote, with target + status. |
 
-Three lint floors the reviewer enforces by hand or via the [`lint`](lint.md) pass today (`SOL-V` layer): a non-`PASS/FAIL/BLOCKED/UNVERIFIED` core or a lifecycle missing its mandatory fields is `SOL-V005` (BLOCKING); a misplaced `WAIVED`/`STALE` is `SOL-V007` (BLOCKING); a required obligation with no `VERDICT` at the gate is `SOL-V008` (BLOCKING, and counts as `UNVERIFIED`). A `WAIVED` MUST name authority + reason + expiry; a `STALE` MUST cite the prior-verdict ref + changed surface; a `CONTRADICTED` MUST cite the two conflicting evidence refs.
+Three lint floors the reviewer enforces by hand or via the [`lint`](lint.md) step today (`SOL-V` layer): a non-`PASS/FAIL/BLOCKED/UNVERIFIED` core or a lifecycle missing its mandatory fields is `SOL-V005` (BLOCKING); a misplaced `WAIVED`/`STALE` is `SOL-V007` (BLOCKING); a required obligation with no `VERDICT` at the gate is `SOL-V008` (BLOCKING, and counts as `UNVERIFIED`). A `WAIVED` MUST name authority + reason + expiry; a `STALE` MUST cite the prior-verdict ref + changed surface; a `CONTRADICTED` MUST cite the two conflicting evidence refs.
 
 What `review` MUST reject as a non-proof (never `PASS`): schema-valid output (shape is not truth), "tests passed" with no command/exit-code/output, and a `manual` verdict with no recorded reasoning [[REFLEXION]](../research/sources.md#REFLEXION). Rewarding grounded attribution and refusing when unsupported is what measurably raises trustworthiness — plain prompting does not [[TRUSTALIGN]](../research/sources.md#TRUSTALIGN); an unsupported claim is withheld, not emitted.
 
 ## Related
 
-- [The `verify` pass](verify.md) — the seven-value verdict model, the closed proof taxonomy, `VERIFY BY` binding, oracle adequacy, the proof-strength order, and the soft/hard control boundary the gate consumes.
-- [The `implement` pass](implement.md) — produces the `trace.md` claims that are the input to judgment.
-- [The `promote` pass](promote.md) — what happens after the gate passes: the memory model, the promotion protocol, and the promotion-status enum.
-- [The `lint` pass](lint.md) — the `SOL-V` / `SOL-S` / `SOL-M` lint floors the reviewer enforces (`SOL-V005`/`V007`/`V008`, `SOL-S013`, `SOL-M002`).
+- [The `verify` step](verify.md) — the seven-value verdict model, the closed proof taxonomy, `VERIFY BY` binding, oracle adequacy, the proof-strength order, and the soft/hard control boundary the gate consumes.
+- [The `implement` step](implement.md) — produces the `trace.md` claims that are the input to judgment.
+- [The `promote` step](promote.md) — what happens after the gate passes: the memory model, the promotion protocol, and the promotion-status enum.
+- [The `lint` step](lint.md) — the `SOL-V` / `SOL-S` / `SOL-M` lint floors the reviewer enforces (`SOL-V005`/`V007`/`V008`, `SOL-S013`, `SOL-M002`).
 - [The `review.md` artifact](../artifacts/review.md) — the full artifact contract and template body for the verdict record.
 - [The `trace.md` artifact](../artifacts/trace.md) — the implementation-claim input that `review` judges, including the trace-provenance and `judge` adjunct records.
 - [SOL diagnostics](../language/SOL.md) and [the errors reference](../language/errors.md) — the `SOL-V`, `SOL-S013`, and `SOL-M002` codes the reviewer enforces.

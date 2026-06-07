@@ -1,6 +1,6 @@
 # `adr.md` — the immutable decision record
 
-An `adr.md` is a single architecture decision recorded in Nygard form — context, decision, consequences, status — that, once accepted, is **never edited in place**: it is amended only by writing a new, superseding ADR. In the obligation graph it is the highest-authority **parent** of a spec: an accepted decision constrains what later specs may obligate, and it governs as the strongest recorded intent when two artifacts assert overlapping content.
+An `adr.md` is a single architecture decision recorded in Nygard form — context, decision, consequences, status — that, once accepted, is **never edited in place**: it is amended only by writing a new, superseding ADR. Among the obligations it is the highest-authority **parent** of a spec: an accepted decision constrains what later specs may obligate, and it governs as the strongest recorded intent when two artifacts assert overlapping content.
 
 ## Purpose & epistemic stance
 
@@ -15,7 +15,7 @@ What an ADR MUST do:
 What an ADR MUST NOT do:
 
 - It **MUST NOT be edited in place once accepted.** The body of an accepted ADR is immutable. "Amending" a decision means publishing a *new* superseding ADR, not rewriting the old one. (See *Nygard immutability* below.)
-- It **MUST NOT carry its own SOL obligation blocks** (`REQ`/`CONSTRAINT`/`INVARIANT`). An ADR is a decision, not a behavioral contract. A decision acquires obligation force only when an `author` pass promotes it *into* a `spec.swarm.md`, where the chosen constraints become real obligations. An ADR that smuggles obligation blocks into itself is a distillation error — it is asserting spec-level authority from a decision-level artifact.
+- It **MUST NOT carry its own SOL obligation blocks** (`REQ`/`CONSTRAINT`/`INVARIANT`). An ADR is a decision, not a behavioral contract. A decision acquires obligation force only when an `author` step promotes it *into* a `spec.swarm.md`, where the chosen constraints become real obligations. An ADR that smuggles obligation blocks into itself is a distillation error — it is asserting spec-level authority from a decision-level artifact.
 - It **MUST NOT silently re-bless a reversed decision.** If a later decision overturns this one, the override is recorded as supersession, not as a quiet edit; the truth of the decision is the *full chain* of ADRs, not whichever one is latest.
 
 ### Nygard immutability (normative)
@@ -28,14 +28,14 @@ The amended ADR's body stays frozen; only its `status` becomes `superseded` and 
 
 ## Filename & placement
 
-An ADR is a **working artifact**, not a compiler-visible source. Its filename therefore MUST NOT carry the `.swarm.` infix and MUST use a plain `.md` extension. The infix rule partitions every pipeline file into two classes: the human-authored compiler source is `*.swarm.md` (only the spec); files that a future compiler *emits* take the `*.swarm.*` shape (e.g. `*.swarm.ir.json`, `*.swarm.trace.md`); everything an agent or human authors as a working record — including ADRs, findings, reviews, traces, and tasks — is plain `.md`. An ADR is parsed by no compiler; it is structured Markdown governed by this contract, though it MAY quote SOL blocks as data.
+An ADR is a **working artifact**, not a compiler-visible source. Its filename therefore MUST NOT carry the `.swarm.` infix and MUST use a plain `.md` extension. The infix rule partitions every Swarm-tracked file into two classes: the human-authored compiler-visible source is `*.swarm.md` (only the spec); files that a future tool *emits* take the `*.swarm.*` shape (e.g. `*.swarm.ir.json`, `*.swarm.trace.md`); everything an agent or human authors as a working record — including ADRs, findings, reviews, traces, and tasks — is plain `.md`. An ADR is parsed by no tool; it is structured Markdown governed by this contract, though it MAY quote SOL blocks as data.
 
 Concretely, the class boundary is:
 
 | Class | Filename shape | Example |
 | --- | --- | --- |
 | Compiler-visible source (human-authored) | `*.swarm.md` | `auth.swarm.md` |
-| Compiler-emitted (future tool) | `*.swarm.*` | `auth.swarm.ir.json`, `auth.swarm.trace.md` |
+| Emitted by a future tool | `*.swarm.*` | `auth.swarm.ir.json`, `auth.swarm.trace.md` |
 | Working artifact (this class) | plain `.md` | `adr.md`, `0027-sol-is-the-language.md` |
 
 In an adopted project, an ADR is a **durable source artifact** — a `type: adr` document committed to the spec repo alongside the other recognized parents of a spec (specs, PRDs, RFCs, research, audits, bug-reports, findings). It is **not** execution scratch (the recreatable task frames, traces, and reviews a run produces, which are gitignored or created lazily) and it is not the compact recall map (which links *to* ADRs but does not store their bodies). A retired ADR is marked superseded and linked to the decision that replaced it; it is never silently deleted, because the chain must stay auditable. ADRs are conventionally numbered (`0027-…`, `0028-…`) so the chain reads in decision order; vacated numbers are left unfilled rather than reused, so higher references do not shift.
@@ -80,8 +80,8 @@ Copy that file to start a new ADR — it is the empty skeleton (frontmatter + th
 
 ## Related
 
-- [`docs/passes/author.md`](../passes/author.md) — the pass that consumes an ADR (stance: **decision**) and promotes its chosen constraints *into* a `spec.swarm.md` as real obligations.
-- [`docs/passes/promote.md`](../passes/promote.md) — the pass that routes a durable architectural/product decision discovered during work to a *new* ADR, and indexes accepted ADRs in the memory recall map.
+- [`docs/passes/author.md`](../passes/author.md) — the step that consumes an ADR (stance: **decision**) and promotes its chosen constraints *into* a `spec.swarm.md` as real obligations.
+- [`docs/passes/promote.md`](../passes/promote.md) — the step that routes a durable architectural/product decision discovered during work to a *new* ADR, and indexes accepted ADRs in the memory recall map.
 - [`docs/artifacts/rfc.md`](./rfc.md) — the **proposal** that precedes a decision; an accepted RFC promotes to an `adr.md` and/or a `spec.swarm.md`.
 - [`docs/artifacts/finding.md`](./finding.md) — the **evidence** stance; a finding records what is true (and can feed a decision), where an ADR records what was chosen.
 - [`docs/reference/promotion-protocol.md`](../reference/promotion-protocol.md) — the promotion statuses and the immutable two-tier memory model an accepted ADR enters as Tier-2 evidence.

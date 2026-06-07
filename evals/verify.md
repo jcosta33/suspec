@@ -1,15 +1,15 @@
-# `verify` — pass-output rubric
+# `verify` — step-output rubric
 
-> The output-quality predicate for the `verify` pass: a candidate verification record MUST give every required `VERIFY BY` binding exactly one core verdict, report no completion claim on a binding that resolved to no proof artifact, resolve each adapter through `AGENTS.md > Commands` (an unresolved adapter is `SOL-V002` → `BLOCKED`, never a silent `PASS`), and cite the proof type and artifact for each verdict. Each predicate is a boolean a reviewer decides by comparing the obligations' bindings against the recorded verdicts — no runtime.
+> The output-quality predicate for the `verify` step: a candidate verification record MUST give every required `VERIFY BY` binding exactly one core verdict, report no completion claim on a binding that resolved to no proof artifact, resolve each adapter through `AGENTS.md > Commands` (an unresolved adapter is `SOL-V002` → `BLOCKED`, never a silent `PASS`), and cite the proof type and artifact for each verdict. Each predicate is a boolean a reviewer decides by comparing the obligations' bindings against the recorded verdicts — no runtime.
 
-`verify` is the `VERIFY`-phase pass and the only profile-independent pass: one verdict per `VERIFY BY` binding. Its rubric grades whether **every required binding got a real verdict backed by a real artifact**, with no binding silently passed.
+`verify` is the `VERIFY`-phase step and the only profile-independent step: one verdict per `VERIFY BY` binding. Its rubric grades whether **every required binding got a real verdict backed by a real artifact**, with no binding silently passed.
 
 **Input artifact:** the obligations and their `VERIFY BY` bindings + the `trace.md`.
 **Output artifact:** the verification record (per-binding verdicts and provenance).
 
 ## Output-grading predicates
 
-Each predicate MUST hold. Any single failing predicate fails the pass.
+Each predicate MUST hold. Any single failing predicate fails the step.
 
 | # | Predicate | Holds when | Fails when |
 | --- | --- | --- | --- |
@@ -24,9 +24,9 @@ Each predicate MUST hold. Any single failing predicate fails the pass.
 - For V4, the provenance `tier` is the proof **type** (one of the nine: `static`/`test`/`contract`/`property`/`model`/`perf`/`security`/`manual`/`monitor`), never a `RISK` value. A `tier` carrying a risk level is a provenance defect.
 - A `manual` proof MUST still carry a `REASON` and an `EVIDENCE` ref; a bare `manual: PASS` with no reason fails V2/V4.
 
-## Cross-pass predicates scored here
+## Cross-step predicates scored here
 
-The suite scores two cross-pass predicates at the `verify` output:
+The suite scores two cross-step predicates at the `verify` output:
 
 - **Trace-completeness** — every assigned obligation's binding reaches a verdict (the `trace → verdict` link), and every verdict names a binding/obligation that exists upstream.
 - **Verdict-correctness** — each verdict is consistent with its proof result against the 7-value model: a `PASS` requires a passing proof artifact, a `FAIL` a failing one, a `BLOCKED`/`UNVERIFIED` an absent or unresolved proof. No core verdict contradicts its recorded proof result.
@@ -34,6 +34,6 @@ The suite scores two cross-pass predicates at the `verify` output:
 ## Related
 
 - [Proof types and the `VERIFY BY` binding](../../docs/reference/proof-types.md) — the nine proof types and the `VERIFY BY <type>:<adapter>:<artifact>` grammar V1/V3/V4 check against.
-- [The `verify` pass guide](../../docs/passes/verify.md) — the one-verdict-per-binding contract this rubric grades.
+- [The `verify` step guide](../../docs/passes/verify.md) — the one-verdict-per-binding contract this rubric grades.
 - [The lint catalogue](../../docs/language/errors.md) — `SOL-V008` (required binding with no verdict), the code V1 cites.
 - [Drift and staleness](../../docs/reference/drift-and-staleness.md) — the seven provenance fields V4 records, which feed the later drift join.

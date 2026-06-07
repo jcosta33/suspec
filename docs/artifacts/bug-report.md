@@ -14,11 +14,11 @@ What a bug-report MUST NOT do:
 - It MUST NOT carry its own obligation blocks. A bug-report MUST NOT author `REQ`, `CONSTRAINT`, `INVARIANT`, or `INTERFACE` blocks. It references the *existing* obligation the defect violates; it declares no new intended behavior of its own force. If the defect reveals that **no** existing obligation covers the broken behavior, that gap is itself a finding the promoted fix task must reconcile — the bug-report records the gap, it does not author the missing obligation.
 - It MUST NOT assert intended behavior. Stating what the system *should* do is intent and belongs to a `spec.swarm.md`. A bug-report states what the system *does* (Actual) against what an existing obligation already requires (Expected); the delta is the defect, not a new requirement.
 
-This stance is held by the framework's distillation-loss and source-authority discipline — when a diagnosis crosses into a fix task, the loss budget governs what may be dropped and a diagnosis-only artifact MUST NOT silently override a higher-authority spec — not by a gatekeeper tool (Swarm has no runtime): a conformant repository MUST NOT ship a tool whose job is to police artifact composition.
+Nothing enforces this stance at runtime ([Swarm ships no runtime](README.md)); it is held by the distillation-loss and source-authority discipline, where a diagnosis-only artifact MUST NOT silently override a higher-authority spec. A conformant repository MUST NOT ship a tool whose job is to police artifact composition.
 
 ## Filename & placement
 
-A bug-report is a **working artifact**, not a compiler-visible source. Swarm partitions every pipeline file by whether its name carries the literal `.swarm.` infix before the final extension:
+A bug-report is a **working artifact**, not a compiler-visible source. Swarm partitions every Swarm-tracked file by whether its name carries the literal `.swarm.` infix before the final extension:
 
 - The human-authored, compiler-visible spec is `*.swarm.md` — the only hand-written file that carries the infix.
 - Emitted, contract-shaped outputs are `*.swarm.*` (e.g. `*.swarm.ir.json`, `*.swarm.trace.md`).
@@ -64,9 +64,9 @@ The copyable skeleton is `starter-kit/.agents/templates/bug-report.md`. That fil
 
 ## Related
 
-- `docs/passes/author.md` — the pass that preserves the diagnosis-only stance and promotes a bug-report forward; the diagnosis becomes a **fix task** (`task_kind: fix`), never a fix the report dictates and never directly into code.
-- `docs/passes/implement.md` — the pass that consumes the promoted fix task and produces the remedy, with the fix carrier profile selected by task kind.
-- `docs/artifacts/task.md` — the fix task a bug-report promotes into; the artifact that carries the remedy as a lowered work packet against obligations.
+- `docs/passes/author.md` — the step that preserves the diagnosis-only stance and promotes a bug-report forward; the diagnosis becomes a **fix task** (`task_kind: fix`), never a fix the report dictates and never directly into code.
+- `docs/passes/implement.md` — the step that consumes the promoted fix task and produces the remedy, with the fix carrier profile selected by task kind.
+- `docs/artifacts/task.md` — the fix task a bug-report promotes into; the artifact that carries the remedy as a structured work packet against obligations.
 - `docs/artifacts/spec.md` — the obligation source whose existing `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` the defect violates and which the `## Affected obligations` section references; where any uncovered-behavior gap is reconciled.
 - `docs/artifacts/audit.md` — the sibling observation-only source artifact; an audit records present-state risk (promoting into a spec) where a bug-report root-causes a specific reproduced defect (promoting into a fix task).
 - `docs/artifacts/finding.md` — the sibling evidence artifact; an uncovered-obligation gap surfaced during diagnosis is a finding the fix task must reconcile.

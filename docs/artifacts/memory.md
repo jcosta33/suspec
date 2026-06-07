@@ -1,6 +1,6 @@
 # `memory/INDEX.md` — the recall map
 
-`memory/INDEX.md` is Swarm's Tier-1 recall map: a compact, always-cheap index of links over the durable knowledge a project has earned, where every entry names the trigger that says *when* a future task should load it. It is the entry point of the memory subsystem — the first thing an agent reads to decide what durable knowledge is relevant to the task in front of it — and it is the producing target the `promote` pass writes a `Load when` row into whenever a discovery is made durable.
+`memory/INDEX.md` is Swarm's Tier-1 recall map: a compact, always-cheap index of links over the durable knowledge a project has earned, where every entry names the trigger that says *when* a future task should load it. It is the entry point of the memory subsystem — the first thing an agent reads to decide what durable knowledge is relevant to the task in front of it — and it is the producing target the `promote` step writes a `Load when` row into whenever a discovery is made durable.
 
 ## Purpose and epistemic stance
 
@@ -22,23 +22,23 @@ Two adjacent files complete Tier-1 but are governed by their own contracts, not 
 
 ## Filename and placement
 
-`memory/INDEX.md` is a **working artifact**: a human/agent recall map, not a compiler input. By the `.swarm.` infix rule that partitions every pipeline file, it is therefore a plain `.md` file and MUST NOT carry the `.swarm.` infix:
+`memory/INDEX.md` is a **working artifact**: a human/agent recall map, not a Swarm input. By the `.swarm.` infix rule that partitions every Swarm-tracked file, it is therefore a plain `.md` file and MUST NOT carry the `.swarm.` infix:
 
 | Class | Infix | This artifact |
 | --- | --- | --- |
 | Human-authored compiler-visible spec | `*.swarm.md` | no — the index is not a SOL source |
-| Emitted compiler artifact | `*.swarm.*` (e.g. `*.swarm.ir.json`) | no — the index is not emitted by the compiler |
+| Emitted Swarm artifact | `*.swarm.*` (e.g. `*.swarm.ir.json`) | no — the index is not emitted by Swarm |
 | Working artifact | plain `.md`, no infix | **yes** — `memory/INDEX.md` |
 
 A conformant tool keys off the infix as the sole discriminator for "do I parse this as SOL," so the plain name is load-bearing: it marks the index as a contracted Markdown artifact, never a SOL source.
 
 In an adopted project the index lives in the spec repo's durable recall, beside its Tier-1 and Tier-2 neighbors:
 
-- **`memory/`** — durable recall, committed and populated by the promote pass: `INDEX.md` (this artifact, the Tier-1 recall map), `glossary.md` (the Tier-1 one-word-one-meaning term store), `patterns/` (Tier-2 recurring multi-finding knowledge), and `stale/` (superseded/contradicted memory, linked to replacements).
+- **`memory/`** — durable recall, committed and populated by the promote step: `INDEX.md` (this artifact, the Tier-1 recall map), `glossary.md` (the Tier-1 one-word-one-meaning term store), `patterns/` (Tier-2 recurring multi-finding knowledge), and `stale/` (superseded/contradicted memory, linked to replacements).
 - The durable source artifacts the index points at — findings and ADRs (the Tier-2 evidence store) — are committed source-docs.
 - The recreatable execution packets a run produces (task frames, traces, reviews) are ephemeral scratch, gitignored or created lazily by a future tool.
 
-Placement follows one rule: anything that defines, tracks, or reconciles durable project knowledge is committed durable recall. The index is durable recall, so it is committed under `memory/`. It points *into* the committed source-docs (the findings and ADRs it indexes) and is never confused with the ephemeral execution scratch. It is the `promote` pass that adds, advances, retracts, and supersedes the index's rows.
+Placement follows one rule: anything that defines, tracks, or reconciles durable project knowledge is committed durable recall. The index is durable recall, so it is committed under `memory/`. It points *into* the committed source-docs (the findings and ADRs it indexes) and is never confused with the ephemeral execution scratch. It is the `promote` step that adds, advances, retracts, and supersedes the index's rows.
 
 ## Required sections and fields, in order
 
@@ -80,5 +80,5 @@ That template is the skeleton you copy into a new project (it installs as the re
 
 - [`finding.md`](finding.md) — a single durable, provenance-anchored project fact; the Tier-2 artifact a `## Durable findings` row links to.
 - [`adr.md`](adr.md) — an immutable architecture/product decision; the Tier-2 artifact a `## Decisions` row links to.
-- [The `promote` pass](../passes/promote.md) — the pass that earns a discovery its durability and writes (advances, retracts, supersedes) the index's rows; the producer of this artifact.
-- [The `review` pass](../passes/review.md) — surfaces the discoveries and verdicts that the `promote` pass turns into indexed memory.
+- [The `promote` step](../passes/promote.md) — the step that earns a discovery its durability and writes (advances, retracts, supersedes) the index's rows; the producer of this artifact.
+- [The `review` step](../passes/review.md) — surfaces the discoveries and verdicts that the `promote` step turns into indexed memory.

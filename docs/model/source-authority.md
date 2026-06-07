@@ -1,6 +1,6 @@
 # Source Authority
 
-Source authority is the **deterministic procedure** a conformant Swarm repo uses to decide, when two artifacts assert conflicting obligations, **which obligation governs** — and, by the same ladder, **who may approve** an edit to the obligation set. It is the conflict-resolution complement to the obligation graph: the graph records *what* obligations exist and how they relate; source authority records *which wins* when they disagree and *whose authoring act* settles a change.
+Source authority is the **deterministic procedure** a conformant Swarm repo uses to decide, when two artifacts assert conflicting obligations, **which obligation governs** — and, by the same ladder, **who may approve** an edit to the obligation set. It is the conflict-resolution complement to the spec's obligations: the obligations record *what* must hold and how they relate; source authority records *which wins* when they disagree and *whose authoring act* settles a change.
 
 Authority is **not** a planning hint and **not** a confidence score. It is the binding precedence order, and it is the only sanctioned alternative to silently letting the most recently written artifact win.
 
@@ -19,8 +19,8 @@ Axis A ranks an obligation by **the kind of artifact that contains it** and that
 | 1 (highest) | accepted `adr.md` | Immutable decision; the strongest recorded intent. |
 | 2 | approved `spec.swarm.md` | The behavioral contract (`status: approved`). |
 | 3 | accepted `finding.md` | A durable project fact (`status: accepted` or `promoted`). |
-| 4 | reviewed `audit.md` | Present-state observation that passed a `review` pass. |
-| 5 | reviewed `research.md` | External / exploratory evidence that passed a `review` pass. |
+| 4 | reviewed `audit.md` | Present-state observation that passed a `review` step. |
+| 5 | reviewed `research.md` | External / exploratory evidence that passed a `review` step. |
 | 6 | task notes (`task.md`) | Execution-local; durable only after promotion. |
 | 7 (lowest) | chat | Conversational context; never authoritative on its own. |
 
@@ -41,7 +41,7 @@ Axis B ranks an obligation by **the governance domain it belongs to**, independe
 | 7 | `task-map` | Per-task execution scoping. |
 | 8 (lowest) | `memory` | Promoted findings / patterns. |
 
-An obligation's domain MUST be discoverable **deterministically**. The `lower` pass populates the IR `node.authority` by this precedence: the obligation's own `DOMAIN <name>` clause if present, else the spec frontmatter `domain:`, else the default `product`. The eight legal domain names are exactly the Axis-B ranks above (`enforced-policy` … `memory`); the two lowest, `task-map` and `memory`, are also the two axis **floors** (see Invariants).
+An obligation's domain MUST be discoverable **deterministically**. The `lower` step populates each structured node's `authority` by this precedence: the obligation's own `DOMAIN <name>` clause if present, else the spec frontmatter `domain:`, else the default `product`. The eight legal domain names are exactly the Axis-B ranks above (`enforced-policy` … `memory`); the two lowest, `task-map` and `memory`, are also the two axis **floors** (see Invariants).
 
 ## The conflict rule (normative)
 
@@ -98,7 +98,7 @@ These hold on Axis A and Axis B simultaneously; no precedence computation may vi
 | Invariant | Statement |
 | --------- | --------- |
 | **Code is reality, not intent** | Code and tests are implementation reality. They MAY **falsify** an obligation (producing `FAIL` / `CONTRADICTED` / `STALE`) but MUST NOT **silently amend** intent. A divergence routes to the three-way reconcile, never to a quiet edit of the obligation. |
-| **Memory and task-map are a floor** | `memory` (Axis-B rank 8) and `task-map` (rank 7) are the lowest domains and never outrank any governing domain: a promoted finding or task-scoping note can **inform** but never **weaken** an obligation. A promotion that would weaken an obligation *as memory* is itself a `SOL-M004` authority-conflict. Promotion to a spec is a **domain-promotion**, not memory overriding intent — once a finding is re-stated as a spec obligation via the `promote` pass it carries its **new container's** authority. That is intent acquiring rank, not the `memory` floor being breached. |
+| **Memory and task-map are a floor** | `memory` (Axis-B rank 8) and `task-map` (rank 7) are the lowest domains and never outrank any governing domain: a promoted finding or task-scoping note can **inform** but never **weaken** an obligation. A promotion that would weaken an obligation *as memory* is itself a `SOL-M004` authority-conflict. Promotion to a spec is a **domain-promotion**, not memory overriding intent — once a finding is re-stated as a spec obligation via the `promote` step it carries its **new container's** authority. That is intent acquiring rank, not the `memory` floor being breached. |
 | **Planning hints reorder, never weaken** | `DEPENDS ON`, `parallel_group`, and other planning metadata change the **order** work runs in. They MUST NOT change modality, scope, or verification bindings of any obligation. |
 
 ## Bidirectional traceability framing
@@ -115,7 +115,7 @@ The two axes are the two directions of requirements traceability:
 | `SOL-M002` | Semantic-layer contradiction — an irreconcilable **equal-rank** conflict (conflict-rule step 3). Routes to amendment / review. |
 | `SOL-M004` | Authority-conflict — a lower-ranked artifact (or actor) silently amending a higher-ranked one. |
 
-(Both are in the `SOL-M` semantic layer; today they are enforced by hand or by the documented lint-spec pass, aspirational until tooling exists.)
+(Both are in the `SOL-M` semantic layer; today they are enforced by hand or by the documented lint step, aspirational until tooling exists.)
 
 ## The high-oversight band (HITL escalation)
 
@@ -164,7 +164,7 @@ The dividing line is **semantic effect**, expressed as a closed twelve-category 
 | Add a missing link, or complete a reference to an **already-declared** proof, without changing meaning | No — normalization |
 | Compress redundant prose while preserving semantics | No — normalization |
 
-The "Yes" rows are exactly the edits that alter what the system must build, what counts as proof, or which decision governs — each is a non-normalization category in the semantic diff, so each MUST route to amendment / review, never be folded into a mechanical improvement pass. The "No" rows are the single normalization category: semantics-preserving by definition, a conformant tool MAY apply them without approval. The rationale is that a normalization edit cannot, by construction, change any verdict; an amendment can, so it inherits the same authoring discipline as the obligation it edits.
+The "Yes" rows are exactly the edits that alter what the system must build, what counts as proof, or which decision governs — each is a non-normalization category in the semantic diff, so each MUST route to amendment / review, never be folded into a mechanical improvement step. The "No" rows are the single normalization category: semantics-preserving by definition, a conformant tool MAY apply them without approval. The rationale is that a normalization edit cannot, by construction, change any verdict; an amendment can, so it inherits the same authoring discipline as the obligation it edits.
 
 ### R-APPROVAL-AUTHORITY
 
@@ -182,6 +182,6 @@ This is the same authority that governs the high-oversight band above: a band ob
 
 - [SOL — the obligation language](../language/SOL.md) — the surface form of the obligations whose conflicts and edits this procedure governs.
 - [Verify — verdict model and proof taxonomy](../passes/verify.md) — the `WAIVED` / `STALE` / `CONTRADICTED` lifecycle and the named-authority discipline a band verdict and waiver carry.
-- [The `improve` pass](../passes/improve.md) — where the single normalization category MAY be applied without approval; the "Yes" rows are exactly what `improve` may not silently apply.
-- [The `promote` pass](../passes/promote.md) — promotion of a `finding.md` into a spec, an approval-required change that gives the finding its new container's authority.
+- [The `improve` step](../passes/improve.md) — where the single normalization category MAY be applied without approval; the "Yes" rows are exactly what `improve` may not silently apply.
+- [The `promote` step](../passes/promote.md) — promotion of a `finding.md` into a spec, an approval-required change that gives the finding its new container's authority.
 - [Swarm lint codes](../language/errors.md) — `SOL-M002`, `SOL-M004`, and `SOL-V010`, the diagnostics this procedure emits.

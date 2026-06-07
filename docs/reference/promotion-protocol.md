@@ -38,7 +38,7 @@ Promotion is **mandatory before task closure**. Every discovery a task surfaces 
 
 ## Discovery-to-promotion-target routing
 
-Given the *kind* of discovery, the protocol fixes the single durable target the `promote` pass writes to. The kinds are mutually exclusive by intent; when a discovery has two faces (e.g. it is both a durable decision and a reusable pattern), it is promoted to each applicable target and each lands as its **own queue item**.
+Given the *kind* of discovery, the protocol fixes the single durable target the `promote` step writes to. The kinds are mutually exclusive by intent; when a discovery has two faces (e.g. it is both a durable decision and a reusable pattern), it is promoted to each applicable target and each lands as its **own queue item**.
 
 | Discovery | Promote to |
 | --------- | ---------- |
@@ -49,7 +49,7 @@ Given the *kind* of discovery, the protocol fixes the single durable target the 
 | Reusable project fact (a durable claim learned during work, with evidence) | A finding — a `type: finding` doc, indexed in `memory/INDEX.md` with a `Load when` and full provenance. |
 | Repeated cross-task pattern (a recurring solution shape seen across more than one task) | `memory/patterns/*.md`. |
 | Terminology clarification (a term whose meaning was ambiguous or drifted) | `memory/glossary.md` (the canonical lexicon; resolves `SOL-P`-layer terminology drift — `SOL-P006` undefined-term, `SOL-P057` terminology-drift — at the source). |
-| Universal workflow rule (a procedure that should apply to every future task) | A pass-guide edit (the procedure) **plus at most a one-line `AGENTS.md` pointer** — NEVER inline procedure in `AGENTS.md`; the bootloader holds persistent facts, not steps. |
+| Universal workflow rule (a procedure that should apply to every future task) | A step-guide edit (the procedure) **plus at most a one-line `AGENTS.md` pointer** — NEVER inline procedure in `AGENTS.md`; the bootloader holds persistent facts, not steps. |
 | Purely local execution detail (relevant only to this task's run) | Keep in the task only (`task.md`); it is **not** durable and is dispositioned `rejected` for promotion with reason "execution-local". |
 
 Two normative consequences hold across **every** row:
@@ -59,16 +59,16 @@ Two normative consequences hold across **every** row:
 
 ### The "universal workflow rule" tie-break
 
-Routing a *universal workflow rule* toward `AGENTS.md` collides with the ≤200-line bootloader cap [[LOSTMID]](../research/sources.md#LOSTMID) and the rule that only persistent **facts** belong in `AGENTS.md` while **procedures** belong in pass guides [[AGENTSMD-HARM]](../research/sources.md#AGENTSMD-HARM). Swarm resolves this normatively:
+Routing a *universal workflow rule* toward `AGENTS.md` collides with the ≤200-line bootloader cap [[LOSTMID]](../research/sources.md#LOSTMID) and the rule that only persistent **facts** belong in `AGENTS.md` while **procedures** belong in step guides [[AGENTSMD-HARM]](../research/sources.md#AGENTSMD-HARM). Swarm resolves this normatively:
 
-> A "universal workflow rule" promotion MUST become **a pass-guide edit (the procedure) PLUS at most a one-line `AGENTS.md` pointer (the fact that the guide exists and when to load it).** It MUST NOT inline the procedure into `AGENTS.md`.
+> A "universal workflow rule" promotion MUST become **a step-guide edit (the procedure) PLUS at most a one-line `AGENTS.md` pointer (the fact that the guide exists and when to load it).** It MUST NOT inline the procedure into `AGENTS.md`.
 
 | Where it goes | What goes there |
 | ------------- | --------------- |
-| Pass guide (`docs/library/pass-guides.md`) | The actual procedure / steps. |
+| Step guide (`docs/library/pass-guides.md`) | The actual procedure / steps. |
 | `AGENTS.md` | One line: the pointer + its load-when, nothing procedural. |
 
-Example: promoting "always run the migration dry-run before applying" adds the dry-run procedure to the `implement` pass guide; `AGENTS.md` gains only `- Before applying a migration, load the implement pass guide (migration section).` This keeps the bootloader a map and the procedure lazily loaded.
+Example: promoting "always run the migration dry-run before applying" adds the dry-run procedure to the `implement` step guide; `AGENTS.md` gains only `- Before applying a migration, load the implement step guide (migration section).` This keeps the bootloader a map and the procedure lazily loaded.
 
 ## Provenance — mandatory on every promoted finding
 
@@ -80,7 +80,7 @@ Every finding that reaches `accepted` or `promoted` status MUST carry the full p
 | `evidence` | The file/command/output/source that grounds the claim. |
 | `origin_obligations[]` | The obligation IDs (`AC-`/`C-`/`I-…`) the finding was discovered against. |
 | `origin_traces[]` | The `*.swarm.trace.md` entries that produced the evidence. |
-| `pass+profile` | The pass and heuristic profile under which it was found (e.g. `review[profile: skeptic]`). |
+| `pass+profile` | The step and heuristic profile under which it was found (e.g. `review[profile: skeptic]`). |
 | `reviewer_or_tool` | The human reviewer or tool/adapter that confirmed it. |
 | `timestamp` | When it was promoted. |
 | `content_hash` | Hash of the cited source/surfaces at promotion time (drives staleness). |
@@ -159,7 +159,7 @@ The merge-gate decision and the unauthorized-change list are precisely what make
 
 ### What a `promotions/` entry records
 
-A `promotions/` entry records the durable targets each promoted discovery landed at — the same routing the discovery-to-promotion-target table above fixes: a spec amendment, an ADR, a finding, a pattern, a glossary entry, or a pass-guide-plus-pointer. It closes the loop between a task's discoveries and the durable memory + source docs.
+A `promotions/` entry records the durable targets each promoted discovery landed at — the same routing the discovery-to-promotion-target table above fixes: a spec amendment, an ADR, a finding, a pattern, a glossary entry, or a step-guide-plus-pointer. It closes the loop between a task's discoveries and the durable memory + source docs.
 
 ### Why the ledger introduces no new evidence
 
@@ -169,10 +169,10 @@ Every field above is **compacted from artifacts Swarm already specifies** — th
 
 The block-type, modal, verdict, and lint-layer counts named below are Swarm's fixed vocabulary — **7 block types, 5 modals, 7 verdicts (4 core + 3 lifecycle), 5 lint layers S/P/M/V/O**; this page reproduces them by reference, it does not redefine them.
 
-- **The verdict model.** The `promote` pass runs after the change-set verdict is recorded. Rollback triggers (`CONTRADICTED`, `STALE`) are two of the **three lifecycle verdicts** in the 4-core + 3-lifecycle (= 7-verdict) model.
+- **The verdict model.** The `promote` step runs after the change-set verdict is recorded. Rollback triggers (`CONTRADICTED`, `STALE`) are two of the **three lifecycle verdicts** in the 4-core + 3-lifecycle (= 7-verdict) model.
 - **Source authority.** `memory` is the floor domain on Axis B, which is *why* a promotion can never weaken an obligation — that path is a `SOL-M004` authority-conflict routed to amendment.
 - **The ledger.** Every promotion disposition lands in the ledger as compact, immutable history; because a task cannot close with any `pending` item, a ledger entry records a fully-resolved queue *by construction* (see [The ledger — compact reconciled history](#the-ledger--compact-reconciled-history) above).
-- **The loss budget.** The `task.md → finding.md` boundary is a distillation boundary: the step-by-step execution log MAY be dropped, but the evidence for the durable claim MUST survive. Promotion is one of the two boundaries (with spec→task lowering) the loss budget most acutely governs.
+- **The loss budget.** The `task.md → finding.md` boundary is a distillation boundary: the step-by-step execution log MAY be dropped, but the evidence for the durable claim MUST survive. Promotion is one of the two boundaries (with spec→task structuring) the loss budget most acutely governs.
 
 ## Open question — the staleness comparator
 

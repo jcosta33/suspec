@@ -1,18 +1,18 @@
-# The IR and Plan JSON Schemas
+# The Structured Form and Plan JSON Schemas
 
-> Swarm's reference for the two emitted JSON contracts: the **IR** (`*.swarm.ir.json`) — the typed obligation graph a tool reasons over — and the **plan** (`*.swarm.plan.json`) — its schedulable projection into work packets. This page reproduces both JSON Schemas in full, names every required field, and pins the three version fields the envelopes carry.
+> Swarm's reference for the two emitted JSON contracts: the **structured form** of a spec (`*.swarm.ir.json`) — the typed obligations a tool reasons over — and the **plan** (`*.swarm.plan.json`) — its schedulable projection into work packets. This page reproduces both JSON Schemas in full, names every required field, and pins the three version fields the envelopes carry.
 
-A Swarm specification is human-authored as controlled markdown (`*.swarm.md`); the **intermediate representation** (IR) is the typed, machine-checkable form of that same content. Where the surface is English-shaped UPPERCASE space-separated keywords (`VERIFY BY`, `DEPENDS ON`, `WRITES`), the IR is `snake_case` JSON (`verify_by`, `depends_on`, `writes`): one document re-expressing every obligation, relationship, diagnostic, and provenance fact of one source file. The **plan** takes that obligation graph and groups the work needed to discharge it into schedulable **work packets**. Where the IR answers *"what must hold and how do the obligations relate,"* the plan answers *"what units of work exist, in what order, on which surfaces, and which are safe to run at the same time."*
+A Swarm specification is human-authored as controlled markdown (`*.swarm.md`); the **structured (JSON) form** is the typed, machine-checkable form of that same content. Where the surface is English-shaped UPPERCASE space-separated keywords (`VERIFY BY`, `DEPENDS ON`, `WRITES`), the structured form is `snake_case` JSON (`verify_by`, `depends_on`, `writes`): one document re-expressing every obligation, relationship, diagnostic, and provenance fact of one source file. The **plan** takes those obligations and groups the work needed to discharge them into schedulable **work packets**. Where the structured form answers *"what must hold and how do the obligations relate,"* the plan answers *"what units of work exist, in what order, on which surfaces, and which are safe to run at the same time."*
 
-Both are **emitted contracts, not running code**. Swarm is markdown-only and has NO RUNTIME: this framework ships **no emitter, no parser, no validator, and no scheduler** that produces or consumes these files. The JSON Schemas below are versioned, inert data — the shape a *future* tool MUST honor so any producer and any consumer interoperate. `*.swarm.ir.json` and `*.swarm.plan.json` are reserved, documented filenames, never artifacts a shipped process writes. This is why `provenance.compiler_version` is **`null` today**: there is no emitter to stamp a tool version. A conformant repository MUST carry these schemas verbatim and MUST frame any IR or plan instance as "the contract a future tool emits and a future launcher consumes," never as the output of shipped tooling.
+Both are **emitted contracts, not running code**. Swarm is markdown-only and has NO RUNTIME: this is a spec format plus the agents that build from it, and it ships **no emitter, no parser, no validator, and no scheduler** that produces or consumes these files. The JSON Schemas below are versioned, inert data — the shape a *future* tool MUST honor so any producer and any consumer interoperate. `*.swarm.ir.json` and `*.swarm.plan.json` are reserved, documented filenames, never artifacts a shipped process writes. This is why `provenance.compiler_version` is **`null` today**: there is no emitter to stamp a tool version. A valid repository MUST carry these schemas verbatim and MUST frame any structured-form or plan instance as "the contract a future tool emits and a future launcher consumes," never as the output of shipped tooling.
 
-> Design rationale: binding downstream analysis to a typed intermediate rather than to free-form prose is what makes the obligation graph mechanically checkable — topological sort over dependencies, cycle detection, write-surface conflict detection, the traceability join, merge-gate evaluation, and drift recomputation all read the IR, not the markdown. This is the surface-vs-IR layering: a human authors the surface, a tool reasons over the IR.
+> Design rationale: binding downstream analysis to a typed structured form rather than to free-form prose is what makes the obligations mechanically checkable — topological sort over dependencies, cycle detection, write-surface conflict detection, the traceability join, merge-gate evaluation, and drift recomputation all read the structured form, not the markdown. This is the surface-vs-structured-form layering: a human authors the surface, a tool reasons over the structured form.
 
 ---
 
-## 1. The IR envelope
+## 1. The structured-form envelope
 
-A SOL IR document MUST be a single JSON object with **exactly five top-level keys**, in this order:
+A SOL structured-form document MUST be a single JSON object with **exactly five top-level keys**, in this order:
 
 ```json
 {
@@ -32,7 +32,7 @@ A SOL IR document MUST be a single JSON object with **exactly five top-level key
 | `diagnostics` | array of diagnostic objects | 0..n | SARIF-shaped lint/compile findings keyed to the unified `SOL-<LAYER><NNN>` taxonomy. |
 | `provenance` | object | exactly 1 | Emission facts: source hash, compiler version, compile timestamp. |
 
-A conformant IR document MUST contain all five keys. An empty spec (no blocks) still emits `nodes: []`, `edges: []`, `diagnostics: []` and fully-populated `meta` and `provenance`. No additional top-level keys are permitted in SOL/0.1; unknown top-level keys MUST be rejected by a validating consumer.
+A valid structured-form document MUST contain all five keys. An empty spec (no blocks) still emits `nodes: []`, `edges: []`, `diagnostics: []` and fully-populated `meta` and `provenance`. No additional top-level keys are permitted in SOL/0.1; unknown top-level keys MUST be rejected by a validating consumer.
 
 ### 1.1 `meta` — spec identity and the three version fields
 
@@ -66,21 +66,21 @@ Each element of `nodes[]` is one **merged obligation record**: the fully normali
 
 | Field | JSON type | Required (intent) | Meaning |
 |---|---|---|---|
-| `id` | string | MUST | IR node id. MAY be namespaced as `<KIND>.<spec>.<surface-id>` (e.g. `REQ.auth-refresh.AC-001`); the short surface id (`AC-001`) MUST be recoverable from it. |
+| `id` | string | MUST | Structured-form node id. MAY be namespaced as `<KIND>.<spec>.<surface-id>` (e.g. `REQ.auth-refresh.AC-001`); the short surface id (`AC-001`) MUST be recoverable from it. |
 | `kind` | string | MUST | One of `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`, `TRACE`, `VERDICT`. |
-| `authority` | string | MUST for obligation kinds | The resolved domain-authority rank governing this node (e.g. `security`, `architecture`, `product`), lowered from the obligation's `DOMAIN` clause or the spec frontmatter. MAY be absent/`null` for `QUESTION`/`TRACE`. |
+| `authority` | string | MUST for obligation kinds | The resolved domain-authority rank governing this node (e.g. `security`, `architecture`, `product`), structured from the obligation's `DOMAIN` clause or the spec frontmatter. MAY be absent/`null` for `QUESTION`/`TRACE`. |
 | `modality` | string \| null | MUST for `REQ`/`CONSTRAINT`/`INVARIANT` | The binding modal: one of `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY`. `null` for kinds that carry no modal (`INTERFACE`, `QUESTION`, `TRACE`, `VERDICT`). Mirrors `clauses.modal`. |
 | `clauses` | object | MUST | The structured decomposition of the control sentence (§1.2.1). |
-| `owner` | string \| null | SHOULD | The accountable owner — lowering of `OWNED BY`. |
-| `risk` | string \| null | MAY | One of `low`, `medium`, `high`, `critical` — lowering of `RISK`. |
-| `reads` | array of string | MUST (MAY be empty) | The **read** scope set — lowering of `READS`. |
-| `writes` | array of string | MUST (MAY be empty) | The **write** scope set — lowering of `WRITES`. Surface names are `SURFACE` ids; there is no `locks` field. |
-| `touches` | array of string | MAY (defaults `[]`) | The **touch** scope set — lowering of `TOUCHES`: surfaces the obligation touches but does not own or write. Does not participate in the write-disjointness half of the safe-parallelism predicate. |
-| `verify_by` | array of object | MUST (MAY be empty) | Normalized proof bindings (§1.2.2) — lowering of `VERIFY BY`. |
+| `owner` | string \| null | SHOULD | The accountable owner — structured from `OWNED BY`. |
+| `risk` | string \| null | MAY | One of `low`, `medium`, `high`, `critical` — structured from `RISK`. |
+| `reads` | array of string | MUST (MAY be empty) | The **read** scope set — structured from `READS`. |
+| `writes` | array of string | MUST (MAY be empty) | The **write** scope set — structured from `WRITES`. Surface names are `SURFACE` ids; there is no `locks` field. |
+| `touches` | array of string | MAY (defaults `[]`) | The **touch** scope set — structured from `TOUCHES`: surfaces the obligation touches but does not own or write. Does not participate in the write-disjointness half of the safe-parallelism predicate. |
+| `verify_by` | array of object | MUST (MAY be empty) | Normalized proof bindings (§1.2.2) — structured from `VERIFY BY`. |
 | `status` | string | MUST | The node's **core** verdict: one of `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`. Closed over the four core values only; defaults to `UNVERIFIED` before a verdict exists. |
 | `lifecycle` | array of string | MUST (MAY be empty) | Lifecycle decorators in effect — a subset of `{WAIVED, STALE, CONTRADICTED}`. Carried as a separate field, never fused into `status`. |
 | `source` | object | MUST | Origin span and content hash (§1.2.3). |
-| `provenance` | array of object | MUST (MAY be empty) | Per-node provenance trail: prior verdicts, lowering ancestry, promotion lineage. Free-form objects whose minimal pinned shape is the trace-provenance record. |
+| `provenance` | array of object | MUST (MAY be empty) | Per-node provenance trail: prior verdicts, structuring ancestry, promotion lineage. Free-form objects whose minimal pinned shape is the trace-provenance record. |
 
 #### 1.2.1 `clauses{}`
 
@@ -100,7 +100,7 @@ Each element of `nodes[]` is one **merged obligation record**: the fully normali
 | `accepts` | `ACCEPTS:` bullets | array of string | The `INTERFACE` accepted-input bullets. Defaults to `[]`. |
 | `errors` | `ERRORS:` bullets | array of string | The `INTERFACE` error bullets. Defaults to `[]`. |
 
-For a chained obligation (`THE … MUST … AND THE … MUST …`), the lowering pass splits it into multiple nodes, one per `THE <actor> <MODAL> <response>` clause; each resulting node has a single-obligation `clauses` object. An `INVARIANT` lowers `<property> MUST|MUST NOT <hold>` into `subject` = the property and `predicate` = the held condition. An `INTERFACE` has no `subject`/`modal`/`predicate`; its `RETURNS`/`ACCEPTS`/`ERRORS` lower into the `signature`/`returns`/`accepts`/`errors` slots, `OWNED BY` into the node `owner`, and a `contract` proof binding MUST be present in `verify_by`.
+For a chained obligation (`THE … MUST … AND THE … MUST …`), the `lower` step splits it into multiple nodes, one per `THE <actor> <MODAL> <response>` clause; each resulting node has a single-obligation `clauses` object. An `INVARIANT` structures `<property> MUST|MUST NOT <hold>` into `subject` = the property and `predicate` = the held condition. An `INTERFACE` has no `subject`/`modal`/`predicate`; its `RETURNS`/`ACCEPTS`/`ERRORS` structure into the `signature`/`returns`/`accepts`/`errors` slots, `OWNED BY` into the node `owner`, and a `contract` proof binding MUST be present in `verify_by`.
 
 #### 1.2.2 `verify_by[]` — normalized proof bindings
 
@@ -113,7 +113,7 @@ Each surface `VERIFY BY <type>:<adapter>:<artifact>[#selector]` clause normalize
 | Field | JSON type | Required | Meaning |
 |---|---|---|---|
 | `type` | string | MUST | One of the 9 closed proof types: `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`. Test scope qualifiers (`test:unit`, `test:integration`, `test:e2e`) are carried verbatim in `type`. |
-| `adapter` | string | MUST | The AGENTS.md > Commands slot the type resolves through (a `cmd*` placeholder, e.g. `cmdTest`, `cmdLint`); a free string, not a command this framework runs. |
+| `adapter` | string | MUST | The AGENTS.md > Commands slot the type resolves through (a `cmd*` placeholder, e.g. `cmdTest`, `cmdLint`); a free string, not a command Swarm runs. |
 | `ref` | string | MUST | The project artifact (test file, contract file, model, checklist id); a free string. |
 | `selector` | string \| null | MAY | The `#selector` fragment — a specific case/property/invariant name within `ref`. |
 | `gate` | string | MUST (defaults `required`) | `required` or `advisory`; `required` bindings participate in the merge gate. |
@@ -140,7 +140,7 @@ The verdict model is carried as **two orthogonal fields, never fused**: `status`
 | `PASS` | core | A bound required proof ran and succeeded. |
 | `FAIL` | core | A bound proof ran and failed. |
 | `BLOCKED` | core | A bound proof could not run (missing prereq / tool / env). |
-| `UNVERIFIED` | core | No acceptable proof bound, or none executed. The default for a freshly-lowered, never-executed obligation. |
+| `UNVERIFIED` | core | No acceptable proof bound, or none executed. The default for a freshly-structured, never-executed obligation. |
 | `WAIVED` | lifecycle | A `FAIL`/`UNVERIFIED` accepted with authority + reason + expiry. |
 | `STALE` | lifecycle | A prior `PASS` whose evidence no longer matches the current source/surface hashes. |
 | `CONTRADICTED` | lifecycle | Two proofs disagree, or trace/code disagrees with the obligation. |
@@ -162,7 +162,7 @@ Every relationship between two nodes is one typed directed edge.
 
 > **Edges are the single source of relationship truth.** A relationship between two nodes MUST be represented exactly once, as an edge, and MUST NOT also be duplicated as a node scalar — there is no `depends_on`, `blocks`, `conflicts_with`, `verified_by`, `affects`, `implements`, or `preserves` field on a node. A consumer computing dependency order, conflict, or traceability MUST read `edges[]` and MUST NOT reconstruct relationships from node fields. Design rationale: a relationship stored twice can disagree; one representation cannot.
 
-This is distinct from the **scope sets** on a node (`reads`, `writes`, `touches`): a scope set answers "what region of the world does this single obligation touch?" — intrinsic node data — while an edge answers "how do two nodes relate?" The lowering pass *derives* `conflicts_with` and `affects` edges *from* scope sets (e.g. two nodes sharing a write surface yield a `conflicts_with` edge), keeping the raw declaration on the node and the computed relationship in the graph so the derivation is auditable and the two never silently disagree. `affects` is purely an edge type (a resolved node→node impact link); it is not also a node scope set.
+This is distinct from the **scope sets** on a node (`reads`, `writes`, `touches`): a scope set answers "what region of the world does this single obligation touch?" — intrinsic node data — while an edge answers "how do two nodes relate?" The `lower` step *derives* `conflicts_with` and `affects` edges *from* scope sets (e.g. two nodes sharing a write surface yield a `conflicts_with` edge), keeping the raw declaration on the node and the computed relationship in the graph so the derivation is auditable and the two never silently disagree. `affects` is purely an edge type (a resolved node→node impact link); it is not also a node scope set.
 
 ### 1.4 `diagnostics[]`
 
@@ -209,17 +209,17 @@ The envelope echoes **three distinct version axes**. They occupy three distinct 
 |---|---|---|---|
 | `meta.language` | LANGUAGE | Which SOL grammar / block set / modal set / lint codes apply | `SOL/0.1` |
 | `meta.version` | SPEC CONTENT | Which revision of this spec's obligations | e.g. `0.1.0` |
-| `provenance.compiler_version` | TOOL | Which emitter produced this IR | `null` (no shipped emitter) |
+| `provenance.compiler_version` | TOOL | Which emitter produced this structured form | `null` (no shipped emitter) |
 
 These three values drift independently and MUST remain three fields.
 
-### 1.7 The IR JSON Schema (normative)
+### 1.7 The structured-form JSON Schema (normative)
 
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://swarm.dev/schema/0.1/swarm.ir.json",
-  "title": "Swarm IR envelope (*.swarm.ir.json)",
+  "title": "Swarm structured-form envelope (*.swarm.ir.json)",
   "type": "object",
   "additionalProperties": false,
   "required": ["meta", "nodes", "edges", "diagnostics", "provenance"],
@@ -246,18 +246,18 @@ These three values drift independently and MUST remain three fields.
         "additionalProperties": false,
         "required": ["id", "kind", "source"],
         "properties": {
-          "id":   { "type": "string", "description": "IR node id; MAY be namespaced, e.g. REQ.auth-refresh.AC-001 (surface id is the short AC-001)" },
+          "id":   { "type": "string", "description": "Structured-form node id; MAY be namespaced, e.g. REQ.auth-refresh.AC-001 (surface id is the short AC-001)" },
           "kind": { "enum": ["REQ", "CONSTRAINT", "INVARIANT", "INTERFACE", "QUESTION", "TRACE", "VERDICT"] },
           "authority": { "type": "string", "description": "Domain authority rank label (Axis B): e.g. security, architecture, product" },
           "modality":  { "enum": ["MUST", "MUST NOT", "SHOULD", "SHOULD NOT", "MAY", null], "description": "Binding force; obligation kinds (REQ/CONSTRAINT/INVARIANT) only; null for INTERFACE/QUESTION/TRACE/VERDICT" },
           "clauses": {
             "type": "object",
             "additionalProperties": false,
-            "description": "Lowered SOL clauses; null/absent for inapplicable slots",
+            "description": "Structured SOL clauses; null/absent for inapplicable slots",
             "properties": {
               "where":     { "type": ["string", "null"] },
               "while":     { "type": ["string", "null"] },
-              "trigger":   { "type": ["object", "null"], "additionalProperties": false, "properties": { "kw": { "enum": ["WHEN", "IF", null] }, "expr": { "type": ["string", "null"] } }, "description": "Lowering of WHEN/IF — the {kw, expr} discriminator" },
+              "trigger":   { "type": ["object", "null"], "additionalProperties": false, "properties": { "kw": { "enum": ["WHEN", "IF", null] }, "expr": { "type": ["string", "null"] } }, "description": "Structured form of WHEN/IF — the {kw, expr} discriminator" },
               "subject":   { "type": ["string", "null"], "description": "The actor in THE <actor> <MODAL> <response>" },
               "modal":     { "enum": ["MUST", "MUST NOT", "SHOULD", "SHOULD NOT", "MAY", null] },
               "predicate": { "type": ["string", "null"], "description": "The response/predicate" },
@@ -268,10 +268,10 @@ These three values drift independently and MUST remain three fields.
               "errors":    { "type": "array", "items": { "type": "string" }, "default": [], "description": "INTERFACE ERRORS bullets" }
             }
           },
-          "owner":  { "type": ["string", "null"], "description": "Lowering of OWNED BY" },
+          "owner":  { "type": ["string", "null"], "description": "Structured form of OWNED BY" },
           "risk":   { "enum": ["low", "medium", "high", "critical", null] },
           "reads":  { "type": "array", "items": { "type": "string" }, "default": [] },
-          "touches":{ "type": "array", "items": { "type": "string" }, "default": [], "description": "Lowering of TOUCHES — surfaces the obligation touches but does not own/write" },
+          "touches":{ "type": "array", "items": { "type": "string" }, "default": [], "description": "Structured form of TOUCHES — surfaces the obligation touches but does not own/write" },
           "writes": { "type": "array", "items": { "type": "string", "description": "Write surface path/glob or named SURFACE member" }, "default": [] },
           "verify_by": {
             "type": "array",
@@ -284,7 +284,7 @@ These three values drift independently and MUST remain three fields.
                 "type":     { "enum": ["static", "test", "contract", "property", "model", "perf", "security", "manual", "monitor"], "description": "Closed 9-type proof taxonomy" },
                 "adapter":  { "type": "string", "description": "Resolves through AGENTS.md > Commands (a cmd* slot); free string" },
                 "ref":      { "type": "string", "description": "Artifact reference; free string" },
-                "selector": { "type": ["string", "null"], "description": "Lowering of #selector; e.g. a test name or invariant name" },
+                "selector": { "type": ["string", "null"], "description": "Structured form of #selector; e.g. a test name or invariant name" },
                 "gate":     { "enum": ["required", "advisory"], "default": "required" }
               }
             }
@@ -355,7 +355,7 @@ These three values drift independently and MUST remain three fields.
       "additionalProperties": false,
       "required": ["hash", "compiler_version", "compiled_at"],
       "properties": {
-        "hash":             { "type": "string", "description": "Hash of the source *.swarm.md this IR was emitted from" },
+        "hash":             { "type": "string", "description": "Hash of the source *.swarm.md this structured form was emitted from" },
         "compiler_version": { "type": ["string", "null"], "description": "Tool version; null until a tool exists; never merged with meta.language or meta.version" },
         "compiled_at":      { "type": ["string", "null"], "format": "date-time" }
       }
@@ -432,17 +432,17 @@ A minimal 3-node graph: one `REQ` (verified by a test and a property), one `INTE
 }
 ```
 
-Notes on the instance: `meta.language` (`SOL/0.1`), `meta.version` (`0.1.0`), and `provenance.compiler_version` (`null`, no tool exists) are the three distinct version fields and are never collapsed; the `verify_by[].adapter` values (`cmdTest`, `cmdValidate`) are AGENTS.md > Commands slots, not commands this framework runs; node `status` is `UNVERIFIED` because no `VERDICT` block has judged either obligation yet; the diagnostic `code` matches `^SOL-[SPMVO][0-9]{3}$`.
+Notes on the instance: `meta.language` (`SOL/0.1`), `meta.version` (`0.1.0`), and `provenance.compiler_version` (`null`, no tool exists) are the three distinct version fields and are never collapsed; the `verify_by[].adapter` values (`cmdTest`, `cmdValidate`) are AGENTS.md > Commands slots, not commands Swarm runs; node `status` is `UNVERIFIED` because no `VERDICT` block has judged either obligation yet; the diagnostic `code` matches `^SOL-[SPMVO][0-9]{3}$`.
 
-### 1.9 IR conformance
+### 1.9 Structured-form validity
 
-A document is a conformant SOL/0.1 IR iff it: (1) has exactly the five top-level keys of §1; (2) populates every field the schema marks `required`, and supplies the documented `default` for any optional field it omits; (3) uses only the closed enumerations (7 node kinds, 5 modals, 9 proof types, 7 edge types, the four core verdict values plus the three lifecycle decorators, and the `SOL-<LAYER><NNN>` code space); (4) represents every relationship once, as an edge (§1.3); (5) keeps the three version fields distinct (§1.6). The normative machine-readable form is the JSON Schema of §1.7; the intent tables above record which fields a well-formed node carries beyond the minimal `required` set.
+A document is a valid SOL/0.1 structured form iff it: (1) has exactly the five top-level keys of §1; (2) populates every field the schema marks `required`, and supplies the documented `default` for any optional field it omits; (3) uses only the closed enumerations (7 node kinds, 5 modals, 9 proof types, 7 edge types, the four core verdict values plus the three lifecycle decorators, and the `SOL-<LAYER><NNN>` code space); (4) represents every relationship once, as an edge (§1.3); (5) keeps the three version fields distinct (§1.6). The normative machine-readable form is the JSON Schema of §1.7; the intent tables above record which fields a well-formed node carries beyond the minimal `required` set.
 
 ---
 
 ## 2. The plan envelope
 
-The plan is the schedulable projection of the IR — derived from it by the `decompose` pass — and carries the **same contract-only status**: no tool emits it, no scheduler executes it. What is out of scope here is the live scheduler/harness that would execute the work packets across agents; the plan itself is Swarm's *static* coordination contract.
+The plan is the schedulable projection of the structured form — derived from it by the `decompose` step — and carries the **same contract-only status**: no tool emits it, no scheduler executes it. What is out of scope here is the live scheduler/harness that would execute the work packets across agents; the plan itself is Swarm's *static* coordination contract.
 
 A SOL plan document MUST be a single JSON object with **exactly four top-level keys**:
 
@@ -457,12 +457,12 @@ A SOL plan document MUST be a single JSON object with **exactly four top-level k
 
 | Key | JSON type | Cardinality | Purpose |
 |---|---|---|---|
-| `meta` | object | exactly 1 | Plan-level identity, the spec/IR it derives from, the three version fields. |
+| `meta` | object | exactly 1 | Plan-level identity, the spec / structured form it derives from, the three version fields. |
 | `packets` | array of work-packet objects | 0..n | The schedulable work units (§2.2). |
-| `edges` | array of edge objects | 0..n | Inter-packet relationships — the same single-source-of-relationship-truth rule as the IR. |
-| `provenance` | object | exactly 1 | Emission facts; same shape as the IR `provenance`. |
+| `edges` | array of edge objects | 0..n | Inter-packet relationships — the same single-source-of-relationship-truth rule as the structured form. |
+| `provenance` | object | exactly 1 | Emission facts; same shape as the structured form's `provenance`. |
 
-The plan reuses the IR's structural discipline: relationships between packets live only in `edges[]` (never duplicated as packet scalars), and the three version fields stay distinct. The plan carries `writes[]` (write surfaces) and **never a `locks` field** — a lock group is a named coarse write `SURFACE`, so lock-set analysis *is* write-set analysis at surface granularity.
+The plan reuses the structured form's discipline: relationships between packets live only in `edges[]` (never duplicated as packet scalars), and the three version fields stay distinct. The plan carries `writes[]` (write surfaces) and **never a `locks` field** — a lock group is a named coarse write `SURFACE`, so lock-set analysis *is* write-set analysis at surface granularity.
 
 ### 2.1 `meta`
 
@@ -478,15 +478,15 @@ The plan reuses the IR's structural discipline: relationships between packets li
 
 | Field | JSON type | Required | Meaning |
 |---|---|---|---|
-| `id` | string | MUST | Spec/plan identifier; matches `meta.id` of the source IR. |
-| `derived_from` | string | MUST | Path to the `*.swarm.ir.json` this plan was lowered from. |
-| `language` | string | MUST | The SOL discriminator (`SOL/0.1`); same axis as the IR `meta.language`. |
+| `id` | string | MUST | Spec/plan identifier; matches `meta.id` of the source structured form. |
+| `derived_from` | string | MUST | Path to the `*.swarm.ir.json` this plan was derived from. |
+| `language` | string | MUST | The SOL discriminator (`SOL/0.1`); same axis as the structured form's `meta.language`. |
 | `version` | string | MUST | The spec content version this plan reflects. Pattern `^[0-9]+\.[0-9]+\.[0-9]+$`. |
 | `max_parallel` | integer \| null | MAY (defaults `null`) | An advisory parallelism hint for a launcher; `null` = unspecified. Swarm computes *safety* (§2.3); concurrency *limits* are a launcher policy. |
 
 ### 2.2 `packets[]` — work packets
 
-A **work packet** is one schedulable unit: a single pass applied (under an optional profile) to a selected set of obligations, with declared scope, ordering, and a merge-safety verdict.
+A **work packet** is one schedulable unit: a single step applied (under an optional profile) to a selected set of obligations, with declared scope, ordering, and a merge-safety verdict.
 
 ```json
 {
@@ -507,8 +507,8 @@ A **work packet** is one schedulable unit: a single pass applied (under an optio
 | Field | JSON type | Required | Meaning |
 |---|---|---|---|
 | `id` | string | MUST | Packet identifier, unique within the plan. |
-| `pass` | string | MUST | The pass this packet runs: one of the 9 passes `author`, `lint`, `improve`, `lower`, `decompose`, `implement`, `verify`, `review`, `promote`. |
-| `profile` | string \| null | MAY (defaults `null`) | The heuristic profile parameterizing the pass (e.g. `skeptic` on `review`, `lead-engineer` on `decompose`). `null` = the pass's default profile. |
+| `pass` | string | MUST | The step this packet runs: one of the 9 steps `author`, `lint`, `improve`, `lower`, `decompose`, `implement`, `verify`, `review`, `promote`. |
+| `profile` | string \| null | MAY (defaults `null`) | The heuristic profile parameterizing the step (e.g. `skeptic` on `review`, `lead-engineer` on `decompose`). `null` = the step's default profile. |
 | `inputs` | array of string | MUST | The node ids (obligations / questions / traces) this packet consumes. |
 | `outputs` | array of string | MUST | The artifacts this packet is expected to produce (code paths, `*.swarm.trace.md`, `review.md`, `finding.md`, …). |
 | `writes` | array of string | MUST (MAY be empty) | The **write surfaces** this packet modifies — `SURFACE` ids, derived from the `writes` scope sets of its `inputs`. Every write surface here MUST be a subset of its obligations' declared `WRITES`. No `locks` field. |
@@ -520,7 +520,7 @@ A **work packet** is one schedulable unit: a single pass applied (under an optio
 
 #### 2.2.1 Packet edges
 
-Inter-packet relationships use the same edge object as the IR — `{ from, to, type, hard }` — drawn from the same closed 7-type set. The relevant types for a plan are `depends_on` (ordering) and `conflicts_with` (a shared write surface, or a read/write conflict on one surface). `conflicts_with` edges are what make a packet `merge_safe: false` against its conflict-mates. As in the IR, these relationships MUST live only in `edges[]`; the per-packet `depends_on[]` array is the declaration, the edge is the computed graph relationship.
+Inter-packet relationships use the same edge object as the structured form — `{ from, to, type, hard }` — drawn from the same closed 7-type set. The relevant types for a plan are `depends_on` (ordering) and `conflicts_with` (a shared write surface, or a read/write conflict on one surface). `conflicts_with` edges are what make a packet `merge_safe: false` against its conflict-mates. As in the structured form, these relationships MUST live only in `edges[]`; the per-packet `depends_on[]` array is the declaration, the edge is the computed graph relationship.
 
 ### 2.3 The safe-parallelism predicate
 
@@ -563,7 +563,7 @@ A packet's `merge_safe` MUST be `false` if it has any unresolved `conflicts_with
         "properties": {
           "id":         { "type": "string", "description": "Packet id, unique within the plan." },
           "pass":       { "enum": ["author", "lint", "improve", "lower", "decompose", "implement", "verify", "review", "promote"] },
-          "profile":    { "type": ["string", "null"], "default": null, "description": "Heuristic profile; null = the pass default." },
+          "profile":    { "type": ["string", "null"], "default": null, "description": "Heuristic profile; null = the step default." },
           "inputs":     { "type": "array", "items": { "type": "string" }, "description": "Node ids this packet consumes." },
           "outputs":    { "type": "array", "items": { "type": "string" }, "description": "Artifacts produced (code paths, trace/review/finding)." },
           "writes":     { "type": "array", "items": { "type": "string" }, "default": [], "description": "Write surfaces; each MUST be a subset of its inputs' WRITES (SOL-O005)." },
@@ -595,7 +595,7 @@ A packet's `merge_safe` MUST be `false` if it has any unresolved `conflicts_with
       "additionalProperties": false,
       "required": ["hash", "compiler_version", "compiled_at"],
       "properties": {
-        "hash":             { "type": "string", "description": "Hash of the source IR/spec this plan was derived from." },
+        "hash":             { "type": "string", "description": "Hash of the source structured form/spec this plan was derived from." },
         "compiler_version": { "type": ["string", "null"], "description": "Tool version; null until a tool exists." },
         "compiled_at":      { "type": ["string", "null"], "format": "date-time" }
       }
@@ -606,7 +606,7 @@ A packet's `merge_safe` MUST be `false` if it has any unresolved `conflicts_with
 
 ### 2.5 Worked plan fragment
 
-For the auth-refresh spec (one `INTERFACE`, one `REQ` depending on it, one `INVARIANT`), a conformant plan fragment:
+For the auth-refresh spec (one `INTERFACE`, one `REQ` depending on it, one `INVARIANT`), a valid plan fragment:
 
 ```json
 {
@@ -636,18 +636,18 @@ For the auth-refresh spec (one `INTERFACE`, one `REQ` depending on it, one `INVA
 
 `WP-001` is `merge_safe: false` (it freezes a shared interface contract; consumers serialize behind it); `WP-002` and `WP-003` are write-disjoint from their batch-mates and depend only on completed prior batches, so they are `merge_safe: true`.
 
-### 2.6 Plan conformance
+### 2.6 Plan validity
 
-A document is a conformant SOL/0.1 plan iff it: (1) has exactly the four top-level keys of §2; (2) populates every field the §2.4 schema marks `required` (defaulting optional fields); (3) carries **no `locks` field** anywhere; (4) uses only the closed pass set in `packets[].pass` and the closed 7-type edge set in `edges[]`; (5) represents inter-packet relationships once, as edges (§2.2.1); (6) keeps the three version fields distinct (§1.6). The plan is documented data only — no running emitter or scheduler ships. The normative machine-readable form is the JSON Schema of §2.4.
+A document is a valid SOL/0.1 plan iff it: (1) has exactly the four top-level keys of §2; (2) populates every field the §2.4 schema marks `required` (defaulting optional fields); (3) carries **no `locks` field** anywhere; (4) uses only the closed step set in `packets[].pass` and the closed 7-type edge set in `edges[]`; (5) represents inter-packet relationships once, as edges (§2.2.1); (6) keeps the three version fields distinct (§1.6). The plan is documented data only — no running emitter or scheduler ships. The normative machine-readable form is the JSON Schema of §2.4.
 
 ---
 
 ## Related
 
-- [docs/model/how-swarm-works.md](../model/how-swarm-works.md) — the seven phases / nine passes that emit and consume the IR and the plan; the `lower` and `decompose` passes that produce them.
+- [docs/model/how-swarm-works.md](../model/how-swarm-works.md) — the seven phases / nine steps that emit and consume the structured form and the plan; the `lower` and `decompose` steps that produce them.
 - [docs/language/versioning.md](../language/versioning.md) — the two version axes and the three version fields (`meta.language`, `meta.version`, `provenance.compiler_version`) these envelopes carry.
-- [docs/language/SOL.md](../language/SOL.md) — the surface language: the 7 block types, 5 modals, and clause grammar these JSON fields are the lowering of.
+- [docs/language/SOL.md](../language/SOL.md) — the surface language: the 7 block types, 5 modals, and clause grammar these JSON fields are the structured form of.
 - [docs/language/errors.md](../language/errors.md) — the `SOL-<LAYER><NNN>` lint catalogue the `diagnostics[]` array carries.
 - [docs/reference/proof-types.md](./proof-types.md) — the 9 closed proof types and the `VERIFY BY <type>:<adapter>:<artifact>` binding the `verify_by[]` array normalizes.
-- [docs/reference/cheatsheet.md](./cheatsheet.md) — the canonical counts (7 kinds, 5 modals, 9 proof types, 7 edge types, 9 passes) the closed enumerations in these schemas MUST match.
-- [docs/model/conformance.md](../model/conformance.md) — which artifacts a conformant repository MUST carry, including these schemas verbatim.
+- [docs/reference/cheatsheet.md](./cheatsheet.md) — the canonical counts (7 kinds, 5 modals, 9 proof types, 7 edge types, 9 steps) the closed enumerations in these schemas MUST match.
+- [docs/model/conformance.md](../model/conformance.md) — which artifacts a valid repository MUST carry, including these schemas verbatim.

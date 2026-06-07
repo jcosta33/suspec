@@ -35,16 +35,16 @@ the spec repo as a linked PR.
 
 ## What this kit deliberately does NOT contain
 
-- **The SOL/APS/passes manuals** — the skills carry their procedure inline and the `reference/` cards carry
+- **The SOL/APS/steps manuals** — the skills carry their procedure inline and the `reference/` cards carry
   the shared rules, so an adopter needs neither. The full manuals live in the `swarm` repo's `docs/`.
 - **The code-implementation skills** — the per-kind implement guides and the code personas
   (`persona-bug-hunter`, `persona-builder`, …) are framework reference in
   [`../docs/library/code-skills/`](../docs/library/code-skills/), not kit content (a docs repo never runs them).
-- **The conformance corpus** — the golden corpus is producer test data at the `swarm` repo's top-level
+- **The validity corpus** — the golden corpus is producer test data at the `swarm` repo's top-level
   `conformance/`.
 
 ## Adopting
 
 **The full guide (with a copy-paste agent prompt, per role) is [`../docs/ADOPTING.md`](../docs/ADOPTING.md).**
-Nothing is enforced at runtime (there is none); conformance is graded per role — a spec repo's bar is this
+Nothing is enforced at runtime (there is none); validity is graded per role — a spec repo's bar is this
 kit + a populated `AGENTS.md`, a code repo's footprint is near-zero.

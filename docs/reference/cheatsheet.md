@@ -1,10 +1,10 @@
 # The Flow Graph: Canonical Counts and the Default-Suite Matrix
 
-> Swarm's reference for the flow graph: the canonical cardinalities of every closed set (block types, modals, verdicts, proof types, phases, passes, improve operations, lint layers) and the per-task-kind default-suite matrix that ties them together.
+> Swarm's reference for the flow graph: the canonical cardinalities of every closed set (block types, modals, verdicts, proof types, phases, steps, improve operations, lint layers) and the per-task-kind default-suite matrix that ties them together.
 
-Swarm is markdown-only, provider-neutral, and has **no runtime**. Nothing on this page is shipped code: the parser, linter, IR builder, scheduler, proof runner, and the `swarm` CLI are all **contracts** a future tool would build against, never code this repo ships (Invariant 1, NO RUNTIME). A "pass" is a transformation a human or agent performs by hand today, following a pass guide; a "gate" is a check a reviewer applies by reading evidence.
+Swarm is markdown-only, provider-neutral, and has **no runtime**. Nothing on this page is shipped code: the parser, linter, structured-form builder, scheduler, proof runner, and the `swarm` CLI are all **contracts** a future tool would build against, never code this repo ships (Invariant 1, NO RUNTIME). A "pass" is a transformation a human or agent performs by hand today, following a pass guide; a "gate" is a check a reviewer applies by reading evidence.
 
-This is the **count-reconciliation hub**. Every closed set in Swarm has exactly one cardinality, and that number MUST be identical wherever it appears — in the SOL language reference, the IR schema, the lint catalogue, the pass guides, and the conformance manifest. Conformance pins these as acceptance checks A10–A16: a count that differs between any two documents is a failing check. This page is where the numbers are gathered, cross-linked, and laid against each other.
+This is the **count-reconciliation hub**. Every closed set in Swarm has exactly one cardinality, and that number MUST be identical wherever it appears — in the SOL language reference, the structured-form schema, the lint catalogue, the pass guides, and the conformance manifest. Conformance pins these as acceptance checks A10–A16: a count that differs between any two documents is a failing check. This page is where the numbers are gathered, cross-linked, and laid against each other.
 
 ## Canonical counts
 
@@ -16,8 +16,8 @@ Each row is a **closed set**: the conformance contract forbids adding, removing,
 | Modals | **5** | `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY` | A11 | [SOL](../language/SOL.md) |
 | Verdicts | **7** (4 core + 3 lifecycle) | core: `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED` · lifecycle: `WAIVED`, `STALE`, `CONTRADICTED` | A12 | [proof types](proof-types.md) |
 | Proof types | **9** | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor` | A13 | [proof types](proof-types.md) |
-| Phases | **7** | `PARSE`, `NORMALIZE`, `LOWER`, `EXECUTE`, `VERIFY`, `REVIEW`, `PROMOTE` | A14 | (this page, §Phases and passes) |
-| Passes | **9** | `author`, `lint`, `improve`, `lower`, `decompose`, `implement`, `verify`, `review`, `promote` | A14 | (this page, §Phases and passes) |
+| Phases | **7** | `PARSE`, `NORMALIZE`, `LOWER`, `EXECUTE`, `VERIFY`, `REVIEW`, `PROMOTE` | A14 | (this page, §Phases and steps) |
+| Steps | **9** | `author`, `lint`, `improve`, `lower`, `decompose`, `implement`, `verify`, `review`, `promote` | A14 | (this page, §Phases and steps) |
 | Improve operations | **10** | `NORMALIZE`, `ATOMIZE`, `CONCRETIZE`, `QUANTIFY`, `BIND`, `SCOPE`, `CLARIFY`, `DECONFLICT`, `COMPRESS`, `PROMOTE` | A15 | (this page) |
 | Lint layers | **5** (S/P/M/V/O) | `S` SYNTAX, `P` PROSE, `M` SEMANTIC, `V` VERIFICATION, `O` ORCHESTRATION | A16 | [errors](../language/errors.md) |
 
@@ -26,11 +26,11 @@ Notes that prevent miscounting:
 - **Block types: 7, not 10.** `TASK-MAP`, `FINDING`, and `ADR` are downstream artifacts, not SOL block types. Three block types carry binding force (the *obligation blocks* `REQ`, `CONSTRAINT`, `INVARIANT`); the other four declare a boundary (`INTERFACE`), mark ambiguity (`QUESTION`), claim implementation (`TRACE`), or judge an obligation (`VERDICT`).
 - **Modals: 5, not 7.** `SHALL`/`SHALL NOT` are not modals and are forbidden in binding clauses (flagged `SOL-P058`); `CAN`/`WILL` are *non-modal* and likewise forbidden (`SOL-P003`). Only the five uppercase modals bind.
 - **Proof types: exactly 9.** The set is closed. `unit`/`integration`/`e2e` are scope *qualifiers* under `test` (written `test:unit:`, etc.), not types; `runtime` is not a type and maps to `monitor`. An unknown `<type>` is `SOL-V009`.
-- **Phases vs passes: 7 vs 9 — do not conflate.** A *phase* is a conceptual compiler stage (a fixed-order taxonomy of *where* work sits); a *pass* is a schedulable transformation (the unit a human/agent/tool actually runs). Several passes may map to one phase.
-- **Improve operations: exactly 10, closed.** "Improve the spec" with no named operation is not a valid request; an improve pass MUST NOT invent operations outside the set. Note `NORMALIZE` and `PROMOTE` name *both* an improve operation and (separately) a phase / a pass — same word, different layer.
+- **Phases vs steps: 7 vs 9 — do not conflate.** A *phase* is a conceptual stage (a fixed-order taxonomy of *where* work sits); a *step* is a schedulable transformation (the unit a human/agent/tool actually runs). Several steps may map to one phase.
+- **Improve operations: exactly 10, closed.** "Improve the spec" with no named operation is not a valid request; an improve pass MUST NOT invent operations outside the set. Note `NORMALIZE` and `PROMOTE` name *both* an improve operation and (separately) a phase / a step — same word, different layer.
 - **Lint layers: 5.** One prefix `SOL`, five layers, form `SOL-<LAYER>NNN`. APS prose violations surface as `SOL-P###` codes within this single namespace.
 
-## Phases and passes
+## Phases and steps
 
 The seven phases are a single fixed order; a conformant description MUST present them in exactly this order and MUST NOT add, remove, or reorder them in v0.1:
 
@@ -38,7 +38,7 @@ The seven phases are a single fixed order; a conformant description MUST present
 PARSE -> NORMALIZE -> LOWER -> EXECUTE -> VERIFY -> REVIEW -> PROMOTE
 ```
 
-The nine passes are the schedulable transformations, listed in pipeline order. A launcher MAY interleave passes across specs, but for a single obligation the partial order MUST hold (an obligation cannot be `verify`-ed before `implement`, nor `implement`-ed before `lower`):
+The nine steps are the schedulable transformations, listed in flow order. A launcher MAY interleave steps across specs, but for a single obligation the partial order MUST hold (an obligation cannot be `verify`-ed before `implement`, nor `implement`-ed before `lower`):
 
 ```text
 author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote
@@ -48,17 +48,17 @@ author -> lint -> improve -> lower -> decompose -> implement -> verify -> review
 
 | Pass | Phase(s) | Lint layer(s) it owns | Note |
 | --- | --- | --- | --- |
-| `author` | entry (pre-`PARSE`) | — | First compiler-visible artifact (`spec.swarm.md`); not itself analyzable. |
+| `author` | entry (pre-`PARSE`) | — | First Swarm-visible artifact (`spec.swarm.md`); not itself analyzable. |
 | `lint` | `PARSE` + `NORMALIZE` | S, P, M, V, O | Non-mutating; the only pass that straddles two phases (well-formedness + smell detection). |
 | `improve` | `NORMALIZE` | answers the codes mapped to the 10 improve operations | Runs only after `lint`; strictly semantics-preserving (R-IMPROVE). |
-| `lower` | `LOWER` | O | Emits the IR obligation graph and the two derived graphs; needs a lint-clean, approved spec. |
-| `decompose` | `LOWER` | O | Partitions the IR into write-disjoint work packets; consumes the IR, not the surface prose. |
+| `lower` | `LOWER` | O | Emits the structured form (the obligations) and the two derived graphs; needs a lint-clean, approved spec. |
+| `decompose` | `LOWER` | O | Partitions the structured form into write-disjoint work packets; consumes the structured form, not the surface prose. |
 | `implement` | `EXECUTE` | — | Produces the change for assigned obligations only; records TRACE claims. |
 | `verify` | `VERIFY` | V | The only profile-independent pass; one verdict per `VERIFY BY` binding. |
 | `review` | `REVIEW` | M, V | Judges claims, applies lifecycle decorators, computes the merge gate. |
 | `promote` | `PROMOTE` | — | Moves durable discoveries into provenance-anchored artifacts. |
 
-Of the nine passes, the six analysis passes — `lint`, `improve`, `lower`, `decompose`, `review`, `promote` — each ship a **dedicated pass guide**; `implement` is served by **nine per-`task_kind` implement guides**, `author` by **six author guides**, and `verify` by the `empirical-proof` cross-cutting fragment (ADR-0042/0051). Every pass now has a guide, but a guide is an optional aid, not a conformance gate — the pass contract is the binding artifact. Pass guides are SOFT control: they MUST NOT define SOL/APS semantics, modality, authority order, or verification meaning [[SKILLBP]](../research/sources.md#SKILLBP). The authoring guides ship in the starter kit; the implement-side guides are `docs/library/code-skills/` reference (ADR-0051).
+Of the nine steps, the six analysis steps — `lint`, `improve`, `lower`, `decompose`, `review`, `promote` — each ship a **dedicated pass guide**; `implement` is served by **nine per-`task_kind` implement guides**, `author` by **six author guides**, and `verify` by the `empirical-proof` cross-cutting fragment (ADR-0042/0051). Every pass now has a guide, but a guide is an optional aid, not a conformance gate — the pass contract is the binding artifact. Pass guides are SOFT control: they MUST NOT define SOL/APS semantics, modality, authority order, or verification meaning [[SKILLBP]](../research/sources.md#SKILLBP). The authoring guides ship in the starter kit; the implement-side guides are `docs/library/code-skills/` reference (ADR-0051).
 
 ## The proof-type × phase default-suite matrix
 
@@ -142,4 +142,4 @@ A reconciliation caveat: only the **counts** are frozen, not every row of the de
 - [proof types](proof-types.md) — the `VERIFY BY` binding grammar, adapter resolution, proof-type → `cmd*` mapping, and verdict mechanics.
 - [errors](../language/errors.md) — the five lint layers and the `SOL-<LAYER>NNN` code catalogue.
 - [drift and staleness](drift-and-staleness.md) — how a prior `PASS` becomes `STALE` and the maturity ladder.
-- [IR schema](structured-form.md) — where the obligation graph and the two derived graphs emitted by `lower` are defined.
+- [structured form](structured-form.md) — where the obligations and the two derived graphs emitted by `lower` are defined.

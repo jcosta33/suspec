@@ -1,15 +1,15 @@
-# `improve` — pass-output rubric
+# `improve` — step-output rubric
 
-> The output-quality predicate for the `improve` pass: a candidate normalized `spec.swarm.md` MUST change no obligation's intent, drop no id/modality/binding, attribute every edit to one of the ten closed improve operations, and resolve (not silently delete) each blocking lint code. Each predicate is a boolean a reviewer decides by diffing the linted input spec against the improved output — no runtime.
+> The output-quality predicate for the `improve` step: a candidate normalized `spec.swarm.md` MUST change no obligation's intent, drop no id/modality/binding, attribute every edit to one of the ten closed improve operations, and resolve (not silently delete) each blocking lint code. Each predicate is a boolean a reviewer decides by diffing the linted input spec against the improved output — no runtime.
 
-`improve` is the `NORMALIZE`-phase pass, run only after `lint`. It is the **only** pass permitted to rewrite the spec, and every edit MUST be strictly semantics-preserving (R-IMPROVE). Its rubric grades whether the rewrite stayed inside the closed operation set and preserved every obligation's meaning — intent change routes to amendment, never to `improve`.
+`improve` is the `NORMALIZE`-phase step, run only after `lint`. It is the **only** step permitted to rewrite the spec, and every edit MUST be strictly semantics-preserving (R-IMPROVE). Its rubric grades whether the rewrite stayed inside the closed operation set and preserved every obligation's meaning — intent change routes to amendment, never to `improve`.
 
 **Input artifact:** the linted `spec.swarm.md` + the `lint` report.
 **Output artifact:** the normalized `spec.swarm.md` + the spec-improvement report.
 
 ## Output-grading predicates
 
-Each predicate MUST hold. Any single failing predicate fails the pass.
+Each predicate MUST hold. Any single failing predicate fails the step.
 
 | # | Predicate | Holds when | Fails when |
 | --- | --- | --- | --- |
@@ -23,14 +23,14 @@ Each predicate MUST hold. Any single failing predicate fails the pass.
 
 A reviewer checks I3 against the closed mapping: `NORMALIZE`←`SOL-P003`/`SOL-V###`, `ATOMIZE`←`SOL-P004`, `CONCRETIZE`/`QUANTIFY`←`SOL-P005`, `BIND`←`SOL-V001`/`SOL-V###`, `SCOPE`←`SOL-O###`, `CLARIFY`←`SOL-P008`, `DECONFLICT`←`SOL-M002`, `COMPRESS`←`SOL-P054`/`SOL-P055`, `PROMOTE`←the promotion protocol. An edit that applies an operation with no corresponding triggering lint code is a no-op authoring decision, not an improve op, and is scored against I3.
 
-## Cross-pass predicates scored here
+## Cross-step predicates scored here
 
-The suite scores one cross-pass predicate at the `improve` output:
+The suite scores one cross-step predicate at the `improve` output:
 
-- **Parse-validity** — the normalized spec re-parses clean against the grammar; the rewrite emits no structurally invalid block. (An improve pass that fixes one smell while introducing a malformed block fails here.)
+- **Parse-validity** — the normalized spec re-parses clean against the grammar; the rewrite emits no structurally invalid block. (An improve step that fixes one smell while introducing a malformed block fails here.)
 
 ## Related
 
-- [The `improve` pass guide](../../docs/passes/improve.md) — the ten operations, the R-IMPROVE rule (I1/I5), and the twelve-category semantic-diff this rubric grades against.
+- [The `improve` step guide](../../docs/passes/improve.md) — the ten operations, the R-IMPROVE rule (I1/I5), and the twelve-category semantic-diff this rubric grades against.
 - [The distillation-loss budget](../../docs/reference/distillation-loss-budget.md) — the no-distillation-loss discipline I2 enforces.
 - [The flow graph](../../docs/reference/flow-graph.md) — the closed set of exactly ten improve operations I3 checks membership against.

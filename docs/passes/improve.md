@@ -1,14 +1,14 @@
-# The `improve` pass — the ten improve operations
+# The `improve` step — the ten improve operations
 
-> Swarm's reference for the `improve` pass: the closed set of ten strictly semantics-preserving improve operations, the R-IMPROVE / R-DECOMPOSE-NOT-IMPROVE rules, the worked before/after examples, and the twelve-category semantic-diff (R-SEMDIFF) that judges every edit.
+> Swarm's reference for the `improve` step: the closed set of ten strictly semantics-preserving improve operations, the R-IMPROVE / R-DECOMPOSE-NOT-IMPROVE rules, the worked before/after examples, and the twelve-category semantic-diff (R-SEMDIFF) that judges every edit.
 
-`improve` is the third of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It is the `NORMALIZE`-phase pass that rewrites a spec to satisfy SOL and APS. This page is the complete reference for that single pass.
+`improve` is the third of the **nine steps** of the Swarm flow (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It is the `NORMALIZE`-phase step that rewrites a spec to satisfy SOL and APS. This page is the complete reference for that single step.
 
-Like every Swarm pass, `improve` has **no runtime**: it is a contract a human, an agent following a pass guide, or a future tool performs. Nothing here is shipped code (Invariant 1).
+Like every Swarm step, `improve` has **no runtime**: it is a contract a human, an agent following a step guide, or a future tool performs. Nothing here is shipped code (Invariant 1).
 
-## What the pass does
+## What the step does
 
-The `improve` pass takes a linted spec and brings it into canonical, smell-free, **semantics-preserving** form. It is defined as a **closed set of exactly ten operations** — a conformant `improve` pass MUST NOT invent operations outside this set, and "improve the spec" with no named operation is not a valid request.
+The `improve` step takes a linted spec and brings it into canonical, smell-free, **semantics-preserving** form. It is defined as a **closed set of exactly ten operations** — a valid `improve` step MUST NOT invent operations outside this set, and "improve the spec" with no named operation is not a valid request.
 
 | Aspect | Value |
 |---|---|
@@ -21,7 +21,7 @@ The `improve` pass takes a linted spec and brings it into canonical, smell-free,
 Two ordering facts pin where `improve` sits:
 
 - **`improve` runs only after `lint`.** Each improve operation is *triggered* by one or more lint codes. Running `improve` with no lint findings to answer is a **no-op**.
-- **`improve` is the only pass permitted to rewrite the spec.** `lint` is non-mutating (it only emits diagnostics); `improve` is where the spec text legitimately changes — and only semantics-preservingly.
+- **`improve` is the only step permitted to rewrite the spec.** `lint` is non-mutating (it only emits diagnostics); `improve` is where the spec text legitimately changes — and only semantics-preservingly.
 
 ## The hard rule: improve is semantics-preserving
 
@@ -29,7 +29,7 @@ Two ordering facts pin where `improve` sits:
 
 Design rationale: `improve` is the normalization phase; intent change is a `PROMOTE`/amendment decision governed by [source authority](../model/source-authority.md). Conflating the two would let a "cleanup" silently rewrite what the system builds — a direct violation of "code is reality, not intent" (Invariant 4). The spec-improvement report MUST carry a *Semantic changes* row for any edit the author is unsure preserves intent, flagged `requires approval: yes`; such edits are out of scope for `improve` and belong to amendment.
 
-> **R-DECOMPOSE-NOT-IMPROVE.** [`decompose`](decompose.md) is a separate **pass**, NOT an improve operation. Splitting a spec into task-sized work packets is lowering work that changes the *artifact partition*, not the *prose*; it MUST NOT appear in the improve set. The improve operation `ATOMIZE` is distinct: it splits one bundled obligation into multiple obligations *within the same spec*, preserving the spec as the unit.
+> **R-DECOMPOSE-NOT-IMPROVE.** [`decompose`](decompose.md) is a separate **step**, NOT an improve operation. Splitting a spec into task-sized work packets is structuring work that changes the *artifact partition*, not the *prose*; it MUST NOT appear in the improve set. The improve operation `ATOMIZE` is distinct: it splits one bundled obligation into multiple obligations *within the same spec*, preserving the spec as the unit.
 
 ## The ten operations (normative)
 
@@ -109,13 +109,13 @@ PROMOTE
 The `CLARIFY` improve operation (op 7 above) and the **CLARIFY gate** are distinct and MUST NOT be conflated:
 
 - The `CLARIFY` **op** is a *local edit* in the `NORMALIZE` phase: it lifts one buried prose ambiguity (`SOL-P008`) into an explicit interpretation or a `QUESTION` block. The op *creates* the QUESTION.
-- The CLARIFY **gate** is a *pipeline checkpoint* at the `NORMALIZE`→`LOWER` boundary: it refuses to advance the spec while any such question is still open and blocking. The gate *waits on* it.
+- The CLARIFY **gate** is a *flow checkpoint* at the `NORMALIZE`→`LOWER` boundary: it refuses to advance the spec while any such question is still open and blocking. The gate *waits on* it.
 
-One is the repair; the other is the precondition that the repair has been discharged. This page covers the op; the gate belongs to the [`lower`](lower.md) pass.
+One is the repair; the other is the precondition that the repair has been discharged. This page covers the op; the gate belongs to the [`lower`](lower.md) step.
 
 ## How an edit is judged legitimate: the twelve-category semantic diff
 
-R-IMPROVE is the *rule*; the **semantic-diff classification** is the *operational test* behind it. Every spec edit reaching the `improve` or `review` pass MUST be classified into exactly one of **twelve closed categories**. The set is closed: a conformant pass MUST NOT invent a thirteenth, and an edit that fits none is itself a defect (an unanalyzable diff) that MUST be split until each part classifies.
+R-IMPROVE is the *rule*; the **semantic-diff classification** is the *operational test* behind it. Every spec edit reaching the `improve` or `review` step MUST be classified into exactly one of **twelve closed categories**. The set is closed: a valid step MUST NOT invent a thirteenth, and an edit that fits none is itself a defect (an unanalyzable diff) that MUST be split until each part classifies.
 
 | # | Category | What changed | Auto-approved? |
 |---|---|---|---|
@@ -132,7 +132,7 @@ R-IMPROVE is the *rule*; the **semantic-diff classification** is the *operationa
 | 11 | changed question status | A `QUESTION` (`Q-NNN`) changes lifecycle (raised, answered, downgraded `[blocking]`→`[non-blocking]`, or materially resolved). | No — amendment |
 | 12 | pure normalization | Formatting, casing, [keyword form](../language/SOL.md), canonical clause order, dead-link/proof-ref completion, or redundancy compression — with **no** change to any obligation's actor, trigger, modality, response, binding, non-goal, interface, invariant, or question status. | **Yes** — the only approval-free class |
 
-> **R-SEMDIFF.** **Pure normalization (category 12) is the only auto-approved class.** Every one of categories 1–11 is an **amendment** and MUST route to approval. The `improve` and `review` passes MUST classify each edit before the spec is promoted; an unclassified edit MUST NOT be promoted. An edit that combines a normalization with any of categories 1–11 is classified by its strongest (non-normalization) category, never as pure normalization — normalization does not "absorb" a semantic change ridden in alongside it.
+> **R-SEMDIFF.** **Pure normalization (category 12) is the only auto-approved class.** Every one of categories 1–11 is an **amendment** and MUST route to approval. The `improve` and `review` steps MUST classify each edit before the spec is promoted; an unclassified edit MUST NOT be promoted. An edit that combines a normalization with any of categories 1–11 is classified by its strongest (non-normalization) category, never as pure normalization — normalization does not "absorb" a semantic change ridden in alongside it.
 
 The bridge this makes explicit: an `improve` operation is legitimate **iff** every edit it makes classifies as category 12. The moment an edit classifies as any of 1–11, the work has **left `improve` and entered amendment**, and the change report MUST record the category and carry `requires approval: yes`.
 
@@ -149,13 +149,15 @@ A few selections inside `improve` are deliberately left to the author rather tha
 
 ## Related
 
-- [`lint`](lint.md) — the pass that runs before `improve` and emits the `SOL-<LAYER>###` codes each improve operation is triggered by; `improve` runs only after it.
-- [`lower`](lower.md) — the next pass; home of the CLARIFY **gate** and the COVERAGE gate at the `NORMALIZE`→`LOWER` boundary (both distinct from the `CLARIFY` op), and the IR shape lowering emits (including `verify_by`, `WRITES`, and edges).
-- [`decompose`](decompose.md) — the separate pass that splits a spec into task-sized work packets (the boundary R-DECOMPOSE-NOT-IMPROVE protects), distinct from the `ATOMIZE` improve operation.
-- [`review`](review.md) — the pass that also classifies edits with the twelve-category semantic diff before promotion.
-- [`promote`](promote.md) — the pass that discharges amendments and source-authority decisions that `DECONFLICT` and `PROMOTE` defer to.
+- [`lint`](lint.md) — the step that runs before `improve` and emits the `SOL-<LAYER>###` codes each improve operation is triggered by; `improve` runs only after it.
+- [`lower`](lower.md) — the next step; home of the CLARIFY **gate** and the COVERAGE gate at the `NORMALIZE`→`LOWER` boundary (both distinct from the `CLARIFY` op), and the structured form structuring emits (including `verify_by`, `WRITES`, and edges).
+- [`decompose`](decompose.md) — the separate step that splits a spec into task-sized work packets (the boundary R-DECOMPOSE-NOT-IMPROVE protects), distinct from the `ATOMIZE` improve operation.
+- [`review`](review.md) — the step that also classifies edits with the twelve-category semantic diff before promotion.
+- [`promote`](promote.md) — the step that discharges amendments and source-authority decisions that `DECONFLICT` and `PROMOTE` defer to.
 - [SOL](../language/SOL.md) — the Spec Obligation Language whose modals, clause order, and obligation blocks `improve` normalizes toward.
-- [APS](../language/APS.md) — the structural rules `improve` brings a spec into conformance with.
+- [APS](../language/APS.md) — the structural rules `improve` brings a spec into line with.
 - [errors](../language/errors.md) — the lint-code catalog the trigger codes in this page reference.
 - [the `spec.swarm.md` artifact](../artifacts/spec.md) — the spec `improve` normalizes.
 - The **Architect** persona carrier — the heuristic-profile stance that runs `improve` (`improve` is normalization, carried by the Architect; the Skeptic lists `improve` under "does not apply").
+
+The `decompose`/`review`/`promote` cross-references above link the steps that share the semantic-diff and amendment machinery; the [README](../../README.md) carries the one-line framing of what Swarm is.

@@ -1,34 +1,34 @@
-# The `decompose` pass
+# The `decompose` step
 
-`decompose` is the fifth of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It shares the `LOWER` phase with [`lower`](lower.md): where `lower` builds the IR obligation graph, `decompose` **partitions that graph into schedulable work packets** and produces the write-surface partition on which all safe parallelism rests. This is the page that defines that partition.
+`decompose` is the fifth of the **nine steps** of the Swarm flow (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`). It shares the `LOWER` phase with [`lower`](lower.md): where `lower` builds the structured obligations, `decompose` **partitions them into schedulable work packets** and produces the write-surface partition on which all safe parallelism rests. This is the page that defines that partition.
 
-Like every Swarm pass, `decompose` has **no runtime**. It is a contract a human, an agent following a pass guide, or a future tool performs. The plan it produces is documented, versioned data — the shape a launcher would consume — never the output of a shipped emitter, and never a live scheduler. Plan derivation *is* the `decompose` pass; what stays out of Swarm is the scheduler/harness that would execute the plan's packets live across agents (a launcher concern).
+Like every Swarm step, `decompose` has **no runtime**. It is a contract a human, an agent following a step guide, or a future tool performs. The plan it produces is documented, versioned data — the shape a launcher would consume — never the output of a shipped emitter, and never a live scheduler. Plan derivation *is* the `decompose` step; what stays out of Swarm is the scheduler/harness that would execute the plan's packets live across agents (a launcher concern).
 
-## What the pass does
+## What the step does
 
-The `decompose` pass **partitions the obligation graph into task-sized, write-disjoint work packets** with their assigned obligations, write surfaces, and verification bindings. Deliberate decomposition into a searchable structure of sub-units, rather than flat one-shot generation over the whole spec, is what makes the downstream work tractable [[TREEOFTHOUGHTS]](../research/sources.md#TREEOFTHOUGHTS).
+The `decompose` step **partitions the obligations into task-sized, write-disjoint work packets** with their assigned obligations, write surfaces, and verification bindings. Deliberate decomposition into a searchable structure of sub-units, rather than flat one-shot generation over the whole spec, is what makes the downstream work tractable [[TREEOFTHOUGHTS]](../research/sources.md#TREEOFTHOUGHTS).
 
 | Aspect | Value |
 |---|---|
 | Phase(s) | **`LOWER`** (shared with `lower`) |
-| Input artifact | `*.swarm.ir.json` (the IR obligation graph + the two derived graphs) |
+| Input artifact | `*.swarm.ir.json` (the structured obligations + the two derived graphs) |
 | Output artifact | [`task.md`](../artifacts/task.md) work packets; and, named-as-contract, `*.swarm.plan.json` (`auth-refresh.swarm.ir.json` → `auth-refresh.swarm.plan.json`) |
 | Typical carrier profile | Lead Engineer |
 | Lint layer | `SOL-O###` (orchestration: scope/ownership, e.g. `SOL-O001`, `SOL-O005`, `SOL-O007`, `SOL-O008`) |
 
-`decompose` ships a **dedicated stdlib pass guide**, carried by the Lead Engineer profile — it is the machinery the obligation graph needs to become schedulable, and it gates safe parallelism. (the six analysis passes — `lint`, `improve`, `lower`, `decompose`, `review`, `promote` — each ship a pass guide; `implement` is served by the nine per-`task_kind` guides, `author` by the six author guides, `verify` by the `empirical-proof` fragment — ADR-0042/0051.)
+`decompose` ships a **dedicated stdlib step guide**, carried by the Lead Engineer profile — it is the machinery the obligations need to become schedulable, and it gates safe parallelism. (Every step ships a guide; the full per-step distribution is in [`author`](author.md) — ADR-0042/0051.)
 
-`decompose` consumes the **IR, not the surface spec**: it MUST operate on `*.swarm.ir.json` so that work-packet boundaries are computed from the typed graph (the two derived graphs below), not re-parsed from prose.
+`decompose` consumes the **structured form, not the surface spec**: it MUST operate on `*.swarm.ir.json` so that work-packet boundaries are computed from the typed graph (the two derived graphs below), not re-parsed from prose.
 
-## The three obligations of the pass
+## The three obligations of the step
 
-The pass MUST:
+The step MUST:
 
-1. **Partition obligations into work packets** — each packet carrying its assigned obligations, the constraints/invariants in force, the interfaces it touches, its write surfaces, and its verification bindings (the [`task.md`](../artifacts/task.md) contract). Each produced `task.md` is the lowered work packet for one pass — the unit a single `implement` run owns.
-2. **Project owned paths** for each packet as the file/glob projection of its assigned obligations' `WRITES` surfaces. Owned paths MUST be a subset of that union — the owned-path containment rule (lint `SOL-O005`); an owned path touching a file outside any assigned obligation's declared write surface is the disjoint-scope violation. This is the lowering tie made precise below.
+1. **Partition obligations into work packets** — each packet carrying its assigned obligations, the constraints/invariants in force, the interfaces it touches, its write surfaces, and its verification bindings (the [`task.md`](../artifacts/task.md) contract). Each produced `task.md` is the lowered work packet for one step — the unit a single `implement` run owns.
+2. **Project owned paths** for each packet as the file/glob projection of its assigned obligations' `WRITES` surfaces. Owned paths MUST be a subset of that union — the owned-path containment rule (lint `SOL-O005`); an owned path touching a file outside any assigned obligation's declared write surface is the disjoint-scope violation. This is the structuring tie made precise below.
 3. **Compute merge order** from the `depends_on` edges (the dependency DAG) as a partial order, and **prove pairwise disjointness** of the owned paths of any two packets scheduled in parallel, using the write-surface conflict graph.
 
-`decompose` is bound by the [distillation-loss discipline](../reference/distillation-loss-budget.md): the two `LOWER` passes MUST NOT drop an obligation id, modality, actor, trigger, response, constraint, invariant, verification binding, or authority. An obligation reaching `decompose` with no `verify_by` is a `SOL-V001`-class defect that `BIND` should have answered during [`improve`](improve.md).
+`decompose` is bound by the [distillation-loss discipline](../reference/distillation-loss-budget.md): the two `LOWER` steps MUST NOT drop an obligation id, modality, actor, trigger, response, constraint, invariant, verification binding, or authority. An obligation reaching `decompose` with no `verify_by` is a `SOL-V001`-class defect that `BIND` should have answered during [`improve`](improve.md).
 
 ## The scope vocabulary `decompose` partitions over
 
@@ -36,9 +36,9 @@ The partition `decompose` produces is computed entirely from **declared access s
 
 ### The scope declarations (the five clauses)
 
-Every obligation block (REQ, CONSTRAINT, INVARIANT) MAY carry scope-declaration metadata in the trailing-metadata position of the SOL [surface syntax](../language/SOL.md). Surface keywords are UPPERCASE and space-separated; each lowers to a `snake_case` IR field. Five clauses are load-bearing for decomposition — four declared on the obligation, plus the worker-level `OWNED BY` projection the partition produces:
+Every obligation block (REQ, CONSTRAINT, INVARIANT) MAY carry scope-declaration metadata in the trailing-metadata position of the SOL [surface syntax](../language/SOL.md). Surface keywords are UPPERCASE and space-separated; each lowers to a `snake_case` structured-form field. Five clauses are load-bearing for decomposition — four declared on the obligation, plus the worker-level `OWNED BY` projection the partition produces:
 
-| Surface clause | IR field | Declares | Graph contribution |
+| Surface clause | Structured-form field | Declares | Graph contribution |
 |---|---|---|---|
 | `WRITES <surface-list>` | `writes` | The write surfaces (named SURFACEs or paths/globs) the obligation mutates. | Write-surface conflict graph. |
 | `READS <surface-list>` | `reads` | The read set the obligation depends on but does not mutate. | Read/write conflict edges. |
@@ -47,9 +47,9 @@ Every obligation block (REQ, CONSTRAINT, INVARIANT) MAY carry scope-declaration 
 | `AFFECTS <id-list-or-surface>` | `affects` **edge** | The impact set: obligations or surfaces that may be perturbed but are not directly written. | Soft `affects` conflict edge. |
 | `OWNED BY <worker>` | `owner` | The execution-tier projection: the worker/packet that owns this obligation's write surfaces. Produced by `decompose`, not authored on the source obligation. | Subject to OWNED ⊆ WRITES (lint `SOL-O005`). |
 
-`AFFECTS` MUST lower to an `affects` edge in the IR, never folded into `writes` or `depends_on`. `DEPENDS_ON` (underscore) is **not** a surface keyword — it is only the IR edge-type transcription; a source author writing `DEPENDS_ON` in `.swarm.md` is a keyword-form error (`SOL-S002`-adjacent). The surface keyword is exactly `DEPENDS ON` (two words). Relationships are emitted **once**, as IR `edges[]`, never duplicated as node scalars in the conflict analysis.
+`AFFECTS` MUST lower to an `affects` edge in the structured form, never folded into `writes` or `depends_on`. `DEPENDS_ON` (underscore) is **not** a surface keyword — it is only the edge-type transcription; a source author writing `DEPENDS_ON` in `.swarm.md` is a keyword-form error (`SOL-S002`-adjacent). The surface keyword is exactly `DEPENDS ON` (two words). Relationships are emitted **once**, as `edges[]`, never duplicated as node scalars in the conflict analysis.
 
-A worked obligation and its lowered IR fragment:
+A worked obligation and its lowered structured-form fragment:
 
 ```sol
 REQ AC-014:
@@ -81,7 +81,7 @@ The node carries only its intrinsic scope sets; the `DEPENDS ON`/`AFFECTS` relat
 
 ### Named SURFACEs and their attributes
 
-A **write surface** is a named coarse region declared with the SOL `SURFACE` statement. There is **no `locks` primitive** anywhere on the surface or IR layer: a lock group *is* a named SURFACE, so lock-set analysis reduces to write-set analysis at surface granularity. This is why the work-packet record carries no `locks` field — conflict is computed over surfaces, not over an orthogonal lock vocabulary.
+A **write surface** is a named coarse region declared with the SOL `SURFACE` statement. There is **no `locks` primitive** anywhere on the surface or structured-form layer: a lock group *is* a named SURFACE, so lock-set analysis reduces to write-set analysis at surface granularity. This is why the work-packet record carries no `locks` field — conflict is computed over surfaces, not over an orthogonal lock vocabulary.
 
 ```ebnf
 surface_decl = "SURFACE", ws, surface_name, ws, "=", ws,
@@ -113,7 +113,7 @@ The attributes exist because shared/global/append-only files (lockfiles, CI defi
 
 ### The two derived graphs
 
-From the scope clauses and SURFACE declarations, `decompose` consumes (and `lower` emits) exactly **two coordination graphs** in the IR `edges[]`. These two graphs are the entire mechanical substrate of safe parallelism; Swarm derives them, it never schedules against them.
+From the scope clauses and SURFACE declarations, `decompose` consumes (and `lower` emits) exactly **two coordination graphs** in the structured form's `edges[]`. These two graphs are the entire mechanical substrate of safe parallelism; Swarm derives them, it never schedules against them.
 
 1. **The dependency DAG** — built from every `DEPENDS ON` clause as `depends_on` edges. It MUST be acyclic; a cycle is an ORCHESTRATION-layer error (`SOL-O002`). Topologically sorting it yields the **legal partial order of work** — the merge order packets must respect.
 2. **The write-surface conflict graph** — an undirected graph whose nodes are obligations and whose edges connect any two obligations that are **not write-disjoint**. Two obligations share an edge iff they write the same exclusive surface, or both write a `shared`/`integration` surface, or stand in a read/write conflict on the same surface. This graph is the proof that any two packets `decompose` marks parallel-safe have pairwise-disjoint owned paths.
@@ -139,40 +139,40 @@ Read/write coordination follows **conflict-serializability** semantics, evaluate
 
 Two obligations that both only `READS` a surface MUST be schedulable in parallel — read/read never conflicts. But if one `READS` a surface another `WRITES`, they MUST be connected by a conflict edge and serialized: the reader runs strictly before or strictly after the writer in the DAG order. Reads on *different* surfaces never conflict. `AFFECTS` contributes a soft `affects` edge the predicate treats as advisory (a reviewer signal), not a hard conflict — unless the affected surface also appears in a `WRITES` set.
 
-Worked: `AC-014` (`READS auth.config`) and `AC-031` (`WRITES auth.config`) MUST serialize; `AC-014` (`READS auth.config`) and `AC-040` (`READS auth.config`) MAY run in parallel. This is why read-only passes ([`lint`](lint.md), [`review`](review.md), and any pass declaring only `READS`) MAY run broadly in parallel.
+Worked: `AC-014` (`READS auth.config`) and `AC-031` (`WRITES auth.config`) MUST serialize; `AC-014` (`READS auth.config`) and `AC-040` (`READS auth.config`) MAY run in parallel. This is why read-only steps ([`lint`](lint.md), [`review`](review.md), and any step declaring only `READS`) MAY run broadly in parallel.
 
-## The plan: the schedulable projection of the IR
+## The plan: the schedulable projection of the structured form
 
-The **plan** takes the IR obligation graph and groups the work needed to discharge those obligations into work packets. Where the IR answers "what must hold and how do the obligations relate," the plan answers **"what units of work exist, in what order, on which surfaces, and which of them are safe to run at the same time."** The plan is Swarm's static coordination contract; it is *not* a running scheduler.
+The **plan** takes the structured obligations and groups the work needed to discharge them into work packets. Where the structured form answers "what must hold and how do the obligations relate," the plan answers **"what units of work exist, in what order, on which surfaces, and which of them are safe to run at the same time."** The plan is Swarm's static coordination contract; it is *not* a running scheduler.
 
-> **Contract, not executor (normative).** Plan derivation *is* the `decompose` pass — there is no separate "planner" step. What is **out of Swarm** is the scheduler/harness that would execute the plan's packets live across agents (a launcher concern). A conformant repository MUST include the documented plan schema and MUST frame any `.swarm.plan.json` as the contract a future tool emits and a future launcher consumes, never as the output of a shipped tool.
+> **Contract, not executor (normative).** Plan derivation *is* the `decompose` step — there is no separate "planner" step. What is **out of Swarm** is the scheduler/harness that would execute the plan's packets live across agents (a launcher concern). A valid repository MUST include the documented plan schema and MUST frame any `.swarm.plan.json` as the contract a future tool emits and a future launcher consumes, never as the output of a shipped tool.
 
 ### Top-level envelope
 
-A SOL plan document MUST be a single JSON object with **exactly four keys**, reusing the IR's structural discipline:
+A SOL plan document MUST be a single JSON object with **exactly four keys**, reusing the structured form's structural discipline:
 
 | Key | JSON type | Cardinality | Purpose |
 |---|---|---|---|
-| `meta` | object | exactly 1 | Plan-level identity; the IR it derives from; the three distinct version fields. |
+| `meta` | object | exactly 1 | Plan-level identity; the structured form it derives from; the three distinct version fields. |
 | `packets` | array of work-packet objects | 0..n | The schedulable work units. |
-| `edges` | array of edge objects | 0..n | Inter-packet relationships — the single-source-of-relationship-truth rule (the same discipline the IR uses). |
-| `provenance` | object | exactly 1 | Emission facts; same shape as the IR's `provenance`. |
+| `edges` | array of edge objects | 0..n | Inter-packet relationships — the single-source-of-relationship-truth rule (the same discipline the structured form uses). |
+| `provenance` | object | exactly 1 | Emission facts; same shape as the structured form's `provenance`. |
 
 Relationships between packets live **only** in `edges[]`, never duplicated as packet scalars; the per-packet `depends_on[]` array is the *declaration*, and `decompose` MUST also emit a matching `depends_on`-type edge so ordering is computable from the graph.
 
 ### `meta`
 
-`meta` carries `id` (matches the source IR's `meta.id`), `derived_from` (path to the `*.swarm.ir.json`), `language` (`SOL/0.1`), `version` (the spec content version), and an optional `max_parallel` (`integer|null`). `max_parallel` is an **advisory parallelism hint for a launcher**; `null` = unspecified. Swarm computes *safety*; concurrency *limits* are launcher policy, not a Swarm concern.
+`meta` carries `id` (matches the source structured form's `meta.id`), `derived_from` (path to the `*.swarm.ir.json`), `language` (`SOL/0.1`), `version` (the spec content version), and an optional `max_parallel` (`integer|null`). `max_parallel` is an **advisory parallelism hint for a launcher**; `null` = unspecified. Swarm computes *safety*; concurrency *limits* are launcher policy, not a Swarm concern.
 
 ### `packets[]` — work packets
 
-A **work packet** is one schedulable unit: a single pass applied (under an optional profile) to a selected set of obligations, with declared scope, ordering, and a merge-safety verdict.
+A **work packet** is one schedulable unit: a single step applied (under an optional profile) to a selected set of obligations, with declared scope, ordering, and a merge-safety verdict.
 
 | Field | Required | Meaning |
 |---|---|---|
 | `id` | MUST | Packet identifier, unique within the plan. |
-| `pass` | MUST | One of the 9 passes (`author`, `lint`, `improve`, `lower`, `decompose`, `implement`, `verify`, `review`, `promote`). |
-| `profile` | MAY | Heuristic profile parameterizing the pass (e.g. `skeptic` on `review`, `lead-engineer` on `decompose`); `null` = the pass's default. |
+| `pass` | MUST | One of the 9 steps (`author`, `lint`, `improve`, `lower`, `decompose`, `implement`, `verify`, `review`, `promote`). |
+| `profile` | MAY | Heuristic profile parameterizing the step (e.g. `skeptic` on `review`, `lead-engineer` on `decompose`); `null` = the step's default. |
 | `inputs` | MUST | The node ids (obligations/questions/traces) this packet consumes. |
 | `outputs` | MUST | The artifacts it produces (code paths, `*.swarm.trace.md`, `review.md`, `finding.md`, …). |
 | `writes` | MUST (MAY be empty) | The write SURFACE ids it modifies, derived from its inputs' `writes` scope sets. Every write surface here MUST be a subset of its obligations' declared `WRITES` (lint `SOL-O005`). |
@@ -182,9 +182,9 @@ A **work packet** is one schedulable unit: a single pass applied (under an optio
 | `batch` | MAY | Suggested wave/round index for staged fan-out. Launcher hint only. |
 | `merge_safe` | MUST | Swarm's verdict on whether the packet may run concurrently with its batch-mates. |
 
-There is **no `locks` field anywhere** in the record: a lock group *is* a named write SURFACE, so lock-set analysis reduces to the write-set analysis already computed over the conflict graph. The record carries both the *pass/profile* dimension (what work, under which profile) and the *scope/dependency* dimension (which surfaces, in what order) in one shape.
+There is **no `locks` field anywhere** in the record: a lock group *is* a named write SURFACE, so lock-set analysis reduces to the write-set analysis already computed over the conflict graph. The record carries both the *step/profile* dimension (what work, under which profile) and the *scope/dependency* dimension (which surfaces, in what order) in one shape.
 
-Inter-packet edges use the IR edge object `{from, to, type, hard}`. The relevant types are `depends_on` (ordering) and `conflicts_with` (a shared write surface, or a read/write conflict). A `conflicts_with` edge to a batch-mate is what forces `merge_safe: false`.
+Inter-packet edges use the structured form's edge object `{from, to, type, hard}`. The relevant types are `depends_on` (ordering) and `conflicts_with` (a shared write surface, or a read/write conflict). A `conflicts_with` edge to a batch-mate is what forces `merge_safe: false`.
 
 ## The safe-parallelism predicate (single, canonical)
 
@@ -220,11 +220,11 @@ The predicate's set operations are defined **syntactically over path patterns**,
 - **Subset** (OWNED ⊆ WRITES, `SOL-O005`). An owned pattern set is a subset of a `WRITES` pattern set iff every path it matches is also matched by the `WRITES` set, under the same semantics.
 - **Boundary nodes** (`shares_interface_or_migration`). Two packets share a boundary node iff both reference the same `INTERFACE` id via `DEPENDS ON`/`AFFECTS` (an INTERFACE has no `WRITES`, so it enters the conflict graph only through these edges), or both write an `integration`/`shared` surface (the "migration node" case).
 
-A conformant tool MUST compute overlap and subset over this pattern lattice, so that **two implementations derive the identical conflict graph from the same spec.**
+A valid tool MUST compute overlap and subset over this pattern lattice, so that **two implementations derive the identical conflict graph from the same spec.**
 
-## The lowering tie: OWNED ⊆ WRITES
+## The structuring tie: OWNED ⊆ WRITES
 
-The owned paths `decompose` projects onto each packet (the second pass obligation above) are bound to the obligations' declared write surfaces by **one normative lowering rule**:
+The owned paths `decompose` projects onto each packet (the second step obligation above) are bound to the obligations' declared write surfaces by **one normative structuring rule**:
 
 > A packet's (or worker's) OWNED paths MUST be a **subset** of the union of its assigned obligations' declared `WRITES` surfaces, lowered to their file/glob projection.
 
@@ -250,7 +250,7 @@ The fix is one of two moves — **shrink** the OWNED set (re-scope the worker) o
 
 ## The COVERAGE gate (pre-`implement`)
 
-`decompose` is the carrier (manual today, tool-enforced later) of the **COVERAGE gate**, the checkpoint at the `LOWER → EXECUTE` boundary, after `decompose` emits packets and before any `implement` pass runs. A gate transforms nothing and writes no artifact: it is a precondition predicate over already-emitted state (the IR `nodes[]`/`edges[]` and the plan `packets[]`).
+`decompose` is the carrier (manual today, tool-enforced later) of the **COVERAGE gate**, the checkpoint at the `LOWER → EXECUTE` boundary, after `decompose` emits packets and before any `implement` step runs. A gate transforms nothing and writes no artifact: it is a precondition predicate over already-emitted state (the structured form's `nodes[]`/`edges[]` and the plan `packets[]`).
 
 > **R-COVERAGE-GATE.** Before `implement`, for the lowered spec:
 > 1. **Total coverage.** Every lowered obligation node (`REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`, including each `AND THE`-split sub-obligation) is assigned to **exactly one `implement` packet** — none unassigned (uncovered), none assigned to two `implement` packets (double-owned). (An obligation legitimately recurs across its `implement`, `verify`, and `review` packets; the coverage count is *per `implement` packet*.)
@@ -274,11 +274,11 @@ COVERAGE gate (manual today, tool-enforced later):
       E.to NOT in IR.nodes  -> orphan target (SOL-M003 unbound-cross-reference, at review)
 ```
 
-The COVERAGE gate is the **structural complement of [distillation-loss](../reference/distillation-loss-budget.md)**: distillation-loss forbids *dropping* an obligation during lowering; the COVERAGE gate forbids *stranding* one afterward. Together they make the lowered work a **bijection over obligations** — nothing lost in lowering, nothing left uncovered or pointed at a phantom.
+The COVERAGE gate is the **structural complement of [distillation-loss](../reference/distillation-loss-budget.md)**: distillation-loss forbids *dropping* an obligation during structuring; the COVERAGE gate forbids *stranding* one afterward. Together they make the lowered work a **bijection over obligations** — nothing lost in structuring, nothing left uncovered or pointed at a phantom.
 
 ## Worked fragment
 
-For the `auth-refresh` spec (one `INTERFACE`, one `REQ` depending on it, one `INVARIANT`), a conformant plan groups the work into three packets:
+For the `auth-refresh` spec (one `INTERFACE`, one `REQ` depending on it, one `INVARIANT`), a valid plan groups the work into three packets:
 
 - **WP-001** (`implement` the interface contract, `writes: api.auth.contract`, `batch: 0`) is **`merge_safe: false`** — it freezes a shared interface contract, so consumers serialize behind it.
 - **WP-002** (`implement`, depends on WP-001, `writes: web.http.client`, `reads: api.auth.contract`, `batch: 1`) is **`merge_safe: true`** — write-disjoint from its batch-mates and depending only on a completed prior batch.
@@ -286,16 +286,16 @@ For the `auth-refresh` spec (one `INTERFACE`, one `REQ` depending on it, one `IN
 
 The two `depends_on` packet arrays are mirrored as `depends_on` edges in `edges[]`, so the merge order is computable from the graph rather than read off the packet scalars.
 
-## Conformance
+## What a valid plan needs
 
-A document is a conformant SOL/0.1 plan iff it: (1) has exactly the four top-level keys; (2) populates every required field (defaulting optional fields); (3) carries **no `locks` field anywhere**; (4) uses only the closed 9-pass set in `packets[].pass` and the closed edge-type set in `edges[]`; (5) represents inter-packet relationships **once**, as edges; (6) keeps the three version fields distinct. The plan schema is documented data only — no running emitter or scheduler ships.
+A document is a valid SOL/0.1 plan iff it: (1) has exactly the four top-level keys; (2) populates every required field (defaulting optional fields); (3) carries **no `locks` field anywhere**; (4) uses only the closed 9-step set in `packets[].pass` and the closed edge-type set in `edges[]`; (5) represents inter-packet relationships **once**, as edges; (6) keeps the three version fields distinct. The plan schema is documented data only — no running emitter or scheduler ships.
 
 ## What `decompose` does and does not fix
 
-`decompose` fixes the **partition contract**, not the partitioning *strategy*. What is fixed here: the scope vocabulary, the two derived graphs, the safe-parallelism predicate (verbatim and non-weakenable), the OWNED ⊆ WRITES lowering tie and its `SOL-O005`/`SOL-O001` codes, the COVERAGE gate, and the plan/work-packet shape.
+`decompose` fixes the **partition contract**, not the partitioning *strategy*. What is fixed here: the scope vocabulary, the two derived graphs, the safe-parallelism predicate (verbatim and non-weakenable), the OWNED ⊆ WRITES structuring tie and its `SOL-O005`/`SOL-O001` codes, the COVERAGE gate, and the plan/work-packet shape.
 
 What is **not** fixed here:
 
-- The decomposition *heuristic* — how a Lead Engineer partitions a given obligation graph into the smallest set of write-disjoint packets — is a [pass-guide / profile](../artifacts/task.md) concern, not a Swarm rule; Swarm fixes only the predicate the partition must satisfy.
+- The decomposition *heuristic* — how a Lead Engineer partitions a given set of obligations into the smallest set of write-disjoint packets — is a [step-guide / profile](../artifacts/task.md) concern, not a Swarm rule; Swarm fixes only the predicate the partition must satisfy.
 - How a launcher chooses `lane`, `batch`, and `max_parallel` values, and any live scheduling/replanning over the plan — explicitly a launcher concern, outside Swarm.
-- The IR construction `decompose` consumes (node ids, typed edges, `verify_by` normalization, `AND THE` chaining, the two derived graphs as emitted) belongs to [`lower`](lower.md); the per-obligation scope clauses and the SURFACE grammar belong to the [SOL language](../language/SOL.md). This page consumes both and partitions over them.
+- The structured-form construction `decompose` consumes (node ids, typed edges, `verify_by` normalization, `AND THE` chaining, the two derived graphs as emitted) belongs to [`lower`](lower.md); the per-obligation scope clauses and the SURFACE grammar belong to the [SOL language](../language/SOL.md). This page consumes both and partitions over them.

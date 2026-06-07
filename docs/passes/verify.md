@@ -1,6 +1,6 @@
 # Verify — the verdict model, the proof taxonomy, and oracle adequacy
 
-The **verify** pass answers one question: *did this obligation actually get done?* It is the confidence backbone of Swarm and the gate every change must pass before promotion. This page is the authority on **how Swarm judges an obligation as satisfied** — the seven-value verdict model, the closed nine-type proof taxonomy and its `VERIFY BY` binding, oracle adequacy, the per-task-type default suites, and the soft/hard control boundary that says exactly what "verified" can and cannot mean.
+The **verify** step answers one question: *did this obligation actually get done?* It is the confidence backbone of Swarm and the gate every change must clear before promotion. This page is the authority on **how Swarm judges an obligation as satisfied** — the seven-value verdict model, the closed nine-type proof taxonomy and its `VERIFY BY` binding, oracle adequacy, the per-task-type default suites, and the soft/hard control boundary that says exactly what "verified" can and cannot mean.
 
 Swarm ships **no runtime** (NO RUNTIME). Everything described here — the linter, the merge gate, the drift differ, the adequacy harness, the enforcement lane — is a **contract a future tool builds against**, never shipped code. Today every verdict is recorded by a human or agent in markdown and re-checked by hand or by CI scaffolding that does not yet exist. This page never claims any of it is automatically enforced; where it says a check "MUST raise" or the gate "blocks," read that as the obligation on a future deterministic check, manual until one exists.
 
@@ -78,7 +78,7 @@ EVIDENCE test:cmdTest:payment-timeout#retryable_attempt — exit 1, 1 failed
 
 ### 3.1 Lint enforcement of well-formedness (`SOL-V` layer)
 
-Verdict well-formedness is the `SOL-V` (VERIFICATION) lint layer's job. A conformant linter MUST raise:
+Verdict well-formedness is the `SOL-V` (VERIFICATION) lint layer's job. A valid linter MUST raise:
 
 | Code | Severity | Condition |
 | --- | --- | --- |
@@ -105,14 +105,14 @@ The node-level `status` is the **aggregate** over an obligation's bindings: a bl
 | `FAIL` | Blocks — fix code or amend the obligation. |
 | `BLOCKED` | Blocks — fix the environment/adapter, then re-run. |
 | `UNVERIFIED` | Blocks — bind a proof and run it, or `WAIVE`. |
-| `PASS (STALE)` | Blocks — forces a 3-way reconcile (handled in the drift pass). |
+| `PASS (STALE)` | Blocks — forces a 3-way reconcile (handled in the drift step). |
 | any `(CONTRADICTED)` | Blocks — routes to review with the stronger oracle authoritative. |
 
 The gate is **enforced by a deterministic check outside the model** when one exists (CI, a PreToolUse hook, a merge-blocking status) and is **manual today**. A `WAIVED` verdict passes the gate **only while its waiver is live**; a waiver auto-expires on the next source-hash change, reverting to its underlying `FAIL`/`UNVERIFIED`.
 
 ### 4.1 `review.md` is the verdict container (there is no `verdict.md`)
 
-A `VERDICT` is a SOL language block, not a file. Swarm ships **no** `verdict.md` template. Verdicts live in the **`review.md`** artifact, which when filled *is* the verdict record. A conformant `review.md` contains at minimum: claimed coverage, per-obligation `VERDICT` blocks (one per required binding), an obligation-verdict matrix, constraint/invariant/interface verdicts, an unauthorized-change list, a final change-set-level merge-gate verdict, and the promotion queue. A repo recording verdicts in a standalone `verdict.md` is **non-conformant**.
+A `VERDICT` is a SOL language block, not a file. Swarm ships **no** `verdict.md` template. Verdicts live in the **`review.md`** artifact, which when filled *is* the verdict record. A valid `review.md` contains at minimum: claimed coverage, per-obligation `VERDICT` blocks (one per required binding), an obligation-verdict matrix, constraint/invariant/interface verdicts, an unauthorized-change list, a final change-set-level merge-gate verdict, and the promotion queue. A repo recording verdicts in a standalone `verdict.md` is **invalid**.
 
 ---
 
@@ -150,7 +150,7 @@ typed_ref  = proof_type, [ ":", test_scope ], ":", adapter, ":", artifact, [ "#"
 test_scope = "unit" | "integration" | "e2e";   (* only legal when proof_type = "test" *)
 ```
 
-- `<type>` is the closed, lint-typed, IR-typed dimension.
+- `<type>` is the closed, lint-typed, structured-form-typed dimension.
 - `<adapter>` is a **project free-string** that resolves to a command slot in `AGENTS.md > Commands`.
 - `<artifact>` is a project free-string (file, test id, suite name, contract file).
 - `<selector>` (optional, after `#`) narrows to a single case, scenario, or property.
@@ -169,7 +169,7 @@ OWNED BY auth-client
 VERIFY BY contract:cmdContract:refresh-session.pact#refreshSession
 ```
 
-The IR field is `verify_by[]`, normalized to `{type, adapter, ref, selector, gate}`. A **bare** `VERIFY BY <ref>` with no `type:` segment is structurally valid but raises an advisory untyped-binding smell; the typed form is REQUIRED wherever a type-driven rule fires (`INTERFACE` → `contract`, `INVARIANT` preference, a `CONTRADICTED` tie-break, a default-suite check). `improve`/`NORMALIZE` upgrades bare refs to typed bindings.
+The structured-form field is `verify_by[]`, normalized to `{type, adapter, ref, selector, gate}`. A **bare** `VERIFY BY <ref>` with no `type:` segment is structurally valid but raises an advisory untyped-binding smell; the typed form is REQUIRED wherever a type-driven rule fires (`INTERFACE` → `contract`, `INVARIANT` preference, a `CONTRADICTED` tie-break, a default-suite check). `improve`/`NORMALIZE` upgrades bare refs to typed bindings.
 
 ### 5.3 Two-layer resolution: obligation binding + project adapter
 
@@ -253,11 +253,11 @@ Each task kind (the `task_kind` enum carried on a task frame) has a **default su
 | `review` | `manual @ REVIEW` over the recorded evidence; re-run of bound `cmd*` proofs |
 | `orchestration` | `static @ LOWER` (disjointness check); `manual @ REVIEW` |
 
-The phase tag (`@ VERIFY`, `@ NORMALIZE`, `@ REVIEW`, `@ LOWER`) names the pass at which the proof is expected to run: source-only task kinds bind their `static` proof at `NORMALIZE` because there is no code to execute, while code-changing kinds bind their executable proofs at `VERIFY`. A `task_kind` with no executable suite still has an obligation — its `static` lint/APS pass — and a `PASS` there is a genuine verdict, not an exemption from judgment.
+The phase tag (`@ VERIFY`, `@ NORMALIZE`, `@ REVIEW`, `@ LOWER`) names the step at which the proof is expected to run: source-only task kinds bind their `static` proof at `NORMALIZE` because there is no code to execute, while code-changing kinds bind their executable proofs at `VERIFY`. A `task_kind` with no executable suite still has an obligation — its `static` lint/APS check — and a `PASS` there is a genuine verdict, not an exemption from judgment.
 
 ### 5.7.1 The verification side of the task-kind contracts
 
-A default suite says *which* proof types a task kind expects; this note records *what those proofs must establish* for the three task kinds whose verification shape is non-obvious. Each is a design rationale, not a new lint rule — for the authoring side these contracts gate, see [the implement pass](./implement.md).
+A default suite says *which* proof types a task kind expects; this note records *what those proofs must establish* for the three task kinds whose verification shape is non-obvious. Each is a design rationale, not a new lint rule — for the authoring side these contracts gate, see [the implement step](./implement.md).
 
 - **`refactor` — the equivalence/characterization oracle.** A refactor preserves behaviour end to end, so its `test`-at-`VERIFY` proof is not "does the new code pass a suite" but "would this oracle *fail if behaviour changed*". An adequate refactor oracle is a characterization or equivalence check — golden-output, differential, or property — that pins the existing behaviour before the change and would break the instant any of it moved. A green suite that never asserted the preserved behaviour is necessary but not sufficient; its `oracle_adequacy` should record what surface it actually exercised (the adequacy record), and a high-risk refactor escalates under the stronger-oracle threshold for `RISK high|critical`.
 
@@ -318,7 +318,7 @@ Honouring adequacy over rank is what stops the order from becoming astrology-by-
 
 ### 6.4 Adequacy binds to staleness via the evidence path
 
-A surface participates in a proof's freshness only if it lies on the proof's `evidence_path`. A write surface the obligation declares in `WRITES` but the oracle never exercised does not, on its own, falsify *that proof's* `PASS`. Conversely, a modified surface that **is** on the `evidence_path` forces `STALE`. (The full drift/staleness mechanism — the trace-provenance schema, the four `STALE` conditions, and the 3-way reconcile — lives in the drift pass; this page only fixes the adequacy ↔ evidence-path link.) An empty or unrecorded `evidence_path` on a `RISK high|critical` obligation is itself a `SOL-V011` finding: an oracle that cannot say what it exercised cannot be shown adequate.
+A surface participates in a proof's freshness only if it lies on the proof's `evidence_path`. A write surface the obligation declares in `WRITES` but the oracle never exercised does not, on its own, falsify *that proof's* `PASS`. Conversely, a modified surface that **is** on the `evidence_path` forces `STALE`. (The full drift/staleness mechanism — the trace-provenance schema, the four `STALE` conditions, and the 3-way reconcile — lives in the drift step; this page only fixes the adequacy ↔ evidence-path link.) An empty or unrecorded `evidence_path` on a `RISK high|critical` obligation is itself a `SOL-V011` finding: an oracle that cannot say what it exercised cannot be shown adequate.
 
 ---
 
@@ -326,7 +326,7 @@ A surface participates in a proof's freshness only if it lies on the proof's `ev
 
 This honesty constraint governs what a verdict is *allowed to mean*. Everything Swarm ships is markdown, and markdown cannot stop an agent from doing anything. So Swarm MUST be precise about what is *guidance* and what is *enforcement*, and MUST NOT dress up the former as the latter.
 
-> **Soft control.** Swarm prose, SOL, APS, skills/pass guides, heuristic profiles, and `AGENTS.md` are **SOFT control**: they are context and guidance for a model. They influence behaviour; they do not constrain it. They **MUST NEVER** be presented as enforcement.
+> **Soft control.** Swarm prose, SOL, APS, skills/step guides, heuristic profiles, and `AGENTS.md` are **SOFT control**: they are context and guidance for a model. They influence behaviour; they do not constrain it. They **MUST NEVER** be presented as enforcement.
 
 > **Hard control.** Anything that must hold **regardless of the model** — a `CONSTRAINT`, an `INVARIANT`, a stop-rule, secret redaction, a write-surface gate, the proof-required merge gate — MUST be specified as a **deterministic check OUTSIDE the model**: a PreToolUse hook, a CI gate, a permission deny-rule, or a schema validator.
 
@@ -336,7 +336,7 @@ Three corollaries follow directly, each normative:
 
 - **Schema-valid output is not verification.** That a model emitted JSON matching a schema constrains *shape*, not *truth*. Schema validation MAY be a gate *input*; it MUST NOT be presented as proof an obligation is met.
 - **Every completion claim maps to independent verification.** No obligation is `PASS` on the model's say-so; it is `PASS` only against an independent deterministic or evidentiary oracle — the merge gate over the proof taxonomy.
-- **A SOFT-control artifact MUST NOT define hard semantics.** No skill, persona/profile, or `AGENTS.md` section may define modality, authority order, or verification semantics — those live in SOL and the typed IR.
+- **A SOFT-control artifact MUST NOT define hard semantics.** No skill, persona/profile, or `AGENTS.md` section may define modality, authority order, or verification semantics — those live in SOL and the typed structured form.
 
 The rationale is empirical: model adherence is probabilistic (prompt-format sensitivity, multi-turn reliability decay, lost-in-the-middle / context-rot), so a model is an unsound enforcement substrate. Only an external deterministic check can guarantee a property holds. Honesty about this boundary is what lets a Swarm verdict be trusted: the markdown layer makes an omission *conspicuous*; it cannot make a property *hold*.
 
@@ -368,10 +368,10 @@ The four deterministic-home categories are exactly: **PreToolUse hook**, **CI ga
 
 ## Related
 
-- [The `lint` pass](lint.md) — the `SOL-V` (VERIFICATION) lint layer in full, including the `SOL-V` codes referenced here (`V001`/`V002`/`V003`/`V005`/`V006`/`V007`/`V008`/`V009`/`V011`).
+- [The `lint` step](lint.md) — the `SOL-V` (VERIFICATION) lint layer in full, including the `SOL-V` codes referenced here (`V001`/`V002`/`V003`/`V005`/`V006`/`V007`/`V008`/`V009`/`V011`).
 - [Proof types (reference)](../reference/proof-types.md) — the closed nine proof types and the `VERIFY BY` binding grammar, expanded.
-- [The `review` pass](review.md) and [the `review` artifact](../artifacts/review.md) — `review.md`, the verdict container that holds the `VERDICT` blocks and the change-set-level merge-gate verdict.
-- [The `promote` pass](promote.md) — the merge gate as a promotion predicate and the promotion queue.
+- [The `review` step](review.md) and [the `review` artifact](../artifacts/review.md) — `review.md`, the verdict container that holds the `VERDICT` blocks and the change-set-level merge-gate verdict.
+- [The `promote` step](promote.md) — the merge gate as a promotion predicate and the promotion queue.
 - [The task frame](../artifacts/task.md) — the task frame and its `task_kind` enum, which selects a default suite for each task kind.
 - [Principles](../PRINCIPLES.md) — the SOFT vs HARD control principle that the soft/hard control boundary and enforcement-lane sections operationalise for verification.
 - [The trace artifact](../artifacts/trace.md) — the trace-provenance schema (the `oracle_adequacy` object and `per_surface_hash[]`) and the drift/staleness machinery the adequacy record links into.

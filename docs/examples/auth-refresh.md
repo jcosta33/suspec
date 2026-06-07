@@ -1,14 +1,14 @@
 # Walkthrough: `auth-refresh`, end to end
 
-> One obligation set carried through all nine Swarm passes in order — author, lint, improve, lower, decompose, implement, verify, review, promote — watching it go from a draft spec with three blocking defects and an open question to a merged, promoted finding. This is the canonical positive walkthrough: identifiers, content hashes, and verdicts are stable from the first stage to the last, so the whole page reads as a single run.
+> One obligation set carried through all nine Swarm steps in order — author, lint, improve, lower, decompose, implement, verify, review, promote — watching it go from a draft spec with three blocking defects and an open question to a merged, promoted finding. This is the canonical positive walkthrough: identifiers, content hashes, and verdicts are stable from the first stage to the last, so the whole page reads as a single run.
 
 ## What you are looking at
 
-`auth-refresh` is a small, complete feature: when an access token expires mid-session, the client silently refreshes it and replays the original request, without ever looping. It is small enough to read in one sitting and rich enough to exercise the parts of the pipeline that matter — a vague-quality defect, a `SHOULD` with no justification, a missing verification path, an unbounded-retry invariant, a blocking question, and a staleness reconcile at the merge gate.
+`auth-refresh` is a small, complete feature: when an access token expires mid-session, the client silently refreshes it and replays the original request, without ever looping. It is small enough to read in one sitting and rich enough to exercise the parts of the flow that matter — a vague-quality defect, a `SHOULD` with no justification, a missing verification path, an unbounded-retry invariant, a blocking question, and a staleness reconcile at the merge gate.
 
-Nothing here is run by a tool. Swarm ships **no runtime** — every artifact below is inert markdown, the oracle a human or agent reads and writes by hand while following the stdlib pass guides. The IR and plan JSON are *contracts a future tool would emit against*, produced here by hand so the chain is legible. Read this page top to bottom; each stage feeds the next.
+Nothing here is run by a tool. Swarm ships **no runtime** — every artifact below is inert markdown, the oracle a human or agent reads and writes by hand while following the stdlib step guides. The structured form and plan JSON are *contracts a future tool would emit against*, produced here by hand so the chain is legible. Read this page top to bottom; each stage feeds the next.
 
-The default pass order, which this page follows exactly:
+The default step order, which this page follows exactly:
 
 ```text
 author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote
@@ -18,7 +18,7 @@ author -> lint -> improve -> lower -> decompose -> implement -> verify -> review
 
 ## Stage 1 — `author`: the human writes the spec
 
-`author` is the only stage where a human writes a `.swarm.` artifact directly. The output is a `spec.swarm.md`: frontmatter plus prose sections (`## Intent`, `## Interfaces`, `## Obligations`, `## Invariants`, `## Questions`) interleaved with typed SOL blocks. The author is not expected to write clean obligations on the first pass — that is what `lint` and `improve` are for. The frontmatter carries the three separate version fields: `swarm_language` (which grammar and lint codes apply), `aps_version` (the prose standard), and `spec_version` (the SemVer of this spec's content). They are never merged.
+`author` is the only stage where a human writes a `.swarm.` artifact directly. The output is a `spec.swarm.md`: frontmatter plus prose sections (`## Intent`, `## Interfaces`, `## Obligations`, `## Invariants`, `## Questions`) interleaved with typed SOL blocks. The author is not expected to write clean obligations on the first draft — that is what `lint` and `improve` are for. The frontmatter carries the three separate version fields: `swarm_language` (which grammar and lint codes apply), `aps_version` (the prose standard), and `spec_version` (the SemVer of this spec's content). They are never merged.
 
 Note the deliberate flaws planted here: `AC-002`'s `SHOULD clear the local session` carries no justification and the block has no `VERIFY BY`; `I-001` says retry count must not exceed "one" as a word rather than a measurable threshold; and `Q-001` is a `[blocking]` question hanging over `AC-002`.
 
@@ -80,7 +80,7 @@ AFFECTS AC-002
 
 ## Stage 2 — `lint`: diagnose, don't touch
 
-`lint` reads the spec and emits SARIF-shaped diagnostic records in the unified `SOL-<LAYER><NNN>` namespace, without changing a single character. Each record names the closed `improve` op (or direct edit) that repairs it, so the next stage is mechanical rather than open-ended. Three diagnostics fire on the authored source, all BLOCKING because each one changes *what* gets built rather than merely how the text reads. The `severity` here is the authoring-layer value (`BLOCKING`/`ADVISORY`); when this lowers into the IR's `diagnostics[]` array it becomes the `level` value (`error`/`warning`/`note`).
+`lint` reads the spec and emits SARIF-shaped diagnostic records in the unified `SOL-<LAYER><NNN>` namespace, without changing a single character. Each record names the closed `improve` op (or direct edit) that repairs it, so the next stage is mechanical rather than open-ended. Three diagnostics fire on the authored source, all BLOCKING because each one changes *what* gets built rather than merely how the text reads. The `severity` here is the authoring-layer value (`BLOCKING`/`ADVISORY`); when this lowers into the structured form's `diagnostics[]` array it becomes the `level` value (`error`/`warning`/`note`).
 
 ```text
 SOL-V001  BLOCKING  layer=V  AC-002:L1-L4
@@ -96,7 +96,7 @@ SOL-P005  BLOCKING  layer=P  I-001:L1
   suggest: improve op CONCRETIZE or QUANTIFY — name the measured quantity and threshold.
 ```
 
-Beyond the three blocking diagnostics, `lint` records a note about the blocking question: `Q-001` is `[blocking]` and `AFFECTS AC-002`, so `AC-002` MUST NOT reach the `lower` pass until the question is resolved. A blocking `QUESTION` that *does* reach `lower` is itself a hard error (`SOL-O003`, blocking-question-reaches-lowering). The question is a gate, not a suggestion.
+Beyond the three blocking diagnostics, `lint` records a note about the blocking question: `Q-001` is `[blocking]` and `AFFECTS AC-002`, so `AC-002` MUST NOT reach the `lower` step until the question is resolved. A blocking `QUESTION` that *does* reach `lower` is itself a hard error (`SOL-O003`, blocking-question-reaches-structuring). The question is a gate, not a suggestion.
 
 ---
 
@@ -123,9 +123,9 @@ Each diagnostic maps to exactly one repair. `NORMALIZE` raised `SHOULD` to `MUST
 
 ---
 
-## Stage 4 — `lower`: emit the typed IR
+## Stage 4 — `lower`: emit the typed structured form
 
-`lower` projects the normalized spec into the typed intermediate representation, `auth-refresh.swarm.ir.json`. Three things happen mechanically: uppercase SOL surface keywords become `snake_case` IR fields (`VERIFY BY` becomes `verify_by`, `DEPENDS ON` becomes a `depends_on` edge); every relationship moves into `edges[]`, the single source of relationship truth, never duplicated as a node scalar; and node ids become namespaced. Note that `AC-001`'s `AND THE` chain splits into two distinct IR obligations, `AC-001.1` and `AC-001.2`, each carrying its own predicate but sharing the trigger, write surface, and proof binding. A slice is shown.
+`lower` projects the normalized spec into the typed structured form, `auth-refresh.swarm.ir.json`. Three things happen mechanically: uppercase SOL surface keywords become `snake_case` fields (`VERIFY BY` becomes `verify_by`, `DEPENDS ON` becomes a `depends_on` edge); every relationship moves into `edges[]`, the single source of relationship truth, never duplicated as a node scalar; and node ids become namespaced. Note that `AC-001`'s `AND THE` chain splits into two distinct obligations, `AC-001.1` and `AC-001.2`, each carrying its own predicate but sharing the trigger, write surface, and proof binding. A slice is shown.
 
 ```json
 {
@@ -218,13 +218,13 @@ Each diagnostic maps to exactly one repair. `NORMALIZE` raised `SHOULD` to `MUST
 }
 ```
 
-Every node enters `lower` at `status: UNVERIFIED` — the default before any verdict exists. `compiler_version` is `null` because no tool is shipped; the IR is the contract a future tool would emit against, produced here by hand.
+Every node enters `lower` at `status: UNVERIFIED` — the default before any verdict exists. `compiler_version` is `null` because no tool is shipped; the structured form is the contract a future tool would emit against, produced here by hand.
 
 ---
 
 ## Stage 5 — `decompose` and `implement`: project a work packet, then build it
 
-`decompose` projects the IR into a `task.md` work packet, and `implement` executes it. The packet's write surfaces MUST be a subset of the assigned obligations' `WRITES` — the two-tier lowering rule. A packet that writes a path outside its declared `write_surfaces` is the hard error `SOL-O005` (owned-path-outside-write-surface). The packet inherits the proof bindings from the obligations it covers and names its source spec. Only the load-bearing frame is shown; the verification matrix is filled in by `implement`/`verify` as work lands.
+`decompose` projects the structured form into a `task.md` work packet, and `implement` executes it. The packet's write surfaces MUST be a subset of the assigned obligations' `WRITES` — the two-tier structuring rule. A packet that writes a path outside its declared `write_surfaces` is the hard error `SOL-O005` (owned-path-outside-write-surface). The packet inherits the proof bindings from the obligations it covers and names its source spec. Only the load-bearing frame is shown; the verification matrix is filled in by `implement`/`verify` as work lands.
 
 ```text
 ---
@@ -268,7 +268,7 @@ blocked_by: []
 
 ## Stage 6 — `verify`: record the trace and its provenance
 
-`verify` runs the bound proofs and records a `TRACE` block plus the provenance that the drift join depends on. The `TRACE` declares what it `IMPLEMENTS`, what it `PRESERVES`, what surfaces it `CHANGED`, and one `PROOF` line per binding with its result. The provenance table carries the canonical seven fields: `source_hash` (echoing the IR node's `content_hash`), `per_surface_hash[]` (each `{surface, hash, exercised}`), `adapter`, `verdict`, `tier` (the proof *type*, never a RISK value), `origin_obligations[]`, and `origin_traces[]`. These hashes are what later detects staleness — they are the load-bearing part of the artifact.
+`verify` runs the bound proofs and records a `TRACE` block plus the provenance that the drift join depends on. The `TRACE` declares what it `IMPLEMENTS`, what it `PRESERVES`, what surfaces it `CHANGED`, and one `PROOF` line per binding with its result. The provenance table carries the canonical seven fields: `source_hash` (echoing the structured-form node's `content_hash`), `per_surface_hash[]` (each `{surface, hash, exercised}`), `adapter`, `verdict`, `tier` (the proof *type*, never a RISK value), `origin_obligations[]`, and `origin_traces[]`. These hashes are what later detects staleness — they are the load-bearing part of the artifact.
 
 ```text
 ---
@@ -381,12 +381,12 @@ The finding is then indexed in memory by a single `MAP` line carrying a "Load wh
   — Load when: implementing or reviewing concurrent token-refresh paths.
 ```
 
-That closes the loop: a draft spec with three blocking defects and an open question became a normalized spec, a typed IR, a scoped work packet, an implemented and traced change, a reviewed and reconciled merge, and a promoted finding that future work on this surface will load on demand.
+That closes the loop: a draft spec with three blocking defects and an open question became a normalized spec, a typed structured form, a scoped work packet, an implemented and traced change, a reviewed and reconciled merge, and a promoted finding that future work on this surface will load on demand.
 
 ---
 
 ## Related
 
-- Pass references, in pipeline order: [`author`](../passes/author.md), [`lint`](../passes/lint.md), [`improve`](../passes/improve.md), [`lower`](../passes/lower.md), [`decompose`](../passes/decompose.md), [`implement`](../passes/implement.md), [`verify`](../passes/verify.md), [`review`](../passes/review.md), [`promote`](../passes/promote.md)
+- Step references, in flow order: [`author`](../passes/author.md), [`lint`](../passes/lint.md), [`improve`](../passes/improve.md), [`lower`](../passes/lower.md), [`decompose`](../passes/decompose.md), [`implement`](../passes/implement.md), [`verify`](../passes/verify.md), [`review`](../passes/review.md), [`promote`](../passes/promote.md)
 - [Golden corpus](../reference/golden-corpus.md) — `auth-refresh` is the positive (`must-compile`) fixture this walkthrough draws from
 - Artifact references for each stage's output: [`spec`](../artifacts/spec.md), [`task`](../artifacts/task.md), [`trace`](../artifacts/trace.md), [`review`](../artifacts/review.md), [`finding`](../artifacts/finding.md), [`memory`](../artifacts/memory.md)

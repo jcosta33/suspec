@@ -1,14 +1,14 @@
 # `task-orchestration.md` — the coordination record
 
-`task-orchestration.md` is the single canonical **coordination record** for one parallel decomposition: when a body of work is split across several workers that run concurrently, this is the one file that records who owns which surfaces, what each worker was handed, whether each is still making progress, and how every branch was merged back. It is the execution-tier counterpart of a spec's source-tier scope declarations — where the spec declares `WRITES` / `READS` / `DEPENDS ON` / `AFFECTS` per obligation, the coordination record projects those declarations onto **workers** and records the hand-off, liveness, and merge contract a reviewer can reconstruct the whole run from. In the obligation graph it is the node where a partitioned plan becomes a tracked, write-disjoint fan-out: the lead's one place to record the parallel run, not a second place where intent is authored.
+`task-orchestration.md` is the single canonical **coordination record** for one parallel decomposition: when a body of work is split across several workers that run concurrently, this is the one file that records who owns which surfaces, what each worker was handed, whether each is still making progress, and how every branch was merged back. It is the execution-tier counterpart of a spec's source-tier scope declarations — where the spec declares `WRITES` / `READS` / `DEPENDS ON` / `AFFECTS` per obligation, the coordination record projects those declarations onto **workers** and records the hand-off, liveness, and merge contract a reviewer can reconstruct the whole run from. Among the obligations it is the node where a partitioned plan becomes a tracked, write-disjoint fan-out: the lead's one place to record the parallel run, not a second place where intent is authored.
 
-Swarm is markdown-only and has **no runtime**. Every "the lead spawns…", "the toolchain prepares…", "the worker hands back…" clause on this page is the recorded shape of an action a future launcher MAY one day perform; none is shipped software. The lead/launcher coordination this file records is a **contract a future tool builds against**, not a scheduler this repo runs. A `task-orchestration.md` is inert structured Markdown that a human or an agent following the decompose and review pass guides populates by hand; nothing in it executes, detects a stall, or merges a branch on its own.
+Swarm ships **no runtime** (see the [artifacts README](README.md)). Every "the lead spawns…", "the toolchain prepares…", "the worker hands back…" clause on this page is the recorded shape of an action a future launcher MAY one day perform — a **contract a future tool builds against**, not a scheduler this repo runs. A `task-orchestration.md` is inert structured Markdown a human or agent populates by hand; nothing in it executes, detects a stall, or merges a branch on its own.
 
 ## Purpose & epistemic stance
 
-A coordination record asserts one kind of knowledge: **the recorded contract of a parallel run** — its worker partition, hand-offs, liveness, and merge history. Its stance is **derived projection plus recorded fact**. The partition it records is *derived*: each worker's owned surfaces are the file/glob projection of that worker's assigned obligations' declared `WRITES` surfaces, lowered by the lower and decompose passes (the write-surface model), not authored here. The hand-offs, progress checks, stall decisions, and merge resolutions it records are *facts about the run* — recorded as the run proceeds so the run is reconstructable from the artifact alone rather than held in the lead's head.
+A coordination record asserts one kind of knowledge: **the recorded contract of a parallel run** — its worker partition, hand-offs, liveness, and merge history. Its stance is **derived projection plus recorded fact**. The partition it records is *derived*: each worker's owned surfaces are the file/glob projection of that worker's assigned obligations' declared `WRITES` surfaces, structured by the lower and decompose steps (the write-surface model), not authored here. The hand-offs, progress checks, stall decisions, and merge resolutions it records are *facts about the run* — recorded as the run proceeds so the run is reconstructable from the artifact alone rather than held in the lead's head.
 
-The reason the partition is *recorded* rather than *invented* here is the write-surface model. Write-side parallel safety reduces to one invariant: the set of surfaces any two concurrent workers may write MUST be disjoint. That invariant is decided where the write surfaces are known — at lowering, against the obligations' declared `WRITES` — and this file is where the resulting per-worker partition is written down and made reviewable. A coordination record that *chose* a worker's owned paths independently of the obligations would let a hidden write escape the conflict graph the disjointness proof depends on; the record exists to surface that partition, not to author it.
+The reason the partition is *recorded* rather than *invented* here is the write-surface model. Write-side parallel safety reduces to one invariant: the set of surfaces any two concurrent workers may write MUST be disjoint. That invariant is decided where the write surfaces are known — at the `lower` step, against the obligations' declared `WRITES` — and this file is where the resulting per-worker partition is written down and made reviewable. A coordination record that *chose* a worker's owned paths independently of the obligations would let a hidden write escape the conflict graph the disjointness proof depends on; the record exists to surface that partition, not to author it.
 
 What a `task-orchestration.md` MUST do:
 
@@ -24,28 +24,28 @@ What a `task-orchestration.md` MUST NOT do:
 - **It MUST NOT mark a conflicting pair parallel.** Two workers whose OWNED paths overlap are not write-disjoint, hence not parallel-safe; scheduling them into the same parallel batch is a `SOL-O001` ERROR — exactly the silent, hard-to-review merge corruption the disjoint-scope invariant exists to prevent.
 - **It MUST NOT be the only home of any durable fact.** On reconciliation the run's durable record is the compacted ledger entry, the updated status, and any promoted findings — never the generated coordination record, which is disposable execution material.
 
-This stance is held by the surrounding write-surface discipline of the framework, not by any gatekeeper tool: there is no runtime to detect a stall, prove disjointness, or block a merge. The disjointness, merge order, and gate predicate are recorded so a deterministic check outside the model — where one exists — or a reviewer can evaluate them; a conformant repository MUST NOT claim a live orchestrator runs them.
+This stance is held by the write-surface discipline, not by any runtime tool: there is no runtime to detect a stall, prove disjointness, or block a merge. The disjointness, merge order, and gate predicate are recorded so a deterministic check outside the model — where one exists — or a reviewer can evaluate them; a conformant repository MUST NOT claim a live orchestrator runs them.
 
 ## Filename & placement
 
-`task-orchestration.md` is a **working artifact**, not a compiler-visible source. Its filename therefore MUST NOT carry the `.swarm.` infix; it uses a plain `.md` extension. The infix is the sole discriminator for "does the compiler parse or emit this":
+`task-orchestration.md` is a **working artifact**, not a compiler-visible source. Its filename therefore MUST NOT carry the `.swarm.` infix; it uses a plain `.md` extension. The infix is the sole discriminator for "does Swarm parse or emit this":
 
 | Class | Rule | This artifact |
 | --- | --- | --- |
 | Compiler-visible spec | The human-authored spec is `*.swarm.md`. | No — a coordination record is not a source spec. |
-| Emitted compiler output | Emitted artifacts carry `.swarm.*` (e.g. `*.swarm.ir.json`, `*.swarm.plan.json`, `*.swarm.trace.md`). | No — a coordination record is not a compiler-emitted output. |
+| Emitted Swarm output | Emitted artifacts carry `.swarm.*` (e.g. `*.swarm.ir.json`, `*.swarm.plan.json`, `*.swarm.trace.md`). | No — a coordination record is not a Swarm-emitted output. |
 | **Working artifact** | Plain `.md`, **no** `.swarm.` infix (e.g. `task-orchestration.md`). | **Yes** — it is a human/agent-authored coordination record. |
 
 A `task-orchestration.md` MAY embed SOL surface keywords (the `WRITES`-projected OWNED paths, the preserved constraints/invariants) as **quoted data**; embedding them does not make the file a SOL source, and a conformant tool MUST NOT parse a plain `task-orchestration.md` as a spec.
 
-In an adopted project, a coordination record is **generated execution material** — emitted by the lead during the decompose pass and recreatable from the source spec's obligation graph — so it is execution scratch, gitignored or created lazily by a future tool. It sits beside the other recreatable packets a parallel run produces:
+In an adopted project, a coordination record is **generated execution material** — emitted by the lead during the decompose step and recreatable from the source spec's obligations — so it is execution scratch, gitignored or created lazily by a future tool. It sits beside the other recreatable packets a parallel run produces:
 
 - The spec whose obligations the workers cover is a committed source-doc — the coordination record asserts no durable intent, so it is **not** a source-doc itself.
 - The per-worker child task frames (each carrying a `## Parent contract`), the trace each worker emits on completion, and the review whose verdicts the per-task merge gate reads are all recreatable execution scratch.
 
 A coordination record is not a durable source-doc (it asserts no durable intent) and it is not kept as a permanent record: it is disposable, and the durable record of the run is compacted into the durable ledger — or flows back to the spec repo as a linked PR — on reconciliation.
 
-A `task-orchestration.md` has **no copyable template among the starter-kit artifact skeletons**: unlike a task, an audit, or a finding, you do not start one from a blank skeleton you fill in. It is *generated* — emitted by the lead during the decompose pass and updated as the run proceeds. The schema below is its contract; the worker partition is lowered from the obligations, and the hand-offs, progress, and merge rows are recorded as the run unfolds.
+A `task-orchestration.md` has **no copyable template among the starter-kit artifact skeletons**: unlike a task, an audit, or a finding, you do not start one from a blank skeleton you fill in. It is *generated* — emitted by the lead during the decompose step and updated as the run proceeds. The schema below is its contract; the worker partition is structured from the obligations, and the hand-offs, progress, and merge rows are recorded as the run unfolds.
 
 ## Required sections & fields, in order
 
@@ -67,8 +67,8 @@ YAML frontmatter delimited by `---`, with at minimum:
 
 | # | Section | Required content | Stance rule |
 | --- | --- | --- | --- |
-| 1 | `# Orchestration: <title>` + provenance note | The title, then a one-line reminder that this file is the recorded coordination contract for a parallel run, generated by the decompose pass and updated as the run proceeds — never a runtime, and never a home for authored intent. | Sets the reader's frame; the note is part of the contract. |
-| 2 | `## Worker tracker` | One row per worker, carrying its OWNED and FORBIDDEN paths, hand-off summary, branch, status, liveness marker, and last verdict (schema below). | Records the disjoint partition lowered from the obligations; the OWNED sets MUST be pairwise non-overlapping. |
+| 1 | `# Orchestration: <title>` + provenance note | The title, then a one-line reminder that this file is the recorded coordination contract for a parallel run, generated by the decompose step and updated as the run proceeds — never a runtime, and never a home for authored intent. | Sets the reader's frame; the note is part of the contract. |
+| 2 | `## Worker tracker` | One row per worker, carrying its OWNED and FORBIDDEN paths, hand-off summary, branch, status, liveness marker, and last verdict (schema below). | Records the disjoint partition structured from the obligations; the OWNED sets MUST be pairwise non-overlapping. |
 | 3 | `## Decisions` | One row per stall (or other re-plan) event: when, which worker, the trigger, the action taken, and its rationale. | The recorded stall action, so the run is reconstructable. |
 | 4 | `## Merge log` | One row per merged branch: merge order, worker, target, conflicts, resolution, and the INTENT-PRESERVED-PROOF for every non-trivial conflict. | The reconstructable merge history; non-trivial conflicts MUST carry their equivalence proof. |
 
@@ -85,12 +85,12 @@ The worker tracker is a table with one row per worker. Two columns are load-bear
 | --- | --- |
 | `Worker` | The worker's slug. |
 | `Source doc` | The `spec.swarm.md` this worker's obligations are drawn from. |
-| `Task kind` | The kind that parameterizes the worker's pass (e.g. `implement`). |
+| `Task kind` | The kind that parameterizes the worker's step (e.g. `implement`). |
 | `Profile` | The carrier profile the worker runs under. |
 | `OWNED paths` | The worker's owned write surfaces; a subset of its obligations' declared `WRITES` (else `SOL-O005`). |
 | `FORBIDDEN paths` | The union of every other worker's OWNED paths. |
 | `Hand-off (deliverable / acceptance bar)` | A one-line summary of the hand-off contract (full form below). |
-| `Branch` | The worker's branch (one worktree per task; conventionally `swarm/<spec-slug>/<task-slug>`). A **single** task implementing a whole spec collapses this to `swarm/<spec-slug>`; the two-level form is for one obligation or a fan-out worker — one grammar reconciles both (the per-task isolation rule, including the `base:` it forks from, is the `implement` pass [Isolation](../passes/implement.md) section, ADR-0046). |
+| `Branch` | The worker's branch (one worktree per task; conventionally `swarm/<spec-slug>/<task-slug>`). A **single** task implementing a whole spec collapses this to `swarm/<spec-slug>`; the two-level form is for one obligation or a fan-out worker — one grammar reconciles both (the per-task isolation rule, including the `base:` it forks from, is the `implement` step [Isolation](../passes/implement.md) section, ADR-0046). |
 | `Status` | One of `not-started`, `in-progress`, `stalled`, `awaiting-review`, `kicked-back`, `merged`, `abandoned`. |
 | `Last progress` | The liveness marker — updated each time the lead checks the worker. |
 | `Last verdict` | The latest review verdict for the worker, or `—`. |
@@ -134,7 +134,7 @@ A worker the coordination record tracks is one **task**, and it moves through fo
 
 | Phase | What is read | What is produced | Where |
 | --- | --- | --- | --- |
-| **1. Creation** | the source spec (`spec.swarm.md`) | the lowered chain source spec → obligation graph → task graph → generated task frame | task frame as gitignored execution scratch (`<task-slug>.task.md`) |
+| **1. Creation** | the source spec (`spec.swarm.md`) | the structuring chain source spec → structured form → task graph → generated task frame | task frame as gitignored execution scratch (`<task-slug>.task.md`) |
 | **2. Execution** | the task frame + the source spec | the toolchain prepares the task frame, a worktree, a branch, the agent startup context (the `## Parent contract` carried verbatim into the child task), the verification matrix, and the promotion queue | worktree at `.worktrees/swarm/<spec-slug>/<task-slug>`, branch `swarm/<spec-slug>/<task-slug>` |
 | **3. Completion** | the worktree diff + proof evidence | the worker emits a **trace**; review emits a **review** with one verdict per required `VERIFY BY` binding | trace and review as execution scratch (or, in a code repo, the PR itself) |
 | **4. Reconciliation** | the trace + review | compact trace/review into the ledger; drain the promotion queue; update the status read-model; remove or archive the scratch files; remove the worktree | durable ledger entry (or a linked PR back to the spec repo) and updated status, worktree removed |
@@ -170,7 +170,7 @@ Conditions 1–4 are the merge gate read at task scope. Condition 5 is the orche
 
 ## Observed shape
 
-The contract shape the lead emits and updates (the worker partition lowered from the obligations; hand-offs, progress, decisions, and merges recorded as the run proceeds):
+The contract shape the lead emits and updates (the worker partition structured from the obligations; hand-offs, progress, decisions, and merges recorded as the run proceeds):
 
 ```markdown
 ---
@@ -184,9 +184,9 @@ created: {{createdAt}}
 # Orchestration: {{title}}
 
 Recorded coordination contract for a parallel run over `sources/specs/{{ctx}}/{{spec-slug}}.swarm.md`.
-Generated by the decompose pass and updated as the run proceeds — not a runtime, and never a
+Generated by the decompose step and updated as the run proceeds — not a runtime, and never a
 home for authored intent. The authoritative obligations live in the spec; each worker's OWNED
-set is lowered from its assigned obligations' WRITES surfaces.
+set is structured from its assigned obligations' WRITES surfaces.
 
 ## Worker tracker
 
@@ -225,10 +225,10 @@ And the `## Parent contract` each child task carries verbatim:
 
 ## Copyable template
 
-**There is no copyable skeleton for this artifact.** A coordination record is not started from a blank template you fill in — it is *generated* by the lead during the decompose pass and updated as the parallel run proceeds, and it is gitignored execution scratch (`task-orchestration.md`), created lazily by a future tool. The worker partition is lowered from the obligations' declared `WRITES` surfaces; the hand-offs, liveness, decisions, and merge log are recorded as the run unfolds. The observed shape above is the **contract** every generated coordination record MUST satisfy; this page is that contract. Do not hand-author it as intent, and do not introduce a `task-orchestration.swarm.md` form — it is generated execution material, never a compiler-visible source.
+**There is no copyable skeleton for this artifact.** A coordination record is not started from a blank template you fill in — it is *generated* by the lead during the decompose step and updated as the parallel run proceeds, and it is gitignored execution scratch (`task-orchestration.md`), created lazily by a future tool. The worker partition is structured from the obligations' declared `WRITES` surfaces; the hand-offs, liveness, decisions, and merge log are recorded as the run unfolds. The observed shape above is the **contract** every generated coordination record MUST satisfy; this page is that contract. Do not hand-author it as intent, and do not introduce a `task-orchestration.swarm.md` form — it is generated execution material, never a compiler-visible source.
 
 ## Related
 
-- [The `decompose` pass](../passes/decompose.md) — the pass that *produces* a coordination record: it partitions the obligation graph into write-disjoint workers, projects each worker's OWNED paths from its obligations' `WRITES` surfaces, and computes the merge order from the `DEPENDS ON` DAG.
+- [The `decompose` step](../passes/decompose.md) — the step that *produces* a coordination record: it partitions the obligations into write-disjoint workers, projects each worker's OWNED paths from its obligations' `WRITES` surfaces, and computes the merge order from the `DEPENDS ON` DAG.
 - [`task.md`](task.md) — the per-worker child frame the lead spawns from the tracker; it carries the worker's hand-off verbatim as its `## Parent contract`, and its `write_surfaces` are the OWNED set this record assigns.
-- [The `review` pass](../passes/review.md) — the pass that emits the per-task verdicts the merge gate reads; a missing review, or a `FAIL` / `UNVERIFIED` verdict on assigned work, blocks the per-task merge.
+- [The `review` step](../passes/review.md) — the step that emits the per-task verdicts the merge gate reads; a missing review, or a `FAIL` / `UNVERIFIED` verdict on assigned work, blocks the per-task merge.

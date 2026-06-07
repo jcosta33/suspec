@@ -2,7 +2,7 @@
 
 > Swarm's reference for proof types and the `VERIFY BY` binding: the nine closed proof types and the binding grammar that attaches a proof to an obligation.
 
-Swarm is markdown-only, provider-neutral, and has **no runtime**. Nothing here is shipped code: the linter, the `VERIFY BY` resolver, and the proof runner are all **contracts** a future tool builds against. A proof can *falsify* an obligation but may never silently amend its intent, and **schema-valid output is not a proof** — shape is not truth (the `CODE IS REALITY` invariant, §2).
+Swarm is markdown-only, provider-neutral, and has **no runtime**. Nothing here is shipped code: the linter, the `VERIFY BY` resolver, and the proof runner are all **contracts** a future tool builds against. A proof can *falsify* an obligation but may never silently amend its intent, and **schema-valid output is not a proof** — shape is not truth (the `CODE IS REALITY` invariant).
 
 A verdict is only as trustworthy as the proof behind it. `VERIFY BY` is the clause that attaches a proof to an obligation; the `<type>` it names is drawn from a **closed set of exactly nine proof types**.
 
@@ -29,7 +29,7 @@ A verdict is only as trustworthy as the proof behind it. `VERIFY BY` is the clau
 
 ## The `VERIFY BY` binding syntax
 
-The surface clause is `VERIFY BY` — two words, uppercase (per the keyword convention, §5) — followed by a typed reference. The surface form is always `VERIFY BY`; `VERIFY_BY` is surface-illegal.
+The surface clause is `VERIFY BY` — two words, uppercase (per the keyword convention) — followed by a typed reference. The surface form is always `VERIFY BY`; `VERIFY_BY` is surface-illegal.
 
 ```ebnf
 verify_line  = "VERIFY BY", ws, verify_ref, nl;
@@ -39,7 +39,7 @@ proof_type   = "static" | "test" | "contract" | "property" | "model"
              | "perf" | "security" | "manual" | "monitor";
 test_scope   = "unit" | "integration" | "e2e";   (* only legal when proof_type = "test" *)
 bare_ref     = ? opaque proof reference with no proof_type segment;
-               structurally valid, raises the §15 advisory untyped-binding smell ?;
+               structurally valid, raises the advisory untyped-binding smell ?;
 adapter      = ident;            (* resolves through AGENTS.md > Commands *)
 artifact     = path | ident | quoted_string;
 selector     = ident | path-fragment;   (* a case/scenario/property name *)
@@ -47,12 +47,12 @@ selector     = ident | path-fragment;   (* a case/scenario/property name *)
 
 Segment by segment:
 
-- **`<type>`** is the closed, lint-typed, IR-typed dimension. For `test`, an optional scope qualifier (`unit`/`integration`/`e2e`) follows the type as its own segment — `test:<scope>:<adapter>:<artifact>`, e.g. `test:unit:cmdTest:...` — modelled by the grammar as `proof_type [: test_scope] : adapter : artifact`.
-- **`<adapter>`** is a **project free-string** that resolves to a command slot in `AGENTS.md > Commands` (§15.3); the `cmd*` placeholder slots *are* the adapters.
+- **`<type>`** is the closed, lint-typed, structured-form-typed dimension. For `test`, an optional scope qualifier (`unit`/`integration`/`e2e`) follows the type as its own segment — `test:<scope>:<adapter>:<artifact>`, e.g. `test:unit:cmdTest:...` — modelled by the grammar as `proof_type [: test_scope] : adapter : artifact`.
+- **`<adapter>`** is a **project free-string** that resolves to a command slot in `AGENTS.md > Commands`; the `cmd*` placeholder slots *are* the adapters.
 - **`<artifact>`** is a **project free-string**: a file, test id, suite name, or contract file.
 - **`<selector>`** (optional, after `#`) narrows the artifact to a single case, scenario, or property.
 
-The IR field name for this clause is `verify_by[]` (snake_case — §12), normalized to `{type, adapter, ref, selector, gate}`.
+The structured-form field name for this clause is `verify_by[]` (snake_case), normalized to `{type, adapter, ref, selector, gate}`.
 
 ### Worked examples
 
@@ -85,23 +85,23 @@ A bare `VERIFY BY <ref>` with no `type:` segment is **structurally valid** but r
 
 - an `INTERFACE` binding, which MUST be `contract` (`SOL-V006`);
 - an `INVARIANT` type-preference (`SOL-V003`);
-- an obligation entering a `CONTRADICTED` proof-strength tie-break (§17);
-- a per-task default-suite check (§15.8).
+- an obligation entering a `CONTRADICTED` proof-strength tie-break;
+- a per-task default-suite check.
 
-A spec imported from outside the framework MAY carry bare refs; the `improve`/`NORMALIZE` pass upgrades them to typed bindings.
+A spec imported from outside the framework MAY carry bare refs; the `improve`/`NORMALIZE` step upgrades them to typed bindings.
 
 ## Why the boundary matters (design rationale)
 
-The taxonomy is deliberately *closed* so that a future linter can reason about it: the `<type>` is analyzable, while `<adapter>` and `<artifact>` stay free strings (kept in `AGENTS.md`) so the same spec ports across repos. (Cross-reference: the two-layer obligation/adapter model is §15.3.)
+The taxonomy is deliberately *closed* so that a future linter can reason about it: the `<type>` is analyzable, while `<adapter>` and `<artifact>` stay free strings (kept in `AGENTS.md`) so the same spec ports across repos — the two-layer obligation/adapter model.
 
-The closed set tracks the **test-oracle problem**: when a precise oracle is unavailable, a single concrete example cannot stand in for an obligation's predicate, so generative property-based and metamorphic checks are the principled response — they assert a quantified property rather than a single hand-picked case. This is why `property` and `model` are first-class types rather than scope notes under `test`, and why `manual` is named honestly rather than disguised as a passing test. A binding that resolves only to "schema-valid output" or a bare "tests passed" is not a proof and yields `UNVERIFIED`, not `PASS` (the *what is NOT a proof* floor, §15.9): a passing or schema-valid signal that does not actually exercise the obligation's predicate is an inadequate oracle, and inadequate oracles must not be allowed to manufacture a `PASS` [[REFLEXION]](../research/sources.md#REFLEXION).
+The closed set tracks the **test-oracle problem**: when a precise oracle is unavailable, a single concrete example cannot stand in for an obligation's predicate, so generative property-based and metamorphic checks are the principled response — they assert a quantified property rather than a single hand-picked case. This is why `property` and `model` are first-class types rather than scope notes under `test`, and why `manual` is named honestly rather than disguised as a passing test. A binding that resolves only to "schema-valid output" or a bare "tests passed" is not a proof and yields `UNVERIFIED`, not `PASS` (the *what is NOT a proof* floor): a passing or schema-valid signal that does not actually exercise the obligation's predicate is an inadequate oracle, and inadequate oracles must not be allowed to manufacture a `PASS` [[REFLEXION]](../research/sources.md#REFLEXION).
 
-A bound proof produces exactly one CORE verdict — `PASS`, `FAIL`, `BLOCKED`, or `UNVERIFIED` (§14.1) — and the lifecycle decorators (`WAIVED`/`STALE`/`CONTRADICTED`) annotate that result; the full seven-value verdict model and the merge gate live in §14.
+A bound proof produces exactly one CORE verdict — `PASS`, `FAIL`, `BLOCKED`, or `UNVERIFIED` — and the lifecycle decorators (`WAIVED`/`STALE`/`CONTRADICTED`) annotate that result; the full seven-value verdict model and the merge gate live in the [flow graph](cheatsheet.md).
 
 ## Related
 
 - [SOL — The Swarm Obligation Language](../language/SOL.md) — the surface syntax that hosts the `VERIFY BY` clause.
 - [Errors and lint codes](../language/errors.md) — the `SOL-V` family, including `SOL-V009` (unknown-proof-type) and `SOL-V006` (`INTERFACE` must be `contract`).
-- [The IR and Plan JSON Schemas](structured-form.md) — the `verify_by[]` IR field and its `{type, adapter, ref, selector, gate}` normalization.
+- [The Structured Form and Plan JSON Schemas](structured-form.md) — the `verify_by[]` structured-form field and its `{type, adapter, ref, selector, gate}` normalization.
 - [Drift and staleness](drift-and-staleness.md) — the `WAIVED`/`STALE`/`CONTRADICTED` lifecycle decorators that annotate a verdict.
 - [Glossary](glossary.md) — the CORE verdict vocabulary (`PASS`/`FAIL`/`BLOCKED`/`UNVERIFIED`) and proof terms used here.

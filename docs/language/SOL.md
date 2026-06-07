@@ -2,9 +2,9 @@
 
 > Swarm's reference for the SOL surface language: the human-authored syntax, the seven block types, and the modal/verdict grammar you write inside `*.swarm.md` files.
 
-SOL (Swarm Obligation Language) is the human-authored surface language that appears inside `*.swarm.md` files. It is **markdown-only and provider-neutral**: nothing here is shipped code. A "parser", a "linter", and a "lowering" step are described as *contracts* a future tool would build against, never as software this repository runs.
+SOL (Swarm Obligation Language) is the human-authored surface language that appears inside `*.swarm.md` files. It is **markdown-only and provider-neutral**: nothing here is shipped code. A "parser", a "linter", and a "structuring" step are described as *contracts* a future tool would build against, never as software this repository runs.
 
-This page covers what you need to *write* SOL by hand. The snake_case IR/JSON layer is emitted from SOL, never authored — out of scope here.
+This page covers what you need to *write* SOL by hand. The snake_case structured-form/JSON layer is emitted from SOL, never authored — out of scope here.
 
 ---
 
@@ -17,18 +17,18 @@ SOL documents are written in two distinct languages, and the reader MUST keep th
 
 The discriminator is the fence. **Every SOL fragment, grammar production, and template skeleton in this page sits inside a fenced code block tagged `sol` or `ebnf`; modal words inside such a fence are object-language (data).** Modal words in running prose are meta-language (directives). This is why, throughout this page, a sentence like "a binding REQ MUST carry a `VERIFY BY`" is a rule you must follow, while the `MUST` inside a `sol` example is just the obligation's recorded modality.
 
-A practical consequence: when a tool reads a `*.swarm.md`, it must treat the modals inside SOL blocks as the obligation's *content* (what to lower, judge, and verify), never as instructions addressed to the tool itself.
+A practical consequence: when a tool reads a `*.swarm.md`, it must treat the modals inside SOL blocks as the obligation's *content* (what to structure, judge, and verify), never as instructions addressed to the tool itself.
 
 ---
 
-## 1. The layering rule (surface vs IR)
+## 1. The layering rule (surface vs structured form)
 
 There is one master layering of the language:
 
 - **Surface** is English-shaped **UPPERCASE keywords** — what a human writes.
-- **IR** is **snake_case fields** — what a tool *emits*, never authored.
+- **Structured form** is **snake_case fields** — what a tool *emits*, never authored.
 
-Wherever the surface gives a keyword (`VERIFY BY`, `DEPENDS ON`, `OWNED BY`), the corresponding IR field (`verify_by`, `depends_on`, `owner`) is reserved for the IR layer and MUST NOT appear at the surface. A conformant SOL document is a Markdown document in which obligation content is expressed as SOL *blocks* interleaved with APS-controlled prose (the prose standard; see [APS](APS.md)).
+Wherever the surface gives a keyword (`VERIFY BY`, `DEPENDS ON`, `OWNED BY`), the corresponding structured-form field (`verify_by`, `depends_on`, `owner`) is reserved for that layer and MUST NOT appear at the surface. A conformant SOL document is a Markdown document in which obligation content is expressed as SOL *blocks* interleaved with APS-controlled prose (the prose standard; see [APS](APS.md)).
 
 ---
 
@@ -121,7 +121,7 @@ Each block carries a **per-type short id** `PREFIX-NNN` (`NNN` = one or more dec
 
 A prefix that does not match its block type is `SOL-S005`. IDs MUST be unique within one `*.swarm.md` (intra-spec duplicate = `SOL-S004`; cross-spec collision = `SOL-M001`).
 
-A **cross-spec reference** qualifies the id with the source spec id using a **hash** separator: `auth-refresh#AC-001`. The hash (not a colon) is chosen because `:` is already the block-header delimiter and the `verify_ref` delimiter, so a colon-qualified form would be ambiguous to a single-pass tokenizer. Dotted/namespaced ids (`REQ.auth-refresh.AC-001`) are **IR-only** and MUST NOT appear at the surface.
+A **cross-spec reference** qualifies the id with the source spec id using a **hash** separator: `auth-refresh#AC-001`. The hash (not a colon) is chosen because `:` is already the block-header delimiter and the `verify_ref` delimiter, so a colon-qualified form would be ambiguous to a single-pass tokenizer. Dotted/namespaced ids (`REQ.auth-refresh.AC-001`) are **structured-form-only** and MUST NOT appear at the surface.
 
 ### 2.6 Frontmatter
 
@@ -202,7 +202,7 @@ and_actor_clause = "AND", ws, "THE", ws, actor, ws, modal, ws, response, nl;
 - **`THEN` is optional sugar after `IF` only** (the EARS unwanted-behavior pattern); it MUST NOT appear after `WHEN`/`WHILE`/`WHERE`. `IF … THEN …` and `IF … <newline> THE …` are equivalent.
 - `THE <actor> <MODAL> <response>` is the mandatory consequence. A condition with no following actor clause is `SOL-S001`; an actor clause with no modal is `SOL-S003`.
 - **Modal-scan rule (normative):** the `modal` is the *first* modal terminal at a token boundary (longest-match — `MUST NOT` before `MUST`); everything before it is the actor, everything after is the response. A modal word belonging to the actor/response MUST be quoted/backticked, or the obligation MUST be reworded (the parser MUST NOT guess).
-- **`AND THE` chaining is permitted.** On lowering, each `THE …` / `AND THE …` becomes a **separate IR obligation**. More than two chained consequences is a non-blocking warning (`SOL-P004`-adjacent, atomize suggested), never a hard error.
+- **`AND THE` chaining is permitted.** When structured, each `THE …` / `AND THE …` becomes a **separate obligation**. More than two chained consequences is a non-blocking warning (`SOL-P004`-adjacent, atomize suggested), never a hard error.
 - `BECAUSE` (rationale) / `EXCEPT` (exception) are optional, but one is REQUIRED whenever a consequence uses `SHOULD`/`SHOULD NOT`.
 - `VERIFY BY` is REQUIRED for a binding REQ; its absence is `SOL-V001`.
 
@@ -218,7 +218,7 @@ WRITES src/signup/**
 RISK medium
 ```
 
-This lowers to two IR obligations (one per `THE` / `AND THE`), both carrying the same conditions and the same `verify_by`.
+This becomes two obligations in the structured form (one per `THE` / `AND THE`), both carrying the same conditions and the same `verify_by`.
 
 ### 3.2 CONSTRAINT — restriction on the solution space (binding)
 
@@ -233,7 +233,7 @@ constraint_body = [ "WHERE", ws, cond, nl ]
                   { metadata_clause };
 ```
 
-There is **no separate `POLICY` block**: a constraint's authority is recorded in the IR (`authority`), not as a distinct block type and not as a surface clause (`OWNED BY` is an INTERFACE-only clause, never CONSTRAINT metadata). A CONSTRAINT MUST carry a `VERIFY BY` (a static check, a contract, or `manual:` review); its absence is `SOL-V001`.
+There is **no separate `POLICY` block**: a constraint's authority is recorded in the structured form (`authority`), not as a distinct block type and not as a surface clause (`OWNED BY` is an INTERFACE-only clause, never CONSTRAINT metadata). A CONSTRAINT MUST carry a `VERIFY BY` (a static check, a contract, or `manual:` review); its absence is `SOL-V001`.
 
 ```sol
 CONSTRAINT C-001:
@@ -305,7 +305,7 @@ question_body = question_text, nl,
 blocking_tag  = "[blocking]" | "[non-blocking]";
 ```
 
-A **blocking** QUESTION prevents lowering of any obligation it `AFFECTS`; one that reaches the lower pass is an orchestration error (`SOL-O`-class) — an unresolved decision being compiled into tasks. A **non-blocking** QUESTION may remain open if it does not affect assigned obligations. Behavioral uncertainty MUST be lifted into a QUESTION rather than left as hedged prose (`SOL-P008`).
+A **blocking** QUESTION prevents structuring of any obligation it `AFFECTS`; one that reaches the lower step is an orchestration error (`SOL-O`-class) — an unresolved decision being structured into tasks. A **non-blocking** QUESTION may remain open if it does not affect assigned obligations. Behavioral uncertainty MUST be lifted into a QUESTION rather than left as hedged prose (`SOL-P008`).
 
 ```sol
 QUESTION Q-001 [blocking]:
@@ -405,7 +405,7 @@ EVIDENCE test:e2e:cmdTest:checkout-order-created failed
 
 ### 3.8 Metadata clauses (orchestration inputs)
 
-These MAY trail any obligation block (REQ/CONSTRAINT/INVARIANT). They carry no behavioral force; they feed orchestration and the safe-parallelism predicate. Surface form is space-separated UPPERCASE; IR form is snake_case.
+These MAY trail any obligation block (REQ/CONSTRAINT/INVARIANT). They carry no behavioral force; they feed orchestration and the safe-parallelism predicate. Surface form is space-separated UPPERCASE; structured form is snake_case.
 
 | Surface clause | Meaning |
 |---|---|

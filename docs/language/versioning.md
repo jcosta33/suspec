@@ -1,12 +1,12 @@
 # Versioning
 
-> Swarm's reference for versioning: the two independent version axes, the one-way trigger between them, and the three version fields a reader sees in frontmatter and the IR.
+> Swarm's reference for versioning: the two independent version axes, the one-way trigger between them, and the three version fields a reader sees in frontmatter and the structured form.
 
 Swarm carries **two independent version axes**. Conflating them is a category error: one tracks the *meaning of the language*, the other tracks *the package that delivers it*. A conformant repo MUST track both and MUST NOT merge them into a single number (§1).
 
 This language is **version 0.1**. The framework package that delivers it carries its own semver, independent of that `0.1`.
 
-A third version — the **spec content version** — is not a system-wide axis but a per-document fact: the semver of *one* spec's intent. It surfaces as its own field in the IR/plan (§3) and in frontmatter (§4), so a complete count of *fields a reader sees* is **three**, drawn from **two** axes.
+A third version — the **spec content version** — is not a system-wide axis but a per-document fact: the semver of *one* spec's intent. It surfaces as its own field in the structured form / plan (§3) and in frontmatter (§4), so a complete count of *fields a reader sees* is **three**, drawn from **two** axes.
 
 ## §1 — The two axes
 
@@ -14,7 +14,7 @@ This is the normative labelling convention for both axes — what each one versi
 
 | Axis | What it versions | Carried in | Cadence |
 | ---- | ---------------- | ---------- | ------- |
-| **Language version** | The SOL + APS feature set: grammar, the 7 block types, the 5 modals, the clause keywords, the `SOL-<LAYER>NNN` lint codes | `*.swarm.md` frontmatter as the discriminator `swarm_language: SOL/0.1` (plus `aps_version`); echoed in the IR as `meta.language` | Small, slow-moving: `0.1`, `0.2`, `1.0` |
+| **Language version** | The SOL + APS feature set: grammar, the 7 block types, the 5 modals, the clause keywords, the `SOL-<LAYER>NNN` lint codes | `*.swarm.md` frontmatter as the discriminator `swarm_language: SOL/0.1` (plus `aps_version`); echoed in the structured form as `meta.language` | Small, slow-moving: `0.1`, `0.2`, `1.0` |
 | **Framework / package version** | The starter kit — templates, pass guides, profiles, the flow-graph, and skills that ship together | a **producer release tag** on the `swarm` repo (e.g. a git tag / changelog). An adopted project keeps **no** copy — see ADR-0050 | Ordinary, fast semver; may move many times between language bumps |
 
 (The block-type, modal, and lint-layer counts above are Swarm's fixed vocabulary — 7 block types, 5 modals, 5 lint layers S/P/M/V/O. This page reproduces those counts as labels for the language axis; the vocabulary itself is defined in [`./SOL.md`](./SOL.md) (blocks and modals) and [`./errors.md`](./errors.md) (lint layers).)
@@ -51,15 +51,15 @@ The rationale: a new keyword or lint code changes what the templates and pass gu
 
 The two-axis split mirrors mature language ecosystems that version the *language* separately from the *toolchain* delivering it — Rust's editions / `rust-version` MSRV / cargo release, and C#'s `LangVersion` (bounded by the installed compiler) — each joined by a one-way constraint, the same shape as Swarm's language ⇒ framework trigger. The takeaway: the *language API* (grammar + lint codes) and the *package API* (template sections + skills + flow-graph) are versioned as **separately-named public APIs**.
 
-## §3 — Three distinct fields in the IR / plan
+## §3 — Three distinct fields in the structured form / plan
 
-The emitted IR and plan MUST echo **three distinct fields**, and a conformant tool MUST NOT merge any two of them:
+The emitted structured form and plan MUST echo **three distinct fields**, and a conformant tool MUST NOT merge any two of them:
 
 | Field | Axis / meaning | Example |
 | ----- | -------------- | ------- |
-| `meta.language` | The SOL **discriminator** — which grammar this IR was parsed under | `"SOL/0.1"` |
+| `meta.language` | The SOL **discriminator** — which grammar this structured form was parsed under | `"SOL/0.1"` |
 | `meta.version` | The **spec content version** — the semver of *this spec's intent*, independent of language and framework | `"0.1.0"` |
-| `provenance.compiler_version` | The **tool version** that emitted the IR, when a tool exists | `null` / unset today (no runtime) |
+| `provenance.compiler_version` | The **tool version** that emitted the structured form, when a tool exists | `null` / unset today (no runtime) |
 
 ```json
 {
@@ -82,16 +82,16 @@ To make the three-field mapping unambiguous, Swarm pins **one** frontmatter voca
 
 ```text
 ---
-swarm_language: SOL/0.1   # SOL discriminator (= meta.language in the IR)
+swarm_language: SOL/0.1   # SOL discriminator (= meta.language in the structured form)
 aps_version: 0.1          # APS prose-standard version
-spec_version: 0.1.0       # spec content version (= meta.version in the IR)
+spec_version: 0.1.0       # spec content version (= meta.version in the structured form)
 ---
 ```
 
-| Frontmatter field | Maps to IR field | Axis |
+| Frontmatter field | Maps to structured-form field | Axis |
 | ----------------- | ---------------- | ---- |
 | `swarm_language: SOL/0.1` | `meta.language` | Language (discriminator) |
-| `aps_version: 0.1` | (not echoed in IR; governs the `SOL-P…` prose lint layer) | Language |
+| `aps_version: 0.1` | (not echoed in the structured form; governs the `SOL-P…` prose lint layer) | Language |
 | `spec_version: 0.1.0` | `meta.version` | Spec content |
 
 **Conformance note.** The canonical form is `swarm_language: SOL/0.1` (with the `SOL/` discriminator) plus a separate `spec_version`. A conformant repo MUST use this form; a bare `swarm_language: 0.1` (a number with no discriminator) is a `SOL-S…`-class frontmatter diagnostic (the `SOL-S` structural lint layer; see [`./errors.md`](./errors.md)). The framework/package version is **never** written in per-file frontmatter, and (per [ADR-0050](../adrs/0050-swarm-is-a-spec-repo-discipline.md)) an adopted project keeps no version file at all — it is a producer release tag.

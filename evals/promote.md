@@ -1,15 +1,15 @@
-# `promote` — pass-output rubric
+# `promote` — step-output rubric
 
-> The output-quality predicate for the `promote` pass: a candidate set of promoted artifacts MUST leave nothing durable task-local, carry full provenance on each promoted item, route promotion through source authority (an observation promotes into intent only by explicit re-statement), and promote no task-local execution chatter. Each predicate is a boolean a reviewer decides by comparing the task's discoveries against the emitted `finding.md`/`adr.md`/amendment/`memory/INDEX.md` entries — no runtime.
+> The output-quality predicate for the `promote` step: a candidate set of promoted artifacts MUST leave nothing durable task-local, carry full provenance on each promoted item, route promotion through source authority (an observation promotes into intent only by explicit re-statement), and promote no task-local execution chatter. Each predicate is a boolean a reviewer decides by comparing the task's discoveries against the emitted `finding.md`/`adr.md`/amendment/`memory/INDEX.md` entries — no runtime.
 
-`promote` is the `PROMOTE`-phase pass. It moves durable discoveries out of task-local state into provenance-anchored artifacts. Its rubric grades whether **every durable discovery survives the task** with **complete provenance** and **correct authority routing**, and whether **only** durable discoveries are promoted.
+`promote` is the `PROMOTE`-phase step. It moves durable discoveries out of task-local state into provenance-anchored artifacts. Its rubric grades whether **every durable discovery survives the task** with **complete provenance** and **correct authority routing**, and whether **only** durable discoveries are promoted.
 
 **Input artifact:** the task's discoveries (trace, review, transcript) + the existing artifact set.
 **Output artifact:** the promoted `finding.md` / `adr.md` / `audit.md` / spec amendment / `memory/INDEX.md` entry.
 
 ## Output-grading predicates
 
-Each predicate MUST hold. Any single failing predicate fails the pass.
+Each predicate MUST hold. Any single failing predicate fails the step.
 
 | # | Predicate | Holds when | Fails when |
 | --- | --- | --- | --- |
@@ -23,9 +23,9 @@ Each predicate MUST hold. Any single failing predicate fails the pass.
 - For P2, a promoted `finding.md` MUST carry `origin_obligations`, `origin_traces`, the `pass`/`profile` that produced it, the reviewer-or-tool, a `content_hash`, a `confidence`, and `applies when` / `does not apply when` bounds. A memory `MAP` line MUST carry a "Load when" condition and point at the finding — no procedure inlined, the index staying a thin router.
 - For P3, a reviewer checks the direction of authority: a finding or observation that *contradicts* an approved obligation is **memory drift** and MUST be surfaced for reconcile, not promoted as if it outranks the spec. Promotion into intent is legitimate only as an explicit re-statement through amendment.
 
-## Cross-pass predicates scored here
+## Cross-step predicates scored here
 
-The suite scores two cross-pass predicates at the `promote` output:
+The suite scores two cross-step predicates at the `promote` output:
 
 - **Parse-validity** — every emitted SOL-bearing artifact (a spec amendment, an `adr.md` constraint) re-parses clean; no promotion emits a structurally invalid block.
 - **Drift-detection** — promote classifies and surfaces **memory drift** (a memory item contradicted by a higher-authority source) rather than silently promoting or silently passing it. A memory-drift condition present in the fixture but unflagged fails this predicate even if P1–P4 all hold; this is the predicate the stale-memory fixture guards.

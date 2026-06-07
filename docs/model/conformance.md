@@ -22,7 +22,7 @@ A spec repo that fails a clause is **non-conformant**. Conditional artifacts (Ti
 
 ## The conformance contract (the manifest)
 
-A Swarm repository ships a machine-readable conformance encoding under `conformance/`. It is **inert versioned data**: the precise, testable definition a future checker would honour, and the artifact a human uses to validate a repository by hand today. Per the no-runtime invariant, nothing under this directory executes — Swarm ships the contract, never the checker.
+A Swarm repository ships a machine-readable conformance encoding under `conformance/`. It is **inert versioned data**: the precise, testable definition a future checker would honour, and the artifact a human uses to validate a repository by hand today.
 
 The conformance directory contains exactly three things:
 
@@ -87,7 +87,7 @@ The manifest carries the unified lint scheme as inert data so the checker and th
 
 ### Count acceptance checks (A10–A16)
 
-The manifest's closed-set cardinalities are pinned as the **count acceptance checks A10–A16**: every closed set has exactly one cardinality, and a count that differs between any two documents (the SOL reference, the IR schema, the lint catalogue, the pass guides, and this manifest) is a failing check. The canonical members of each set are enumerated in the [flow graph](../reference/cheatsheet.md) — the count-reconciliation hub — which this manifest shadows:
+The manifest's closed-set cardinalities are pinned as the **count acceptance checks A10–A16**: every closed set has exactly one cardinality, and a count that differs between any two documents (the SOL reference, the structured-form schema, the lint catalogue, the step guides, and this manifest) is a failing check. The canonical members of each set are enumerated in the [flow graph](../reference/cheatsheet.md) — the count-reconciliation hub — which this manifest shadows:
 
 | Check | Closed set | Count |
 |---|---|---|
@@ -95,7 +95,7 @@ The manifest's closed-set cardinalities are pinned as the **count acceptance che
 | A11 | modals | 5 |
 | A12 | verdicts | 7 (4 core + 3 lifecycle) |
 | A13 | proof types | 9 |
-| A14 | phases / passes | 7 / 9 |
+| A14 | phases / steps | 7 / 9 |
 | A15 | improve operations | 10 |
 | A16 | lint layers | 5 (S/P/M/V/O) |
 
@@ -148,8 +148,8 @@ The definition above is a single *binary* predicate — the terminal judgement. 
 | Tier | Name | What it means | Bound to |
 |---|---|---|---|
 | **1** | **Swarm-readable** | The canonical structure is installed: a human or agent can read the repository as a Swarm repository. Nothing is yet checked for correctness. | Conformance clauses (a) and (b) hold — the six Tier-2 docs and seven Tier-1 templates are present and copyable. Clauses (c)/(d) MAY still be unmet. |
-| **2** | **Swarm-lintable** | Authored specs are structurally and prose-valid: the obligation language parses and carries no blocking surface/prose defect. | Every approved `*.swarm.md` emits **zero blocking `SOL-S*` and zero blocking `SOL-P*`** diagnostics (blocking = the `severity` field's `BLOCKING` value, which lowers to IR `level` `error`). `SOL-M*`/`SOL-V*`/`SOL-O*` are not gated here. |
-| **3** | **Swarm-compilable** | Approved specs can be lowered into tasks deterministically: every lowering precondition is present. | For every approved obligation: a stable ID, a proof binding (`VERIFY BY <type>:<adapter>:<artifact>` — a bare ref is advisory but a binding MUST exist), declared non-goals/scope, resolvable referenced `INTERFACE` blocks, and resolvable `DEPENDS ON` edges; and **no unresolved blocking `QUESTION` reaches lowering**. This is exactly the `lower`/`decompose` precondition set. |
+| **2** | **Swarm-lintable** | Authored specs are structurally and prose-valid: the obligation language parses and carries no blocking surface/prose defect. | Every approved `*.swarm.md` emits **zero blocking `SOL-S*` and zero blocking `SOL-P*`** diagnostics (blocking = the `severity` field's `BLOCKING` value, which structures to `level` `error`). `SOL-M*`/`SOL-V*`/`SOL-O*` are not gated here. |
+| **3** | **Swarm-compilable** | Approved specs can be lowered into tasks deterministically: every structuring precondition is present. | For every approved obligation: a stable ID, a proof binding (`VERIFY BY <type>:<adapter>:<artifact>` — a bare ref is advisory but a binding MUST exist), declared non-goals/scope, resolvable referenced `INTERFACE` blocks, and resolvable `DEPENDS ON` edges; and **no unresolved blocking `QUESTION` reaches structuring**. This is exactly the `lower`/`decompose` precondition set. |
 | **4** | **Swarm-verifiable** | For implemented work, trace and review are complete and every completion claim is tied to evidence. | `trace.md` and `review.md` exist for the implemented obligations; each `IMPLEMENTS`/`PRESERVES`/`PROOF` claim carries content-hashed evidence and a core verdict; every completion claim binds to pasted proof output, never a bare "tests passed" claim (the `non-empty-paste` rule). |
 | **5** | **Swarm-orchestratable** | Work can be partitioned across agents and sequenced safely: the static coordination contract is complete. | The orchestration coordination contract is fully satisfied: declared write surfaces (named `SURFACE`s — there is no `locks` primitive) with the safe-parallelism predicate holding (no `SOL-O001`), obligation IDs preserved across the source→execution tiers, the coordination hand-off fields (owned/forbidden paths, status, parent contract), liveness/stall states, and the promotion queue. |
 
@@ -165,7 +165,7 @@ The boundary is **design rationale**, not an empirical claim. It rests on two ob
 
 ### The toolchain verb set
 
-A future toolchain would expose this verb set. Each verb is a transformation a human or agent performs by hand today, following a pass guide; none executes here.
+A future toolchain would expose this verb set. Each verb is a transformation a human or agent performs by hand today, following a step guide; none executes here.
 
 | Verb | Phase(s) it drives | What it would do |
 |---|---|---|
@@ -173,8 +173,8 @@ A future toolchain would expose this verb set. Each verb is a transformation a h
 | `lint` | PARSE, NORMALIZE | emit `SOL-<LAYER>NNN` diagnostics against a `*.swarm.md` source |
 | `format` | NORMALIZE | apply the canonical surface form without changing intent |
 | `improve` | NORMALIZE | apply intent-preserving spec edits (the closed improve-operation set) |
-| `build-ir` | PARSE → NORMALIZE | emit the IR envelope (`*.swarm.ir.json`) |
-| `lower` / `plan` | LOWER | emit the schedulable plan projection of the IR (`*.swarm.plan.json`) |
+| `build-ir` | PARSE → NORMALIZE | emit the structured-form envelope (`*.swarm.ir.json`) |
+| `lower` / `plan` | LOWER | emit the schedulable plan projection of the structured form (`*.swarm.plan.json`) |
 | `decompose` | LOWER | partition the plan into work packets, one per disjoint write surface |
 | `verify` | VERIFY | run resolved `cmd*` adapters, record core verdicts + lifecycle decorators |
 | `review` | REVIEW | assemble the review packet from trace + obligation set; record the verdict |
@@ -246,5 +246,5 @@ This "prepare → delegate → reconcile" split (the two OWNS tables above) is w
 - [APS](../language/APS.md) — the prose standard whose violations surface as `SOL-P*` codes.
 - [Flow graph](../reference/cheatsheet.md) — the human-readable required-verification-suite matrix the manifest shadows.
 - [Source artifacts](source-artifacts.md) — the seven Tier-1 core artifacts and their template contracts.
-- [Compiler pipeline](how-swarm-works.md) — the `lower`/`decompose` lowering preconditions that tier 3 (Swarm-compilable) binds to.
+- [How Swarm works](how-swarm-works.md) — the `lower`/`decompose` preconditions that tier 3 (Swarm-compilable) binds to.
 - [Task orchestration](../artifacts/task-orchestration.md) — the static coordination contract the toolchain owns one side of (prepare/reconcile) and tier 5 (Swarm-orchestratable) binds to.

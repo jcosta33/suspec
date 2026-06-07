@@ -1,6 +1,6 @@
 # Walkthrough: `payment-5xx` — what differs from `auth-refresh`
 
-> A third positive run through all nine Swarm passes — author, lint, improve, lower, decompose, implement, verify, review, promote — for a payment-processor 5xx handler. The eight-stage skeleton, the no-runtime framing, and the stage-by-stage mechanics are identical to [`auth-refresh`](./auth-refresh.md); read that page first for the full walkthrough. This page spells out **only what `payment-5xx` teaches that `auth-refresh` does not**: a `MUST`-vs-`MUST NOT` semantic contradiction, a `monitor` proof that has no merge-time execution, and a merge gate that reconciles a `CONTRADICTED` obligation rather than a `STALE` one.
+> A third positive run through all nine Swarm steps — author, lint, improve, lower, decompose, implement, verify, review, promote — for a payment-processor 5xx handler. The eight-stage skeleton, the no-runtime framing, and the stage-by-stage mechanics are identical to [`auth-refresh`](./auth-refresh.md); read that page first for the full walkthrough. This page spells out **only what `payment-5xx` teaches that `auth-refresh` does not**: a `MUST`-vs-`MUST NOT` semantic contradiction, a `monitor` proof that has no merge-time execution, and a merge gate that reconciles a `CONTRADICTED` obligation rather than a `STALE` one.
 
 ## What this case teaches
 
@@ -10,7 +10,7 @@
 - **A vague-quality high-risk clause** (`AC-021`): `MUST handle failures gracefully` — the high-risk word "gracefully" with no observable criterion. This is the same `SOL-P005` family `auth-refresh`'s `I-001` tripped, but here on a binding obligation, repaired by `CONCRETIZE`.
 - **A `monitor` proof** on `I-001`: a production duplicate-captures dashboard, the honest oracle for "the same idempotency key never captures twice" — because no harness can witness a *real* duplicate capture. A `monitor` has no merge-time execution, which drives the distinctive gate arc below.
 
-Like `auth-refresh`, `payment-5xx` carries a `[blocking]` `Q-001` (here: should a 503 be retried automatically or surfaced for a manual retry?) that would raise `SOL-O003` if it reached `lower`; it is resolved at `improve` (decision: retry automatically up to the bound, then surface a 502). The three version fields, the SARIF diagnostics shape, the `snake_case` IR projection, and the indexed finding all work as the `auth-refresh` page describes.
+Like `auth-refresh`, `payment-5xx` carries a `[blocking]` `Q-001` (here: should a 503 be retried automatically or surfaced for a manual retry?) that would raise `SOL-O003` if it reached `lower`; it is resolved at `improve` (decision: retry automatically up to the bound, then surface a 502). The three version fields, the SARIF diagnostics shape, the `snake_case` structured-form projection, and the indexed finding all work as the `auth-refresh` page describes.
 
 ## The authored spec (Stage 1)
 
@@ -49,7 +49,7 @@ SOL-P005  BLOCKING  layer=P  AC-021:L2 ("THE payments service MUST handle failur
   suggest: improve op CONCRETIZE or QUANTIFY — name the observable behavior and threshold.
 ```
 
-The missing `AC-020`/`I-001` bindings are not pinned as a separate headline defect — they are repaired in the same `improve` pass that deconflicts and concretizes (via `BIND`), so the seeded blocking set is the two codes above plus the blocking-question note for `Q-001`. Because `Q-001` is resolved at `improve`, `SOL-O003` never fires downstream; it is the risk the open question *would* have raised had it survived to lowering.
+The missing `AC-020`/`I-001` bindings are not pinned as a separate headline defect — they are repaired in the same `improve` step that deconflicts and concretizes (via `BIND`), so the seeded blocking set is the two codes above plus the blocking-question note for `Q-001`. Because `Q-001` is resolved at `improve`, `SOL-O003` never fires downstream; it is the risk the open question *would* have raised had it survived to structuring.
 
 ## The repair (Stage 3)
 
@@ -81,9 +81,9 @@ VERIFY BY monitor:cmdMonitor:dashboards/payments/duplicate-captures#zero_double_
 
 `CONCRETIZE` replaced "handle failures gracefully" with an observable criterion (return HTTP 502 with a structured `processor-unavailable` body inside the 30s budget) and reworded the selector from `surfaces-error` to `surfaces-502` to match. `BIND` attached the missing bindings. The `monitor` binding on `I-001` is the load-bearing choice: the honest oracle for "the same idempotency key never captures twice" is the production duplicate-captures dashboard, not a unit test.
 
-## The IR (Stage 4)
+## The structured form (Stage 4)
 
-`lower` halts on any unresolved blocking diagnostic or open blocking `QUESTION` (`SOL-O003`); the IR exists *only because* `improve` deconflicted `AC-020` and closed `Q-001` first. `I-001` lowers with `modality: MUST NOT`. Only `AC-020 affects I-001` is an `affects` edge — `AC-021` surfaces the exhaustion error and does not touch the capture path, so it carries no edge to the invariant. As on every page, every node enters at `status: UNVERIFIED` and `compiler_version` is `null` (no tool is shipped).
+`lower` halts on any unresolved blocking diagnostic or open blocking `QUESTION` (`SOL-O003`); the structured form exists *only because* `improve` deconflicted `AC-020` and closed `Q-001` first. `I-001` lowers with `modality: MUST NOT`. Only `AC-020 affects I-001` is an `affects` edge — `AC-021` surfaces the exhaustion error and does not touch the capture path, so it carries no edge to the invariant. As on every page, every node enters at `status: UNVERIFIED` and `compiler_version` is `null` (no tool is shipped).
 
 ## The work packet (Stage 5) — a pending monitor row
 
@@ -184,7 +184,7 @@ The finding is indexed in memory by a single `MAP` line carrying a "Load when" c
   — Load when: implementing or reviewing a payment retry path that re-submits a charge after a 5xx.
 ```
 
-That closes the loop: a draft spec with a self-contradiction, a vague-quality clause, and an open blocking question became a deconflicted and concretized spec, a typed IR, a scoped work packet, an implemented and traced change, a reviewed merge that BLOCKED on a production/harness contradiction and reconciled to PASS, and a promoted finding that future work on this surface will load on demand.
+That closes the loop: a draft spec with a self-contradiction, a vague-quality clause, and an open blocking question became a deconflicted and concretized spec, a typed structured form, a scoped work packet, an implemented and traced change, a reviewed merge that BLOCKED on a production/harness contradiction and reconciled to PASS, and a promoted finding that future work on this surface will load on demand.
 
 ## Related
 
@@ -192,6 +192,6 @@ That closes the loop: a draft spec with a self-contradiction, a vague-quality cl
 - [Walkthrough: `checkout`](./checkout.md) — the multi-obligation atomicity case: a bundled obligation and a parallel write-surface conflict.
 - [Drift and staleness](../reference/drift-and-staleness.md) — the `CONTRADICTED` decorator and the not-silent reconcile discipline the merge gate enforces here.
 - [Proof types and the `VERIFY BY` binding](../reference/proof-types.md) — the nine proof types the bindings above draw from (`contract` for the `INTERFACE`, `test` for the obligations, `monitor` for the invariant — the production observation that drives the contradiction).
-- [Golden corpus](../reference/golden-corpus.md) — `payment-5xx` is the positive (`must-compile`) fixture this walkthrough draws from; its canonical defect class is the `MUST`-vs-`MUST NOT` contradiction (`SOL-M002`), the vague high-risk word (`SOL-P005`), and the blocking-question-at-lowering risk (`SOL-O003`).
-- Pass references, in pipeline order: [`author`](../passes/author.md), [`lint`](../passes/lint.md), [`improve`](../passes/improve.md), [`lower`](../passes/lower.md), [`decompose`](../passes/decompose.md), [`implement`](../passes/implement.md), [`verify`](../passes/verify.md), [`review`](../passes/review.md), [`promote`](../passes/promote.md)
+- [Golden corpus](../reference/golden-corpus.md) — `payment-5xx` is the positive (`must-compile`) fixture this walkthrough draws from; its canonical defect class is the `MUST`-vs-`MUST NOT` contradiction (`SOL-M002`), the vague high-risk word (`SOL-P005`), and the blocking-question-at-structuring risk (`SOL-O003`).
+- Step references, in flow order: [`author`](../passes/author.md), [`lint`](../passes/lint.md), [`improve`](../passes/improve.md), [`lower`](../passes/lower.md), [`decompose`](../passes/decompose.md), [`implement`](../passes/implement.md), [`verify`](../passes/verify.md), [`review`](../passes/review.md), [`promote`](../passes/promote.md)
 - Artifact references for each stage's output: [`spec`](../artifacts/spec.md), [`task`](../artifacts/task.md), [`trace`](../artifacts/trace.md), [`review`](../artifacts/review.md), [`finding`](../artifacts/finding.md), [`memory`](../artifacts/memory.md)

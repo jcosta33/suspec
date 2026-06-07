@@ -1,22 +1,22 @@
 # Pass guides
 
-> Swarm's reference for **pass guides**: the reusable, lazily-loaded procedural modules that document *how* to run a named pass — never *what the language means* — together with how procedural modules map onto the nine passes, the loading doctrine, the cross-cutting fragments, and the pass-guide contract.
+> Swarm's reference for **pass guides**: the reusable, lazily-loaded procedural modules that document *how* to run a named pass — never *what the language means* — together with how procedural modules map onto the nine steps, the loading doctrine, the cross-cutting fragments, and the pass-guide contract.
 
-A **pass guide** is a procedural module that documents how to perform one of the **nine passes** of the Swarm compiler pipeline (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`) — and nothing more. It is a reusable *method* an agent loads when a task names it: the prose recipe for executing a pass well, the questions to ask, the order to work in, the evidence to gather. It is **SOFT control** (Invariant 2): it influences how an agent works but binds nothing Swarm marks authoritative. Where a guide and the language reference disagree, the language reference governs.
+A **pass guide** is a procedural module that documents how to perform one of Swarm's **nine steps** (`author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote`) — and nothing more. It is a reusable *method* an agent loads when a task names it: the prose recipe for executing a pass well, the questions to ask, the order to work in, the evidence to gather. It is **SOFT control** (Invariant 2): it influences how an agent works but binds nothing Swarm marks authoritative. Where a guide and the language reference disagree, the language reference governs.
 
 Like everything in Swarm, a pass guide has **no runtime**: it is text a human, an agent, or a future harness reads. Loading a guide changes how work gets done; it never executes anything and never enforces anything.
 
 ## The one rule a pass guide must never break
 
-> **The semantic-ownership prohibition.** No pass guide may define, redefine, or be required to interpret SOL or APS semantics. All load-bearing meaning lives in SOL and the typed IR; a pass guide is a procedure, not a semantic home.
+> **The semantic-ownership prohibition.** No pass guide may define, redefine, or be required to interpret SOL or APS semantics. All load-bearing meaning lives in SOL and the typed structured form; a pass guide is a procedure, not a semantic home.
 
-This is the load-bearing constraint of the whole pass-guide layer. A pass guide MUST NOT define a block type, a modal, a clause keyword, a verdict value, a proof type, a lint code, or any IR field. Those live exclusively in the language reference. A guide MAY cite, link to, or quote that reference, but the citation is **non-authoritative delivery** — the authoritative text is the reference itself.
+This is the load-bearing constraint of the whole pass-guide layer. A pass guide MUST NOT define a block type, a modal, a clause keyword, a verdict value, a proof type, a lint code, or any structured-form field. Those live exclusively in the language reference. A guide MAY cite, link to, or quote that reference, but the citation is **non-authoritative delivery** — the authoritative text is the reference itself.
 
 The reason is adherence: meaning that lived in a lazily-loaded, optional guide would make the meaning of a spec depend on whether that guide happened to load. So a correctly written `*.swarm.md` file MUST be understandable to a strong model **without any guide loaded**, because it uses the controlled obligation language and stable formal blocks. The guide tells you how to *work*; the spec already tells you what the work *means*.
 
 A conformant repo confirms, by regression check, that no pass guide, profile, fragment, or `AGENTS.md` section defines modality, authority order, or verification semantics.
 
-## How procedural modules map onto the nine passes
+## How procedural modules map onto the nine steps
 
 The pass-guide layer organizes the framework's procedural modules — each a self-contained recipe a model loads to do a unit of work [[SKILLBP]](../research/sources.md#SKILLBP) — under a discipline that keeps any one module from quietly owning semantics. Every procedural module is exactly one of three things: a **pass guide** (one per pass), a **cross-cutting fragment** (shared procedure), or a **profile** (a cognitive stance, documented separately).
 
@@ -59,7 +59,7 @@ Three rows are normative and worth calling out:
 
 ### A guide is an aid, not a gate
 
-Every one of the nine passes now has a guide, but a guide is an **optional aid**, not a conformance requirement: the pass contract is the binding artifact, and a guide only helps perform it. (The installed authoring set — six pass guides, six author guides, two cross-cutting fragments, six authoring profiles — is tabulated under [The installed guides](#the-installed-guides) below; the nine per-kind `implement` guides + seven code-work profiles + `implement-and-verify` are [`docs/library/code-skills/`](code-skills/) reference, not shipped in the kit.)
+Every one of the nine steps now has a guide, but a guide is an **optional aid**, not a conformance requirement: the pass contract is the binding artifact, and a guide only helps perform it. (The installed authoring set — six pass guides, six author guides, two cross-cutting fragments, six authoring profiles — is tabulated under [The installed guides](#the-installed-guides) below; the nine per-kind `implement` guides + seven code-work profiles + `implement-and-verify` are [`docs/library/code-skills/`](code-skills/) reference, not shipped in the kit.)
 
 ## The two cross-cutting fragments
 
@@ -186,11 +186,11 @@ Guides **split by role** ([ADR-0051](../adrs/0051-complete-the-spec-repo-pivot.m
 | `implement-and-verify/` | the one optional skill a **code repo** may copy | `implement`, `verify` |
 | `persona-builder/`, `persona-bug-hunter/`, `persona-test-author/`, `persona-performance-surgeon/`, `persona-migrator/`, `persona-lead-engineer/`, `persona-janitor/` | code-work profiles | (parameterize `implement`) |
 
-These directories sit under a `skills/` path for cross-tool compatibility; in Swarm's vocabulary they are pass guides, per-kind implement guides, author guides, and fragments. Every one of the nine passes now has a guide.
+These directories sit under a `skills/` path for cross-tool compatibility; in Swarm's vocabulary they are pass guides, per-kind implement guides, author guides, and fragments. Every one of the nine steps now has a guide.
 
 ## Related
 
-- [The compiler pipeline](../model/how-swarm-works.md) — the nine passes and seven phases a guide runs against, and the per-pass guide/fragment packaging (ADR-0042).
+- [How Swarm works](../model/how-swarm-works.md) — the nine steps and seven phases a guide runs against, and the per-pass guide/fragment packaging (ADR-0042).
 - [The `lint` pass](../passes/lint.md), [the `decompose` pass](../passes/decompose.md), [the `implement` pass](../passes/implement.md), [the `review` pass](../passes/review.md), and [the `promote` pass](../passes/promote.md) — the contracts the dedicated pass guides and the per-`task_kind` implement guides perform.
 - [The `verify` pass](../passes/verify.md) — the proof model and verdict vocabulary the `empirical-proof` fragment applies but never defines.
 - [The `task.md` artifact](../artifacts/task.md) — where a task names the pass guides and profiles to load.

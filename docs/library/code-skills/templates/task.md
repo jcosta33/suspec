@@ -37,7 +37,7 @@ created: {{createdAt}}
 
 ## Scope
 
-<An explicit In / Out list bounding the pass.>
+<An explicit In / Out list bounding the step.>
 
 ### In
 
@@ -57,7 +57,7 @@ Paste the exact assigned SOL blocks here, verbatim.
 
 Paste all constraints and invariants this task must preserve.
 
-## Implementation or pass trace
+## Implementation or step trace
 
 <What changed, per obligation.>
 
@@ -75,7 +75,7 @@ Paste all constraints and invariants this task must preserve.
 
 ## Promotion queue
 
-<Discoveries with target + promotion status (see the `promote` pass); all MUST be resolved before task close.>
+<Discoveries with target + promotion status (see the `promote` step); all MUST be resolved before task close.>
 
 | Item | Target | Status |
 | ---- | ------ | ------ |
@@ -83,11 +83,11 @@ Paste all constraints and invariants this task must preserve.
 
 ## Self-review
 
-<The structured self-review block: did I do only this pass; preserve semantics; map every claim to evidence.>
+<The structured self-review block: did I do only this step; preserve semantics; map every claim to evidence.>
 
 <self_review>
 
-- Did I perform only the assigned pass?
+- Did I perform only the assigned step?
 - Did I preserve all assigned SOL semantics?
 - Did I map every completion claim to evidence?
 - Did I avoid changes outside the declared write surfaces?

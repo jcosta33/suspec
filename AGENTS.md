@@ -6,9 +6,9 @@
 
 ## What this repo is
 
-This repo **is** the Swarm framework — a markdown-only, provider-neutral, obligation-centered
-specification compiler. It ships **no runtime**: every "parser/linter/planner/checker/CLI" is a
-contract a future tool builds against, never code this repo runs.
+This repo **is** the Swarm framework — a markdown-only, provider-neutral, obligation-centered **spec
+format and way of working**: you write specs, agents build from them. It ships **no runtime**: every
+"parser/linter/planner/checker/CLI" is a contract a future tool builds against, never code this repo runs.
 
 - `docs/` — the self-standing framework (the product): `language/`, `model/`, `passes/`,
   `artifacts/`, `library/`, `reference/`, `research/`, `adrs/`, `examples/` + `PRINCIPLES.md`,
@@ -54,7 +54,8 @@ contract a future tool builds against, never code this repo runs.
 
 ## Canonical closed sets (counts MUST reconcile everywhere; hub: `docs/reference/cheatsheet.md`)
 - 7 block types · 5 modals · 7 verdicts (4 core + 3 lifecycle) · 9 proof types · 7 phases ·
-  9 passes · 10 improve operations · 5 lint layers (S/P/M/V/O) · 7 edge types · 17 `task_kind` values.
+  9 steps · 10 improve operations · 5 lint layers (S/P/M/V/O) · 7 edge types · 17 `task_kind` values.
+  (The `pass-*` skill-dir prefix and `type: pass-guide` are stable skill identifiers — the *steps* are the 9.)
 
 ## Pointers
 - Skills — the **authoring** catalogue (author guides, analysis pass guides, fragments, 6 authoring personas) ships at `starter-kit/.agents/skills/`; the **code-implementation** skills (per-kind implement guides, 7 code personas, `implement-and-verify`) are reference at `docs/library/code-skills/`; `.agents/skills/` is the curated dev subset

@@ -1,10 +1,10 @@
 # The Golden Corpus
 
-> Swarm's reference for the golden corpus: the inert fixture suite that pins the expected verdict of every pass on every fixture, so a conformant tool — or a human reviewer — can be checked against a known-correct oracle without trusting the tool under test.
+> Swarm's reference for the golden corpus: the inert fixture suite that pins the expected verdict of every step on every fixture, so a conformant tool — or a human reviewer — can be checked against a known-correct oracle without trusting the tool under test.
 
-Swarm is markdown-only, provider-neutral, and has **no runtime**. The golden corpus is **inert versioned data**: every fixture is a file, every expected verdict is recorded in that file's own header, and nothing here runs. The linter, the IR builder, the proof runner, and any future eval harness are all **contracts** a tool builds against; the corpus is the regression suite those contracts are measured against. Today a human validates a repository against it by hand; a future eval harness MAY automate the same checks — but the corpus itself never executes.
+Swarm is markdown-only, provider-neutral, and has **no runtime**. The golden corpus is **inert versioned data**: every fixture is a file, every expected verdict is recorded in that file's own header, and nothing here runs. The linter, the structured-form builder, the proof runner, and any future eval harness are all **contracts** a tool builds against; the corpus is the regression suite those contracts are measured against. Today a human validates a repository against it by hand; a future eval harness MAY automate the same checks — but the corpus itself never executes.
 
-The corpus exists because a conformance suite needs both allowed and disallowed productions whose conformity is **known without the tool under test** — the same discipline compiler conformance suites (SuperTest, the OpenJDK TCK, WebAssembly's SpecTest) enforce. A fixture that compiles cleanly proves the tool accepts what it must; a fixture that is rejected with a specific `SOL-<LAYER>NNN` code proves the tool rejects what it must, and for the right reason. Because the expected verdict is pinned in data — not computed by the checker — the corpus can catch a checker that passes everything (or rejects everything) just as readily as one with a subtle bug.
+The corpus exists because a conformance suite needs both allowed and disallowed productions whose conformity is **known without the tool under test** — the same discipline language conformance suites (SuperTest, the OpenJDK TCK, WebAssembly's SpecTest) enforce. A fixture that is accepted cleanly proves the tool accepts what it must; a fixture that is rejected with a specific `SOL-<LAYER>NNN` code proves the tool rejects what it must, and for the right reason. Because the expected verdict is pinned in data — not computed by the checker — the corpus can catch a checker that passes everything (or rejects everything) just as readily as one with a subtle bug.
 
 ## Where the corpus ships
 
@@ -13,7 +13,7 @@ The corpus ships in two locations, each serving a different audience:
 | Location | Holds | Audience |
 | --- | --- | --- |
 | `conformance/fixtures/` | positive + negative fixtures, each carrying its expected verdict in its header | the conformance regression suite — the artifacts a checker (or hand-review) is run against |
-| `docs/examples/` | the three pipeline-complete positive walkthroughs | human readers and authors learning the pipeline end to end |
+| `docs/examples/` | the three flow-complete positive walkthroughs | human readers and authors learning the flow end to end |
 
 The fixtures directory is the oracle; `docs/examples/` is the same three positive chains rendered as readable walkthroughs. The corpus is one of three inert-data artifacts that together encode the conformance contract: the [conformance manifest](../model/conformance.md) (`conformance/conformance.yaml`) encodes the schema and rules, the [lint catalogue](../language/errors.md) encodes every `SOL-<LAYER>NNN` code, and the golden corpus pins the verdicts. This page is the corpus's contract: what it must contain and what each fixture asserts.
 
@@ -27,9 +27,9 @@ The corpus is built on three recurring problem domains, chosen because each clea
 
 Each domain ships **positive** fixtures (must-compile) and **negative** fixtures (must-be-rejected). The positive variant of a domain always proves the very obligation its negative variant violates, so the pair brackets the defect from both sides.
 
-## The full pipeline chain (every positive fixture)
+## The full flow chain (every positive fixture)
 
-Each positive domain fixture ships the **complete pipeline chain** — one file per stage — so the corpus exercises the whole `intent → promotion` arc rather than a single transformation. The chain is the data that the three `docs/examples/` walkthroughs render in prose.
+Each positive domain fixture ships the **complete flow chain** — one file per stage — so the corpus exercises the whole `intent → promotion` arc rather than a single transformation. The chain is the data that the three `docs/examples/` walkthroughs render in prose.
 
 ```text
 spec.swarm.md  →  expected obligations  →  task frame  →  trace  →  verdict  →  promotion
@@ -38,13 +38,13 @@ spec.swarm.md  →  expected obligations  →  task frame  →  trace  →  verd
 | Stage | Fixture file | Asserts |
 | --- | --- | --- |
 | source spec | `<domain>.swarm.md` | parses clean; only `MUST`-class modals; the `INVARIANT` is present |
-| expected obligations | `<domain>.expected-obligations.md` | the obligation list a correct `build-ir` emits (ids, kinds, edges) |
+| expected obligations | `<domain>.expected-obligations.md` | the obligation list a correct `lower` step emits (ids, kinds, edges) |
 | task frame | `<domain>.task.md` | assigned obligations, write surfaces, verification bindings |
 | trace | `<domain>.swarm.trace.md` | `IMPLEMENTS` / `PRESERVES` / `PROOF` claims with content hashes |
 | verdict | `<domain>.review.md` | per-obligation `VERDICT` blocks; the final verdict reaches the merge gate |
-| promotion | `<domain>.finding.md` | the durable finding the `promote` pass produces |
+| promotion | `<domain>.finding.md` | the durable finding the `promote` step produces |
 
-The expected end-state verdict is recorded in the spec fixture's header, so the chain's correctness is known independent of any tool. The auth-refresh chain is documented stage-by-stage in [the compiler-pipeline reference](../model/how-swarm-works.md) as the canonical worked example; that chain is exactly the positive auth-refresh fixture rendered for reading.
+The expected end-state verdict is recorded in the spec fixture's header, so the chain's correctness is known independent of any tool. The auth-refresh chain is documented stage-by-stage in [the flow reference](../model/how-swarm-works.md) as the canonical worked example; that chain is exactly the positive auth-refresh fixture rendered for reading.
 
 ## Per-domain canonical defect classes
 
@@ -123,7 +123,7 @@ The positive variant splits `AC-010` into three single-obligation REQs and gives
 
 | Variant | Construct | Expected |
 | --- | --- | --- |
-| negative | a `blocking` `QUESTION` still unresolved at lowering | reject, `SOL-O003` (orchestration; blocking QUESTION reaching lowering) |
+| negative | a `blocking` `QUESTION` still unresolved at the `lower` step | reject, `SOL-O003` (orchestration; blocking QUESTION reaching the `lower` step) |
 | negative | `MUST` and `MUST NOT` on the same trigger | reject, `SOL-M002` (contradiction) |
 | negative | "handle failures gracefully" with no observable criterion | reject, `SOL-P005` (vague-quality high-risk word) |
 | positive | the QUESTION resolved, the contradiction deconflicted, the vague clause concretized | PASS |
@@ -133,7 +133,7 @@ The positive variant splits `AC-010` into three single-obligation REQs and gives
 
 QUESTION Q-001 [blocking]:
   Should a 503 from the processor be retried or surfaced to the user?
-  AFFECTS AC-020                       # blocking QUESTION reaching lowering -> SOL-O003
+  AFFECTS AC-020                       # blocking QUESTION reaching the lower step -> SOL-O003
 
 REQ AC-020:
   WHEN the processor returns a 5xx
@@ -192,50 +192,50 @@ These bars are deliberately higher than what lightweight requirement-smell detec
 
 Because the `SOL-P` grader is itself an LLM judge today — not a deterministic detector — the labeled set records an inter-annotator agreement floor (Cohen's κ ≥ 0.6), and the precision/recall targets are measured against that gold set, never asserted of an LLM grader at runtime. Single-judge scores are not internally reliable and should be replicated or aggregated. The deterministic `SOL-S` family is exempt from this caveat; only the heuristic `SOL-P` family carries it.
 
-## The nine pass-output rubrics
+## The nine step-output rubrics
 
-The fixtures above pin *what a correct pipeline produces*. The **pass-output rubrics** are the scoring criteria the suite runs *against a candidate pass's actual output* to decide whether the agent-as-compiler performed the pass correctly. They exist because schema-validity is not correctness: a `task.md` can be well-formed and still drop an obligation; a `review.md` can carry every required `VERDICT` block and still be summary-only.
+The fixtures above pin *what a correct flow produces*. The **step-output rubrics** are the scoring criteria the suite runs *against a candidate step's actual output* to decide whether the agents performed the step correctly. They exist because schema-validity is not correctness: a `task.md` can be well-formed and still drop an obligation; a `review.md` can carry every required `VERDICT` block and still be summary-only.
 
-Each rubric is a small set of **checkable predicates** — boolean assertions over the pass's output, keyed to that pass's output contract — and **not** a Likert/quality score. A predicate either holds or does not; the suite reports the count of failing predicates per pass, and a single failing predicate fails the pass. Every predicate is decidable against the pass's input artifact plus its output artifact alone — no runtime, no tool under test is presumed. These rubrics grade **compiler behaviour** (did the transformation preserve the obligations, bindings, scopes, and verdicts it was contracted to preserve), not grammar — the `SOL-S` family and the task-file classes already cover grammar.
+Each rubric is a small set of **checkable predicates** — boolean assertions over the step's output, keyed to that step's output contract — and **not** a Likert/quality score. A predicate either holds or does not; the suite reports the count of failing predicates per step, and a single failing predicate fails the step. Every predicate is decidable against the step's input artifact plus its output artifact alone — no runtime, no tool under test is presumed. These rubrics grade **build behaviour** (did the transformation preserve the obligations, bindings, scopes, and verdicts it was contracted to preserve), not grammar — the `SOL-S` family and the task-file classes already cover grammar.
 
-| Pass | Output-grading predicates (each MUST hold; any failing predicate fails the pass) |
+| Step | Output-grading predicates (each MUST hold; any failing predicate fails the step) |
 | --- | --- |
 | `author` | **Source fidelity:** every obligation traces to an upstream source span (chat, `research.md`, `audit.md`, `bug-report.md`) or is marked an explicit authoring decision — no behavior is invented and presented as sourced fact. **Stance preserved:** an observation-only source is re-stated as an obligation with its own id, modality, and binding, never borrowed as prose. **Uncertainty surfaced:** every behavioral ambiguity is lifted to a `QUESTION` or an explicit interpretation, not buried in prose. |
 | `lint` | **Parse-validity decided:** every `SOL-S###` defect in the fixture is reported with its correct code and span; zero false "clean" on a known-defective fixture. **Blocking recall complete:** every blocking `SOL-S`, `SOL-M`, `SOL-V`, and blocking `SOL-P` defect is detected. **Non-mutating:** the spec text and semantics are byte-identical to the input (lint never rewrites). **Severity-correct:** each diagnostic's `severity` matches the catalogue. |
 | `improve` | **Intent preserved:** no edit changes the actor, trigger/state, modality, response, non-goal, or interface of any obligation — the only approval-free semantic-diff class is pure normalization. **No distillation loss:** no obligation id, modality, or `VERIFY BY` binding is dropped or weakened. **Closed operation set:** every edit is attributable to one of the ten improve operations. **Lint answered, not masked:** each blocking lint code is resolved or carried forward, never silently deleted while its defect remains. **Escalation honored:** any intent-changing edit is routed to amendment, never applied as improve. |
-| `lower` | **Total obligation preservation:** every obligation appears as an IR node with id, modality, actor, trigger, and response intact — a dropped obligation, modality, or binding is a hard fail. **Binding preservation:** every `VERIFY BY` binding survives onto its obligation. **Authority preserved:** each obligation's domain/artifact authority and `WRITES` / `READS` / `AFFECTS` scope survives. **Halts on blocker:** the pass produces NO IR while a blocking diagnostic or blocking `QUESTION` is unresolved (`SOL-O003`). **Edges sound:** every dependency edge derives from a `DEPENDS ON`, a shared interface, or a preserved constraint/invariant — no invented edge. |
+| `lower` | **Total obligation preservation:** every obligation appears as a structured-form node with id, modality, actor, trigger, and response intact — a dropped obligation, modality, or binding is a hard fail. **Binding preservation:** every `VERIFY BY` binding survives onto its obligation. **Authority preserved:** each obligation's domain/artifact authority and `WRITES` / `READS` / `AFFECTS` scope survives. **Halts on blocker:** the step produces no structured form while a blocking diagnostic or blocking `QUESTION` is unresolved (`SOL-O003`). **Edges sound:** every dependency edge derives from a `DEPENDS ON`, a shared interface, or a preserved constraint/invariant — no invented edge. |
 | `decompose` | **Write-disjoint packets:** parallel task scopes have disjoint `WRITES` surfaces; a shared write surface with no serializing `DEPENDS ON` is `SOL-O001`. **Dependency-ordered:** the partition respects the obligation DAG and contains no cycle. **Total coverage:** every lowered obligation is assigned to exactly one task. **Ownership ⊆ writes:** each task's `OWNED` set is a subset of its declared `WRITES` (`SOL-O005`). **Context complete:** each `task.md` carries its exact assigned obligation blocks, preserved constraints/invariants, and verification bindings — not paraphrases. |
 | `implement` | **Scope-faithful:** the diff changes only files inside the task's declared `WRITES` surface. **Obligation coverage:** the trace records an `IMPLEMENTS` claim for every assigned obligation and a `PRESERVES` claim for every preserved constraint/invariant. **Trace honesty:** each claim names the changed files and a `PROOF` artifact, and the claimed scope is not narrower than the diff actually touches. **No premature completion:** the trace does not assert an obligation done with no evidence gathered. |
 | `verify` | **Proof-result completeness:** every required `VERIFY BY` binding has exactly one core verdict (`PASS` / `FAIL` / `BLOCKED` / `UNVERIFIED`); a required binding with no verdict is `SOL-V008`. **No unverifiable completion claim:** no obligation is reported satisfied on a binding that resolved to no proof artifact. **Adapter-resolved:** each binding's adapter resolved through `AGENTS.md > Commands`; an unresolved adapter yields `UNVERIFIED`, not a silent `PASS`. **Provenance recorded:** each verdict cites the proof type and artifact it ran. |
 | `review` | **Verdict completeness:** every required obligation carries a `VERDICT` in `review.md`. **Verdict-correctness:** each core verdict matches the recorded evidence, and lifecycle decorators (`WAIVED` / `STALE` / `CONTRADICTED`) are applied where their condition holds. **Sceptical independence:** the review judges trace claims against the source spec, the diff, and the proof evidence — not against the trace's self-report; a verdict justified only by the implementer's summary is summary-only evidence and fails. **Unauthorized-change caught:** any diff hunk outside the `WRITES` surface is listed. **Gate computed:** the merge-gate result follows the merge-gate rule (all required verdicts `PASS` / `WAIVED`) and is not asserted past a `FAIL` / `UNVERIFIED`. |
-| `promote` | **Nothing durable left task-local:** every discovery that outlives the task is promoted to a `finding.md` / `adr.md` / `audit.md` / spec amendment / `memory/INDEX.md` entry — a durable fact left only in the transcript fails. **Provenance complete:** each promoted artifact carries its mandatory provenance (source pass, evidence, applicability). **Stance & authority honored:** promotion routes through source authority — an observation promotes into intent by explicit re-statement, never by silently outranking an approved spec. **No spurious promotion:** task-local execution chatter is not promoted. |
+| `promote` | **Nothing durable left task-local:** every discovery that outlives the task is promoted to a `finding.md` / `adr.md` / `audit.md` / spec amendment / `memory/INDEX.md` entry — a durable fact left only in the transcript fails. **Provenance complete:** each promoted artifact carries its mandatory provenance (source step, evidence, applicability). **Stance & authority honored:** promotion routes through source authority — an observation promotes into intent by explicit re-statement, never by silently outranking an approved spec. **No spurious promotion:** task-local execution chatter is not promoted. |
 
-### Cross-pass predicates scored at every stage
+### Cross-step predicates scored at every stage
 
-Four predicates are not owned by a single pass; the suite scores them wherever the relevant artifact appears, because they are the pipeline-wide correctness invariants the corpus exists to defend:
+Four predicates are not owned by a single step; the suite scores them wherever the relevant artifact appears, because they are the flow-wide correctness invariants the corpus exists to defend:
 
-| Cross-pass predicate | What it asserts | Where the suite checks it |
+| Cross-step predicate | What it asserts | Where the suite checks it |
 | --- | --- | --- |
-| **Parse-validity** | Every emitted SOL artifact re-parses clean against the grammar; no pass emits a structurally invalid block. | output of `author`, `improve`, `lower`, `decompose`, `promote` |
+| **Parse-validity** | Every emitted SOL artifact re-parses clean against the grammar; no step emits a structurally invalid block. | output of `author`, `improve`, `lower`, `decompose`, `promote` |
 | **Trace-completeness** | The backward chain `obligation → task → trace → verdict` is unbroken: every assigned obligation reaches a verdict, and every verdict names an obligation that exists upstream. | output of `decompose`, `implement`, `verify`, `review` |
 | **Verdict-correctness** | Each `VERDICT` is consistent with its evidence and the 7-value verdict model (4 core + 3 lifecycle decorators); no decorator is applied without its condition, no core verdict contradicts its proof result. | output of `verify`, `review` |
-| **Drift-detection** | The pass classifies and surfaces each drift class — **stale spec drift** (approved obligation with no matching evidence), **undocumented implementation drift** (observed behavior with no approved obligation), **stale proof drift** (a passing binding that no longer exercises its obligation), and **memory drift** (a memory item contradicted by a higher-authority source) — rather than silently passing it. | output of `review`, `promote`; the stale-memory / unauthorized-change fixtures |
+| **Drift-detection** | The step classifies and surfaces each drift class — **stale spec drift** (approved obligation with no matching evidence), **undocumented implementation drift** (observed behavior with no approved obligation), **stale proof drift** (a passing binding that no longer exercises its obligation), and **memory drift** (a memory item contradicted by a higher-authority source) — rather than silently passing it. | output of `review`, `promote`; the stale-memory / unauthorized-change fixtures |
 
-Drift-detection is defined without a runtime: drift is found by the `review` and `promote` passes comparing the approved obligation set against the recorded evidence and the higher-authority sources, never by observing a running system. A pass that fails to flag a drift class present in its fixture fails the drift-detection predicate even if every other predicate holds.
+Drift-detection is defined without a runtime: drift is found by the `review` and `promote` steps comparing the approved obligation set against the recorded evidence and the higher-authority sources, never by observing a running system. A step that fails to flag a drift class present in its fixture fails the drift-detection predicate even if every other predicate holds.
 
 ## Evaluation hygiene: held-out and mutated variants
 
-A corpus that ships only the canonical fixtures has a latent failure of its own. Once the fixtures and their expected verdicts are public — and they are, in `conformance/fixtures/`, read by every adopter — an agent-as-compiler can be tuned (by training, by an over-stuffed instruction file, or simply by an author copying the corpus) to reproduce the **labels** without performing the **passes**. That is benchmark contamination: memorizing the evaluation data yields a recognized string, not a measurement of capability. The corpus must therefore be designed so that a passing verdict evidences a correctly executed pass, not a recognized label.
+A corpus that ships only the canonical fixtures has a latent failure of its own. Once the fixtures and their expected verdicts are public — and they are, in `conformance/fixtures/`, read by every adopter — the agents can be tuned (by training, by an over-stuffed instruction file, or simply by an author copying the corpus) to reproduce the **labels** without performing the **steps**. That is benchmark contamination: memorizing the evaluation data yields a recognized string, not a measurement of capability. The corpus must therefore be designed so that a passing verdict evidences a correctly executed step, not a recognized label.
 
 ### Held-out and mutated-variant fixtures
 
-Alongside each canonical domain fixture, the corpus ships at least one **held-out mutated variant** whose obligation text has been *regenerated* — paraphrased triggers and responses, renamed obligation ids, reordered blocks, substituted actors and interface names — while preserving the identical semantic structure, the identical canonical defect class, and the identical expected verdict. **The mutated variant is the conformance gate; the canonical fixture is the documented walkthrough.** A pass that resolves the canonical fixture but not its semantically equivalent mutated twin has memorized the label, not executed the transformation, and is scored a fail on that pass.
+Alongside each canonical domain fixture, the corpus ships at least one **held-out mutated variant** whose obligation text has been *regenerated* — paraphrased triggers and responses, renamed obligation ids, reordered blocks, substituted actors and interface names — while preserving the identical semantic structure, the identical canonical defect class, and the identical expected verdict. **The mutated variant is the conformance gate; the canonical fixture is the documented walkthrough.** A step that resolves the canonical fixture but not its semantically equivalent mutated twin has memorized the label, not executed the transformation, and is scored a fail on that step.
 
 Concretely:
 
 - The mutated variant **must not reuse the canonical label strings** (for example, not the literal `"THE service MUST handle failures gracefully"` of the `SOL-P005` prose fixture) yet **must still trip the same `SOL-<LAYER>NNN` code on the same construct**.
 - The mutated variant's expected obligation list, trace, and `VERDICT` set are derived from its own text, never copied from the canonical fixture's `<domain>.expected-obligations.md`.
-- A reviewer checks the variant by hand exactly as for the canonical fixture; a future eval harness MAY hold the mutated variants out of any material an agent-as-compiler is conditioned on. The corpus header **marks which fixtures are held-out** so a tool cannot silently fold them back into the visible set.
+- A reviewer checks the variant by hand exactly as for the canonical fixture; a future eval harness MAY hold the mutated variants out of any material the agents are conditioned on. The corpus header **marks which fixtures are held-out** so a tool cannot silently fold them back into the visible set.
 
 ### Benchmark-hygiene practice
 
@@ -243,7 +243,7 @@ The corpus SHOULD follow established benchmark-building hygiene so its measureme
 
 ## The research-fanout fixture
 
-The corpus ships one fixture no per-domain chain covers: **research-fanout**, the corpus's only **fan-out provenance** fixture. It exercises the property that one research artefact MAY feed many downstream artefacts. A single `research.md` evidence source is promoted by the `author` pass into **multiple** `*.swarm.md` specs plus one `adr.md`, and every derived obligation cites the originating research span by its cross-file id.
+The corpus ships one fixture no per-domain chain covers: **research-fanout**, the corpus's only **fan-out provenance** fixture. It exercises the property that one research artefact MAY feed many downstream artefacts. A single `research.md` evidence source is promoted by the `author` step into **multiple** `*.swarm.md` specs plus one `adr.md`, and every derived obligation cites the originating research span by its cross-file id.
 
 **Provenance-id grammar.** A `research.md` tags citable evidence spans with ids `R-001`, `R-002`, … (the `R-` prefix marks an evidence span — parallel to the SOL block-id prefixes, but for a non-SOL evidence source). A derived obligation cites a span with the cross-file reference `research#R-NNN` in its `BECAUSE` clause — for example a derived `payments.swarm.md#AC-001` carrying `BECAUSE research#R-003`. This is a provenance reference, not a cross-spec obligation reference: `research` is an evidence-source stem (not a declared spec id) and `R-` is a provenance prefix (not a SOL block prefix). A citation whose span id is absent from the named `research.md`, or whose stem names no shipped source, is a provenance failure.
 
@@ -260,7 +260,7 @@ The corpus ships one fixture no per-domain chain covers: **research-fanout**, th
 
 - [The conformance contract](../model/conformance.md) — the `conformance.yaml` manifest (task-file schema, command rows, placeholder set, lint scheme, required-suite matrix) the corpus is checked against, and the conformance maturity ladder.
 - [The lint catalogue](../language/errors.md) — every `SOL-<LAYER>NNN` code the negative fixtures trip, with its `{code, severity, layer, span, message, suggest}` record shape.
-- [The flow graph](./cheatsheet.md) — the canonical counts (7 blocks, 5 modals, 7 verdicts, 9 proof types, 7 phases / 9 passes, 10 improve operations, 5 lint layers) and the per-task-kind default-suite matrix the rubrics cite.
-- [The compiler pipeline](../model/how-swarm-works.md) — the auth-refresh chain rendered as the canonical stage-by-stage worked example; the positive auth-refresh fixture in readable form.
-- [Drift and staleness](./drift-and-staleness.md) — the trace-provenance schema and the four staleness conditions the drift-detection cross-pass predicate scores.
+- [The flow graph](./cheatsheet.md) — the canonical counts (7 blocks, 5 modals, 7 verdicts, 9 proof types, 7 phases / 9 steps, 10 improve operations, 5 lint layers) and the per-task-kind default-suite matrix the rubrics cite.
+- [The flow](../model/how-swarm-works.md) — the auth-refresh chain rendered as the canonical stage-by-stage worked example; the positive auth-refresh fixture in readable form.
+- [Drift and staleness](./drift-and-staleness.md) — the trace-provenance schema and the four staleness conditions the drift-detection cross-step predicate scores.
 - [Proof types and the `VERIFY BY` binding](./proof-types.md) — the nine closed proof types the verification bindings in every fixture draw from.

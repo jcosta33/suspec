@@ -17,8 +17,8 @@ record (the spec repo, or the PRs that satisfy obligations) = observed satisfact
 ## No runtime (Invariant 1)
 
 Swarm ships inert markdown — skills, templates, reference cards, and the language. There is no process it
-runs. Every "the X pass writes Y" below is a **contract a human or a future toolchain fulfils**, never
-something Swarm executes. So Swarm prescribes only the folders a pass run **today** actually reads or
+runs. Every "the X step writes Y" below is a **contract a human or a future toolchain fulfils**, never
+something Swarm executes. So Swarm prescribes only the folders a step run **today** actually reads or
 durably writes; anything that would serve only a future tool is created lazily, never stamped empty at
 install. The goal is the goldilocks middle: enough structure to be intuitive out of the box, no filing
 cabinet for a clerk who doesn't exist yet.
@@ -29,13 +29,13 @@ Specs and intent artifacts live **top-level, as content** — they are the produ
 the agent tooling the authoring flow loads ([ADR-0051](../adrs/0051-complete-the-spec-repo-pivot.md)):
 
 ```text
-specs/         # the *.swarm.md sources (the `author` pass writes here) — desired truth, top-level
+specs/         # the *.swarm.md sources (the `author` step writes here) — desired truth, top-level
 adrs/  audits/  findings/  …   # other intent artifacts, top-level (type:-tagged docs, kept how you like)
 .agents/
   skills/      # the authoring kit (author/lint/improve/lower/decompose/review/promote + 6 authoring personas)
   reference/   # the rule cards (sol.md, proofs.md, ir.md) the authoring skills name
   templates/   # source-doc skeletons (spec, prd, rfc, audit, finding, adr, review, …)
-  memory/      # durable recall the `promote` pass writes — INDEX.md + findings/patterns
+  memory/      # durable recall the `promote` step writes — INDEX.md + findings/patterns
 AGENTS.md      # repo root — the bootloader; fill its Commands table + project facts
 ```
 
@@ -66,9 +66,9 @@ as a linked PR**. Nothing litters the code repo.
   persisting task state with explicit dependencies mirrors a pattern validated at vendor
   scale [[CCTASKS]](../research/sources.md#CCTASKS).
 
-What is **not** prescribed (created lazily by a future tool, breaks no pass run today): a `status/` drift
+What is **not** prescribed (created lazily by a future tool, breaks no step run today): a `status/` drift
 read-model, a `generated/` packet tree, an append-only `ledger/`, `archive/`, `tmp/`, and the on-disk
-`.json` IR/plan files. These remain documented contracts (see the reconciliation design below); they are
+`.json` structured-form/plan files. These remain documented contracts (see the reconciliation design below); they are
 simply not stamped into a repo to adopt Swarm.
 
 ## Project conventions
@@ -92,7 +92,7 @@ by a future toolchain later — **not** a set of directories you create up front
 A toolchain that tracks satisfaction, emits task / trace / review packets, or keeps a compacted history MAY
 write them under conventional paths (e.g. `status/`, `generated/`, `ledger/`) — **each created on first
 write**, and gitignored when recreatable from the source. Swarm fixes the *shape* of those records
-(the obligation graph, the verdict model, the coverage a history entry must preserve), not a directory you
+(the spec's obligations, the verdict model, the coverage a history entry must preserve), not a directory you
 must materialise to adopt. Recreatable execution state (task frames, scratch) is throwaway; the durable
 record is the source artifact, the memory, and whatever compacted history a tool keeps.
 
@@ -138,5 +138,5 @@ skills are shared. This is purely a bootloader-resolution rule; it changes nothi
 
 - [Source artifacts](source-artifacts.md) — the durable source-artifact types and what each carries.
 - [Source authority](source-authority.md) — how intent governs implementation reality.
-- [Compiler pipeline](how-swarm-works.md) — the passes that produce traces, reviews, verdicts, and memory.
+- [How Swarm works](how-swarm-works.md) — the steps that produce traces, reviews, verdicts, and memory.
 - [Adopting Swarm](../ADOPTING.md) — the install steps.

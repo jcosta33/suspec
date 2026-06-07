@@ -4,20 +4,20 @@
 
 This page is the **complete, formal grammar** for SOL (the Swarm Obligation Language) — the human-authored `.swarm.md` surface syntax. A conformant `.swarm.md` parser MUST accept exactly the language this grammar generates and MUST reject any input outside it. Where [SOL.md](SOL.md) *teaches* the surface with prose, tables, and worked examples, this page is the **lossless reference**: every production, in one place, with no narrative gaps.
 
-It is **markdown-only and provider-neutral**: nothing here is shipped code. A "parser" is the contract a future tool builds against; this repository runs no parser, linter, or lowering step. The grammar is the contract; the tool, when it exists, conforms to it.
+It is **markdown-only and provider-neutral**: nothing here is shipped code. A "parser" is the contract a future tool builds against; this repository runs no parser, linter, or structuring step. The grammar is the contract; the tool, when it exists, conforms to it.
 
 This grammar fixes a single surface shape and **rejects** three alternative shapes — the fenced `:::TYPE …:::END` form, the significant-indentation `Indent`/`Dedent` form, and the colon-less header form. Each of those is **non-conformant**; this EBNF is the only normative shape. *Design rationale:* one greppable surface, machine-detectable inside free Markdown, with no construct a Markdown renderer can reflow away.
 
 ---
 
-## 1. The surface-vs-IR layering (read this first)
+## 1. The surface-vs-structured-form layering (read this first)
 
 There is one master layering of the language, and this page describes only one half of it.
 
 - **Surface** — what a human writes — is **English-shaped UPPERCASE keywords** (`VERIFY BY`, `DEPENDS ON`, `OWNED BY`). This grammar is the surface.
-- **IR** — what a tool *emits*, never authored — is **snake_case fields** (`verify_by`, `depends_on`, `owner`).
+- **Structured form** — what a tool *emits*, never authored — is **snake_case fields** (`verify_by`, `depends_on`, `owner`).
 
-The EBNF below is the human surface; it never describes the IR. Wherever a surface keyword appears here, the corresponding snake_case field is reserved for the IR layer and MUST NOT appear at the surface. The IR envelope is specified separately in [the IR schema](../reference/structured-form.md); this separation is one of the framework's load-bearing invariants. Keywords are UPPERCASE and case-sensitive; lowercase `must`/`should`/`may` and lowercase keywords carry no force and are parsed as prose.
+The EBNF below is the human surface; it never describes the structured form. Wherever a surface keyword appears here, the corresponding snake_case field is reserved for that layer and MUST NOT appear at the surface. The structured-form envelope is specified separately in [the structured form](../reference/structured-form.md); this separation is one of the framework's load-bearing invariants. Keywords are UPPERCASE and case-sensitive; lowercase `must`/`should`/`may` and lowercase keywords carry no force and are parsed as prose.
 
 ---
 
@@ -31,7 +31,7 @@ In v0.1 the arguments of conditions (`WHERE`/`WHILE`/`WHEN`/`IF`) are **opaque t
 
 ## 3. Normative EBNF
 
-This is the single normative grammar for the SOL surface syntax. The IR/JSON layer is not specified here (see [the IR schema](../reference/structured-form.md)); surface keywords are space-separated uppercase, IR fields are snake_case.
+This is the single normative grammar for the SOL surface syntax. The structured-form/JSON layer is not specified here (see [the structured form](../reference/structured-form.md)); surface keywords are space-separated uppercase, structured-form fields are snake_case.
 
 ```ebnf
 (* ===== Document and frontmatter ===== *)
@@ -73,7 +73,7 @@ question_header   = "QUESTION", ws, question_id, ws, question_tag, ":";
 trace_header      = "TRACE", ws, trace_id, ":";
 verdict_header    = "VERDICT", ws, obligation_id, ":", ws, verdict_value; (* value on header line *)
 
-(* ===== Identifiers: per-type short prefixes. Surface ids only; IR ids may be namespaced. ===== *)
+(* ===== Identifiers: per-type short prefixes. Surface ids only; structured-form ids may be namespaced. ===== *)
 req_id            = "AC-", digits;
 constraint_id     = "C-", digits;
 invariant_id      = "I-", digits;
@@ -91,7 +91,7 @@ req_body          = [ where_clause ]
                     [ when_clause ]
                     [ if_clause ]
                     actor_clause
-                    { and_actor_clause }      (* AND THE …: permitted; lowered to multiple IR obligations *)
+                    { and_actor_clause }      (* AND THE …: permitted; becomes multiple obligations when structured *)
                     [ because_clause ]
                     [ except_clause ]
                     verify_line
@@ -256,7 +256,7 @@ A note on layering: a missing or malformed proof binding (`VERIFY BY`) and a mal
 | `SOL-S005` | SYNTAX | BLOCKING | `*_id` prefix does not match `block_header` type (e.g. `CONSTRAINT AC-001:`) | ID prefix/block-type mismatch; `REQ→AC-`, `CONSTRAINT→C-`, `INVARIANT→I-`, `INTERFACE→IF-`, `QUESTION→Q-`, `TRACE→T-`. |
 | `SOL-S006` | SYNTAX | BLOCKING | `actor_clause` modal is `SHOULD`/`SHOULD NOT` with no `because_clause` or `except_clause` in the same block | `SHOULD`/`SHOULD NOT` used without `BECAUSE` or `EXCEPT`. |
 | `SOL-P003` | PROSE | BLOCKING | `modal` slot filled by `CAN`/`WILL` or a lowercase/informal modal in a binding clause | Missing or informal modality in a binding clause; use a real uppercase modal. |
-| `SOL-P004` | PROSE | BLOCKING / ADVISORY | `req_body`/`constraint_body` bundling separable obligations into one clause (BLOCKING), or more than two chained `and_actor_clause` (ADVISORY warning) | Bundled/overloaded obligation: a single clause carrying multiple separable obligations is BLOCKING (`ATOMIZE`); the *permitted* `AND THE` chain beyond two is a non-blocking warning (lowered to multiple IR obligations). |
+| `SOL-P004` | PROSE | BLOCKING / ADVISORY | `req_body`/`constraint_body` bundling separable obligations into one clause (BLOCKING), or more than two chained `and_actor_clause` (ADVISORY warning) | Bundled/overloaded obligation: a single clause carrying multiple separable obligations is BLOCKING (`ATOMIZE`); the *permitted* `AND THE` chain beyond two is a non-blocking warning (becomes multiple obligations when structured). |
 | `SOL-V001` | VERIFICATION | BLOCKING | binding obligation (`REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE`) with no `verify_line` | Missing `VERIFY BY` for a binding obligation. |
 | `SOL-V009` | VERIFICATION | BLOCKING | `verify_ref` whose `proof_type` is outside the closed 9-set | Unknown proof type; use one of `static, test, contract, property, model, perf, security, manual, monitor`. |
 | `SOL-V005` | VERIFICATION | BLOCKING | `verdict_value` `verdict_core` outside the four core values, or `verdict_lifecycle` missing a mandatory field | `VERDICT` value outside `PASS`/`FAIL`/`BLOCKED`/`UNVERIFIED`, or a lifecycle decorator missing authority/reason (`WAIVED` also requires expiry). |
@@ -271,7 +271,7 @@ The lint layers are **S/P/M/V/O** (Syntax / Prose / seMantic / Verification / Or
 Other framework pages that extend or consume this grammar:
 
 - [SOL — the Swarm Obligation Language (surface reference)](SOL.md) — the prose-and-examples teaching companion to this formal grammar; the seven block types, the five modals, and the seven-value verdict model in narrative form.
-- [The IR schema](../reference/structured-form.md) — the snake_case `*.swarm.ir.json` envelope this surface lowers into; the other half of the surface-vs-IR layering.
+- [The structured form](../reference/structured-form.md) — the snake_case `*.swarm.ir.json` envelope this surface is structured into; the other half of the surface-vs-structured-form layering.
 - [Lint codes](errors.md) — the full `SOL-<LAYER><NNN>` catalogue and severity model behind the production-attached codes cited here.
 - [APS — the controlled-prose standard](APS.md) — the prose layer (`prose_text`) SOL blocks interleave with, and the high-risk-word rules.
 - [Proof types](../reference/proof-types.md) — the closed nine proof types and `VERIFY BY` adapter resolution that `verify_ref` binds.

@@ -22,7 +22,7 @@ Where a finding governs once accepted: it carries weight as durable evidence in 
 `finding.md` is a **working artifact**, not a compiler-visible source. The discriminator is the `.swarm.` filename infix:
 
 - The single human-authored compiler-visible spec is `*.swarm.md`.
-- Emitted, contract-shaped compiler outputs carry the `.swarm.*` infix (for example `*.swarm.ir.json`, `*.swarm.trace.md`).
+- Emitted, contract-shaped Swarm outputs carry the `.swarm.*` infix (for example `*.swarm.ir.json`, `*.swarm.trace.md`).
 - Working artifacts — findings, tasks, reviews, ADRs — carry **no** infix and use a plain `.md` extension.
 
 A finding is structured Markdown governed by this contract; it is **not** parsed as SOL source, and it **MUST NOT** be given a per-artifact `.swarm.*` name. A conformant tool treats the missing infix as sufficient proof not to parse the file as a spec.
@@ -48,7 +48,7 @@ A finding is **not** execution scratch: it is desired-truth-adjacent durable kno
 | `confidence` | always | `high \| medium \| low`. |
 | `origin_obligations` | on promotion | The obligation IDs (`AC-`/`C-`/`I-`/`IF-…`) the fact was discovered against. |
 | `origin_traces` | on promotion | The trace entries (`*.swarm.trace.md#<ID>`) that produced the evidence. |
-| `pass` + `profile` | on promotion | The pass and heuristic profile under which it was found (for example `review` + `skeptic`). |
+| `pass` + `profile` | on promotion | The step and heuristic profile under which it was found (for example `review` + `skeptic`). |
 | `reviewer_or_tool` | on promotion | The human reviewer or tool/adapter that confirmed it. |
 | `content_hash` | on promotion | Hash of the cited source/surfaces at promotion time; this is the input the staleness check compares against. |
 
@@ -75,8 +75,8 @@ The copyable skeleton is `starter-kit/.agents/templates/finding.md`. That file i
 
 ## Related
 
-- `docs/passes/promote.md` — the pass that dispositions each discovery, writes a promoted finding to `sources/findings/`, and indexes it in `memory/INDEX.md` with a `Load when`.
-- `docs/passes/review.md` and `docs/passes/verify.md` — the passes that most often surface findings (against obligations and traces).
+- `docs/passes/promote.md` — the step that dispositions each discovery, writes a promoted finding to `sources/findings/`, and indexes it in `memory/INDEX.md` with a `Load when`.
+- `docs/passes/review.md` and `docs/passes/verify.md` — the steps that most often surface findings (against obligations and traces).
 - `docs/artifacts/audit.md` — the sibling observation-only source artifact; a present-state risk promotes into a spec rather than carrying obligation force here.
 - `docs/artifacts/adr.md` — the sibling decision artifact; a finding that captures a chosen architectural trade-off promotes into an ADR.
 - `docs/artifacts/spec.md` — the obligation source a finding promotes *into* when its discovery implies new intended behavior.

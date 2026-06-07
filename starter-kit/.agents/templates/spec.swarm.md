@@ -82,7 +82,7 @@ VERIFY BY property:<adapter>:<artifact>
 
 ## Questions
 
-<QUESTION blocks: captured ambiguity; a [blocking] question MUST be resolved before lowering (see the `lower` pass)>
+<QUESTION blocks: captured ambiguity; a [blocking] question MUST be resolved before structuring (see the `lower` pass)>
 
 QUESTION Q-001 [blocking]:
 <question>

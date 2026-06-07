@@ -2,7 +2,7 @@
 
 > Swarm's reference for the `threat-model.md` source-doc: the **conditional, security-domain** source artifact whose modelled threats promote forward into obligations.
 
-A `threat-model.md` is a **conditional Tier-3 source-doc** the stdlib SHOULD make available for any change whose domain is `security` or that touches an attack surface (mapped to OWASP-LLM01). It is the security-flavoured sibling of `audit.md`: it records threats observed against a surface, and those threats become binding only after an `author` pass restates them as obligations.
+A `threat-model.md` is a **conditional Tier-3 source-doc** the stdlib SHOULD make available for any change whose domain is `security` or that touches an attack surface (mapped to OWASP-LLM01). It is the security-flavoured sibling of `audit.md`: it records threats observed against a surface, and those threats become binding only after an `author` step restates them as obligations.
 
 ## Purpose & epistemic stance
 
@@ -25,7 +25,7 @@ Plain `.md` (a working source artifact — **no** `.swarm.` infix). In an adopte
 
 ## Promotion
 
-A `threat-model.md` promotes forward only through an `author` pass that restates each modelled threat as a `CONSTRAINT`/`INVARIANT` with its own id, modality, and a `VERIFY BY` binding — typically a `security` proof. It never becomes intent in place.
+A `threat-model.md` promotes forward only through an `author` step that restates each modelled threat as a `CONSTRAINT`/`INVARIANT` with its own id, modality, and a `VERIFY BY` binding — typically a `security` proof. It never becomes intent in place.
 
 ## Copyable template
 

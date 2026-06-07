@@ -1,6 +1,6 @@
 # Swarm Lint Codes — `SOL-<LAYER><NNN>` Error Reference
 
-This page is the complete v0.1 diagnostic catalogue for Swarm: every lint code, by layer, with its severity, defect, and the closed repair op that resolves it. It also fixes the diagnostic record shape, the SARIF lowering, the severity-override and waiver discipline, and the legacy-code translation table.
+This page is the complete v0.1 diagnostic catalogue for Swarm: every lint code, by layer, with its severity, defect, and the closed repair op that resolves it. It also fixes the diagnostic record shape, the SARIF structuring, the severity-override and waiver discipline, and the legacy-code translation table.
 
 Swarm is markdown-only and has no runtime. A *checker* that emits these codes is a **contract** a future `lint-spec` tool builds against — never shipped code in this repo. The codes here are what such a checker must produce and what conformant artifacts are graded against.
 
@@ -20,7 +20,7 @@ One prefix (`SOL-`), exactly **five layers** (S/P/M/V/O), a three-digit number. 
 
 ### The five layers
 
-Each layer maps 1:1 to a compiler phase/pass. A code's letter tells you the phase it belongs to and which gate it blocks at.
+Each layer maps 1:1 to a phase/step. A code's letter tells you the phase it belongs to and which gate it blocks at.
 
 | Layer | Letter | Detects | Phase it guards | Gate it blocks at |
 |---|---|---|---|---|
@@ -28,9 +28,9 @@ Each layer maps 1:1 to a compiler phase/pass. A code's letter tells you the phas
 | PROSE | `P` | Controlled-prose / requirement-smell, single-obligation-local (the APS layer; subsumes the `SOL-L###` code scheme) | `NORMALIZE` (lint / improve) | lint → lower gate |
 | SEMANTIC | `M` | Cross-reference: duplicate id, contradiction, unbound ref | `NORMALIZE` | lint → lower gate |
 | VERIFICATION | `V` | Proof-binding: missing / stale / non-observable proof | `VERIFY` | merge gate |
-| ORCHESTRATION | `O` | Planning / parallelism: write-conflict, dep cycle, blocking `QUESTION` reaching lowering | `LOWER` (raised by the lower / decompose passes, surfaced by the lint gate) | merge gate |
+| ORCHESTRATION | `O` | Planning / parallelism: write-conflict, dep cycle, blocking `QUESTION` reaching structuring | `LOWER` (raised by the lower / decompose steps, surfaced by the lint gate) | merge gate |
 
-The passes that raise each layer are described in [the compiler pipeline](../model/how-swarm-works.md): S/P/M fire during [lint](../passes/lint.md) and [improve](../passes/improve.md), V during [verify](../passes/verify.md), and O during [lower](../passes/lower.md) and [decompose](../passes/decompose.md).
+The steps that raise each layer are described in [how Swarm works](../model/how-swarm-works.md): S/P/M fire during [lint](../passes/lint.md) and [improve](../passes/improve.md), V during [verify](../passes/verify.md), and O during [lower](../passes/lower.md) and [decompose](../passes/decompose.md).
 
 ### The diagnostic record
 
@@ -50,25 +50,25 @@ Every emitted diagnostic is the **checker-emit / SARIF-authoring** record:
 | Field | Type | Meaning |
 |---|---|---|
 | `code` | string | A `SOL-<LAYER><NNN>` code from this catalogue. |
-| `severity` | enum | `BLOCKING` \| `ADVISORY`. A recorded waiver may demote its IR `level` to `warning`, or to `off` (suppress). |
+| `severity` | enum | `BLOCKING` \| `ADVISORY`. A recorded waiver may demote its structured-form `level` to `warning`, or to `off` (suppress). |
 | `layer` | enum | `S` \| `P` \| `M` \| `V` \| `O` — redundant with the code's letter; carried explicitly for filtering, and MUST equal it. |
 | `span` | object | Source location `{ file, block, line, col }`, at minimum `{ file, block }`; `line`/`col` SHOULD be present when available. |
 | `message` | string | One-line human-readable defect statement. |
 | `suggest` | string \| null | The named repair: a closed [improve op](../passes/improve.md) or a concrete fix; `null` if none. MUST name a closed op wherever one applies — never an open-ended rewrite. |
 
-#### SARIF lowering (span → source location, severity → level)
+#### SARIF structuring (span → source location, severity → level)
 
-The authoring record above is what a checker emits. The typed IR carries the same diagnostic in a SARIF-shaped `diagnostics[]` array — the `level` severity vocabulary follows the SARIF static-analysis interchange format, so the diagnostics drop into any SARIF-aware viewer. The lowered element is `{ code, level, node, source, message, suggest }`, and the mapping is fixed:
+The authoring record above is what a checker emits. The typed structured form carries the same diagnostic in a SARIF-shaped `diagnostics[]` array — the `level` severity vocabulary follows the SARIF static-analysis interchange format, so the diagnostics drop into any SARIF-aware viewer. The structured element is `{ code, level, node, source, message, suggest }`, and the mapping is fixed:
 
-| Authoring field | IR field | Lowering rule |
+| Authoring field | Structured-form field | Structuring rule |
 |---|---|---|
-| `severity` | `level` | `BLOCKING → error`; `ADVISORY → warning`. A waiver to `warning` lowers `level` to `warning`; a waiver to `off` **suppresses** the diagnostic — it is omitted from `diagnostics[]` entirely (`off` is not a `level` value). |
+| `severity` | `level` | `BLOCKING → error`; `ADVISORY → warning`. A waiver to `warning` maps `level` to `warning`; a waiver to `off` **suppresses** the diagnostic — it is omitted from `diagnostics[]` entirely (`off` is not a `level` value). |
 | `span` | `source` | `{ file, block, line, col } → source { file, line_start, line_end }` (a source-location span). |
-| `span.block` | `node` | The block id resolves to the IR node the diagnostic is attached to. |
+| `span.block` | `node` | The block id resolves to the structured-form node the diagnostic is attached to. |
 | `layer` | — | Derived from the code's layer letter — checkable, not stored. |
 | `code` | `code` | Identical at both layers. |
 
-The closed IR `level` enum is `error` / `warning` / `note`. The surface model is strictly binary: every emitted code lowers to `error` or `warning`. The third value, `note`, has **no surface producer in v0.1** — it is reserved for informational annotations a future emitter may attach, and a conformant v0.1 checker MUST NOT produce it. These are the same diagnostic at two layers (authoring vs IR), not two contradictory schemas.
+The closed structured-form `level` enum is `error` / `warning` / `note`. The surface model is strictly binary: every emitted code maps to `error` or `warning`. The third value, `note`, has **no surface producer in v0.1** — it is reserved for informational annotations a future emitter may attach, and a conformant v0.1 checker MUST NOT produce it. These are the same diagnostic at two layers (authoring vs structured form), not two contradictory schemas.
 
 ---
 
@@ -76,10 +76,10 @@ The closed IR `level` enum is `error` / `warning` / `note`. The surface model is
 
 Severity is **binary and intrinsic**:
 
-- **BLOCKING** iff the defect changes *what gets built* — the obligation is incomplete, non-binding, untestable, ambiguous, contradictory, or unsafe to parallelize. Carries `severity: BLOCKING` (IR `level: error`) and MUST be resolved before the artifact passes its layer's gate; none may remain at promotion unless waived.
-- **ADVISORY** iff the defect affects only *how the text reads* — style, length, voice, redundancy. Carries `severity: ADVISORY` (IR `level: warning`) and does not block on its own.
+- **BLOCKING** iff the defect changes *what gets built* — the obligation is incomplete, non-binding, untestable, ambiguous, contradictory, or unsafe to parallelize. Carries `severity: BLOCKING` (structured-form `level: error`) and MUST be resolved before the artifact passes its layer's gate; none may remain at promotion unless waived.
+- **ADVISORY** iff the defect affects only *how the text reads* — style, length, voice, redundancy. Carries `severity: ADVISORY` (structured-form `level: warning`) and does not block on its own.
 
-The surface model is strictly binary: every code lowers to `error` or `warning`. The third IR `level` value `note` has **no surface producer in v0.1**.
+The surface model is strictly binary: every code maps to `error` or `warning`. The third structured-form `level` value `note` has **no surface producer in v0.1**.
 
 Two position-sensitive rules are re-classified by the binding-clause vs commentary boundary (a span is *binding* iff it sits inside a `REQ`/`CONSTRAINT`/`INVARIANT` obligation block, *commentary* everywhere else — see [APS](APS.md)): **`SOL-P056`** (comparative without baseline) is BLOCKING inside an obligation block, ADVISORY in commentary; the high-risk-word rules are BLOCKING only inside binding clauses.
 
@@ -114,7 +114,7 @@ A `swarm.config` MUST NOT redefine, rename, invent, or re-layer codes; it MUST N
 }
 ```
 
-The **waiver-record fields** are all required: `code`; `scope` (a code applies repo-wide, an obligation id/glob narrows it); `to` (`warning` or `off`); `authority`; `reason`; `expiry` (ISO date); and `recorded_at` (ISO date). `to: warning` lowers the diagnostic's IR `level` to `warning`; `to: off` is **not** an IR `level` — it suppresses the diagnostic, which is omitted entirely from the IR `diagnostics[]` array. A waiver with any required field missing is invalid and the demotion does not take effect.
+The **waiver-record fields** are all required: `code`; `scope` (a code applies repo-wide, an obligation id/glob narrows it); `to` (`warning` or `off`); `authority`; `reason`; `expiry` (ISO date); and `recorded_at` (ISO date). `to: warning` lowers the diagnostic's structured-form `level` to `warning`; `to: off` is **not** a structured-form `level` — it suppresses the diagnostic, which is omitted entirely from the structured-form `diagnostics[]` array. A waiver with any required field missing is invalid and the demotion does not take effect.
 
 A waiver **auto-expires** at its `expiry` date *and* on the next change to the waived obligation's source content-hash, whichever comes first — preventing zombie waivers that outlive the text they excused. On expiry the code returns to its default severity. A severity demotion at the lint layer is distinct from a `WAIVED` [verdict](../passes/verify.md) at the verification layer: the former silences a *diagnostic*, the latter accepts a *failing proof* — both require the same authority + reason + expiry discipline.
 
@@ -208,13 +208,13 @@ These guard safe parallelism (see [lower](../passes/lower.md) and [task orchestr
 | Code | Severity | Layer | Message (short name + defect) | Resolves by |
 |---|---|---|---|---|
 | `SOL-O001` | BLOCKING | O | conflicting-tasks-parallel: the plan marks two work packets parallel that share a write surface or an interface/migration node (violates the safe-parallelism predicate). | `SCOPE`: serialize, or split write surfaces. |
-| `SOL-O002` | BLOCKING | O | dependency-cycle: a `DEPENDS ON` cycle exists in the lowered DAG. | `SCOPE` / `DECONFLICT`: break the cycle. |
-| `SOL-O003` | BLOCKING | O | blocking-question-reaches-lowering: an unresolved `blocking` `QUESTION` reaches the `LOWER` pass (lowering MUST NOT proceed past an open blocking question). | `CLARIFY`: answer/close the QUESTION before lowering. |
+| `SOL-O002` | BLOCKING | O | dependency-cycle: a `DEPENDS ON` cycle exists in the structured DAG. | `SCOPE` / `DECONFLICT`: break the cycle. |
+| `SOL-O003` | BLOCKING | O | blocking-question-reaches-lowering: an unresolved `blocking` `QUESTION` reaches the `LOWER` phase (structuring MUST NOT proceed past an open blocking question). | `CLARIFY`: answer/close the QUESTION before structuring. |
 | `SOL-O004` | ADVISORY | O | scope-too-broad: an obligation has no `WRITES`/`READS`/`AFFECTS`, leaving it unscoped (serializes by default and harms planning). | `SCOPE`: declare write/read/affect surfaces. |
-| `SOL-O005` | BLOCKING | O | owned-path-outside-write-surface: a work packet writes a path outside its declared `WRITES` surface (the two-tier lowering check). | `SCOPE`: declare the path, or stop writing it. |
+| `SOL-O005` | BLOCKING | O | owned-path-outside-write-surface: a work packet writes a path outside its declared `WRITES` surface (the two-tier structuring check). | `SCOPE`: declare the path, or stop writing it. |
 | `SOL-O006` | ADVISORY | O | import-policy-overlap: an imported file creates a duplicate/overlapping policy obligation. | `DECONFLICT` / `COMPRESS`. |
-| `SOL-O007` | BLOCKING | O | uncovered-obligation: a lowered obligation maps to no task packet (the coverage gate). An orphan TRACE/VERDICT target resolving to no obligation is `SOL-M003`, not this. | `SCOPE` / decompose: assign the obligation to a packet. |
-| `SOL-O008` | BLOCKING | O | double-owned-obligation: a lowered obligation is assigned to more than one `implement` packet. Appearing across *different* passes (implement/verify/review) is legitimate and does NOT trip this. | `SCOPE` / decompose: assign the obligation to exactly one implement packet. |
+| `SOL-O007` | BLOCKING | O | uncovered-obligation: a structured obligation maps to no task packet (the coverage gate). An orphan TRACE/VERDICT target resolving to no obligation is `SOL-M003`, not this. | `SCOPE` / decompose: assign the obligation to a packet. |
+| `SOL-O008` | BLOCKING | O | double-owned-obligation: a structured obligation is assigned to more than one `implement` packet. Appearing across *different* steps (implement/verify/review) is legitimate and does NOT trip this. | `SCOPE` / decompose: assign the obligation to exactly one implement packet. |
 
 ---
 
@@ -288,7 +288,7 @@ Allocation rule: flat `SOL00x`/`10x` → `SOL-S`; `SOL20x` → `SOL-M` (cross-re
 | `SOL202` | `SOL-M003` | unresolved dependency reference |
 | `SOL203` | `SOL-O002` | dependency cycle |
 | `SOL204` | `SOL-V001` | missing verification binding |
-| `SOL205` | `SOL-O003` | blocking QUESTION unresolved at lowering |
+| `SOL205` | `SOL-O003` | blocking QUESTION unresolved at structuring |
 | `SOL206` | `SOL-M004` | authority conflict |
 | `SOL207` | `SOL-M002` | contradiction |
 | `SOL208` | `SOL-O001` | planner marks conflicting tasks parallel |
@@ -347,7 +347,7 @@ A conformant `lint-spec` checker (a contract, never shipped code) MUST: (1) emit
 
 A curated good/bad golden corpus makes the `SOL-P` rules' precision and recall measurable. The target is an aspirational ≥0.90 precision / ≥0.85 recall — set deliberately above the field-measured ceiling for lightweight automated requirement-smell detection (roughly 59% precision / 82% recall, with high variation [[SMELLS]](../research/sources.md#SMELLS)), and a design goal, not an achieved result.
 
-Two scope limits hold in v0.1, by design: `SOL-M002` contradiction fires on **exact-key match only** — paraphrase/entailment contradiction is out of scope and may at most surface as an advisory judge-rendered diagnostic; and the IR `level: note` value has **no surface producer**, reserved for a future emitter.
+Two scope limits hold in v0.1, by design: `SOL-M002` contradiction fires on **exact-key match only** — paraphrase/entailment contradiction is out of scope and may at most surface as an advisory judge-rendered diagnostic; and the structured-form `level: note` value has **no surface producer**, reserved for a future emitter.
 
 ---
 
@@ -355,9 +355,9 @@ Two scope limits hold in v0.1, by design: `SOL-M002` contradiction fires on **ex
 
 - [SOL](SOL.md) — the obligation language: the 7 block types, 5 modals, clauses, and metadata fields these codes check.
 - [APS](APS.md) — the controlled-prose standard: the high-risk-word catalogue and the same-line-observable rule behind the `SOL-P` codes.
-- [lint](../passes/lint.md) and [improve](../passes/improve.md) — the passes that raise S/P/M codes and the closed repair ops.
+- [lint](../passes/lint.md) and [improve](../passes/improve.md) — the steps that raise S/P/M codes and the closed repair ops.
 - [verify](../passes/verify.md) and [proof types](../reference/proof-types.md) — the merge gate and the `VERIFY BY` bindings the V codes check.
 - [lower](../passes/lower.md), [decompose](../passes/decompose.md), and [task orchestration](../artifacts/task-orchestration.md) — the planning surfaces the O codes guard.
-- [compiler pipeline](../model/how-swarm-works.md) — how each layer maps 1:1 to a phase.
+- [how Swarm works](../model/how-swarm-works.md) — how each layer maps 1:1 to a phase.
 - [conformance](../model/conformance.md) — the contract a `lint-spec` checker is graded against.
 - [source authority](../model/source-authority.md) — the authority order behind `SOL-M004`.

@@ -1,20 +1,20 @@
 # `spec.swarm.md` — the source spec
 
-A `spec.swarm.md` is the one human-authored, compiler-visible artifact in Swarm: APS prose interleaved with SOL obligation blocks, and the single source the obligation graph is built from. Every task, trace, verdict, and proof downstream traces back to a `REQ`, `CONSTRAINT`, `INVARIANT`, or `INTERFACE` block authored here.
+A `spec.swarm.md` is the one human-authored, compiler-visible artifact in Swarm: APS prose interleaved with SOL obligation blocks, and the single source the obligations are built from. Every task, trace, verdict, and proof downstream traces back to a `REQ`, `CONSTRAINT`, `INVARIANT`, or `INTERFACE` block authored here.
 
-Swarm has **no runtime**. Every actor named on this page — "compiler", "parser", "linter", "planner" — is a CONTRACT a human, an agent following a pass guide, or a future tool builds against, never shipped code. A `spec.swarm.md` is inert Markdown; nothing on this page executes.
+Swarm ships **no runtime** (see the [artifacts README](README.md)). A `spec.swarm.md` is inert Markdown; nothing on this page executes.
 
 ## Purpose and epistemic stance
 
 A spec's epistemic stance is **intent**: it *declares required behavior*. Where every other source artifact in the framework records what *is* (an audit), what *failed* (a bug-report), what *might* be done (a research or RFC), or what *was decided* (an ADR), the spec is the only artifact that asserts what *must* hold. That intent is carried exclusively by SOL obligation blocks, and obligation force exists nowhere else: a claim that is not in a block is not a contract.
 
-This gives the spec a unique position in the obligation graph. It is the **authority** that lowers to tasks — the root from which work is scheduled and against which proofs are matched. Promotion runs *toward* the spec, never out of it: an audit's observed risk, a bug-report's diagnosis, a research artifact's findings, a PRD's outcomes, an RFC's proposal, and a finding's evidence all acquire obligation force only after an `author` pass normalizes them *into* a spec. Their epistemic stances are preserved across that boundary — observation, inquiry, and proposal become binding intent only here.
+This gives the spec a unique position among the obligations. It is the **authority** that structures down to tasks — the root from which work is scheduled and against which proofs are matched. Promotion runs *toward* the spec, never out of it: an audit's observed risk, a bug-report's diagnosis, a research artifact's findings, a PRD's outcomes, an RFC's proposal, and a finding's evidence all acquire obligation force only after an `author` step normalizes them *into* a spec. Their epistemic stances are preserved across that boundary — observation, inquiry, and proposal become binding intent only here.
 
 What a spec MUST NOT do:
 
 - It MUST NOT carry prose that smuggles obligation force outside a block. Behavioral requirements live in `REQ`/`CONSTRAINT`/`INVARIANT`/`INTERFACE` blocks; the surrounding APS prose frames and explains, but is not itself a contract. A requirement stated only in prose is a defect, not an obligation.
 - It MUST NOT leave an obligation unverifiable. Every `REQ`, `CONSTRAINT`, `INVARIANT`, and `INTERFACE` block MUST bind a proof via `VERIFY BY <type>:<adapter>:<artifact>` — drawn from the 9 proof types (`static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`). An `INTERFACE` block MUST bind a `contract:` proof specifically.
-- It MUST NOT ship a `blocking` `QUESTION` into lowering. Captured ambiguity belongs in `QUESTION` blocks; a `[blocking]` question MUST be resolved before the spec is lowered to tasks.
+- It MUST NOT ship a `blocking` `QUESTION` into the `lower` step. Captured ambiguity belongs in `QUESTION` blocks; a `[blocking]` question MUST be resolved before the spec is structured into tasks.
 - It MUST NOT silently drop intent. Anything narrowed, deferred, or left open when content was distilled into the spec is accounted for in the closing **Distillation loss statement**.
 
 A spec asserts only the 5 modals — `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY` — to set obligation strength, and it is the artifact whose blocks downstream verdicts judge against the 7 verdicts (4 core: `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED`; 3 lifecycle: `WAIVED`, `STALE`, `CONTRADICTED`).
@@ -34,10 +34,10 @@ So the spec is named `<slug>.swarm.md` (e.g. `auth.swarm.md`, `checkout.swarm.md
 In an adopted project, the spec is **canonical, hand-authored intent**, committed to the spec repo:
 
 - The source spec is the `*.swarm.md` (e.g. `auth.swarm.md`), committed beside the plain-`.md` parents that promote into it (e.g. `auth-audit.md`).
-- The emitted, recreatable artifacts a future tool derives from the spec — the obligation graph (`auth.swarm.ir.json`) and the lowered plan (`auth.swarm.plan.json`), both reserved contract names — together with traces, reviews, and task frames are execution scratch, gitignored or created lazily.
+- The emitted, recreatable artifacts a future tool derives from the spec — the structured form (`auth.swarm.ir.json`) and the structured plan (`auth.swarm.plan.json`), both reserved contract names — together with traces, reviews, and task frames are execution scratch, gitignored or created lazily.
 - The recall layer (`INDEX`, glossary, patterns) is durable recall, committed.
 
-The spec is a `sources/` artifact because it is authored by hand and is the durable intent of record. Its emitted projections — the IR obligation graph (`*.swarm.ir.json`) and the plan (`*.swarm.plan.json`) — are `generated/` artifacts, recreatable from the spec and never hand-edited as intent. (Those `.json` names are reserved contracts: the framework ships no parser, emitter, or planner that writes them; a repo MAY hold hand-written examples in its corpus, but MUST NOT claim a Swarm tool produced them.)
+The spec is a `sources/` artifact because it is authored by hand and is the durable intent of record. Its emitted projections — the structured form (`*.swarm.ir.json`) and the plan (`*.swarm.plan.json`) — are `generated/` artifacts, recreatable from the spec and never hand-edited as intent. (Those `.json` names are reserved contracts: the framework ships no parser, emitter, or planner that writes them; a repo MAY hold hand-written examples in its corpus, but MUST NOT claim a Swarm tool produced them.)
 
 ## Required sections and fields, in order
 
@@ -53,7 +53,7 @@ A conformant `spec.swarm.md` MUST carry the following sections in exactly this o
 | 6 | `## Obligations` | The binding behavioral requirements. | `REQ` blocks. |
 | 7 | `## Constraints` | Forbidden actions / restrictions on the solution space. | `CONSTRAINT` blocks. |
 | 8 | `## Invariants` | Properties that must always hold. | `INVARIANT` blocks (prefer `property` / `model` / `static` proofs). |
-| 9 | `## Questions` | Captured ambiguity. | `QUESTION` blocks; a `[blocking]` one MUST be resolved before lowering. |
+| 9 | `## Questions` | Captured ambiguity. | `QUESTION` blocks; a `[blocking]` one MUST be resolved before the `lower` step. |
 | 10 | `## Verification coverage` | Per-obligation proof binding at a glance. | Table: each obligation ID → its `VERIFY BY` reference. |
 | 11 | `## Downstream tasks` | Which task frames cover which obligations. | Table: Task → Covers. |
 | 12 | `## Distillation loss statement` | What survived distillation into this spec, and what did not. | Three subsections: `### Preserved`, `### Dropped`, `### Still uncertain`. |
@@ -94,11 +94,11 @@ That file is the skeleton you copy and fill — every `{{placeholder}}` and each
 
 ## Related
 
-- `docs/passes/author.md` — the `author` pass: the only pass that *writes* a `spec.swarm.md`, normalizing its parents (audit, research, RFC, PRD, bug-report, finding, ADR) into it while preserving each parent's epistemic stance.
-- `docs/passes/lint.md` — the `lint` pass: the first pass that *reads* the spec, checking well-formedness and raising `SOL-S012` when a required section is missing or out of order.
-- `docs/passes/lower.md` — the `lower` pass: consumes the spec's SOL surface and emits the IR obligation graph (`*.swarm.ir.json`).
-- `docs/passes/decompose.md` — splits the obligation graph into the schedulable task frames named in this spec's `## Downstream tasks` table.
-- `docs/artifacts/task.md` — the lowered work packet a spec's obligations become.
+- `docs/passes/author.md` — the `author` step: the only step that *writes* a `spec.swarm.md`, normalizing its parents (audit, research, RFC, PRD, bug-report, finding, ADR) into it while preserving each parent's epistemic stance.
+- `docs/passes/lint.md` — the `lint` step: the first step that *reads* the spec, checking well-formedness and raising `SOL-S012` when a required section is missing or out of order.
+- `docs/passes/lower.md` — the `lower` step: consumes the spec's SOL surface and emits the structured form (`*.swarm.ir.json`).
+- `docs/passes/decompose.md` — splits the obligations into the schedulable task frames named in this spec's `## Downstream tasks` table.
+- `docs/artifacts/task.md` — the structured work packet a spec's obligations become.
 - `docs/artifacts/audit.md`, `docs/artifacts/research.md`, `docs/artifacts/bug-report.md` — observation-, inquiry-, and diagnosis-stance parents that promote into a spec (the first two) or into a fix task (the last).
 - `docs/artifacts/finding.md`, `docs/artifacts/adr.md` — the evidence and decision parents that govern alongside, and can promote into, a spec.
 - `docs/model/source-artifacts.md` — the full `.swarm.` infix partition and the tiered required-artifact set this spec anchors.
