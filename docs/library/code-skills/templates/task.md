@@ -83,7 +83,15 @@ Paste all constraints and invariants this task must preserve.
 
 ## Self-review
 
-<The structured self-review block: did I do only this step; preserve semantics; map every claim to evidence.>
+<!-- ADVERSARIAL self-review (ADR-0056) — refute-by-default over your OWN output. A task is not `done` until
+     this is recorded. It yields fixes + this critique, NOT a verdict: it does not satisfy the independent
+     `review` step (a self-issued PASS is inadmissible — implementer ≠ reviewer). Answer each, with evidence: -->
+
+- **Tried to break it:** re-ran each bound proof from a clean state — <result>. Unexercised paths I attacked (edge/error/concurrency, esp. `RISK high|critical`): <what / outcome>.
+- **Scope:** changed only the assigned obligations + declared write surfaces? Anything outside is an `## Unassigned changes` row, not a quiet add — <confirm / list>.
+- **Semantics:** any constraint/invariant/non-goal weakened or silently drifted? <confirm none / explain>.
+- **Plausible-but-wrong:** where could a green result still be incorrect (weak oracle, happy-path only, stale run)? <the holes found + fixed, or why none>.
+- **Left for the independent reviewer:** <what self-review can't settle — open risks, judgment calls>.
 
 <self_review>
 

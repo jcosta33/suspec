@@ -36,6 +36,7 @@
 - Do not treat chat as higher authority than an approved spec or ADR.
 - Do not close a task with unhandled promotion items.
 - Do not claim completion without evidence.
+- Adversarially self-review your own work before claiming completion (refute-by-default; ADR-0056) — it yields fixes + a recorded critique, never a self-issued verdict, and does not replace independent review.
 
 ## Project facts
 <!-- Persistent facts an agent cannot infer: stack, conventions, boundaries the project relies on.

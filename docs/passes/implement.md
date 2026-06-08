@@ -92,7 +92,7 @@ The `task_kind` enum is the parameter that selects which step and profile run:
 | `## Implementation or pass trace` | What changed, per obligation. |
 | `## Verification matrix` | Required proof → actual proof → 7-value status, per obligation. |
 | `## Promotion queue` | Discoveries with target + promotion status (resolved at the [`promote` step](promote.md)); all MUST be resolved before task close. |
-| `## Self-review` | The structured self-review block (did I do only this step; preserve semantics; map every claim to evidence). |
+| `## Self-review` | The **adversarial** self-review block (ADR-0056): before marking the task `done`, adopt the skeptic stance over your *own* output — refute-by-default. Re-run each bound proof from a clean state; hunt the unexercised path (edge/error/concurrency, especially `RISK high\|critical`); check for scope creep and silent semantic drift; treat your own confident prose as a confession, not a proof — then fix what it surfaces and record what you attacked. **A task is not `done` until this is recorded.** It is *necessary but not sufficient*: it yields fixes + a recorded critique, never a verdict, and does **not** satisfy the independent `review` step — a self-issued `PASS` stays inadmissible (the self-preference hazard, `implementer ≠ reviewer`). |
 
 The default `## Scope > Out` list is itself a boundary statement of the step: *do not implement unassigned obligations; do not change behavior outside the assigned write surfaces; do not weaken constraints, invariants, or non-goals.*
 
