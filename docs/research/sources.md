@@ -2,7 +2,7 @@
 
 > This is the single bibliography the framework's **inline `[[KEY]]` citations resolve to**. Research is referenced *contextually* — each `[[KEY]]` sits in the doc whose claim it grounds (the happy-path pages, reference pages, examples, and ADRs) and links to its entry here; there is no separate "research layer" of standalone essays, only this ledger. It is held to the **§0.7 discipline** ("real science, not astrology"): every load-bearing empirical claim cites a **verified** entry below, with the recorded caveats. Entries marked **caveated** (non-peer-reviewed) MUST NOT carry a `MUST`-level claim. Entries in **Rejected** MUST NOT be cited — they are recorded so a fabricated citation is never silently re-introduced.
 >
-> This bibliography was assembled **after web-verification** (June 2026). Several headline figures that circulate in the skill-authoring literature rested on **fabricated/misattributed arXiv ids** and were rejected (see below). A few entries were already verified by the framework's own bibliography elsewhere; this ledger **reuses that key** rather than re-deriving it.
+> Entries are retained even while uncited — the ledger records what was verified (and what was rejected) so future claims can bind to it without re-verification; an uncited entry is inventory, not error. This bibliography was assembled **after web-verification** (June 2026). Several headline figures that circulate in the skill-authoring literature rested on **fabricated/misattributed arXiv ids** and were rejected (see below). A few entries were already verified by the framework's own bibliography elsewhere; this ledger **reuses that key** rather than re-deriving it.
 
 ---
 
@@ -101,6 +101,9 @@ These were already verified by the framework's bibliography elsewhere; the entri
 
 <a id="DIATAXIS"></a>
 **[DIATAXIS] Diátaxis — a systematic framework for technical documentation.** Procida. *Verified (June 2026, diataxis.fr).* Organizes documentation by user need into four distinct modes — tutorials, how-to guides, reference, explanation — kept separate because each serves a different purpose. <https://diataxis.fr/> — *reference framework.* Grounds: doc-organization-by-purpose (informs the skills / reference split; a full re-org of `docs/` was considered and declined as high-churn, low-payoff).
+
+
+## Verified — peer-reviewed, no measured outcomes (vision/position; design rationale only)
 
 <a id="REDEFO"></a>
 **[REDEFO] Requirements Development and Formalization for Reliable Code Generation: A Multi-Agent Vision.** Sun et al. (Weisong Sun, corresponding). **ASE 2025 (NIER track)**, arXiv:2508.18675. *Verified (June 2026, conf.researchr.org + arXiv).* A **vision** paper (New Ideas & Emerging Results — peer-reviewed venue, **no measured outcomes**): proposes Analyst + Formalizer agents that turn ambiguous NL requirements into **formal specifications** to bridge NL→code, with human-in-the-loop review at critical points. Cite as **design rationale / corroboration only** (never a measured `MUST`) — it corroborates the spec-as-contract + clarify-before-build direction; the *measured* grounding for that spine remains [PLANCODER]/[SEMAP]/[MAST]/[SMELLS].

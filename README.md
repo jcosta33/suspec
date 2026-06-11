@@ -107,7 +107,7 @@ honesty rule: anything not enforced by a tool says so.
 ## Get started
 
 1. Copy `starter-kit/templates/` into your workspace (8 files).
-2. Copy `starter-kit/agent/` next to your agent's skills (4 files).
+2. Copy the `starter-kit/agent/` guides next to your agent's skills; its `AGENTS.md` goes to your repo root.
 3. Fill `AGENTS.md` with your commands and facts.
 4. Write one spec for your next non-trivial change. Run the loop once.
 

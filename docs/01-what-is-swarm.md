@@ -61,6 +61,15 @@ Swarm **is not**:
 | **Review tooling** (PRs, CI, review bots)           | gate the merge                             | Swarm does not replace the PR. The review packet rides alongside it and tells the reviewer where to look; CI output is the evidence the packet cites.                                                         |
 | **Refactoring tooling** (codemods, OpenRewrite, …)  | execute mechanical change                  | Swarm's change plan states what must survive the change and how to check it; a codemod is one way a task executes a step of that plan.                                                                        |
 
+## What's optional, what's advanced
+
+Optional on any given task: Pull/intake · Inventory · Change Plan · a new spec for a
+covered bug fix · a board row for trivial work (each has a stated skip rule in
+[the workflow](02-basic-workflow.md)). Advanced — exists, not part of the first path:
+audit and research artifacts, the granular lifecycle, the richer result vocabulary, the
+memory model, the deep adversarial-review guide, everything in `starter-kit/advanced/`,
+and the entire CLI (future). The core you actually start with: spec, task, review, finding.
+
 ## What Swarm does not promise
 
 - **No deterministic generation.** The same spec run twice yields two different diffs. A good

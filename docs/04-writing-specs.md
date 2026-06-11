@@ -60,7 +60,7 @@ nothing blocks you. The full list of common mistakes to check for lives in
 until then they are review checklist items.
 
 1. **Give every requirement a `Verify with:` line.** It is the highest-value line in the file —
-   a runnable check measurably outperforms prose plans as task input (preliminary)
+   a runnable check outperforms prose plans as task input (preliminary evidence)
    [[ORACLESWE]](research/sources.md#ORACLESWE). Naming a test that doesn't exist yet is fine;
    the review result reads Unverified until it does.
 2. **Use observable verbs.** "Returns 401", "redirects to `/login`", "writes the audit row" —

@@ -5,7 +5,7 @@ title: {{title}}
 status: draft
 owner: {{team-or-person}}
 sources:
-  - {{ticket-id-or-intake-file}}
+  - {{ticket-id-or-intake-file — or "self" when the work originates with you}}
 ---
 
 # {{title}}
@@ -24,7 +24,7 @@ sources:
      earlier instructions more). Each requirement gets a "Verify with:" line —
      it is the highest-value line in this file; prefer a runnable test or
      command. Prefer stricter notation? Any spec can use SOL blocks instead:
-     add "format: sol" to the frontmatter. See `advanced/sol-reference.md` in the starter kit
+     add "format: sol" to the frontmatter. See `advanced/sol-reference.md` in the starter kit (copy it in if you want it local)
      (full reference: the Swarm repo's docs/reference/structured-requirements.md). -->
 
 ### AC-001 — {{short name}}

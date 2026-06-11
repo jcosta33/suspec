@@ -17,8 +17,8 @@ advanced/     optional: audit/bug/research/adr/rfc/prd/threat-model templates,
 **Copy checklist** (the whole core is 12 files):
 
 1. `templates/` → your workspace.
-2. `agent/` → the directory your agent CLI scans for skills; move `AGENTS.md` to
-   the repo root and fill its placeholders; keep the symlinks.
+2. The three guide folders in `agent/` → the directory your agent CLI scans for
+   skills; `AGENTS.md` and its two symlinks → your repo root; fill the placeholders.
 3. `decisions/` → your workspace; append `.gitignore.additions` where relevant.
 4. Start with one feature: `specs/<feature>/spec.md`.
 

@@ -44,7 +44,10 @@
 | cmdTypecheck | `{{tsc --noEmit / mypy}}` | types |
 
 <!-- SOL-form `VERIFY BY <method>:<adapter>:<artifact>` lines resolve their adapter
-     against these slot names (cmdTest, cmdLint, …). Keep the cmd prefix. -->
+     against these slot names (cmdTest, cmdLint, …). Keep the cmd prefix.
+     Dedicated workspace repo: these name the commands of the code repos this
+     workspace governs — leave placeholders until that's decided. The "For code
+     repos" line above is what you copy OUT to each code repo, then remove here. -->
 
 ## Agent role
 

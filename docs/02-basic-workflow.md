@@ -36,7 +36,7 @@ Artifact: [inventory](../starter-kit/templates/inventory.md) → `inventory/`. W
 
 Turn the ask into intent, non-goals, and requirements — one `AC-NNN` per requirement, each with
 a `Verify with:` line. That line is the highest-value line in the file: a runnable acceptance
-check measurably outperforms prose plans as task input (preliminary) [[ORACLESWE]](research/sources.md#ORACLESWE).
+check outperforms prose plans as task input (preliminary evidence) [[ORACLESWE]](research/sources.md#ORACLESWE).
 Record open questions; a spec with open questions is not ready.
 
 Artifact: [spec](../starter-kit/templates/spec.md) → `specs/<feature>/spec.md`. How to write one:
@@ -94,13 +94,13 @@ Artifacts: [finding](../starter-kit/templates/finding.md) → `findings/`,
 | Shape             | Flow                                                        |
 | ----------------- | ----------------------------------------------------------- |
 | **Feature**       | the six steps                                               |
-| **Refactor**      | Inventory/Audit → Change Plan → Task → Run → Review → Close |
+| **Refactor**      | Inventory/Audit (a present-state inspection — advanced) → Change Plan → Task → Run → Review → Close |
 | **Bug**           | Pull → Spec amend → Task → Run → Review → Close             |
 | **Rewrite**       | Inventory → Audit → Spec + Change Plan → Tasks → …          |
 | **Small cleanup** | Task → Run → Review → Close                                 |
-| **Spike**         | Question → Research → decision                              |
+| **Spike**         | Question → Research (an options survey — advanced) → decision                              |
 
-_Spec check_ means: find the spec the bug contradicts and amend it if the bug reveals a gap —
+_Spec amend_ means: find the spec the bug contradicts and amend it if the bug reveals a gap —
 most bugs don't need a new spec. _Audit_ and _Research_ are advanced artifacts; see
 [reference/artifact-formats.md](reference/artifact-formats.md).
 
@@ -120,7 +120,8 @@ design judgment)
   only when existing behavior must provably survive a structural change.
 - **Skip Spec and Change Plan both** for a small cleanup — the task packet alone bounds it.
 - **Trivial work skips the board too:** a one-line cleanup needs no status row — the PR is enough.
-- **A spike skips nearly everything:** ask the question, do the research, record the decision.
+- **A spike skips nearly everything** — it is the degenerate flow: none of the six steps
+  run until its outcome becomes a spec or a change plan. In the table: ask the question, do the research, record the decision.
 
 What code-changing work never skips: Run with verification and Review with evidence. These skip
 rules are conventions — nothing in this repo enforces them.

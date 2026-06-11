@@ -22,7 +22,7 @@ is spent on what the structure flags.
 
 ## The review packet
 
-The packet is one markdown file in `reviews/`, one per task. The format is frozen in the kit
+The packet is one markdown file in `reviews/`, one per task, named after the task's slug. The format is frozen in the kit
 template — [`starter-kit/templates/review.md`](../starter-kit/templates/review.md) — and a
 filled example lives in [`examples/`](examples/). Walking through it:
 

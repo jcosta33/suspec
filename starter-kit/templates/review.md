@@ -2,7 +2,7 @@
 type: review
 id: REVIEW-{{slug}}
 task: TASK-{{slug}}
-pr: {{pr-url}}
+pr: {{pr-url — or "none yet" for a pre-PR or trunk-based review}}
 status: {{draft | pass | blocked | needs-human}}
 ---
 

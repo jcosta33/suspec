@@ -45,7 +45,7 @@ something no listed requirement covers, the agent's instruction is to stop and
 say why — the fix is a spec amendment, not mid-task improvisation.
 
 Fill Verify with real commands, not intentions. Executable acceptance criteria
-are the part an agent benefits from most — a runnable check measurably outperforms prose plans as task input (preliminary)
+are the part an agent benefits from most — a runnable check outperforms prose plans as task input (preliminary evidence)
 [[ORACLESWE]](research/sources.md#ORACLESWE): a requirement whose check the
 agent can actually run is the one most likely to come back done.
 

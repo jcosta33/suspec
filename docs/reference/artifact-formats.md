@@ -34,6 +34,14 @@ Within a spec: requirements `AC-NNN` (constraints `C-NNN` and invariants `I-NNN`
 Within a research doc: findings `R-NNN`. A preservation guarantee with no spec id: `PG-NNN`.
 Cross-file references join with `#`: `SPEC-checkout#AC-003`, `payments-survey#R-002`.
 
+## Naming
+
+A **slug** is the kebab-case name an artifact chain shares: `specs/auth-refresh/spec.md` →
+`tasks/auth-refresh-client.md` → `reviews/auth-refresh-client.md`. Flat files (`tasks/<slug>.md`)
+and numbered folders (`tasks/012-<slug>/task.md`) are both valid — pick one and stay with it.
+The review packet is named after its task's slug. ID prefixes: `SPEC- TASK- REVIEW- FINDING-
+INV- CHANGE-`, requirement ids `AC-NNN` (`C-`/`I-` in SOL form); keep one casing for slugs.
+
 ## Core artifacts
 
 ### intake — what was actually asked
@@ -63,7 +71,7 @@ convention spec-driven toolkits converge on
   sources (optional, recommended).
 - Each requirement is a `### AC-NNN — name` heading: one sentence of observable behavior
   ("When X, the component must Y.") and a `Verify with:` line. That line is the highest-value
-  line in the file — a runnable check measurably outperforms prose plans as task input (preliminary)
+  line in the file — a runnable check outperforms prose plans as task input (preliminary evidence)
   [[ORACLESWE]](../research/sources.md#ORACLESWE).
 - An open question keeps a spec out of `status: ready` unless marked "(non-blocking)" (plain form) / `[non-blocking]` (SOL form) — checklist level.
 - Specs are amended in place after review feedback: edit the requirement, keep its ID. What the

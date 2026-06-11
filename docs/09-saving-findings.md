@@ -8,6 +8,15 @@ agent session ends and its context evaporates — anything not written to a file
 Writing intermediate state to durable files measurably helps multi-step work, and is the recommended pattern for work that spans sessions
 [[CTXENG]](research/sources.md#CTXENG) [[SCRATCHPAD]](research/sources.md#SCRATCHPAD).
 
+## The honest weakness
+
+A hand-edited board and a findings folder are willpower in markdown — the same discipline
+wikis die of. Two structural prompts are built in so the habit isn't bare: the review
+packet routes **new finding candidates** as an exception class (the reviewer sees them),
+and the agent guides end every task with "anything learned worth saving as a finding."
+A future `swarm close` will prompt for both; until then this is a convention, and saying
+so beats pretending otherwise.
+
 ## The one rule
 
 > **Before closing a task, record anything durable as a finding.**

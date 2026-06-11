@@ -51,14 +51,13 @@ enforcement claims with no named (aspirational) checker
 
 ## Outstanding (open increments)
 
-- **Increment 10 — swarm-cli resync** (sibling repo): kit re-copy, spec suite re-cut to the new
+- **Increment 10 — swarm-cli resync** *(deferred by the owner, 2026-06-12)* (sibling repo): kit re-copy, spec suite re-cut to the new
   format, `swarm lint`/`swarm spec check` pointed at the C001–C011 contract + `format: sol`
   selector + the new fixtures (incl. equivalence pairs). Gate: pasted green run on both repos.
-- **Increment 11 — cold re-adoption + pilot kickoff**: fresh-workspace adoption exercise, the
-  ten-question/10-minute cold read (+ "when do I need an inventory/change plan?"), keep/adjust
-  calls for the three externally-unverifiable decisions (intake D6, examples D10, memory D14),
-  and the spec-first pilot (protocol: `.agents/plans/spec-first-pilot-protocol.md`, pre-registered;
-  moves to the swarm-cli backlog at resync). Files `.agents/audits/post-pivot-adoption-review.md`.
+- ~~Increment 11~~ **CLOSED 2026-06-12** — cold re-adoption + eleven-question cold read executed
+  by fresh-session agents; 0 blockers; 4 MAJOR + 7 MINOR friction items fixed same day; D6/D10
+  kept, D14 kept-with-adjustment. Record: `.agents/audits/post-pivot-adoption-review.md`.
+  The spec-first pilot's pair register waits with the swarm-cli backlog (owner-deferred).
 - **Deliberate cuts recorded:** IR fixtures are not shipped (machine-artifact schemas live only on
   `docs/reference/future-cli.md`; reserved names spelled infix-free per ADR-0059 addendum); the
   frozen template texts live verbatim in `starter-kit/templates/` with the ADRs describing them
@@ -98,3 +97,10 @@ Six-dimension hostile review consolidated in `.agents/audits/post-rebuild-advers
 2 BLOCKERs + ~20 MAJORs + ~30 MINORs found and fixed; re-run gates all zero (user-tier tokens,
 labels 28/28, links, citations, counts). Accepted-as-is items and the two open increments are
 recorded in the review file.
+
+## Gate evidence — 2026-06-12 (Increment 11 close)
+
+```
+post-friction-fix gates: user-tier tokens 0 · labels 0 problems · links 0 · citations 0
+sources.md: REDEFO re-sectioned; retained-uncited-entries note added
+```

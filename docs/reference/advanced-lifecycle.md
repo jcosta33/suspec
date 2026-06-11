@@ -124,7 +124,7 @@ asking [[HUMANEVALCOMM]](../research/sources.md#HUMANEVALCOMM)
 [[HILBENCH]](../research/sources.md#HILBENCH). Repairing the requirement text recovers the loss,
 and the repaired text transfers across models [[CLARIFYGPT]](../research/sources.md#CLARIFYGPT)
 [[SPECFIX]](../research/sources.md#SPECFIX). The highest-leverage repair is BIND: an executable
-acceptance criterion measurably outperforms prose plans as task input (preliminary)
+acceptance criterion outperforms prose plans as task input (preliminary evidence)
 [[ORACLESWE]](../research/sources.md#ORACLESWE). And preliminary multi-agent evidence places the
 planner→coder handoff as the dominant failure surface
 [[PLANCODER]](../research/sources.md#PLANCODER) — which is why CLARIFY and DECONFLICT run *before*
