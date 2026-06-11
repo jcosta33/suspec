@@ -12,7 +12,7 @@ superseded_by:
 
 ## Context
 
-The 10-aspect simulation audit ([`.agents/audits/critical-review-aspects.md`](././.agents/audits/critical-review-aspects.md))
+The 10-aspect simulation audit ([`.agents/audits/critical-review-aspects.md`](../../.agents/audits/critical-review-aspects.md))
 — five developer-journey simulations read against the actual repo, validated firsthand — surfaced three places
 where the merge gate's **default** behavior is weaker than the framework's deepest claim, all fixable in the
 contract layer with **no runtime**:
