@@ -1,5 +1,7 @@
 # Adopting Swarm
 
+*Works today — plain markdown plus your agent; no Swarm tooling required.*
+
 Swarm is files, not software. Adoption is copying a handful of templates and filling
 in one bootloader. Three paths, in order of preference.
 
@@ -11,7 +13,7 @@ your project repo for a co-located setup ([where files live](03-where-files-live
 1. Copy `starter-kit/templates/` → `templates/` (8 files: spec, task, review,
    finding, status, intake, inventory, change-plan).
 2. Copy `starter-kit/agent/` → the directory your agent CLI scans for skills
-   (`.claude/skills/` for Claude Code; otherwise `.agents/skills/`). It contains
+   (`.claude/skills/` for Claude Code; for other CLIs see the per-tool table in [integrations](10-integrations.md) — keeping them as plain docs works everywhere). It contains
    `AGENTS.md` plus three guides: `write-spec`, `implement-task`, `review-output`.
 3. Move that `AGENTS.md` to your repo **root** and fill its `{{placeholders}}` —
    your test/lint/build commands and standing project facts. Add `CLAUDE.md` and

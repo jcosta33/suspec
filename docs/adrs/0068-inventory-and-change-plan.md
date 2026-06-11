@@ -44,7 +44,7 @@ it preserves rather than gesture at "no behavior change".
 3. **Both are conditionally-core:** templates ship in the kit core; the artifacts are written when the
    work is structural/brownfield and skipped otherwise. When-to-write thresholds (and the negative lists —
    no change plan for an obvious bug fix; no inventory for a single-file cleanup) are part of the
-   happy-path docs: indiscriminate process measurably hurts
+   happy-path docs: indiscriminate clarification-forcing measurably hurts (the extension to documents is design rationale)
    [[HUMANEVALCOMM]](../research/sources.md#HUMANEVALCOMM) [[ASKORASSUME]](../research/sources.md#ASKORASSUME).
 4. **Ripples:** a task's `source[]` may name a spec and/or a change plan and its Scope reads "implement or
    preserve"; the review packet carries an optional Change-plan coverage table (ADR-0060); the workspace

@@ -317,7 +317,7 @@ src/payments/retry.ts. Webhooks untouched. All requirements satisfied.
 
 Nobody reads 41 files line by line — and "all requirements satisfied" is exactly the kind of
 sentence the review step exists to interrogate: unsupported done-claims are the canonical
-agent failure [[REFLEXION]](../research/sources.md#REFLEXION).
+agent failure [[EVIBOUND]](../research/sources.md#EVIBOUND).
 
 ## Step 5 — The review packet
 
@@ -484,7 +484,7 @@ Merge. Wave 2 (TASK-checkout-sessions-w2) is unblocked.
 ```
 
 The spot-check on AC-002 is deliberate. A tidy green table invites rubber-stamping, and the
-bias is measured: evaluators favor their own and agent-produced output
+bias is measured: evaluators measurably favor their own generations
 [[SELFPREFER]](../research/sources.md#SELFPREFER) and carry predictable judgment biases
 [[JUDGEBIAS]](../research/sources.md#JUDGEBIAS). Re-running one green row by hand is the
 convention that keeps the column meaning something — nothing enforces it.
@@ -540,7 +540,7 @@ and here it was: the spec gains `AC-009`, and future tasks scope it directly. Fi
 | ------------------------- | ----------- | ---------------------------------------------- | ----------------------------------- |
 | SPEC-checkout             | spec        | ready (amended: +AC-009)                       | `specs/checkout/spec.md`            |
 | CHANGE-checkout-sessions  | change-plan | in-progress — wave 1 merged                    | `change-plans/checkout-sessions.md` |
-| TASK-checkout-sessions-w1 | task        | closed — `reviews/checkout-sessions-w1-fix.md` | `tasks/checkout-sessions-w1.md`     |
+| TASK-checkout-sessions-w1 | task        | closed | `reviews/checkout-sessions-w1-fix.md` |
 | TASK-checkout-sessions-w2 | task        | ready                                          | `tasks/checkout-sessions-w2.md`     |
 ```
 

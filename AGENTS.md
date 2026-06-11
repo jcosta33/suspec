@@ -56,6 +56,7 @@ anything described as checkable names its checker (the reference implementation 
 - Dev skills (curated subset for working on this repo): `.agents/skills/` — see
   `.agents/SKILLS-MANIFEST.md`
 - Evidence: `docs/research/sources.md` (verified / caveated / rejected — never cite rejected)
+- Outstanding: swarm-cli resync + cold re-adoption (Increments 10–11) — see the propagation matrix
 
 ## Commands
 

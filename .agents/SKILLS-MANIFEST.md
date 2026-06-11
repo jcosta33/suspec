@@ -52,3 +52,5 @@ Two differences from the kit are by design — never to be "resynced":
 
 A diff against the kit showing only pointer-target or packaging differences is expected. The
 load-bearing rules track `docs/` and the kit.
+
+| `adversarial-review` | deep hostile re-review of a branch (six adversarial questions, run-it-yourself) | pairs with `starter-kit/advanced/adversarial-review/` — keep the pair in sync (propagation matrix) |

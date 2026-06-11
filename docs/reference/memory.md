@@ -114,7 +114,7 @@ the fuller set on each promoted finding:
 | applies when / does not apply when | the scope envelope; mirrors the index row's Load when |
 
 A finding whose Evidence section is a bare claim is chat, not memory — a completion claim
-without real output behind it is not evidence [[REFLEXION]](../research/sources.md#REFLEXION).
+without real output behind it is not evidence [[EVIBOUND]](../research/sources.md#EVIBOUND).
 
 ## Validation and rollback
 

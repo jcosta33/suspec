@@ -12,7 +12,7 @@ id: TASK-export-json-flag
 source:
   - SPEC-export-cli
 scope: [AC-001, AC-002]
-status: done
+status: closed
 ---
 
 # Task: Add a `--json` flag to the `export` command

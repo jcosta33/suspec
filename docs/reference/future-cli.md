@@ -105,7 +105,7 @@ testable without any model. **Milestone 2** adds the execution conveniences: `in
 ### `swarm worktree create <task>`
 
 - **Reads:** the task packet and `.swarm/config.yaml` (where the code repo is).
-- **Writes:** a git worktree and branch (`swarm/<task-slug>`) in the code repo; a record under
+- **Writes:** a git worktree and branch (`swarm/<spec-slug>/<task-slug>`) in the code repo; a record under
   `.swarm/work/tasks/` so later commands find it.
 - **Runs an agent?** No.
 - **State change:** the task has an isolated place to run — one worktree per task.
@@ -263,6 +263,15 @@ agents:
 Any agent you can launch from a shell fits the record — aider, Cursor's CLI, and whatever ships
 next. The adapter carries no provider credentials and no model settings; those belong to the
 agent CLI's own configuration.
+
+## Reserved machine records
+
+Two artifact names are reserved for machine emission and exist only as contracts here:
+`<spec>.ir.json` (the typed requirement records + edges of one spec) and `<spec>.plan.json`
+(the schedulable work-packet projection). A third reserved sketch is the **run record** — the
+machine form of an agent run summary the packet's evidence cells are filled from:
+`{ task_id, changed_files[], commands[]: {cmd, exit, output_ref}, out_of_scope[], findings[] }`.
+None of these is produced by anything today; the fixtures deliberately ship none.
 
 ## What the CLI must never own
 

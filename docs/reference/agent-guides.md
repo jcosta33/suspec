@@ -27,6 +27,7 @@ procedure; the templates carry shape; this page is the index.
 | `spec-check` | running the checks of `checks.md` by hand |
 | `split-work` | partitioning a large change into parallel-safe tasks |
 | `save-findings` | the Close step — routing durable discoveries to findings |
+| `adversarial-review` | a deep, hostile re-review of an agent branch — beyond the packet: re-run validation yourself, six adversarial questions, caller search |
 
 ## Implementation guides (library, for code-side depth)
 

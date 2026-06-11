@@ -47,7 +47,7 @@ them, and they are on the review checks in [`reference/checks.md`](reference/che
 
 1. **A Pass needs pasted output or a CI link.** A bare "tests passed" is a claim, not
    evidence — unsupported done-claims are the canonical agent failure
-   [[REFLEXION]](research/sources.md#REFLEXION).
+   [[EVIBOUND]](research/sources.md#EVIBOUND).
 2. **An empty Evidence cell means Unverified, never Pass.** If nobody can point at the
    output, the requirement was not verified, whatever the prose says.
 3. **Don't merge with an open critical item.** A failed or blocked requirement, or an
@@ -60,7 +60,7 @@ Before accepting the table, pick at least one Pass row and verify its evidence y
 re-run the command, or open the CI link and read the actual result. This is a convention,
 not something any tool checks, and it exists because structured packets invite
 rubber-stamping: a tidy table _feels_ verified. The bias is measured, not hypothetical —
-evaluators favor their own and agent-produced output
+evaluators measurably favor their own generations
 [[SELFPREFER]](research/sources.md#SELFPREFER) and carry predictable judgment biases
 [[JUDGEBIAS]](research/sources.md#JUDGEBIAS). One honest spot-check per packet keeps the
 green column meaning something.
@@ -81,6 +81,10 @@ listing an exception or having nothing to list:
 - blocked questions
 
 ## Read like a skeptic
+
+When a branch warrants more than the packet — high risk, large diff, low trust — the
+`adversarial-review` guide (`starter-kit/advanced/`) runs the deep form: re-run validation
+yourself, walk six adversarial questions, search the callers of everything that changed.
 
 The reviewer's stance is refute-by-default: a claim is unproven until evidence forces you to
 accept it. In practice —

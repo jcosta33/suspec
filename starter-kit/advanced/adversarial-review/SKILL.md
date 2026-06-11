@@ -11,7 +11,7 @@ Reviews fail when the reviewer accepts the worker's framing. The discipline of *
 
 ## Project context (the AGENTS.md contract)
 
-Resolves project commands via the consuming repo's `AGENTS.md` — `Commands > Validation`, `Commands > Test`, plus an optional dep-validation command (architectural-rules check) not in the standard contract; ask the user if the project uses one. If `AGENTS.md` is missing or an entry is undefined, ask the user which command to run before pasting any verification output — do not guess.
+Resolves project commands via the consuming repo's `AGENTS.md > Commands` table — the `cmdTest` / `cmdLint` / `cmdBuild` / `cmdTypecheck` slots, plus any project-specific validation row; ask the user if the project keeps an architectural-rules check outside the table. If `AGENTS.md` is missing or a slot is undefined, ask the user which command to run before pasting any verification output — do not guess.
 
 ## Core rules
 
@@ -24,7 +24,7 @@ The reviewer runs the project's install, validate, and test commands themselves,
 For every diff, walk these six questions in order:
 
 1. **What was the intent?** State, in your own words, what the change is supposed to do. If you can't, the diff is unclear or you haven't read enough.
-2. **Does the code do it?** For each acceptance criterion / each "Needed" entry / each bug-report root cause, point at the lines that address it.
+2. **Does the code do it?** For each requirement ID in the task's Scope (and each preservation guarantee, when a change plan is in play), point at the lines that address it.
 3. **What didn't change that should have?** Renamed types, callers, tests, docs, dependency-graph rules. Often the bug is in *unchanged* code that needed updating.
 4. **What edge cases are unhandled?** Empty input, max-size input, concurrent calls, partial state, unicode, time-zone boundaries — pick the ones relevant to the change and check.
 5. **What production failure modes are possible?** Network errors, race conditions, resource exhaustion, retry storms, rate-limit collisions.
@@ -86,4 +86,4 @@ Verify that the worker's small diff is actually the work that was asked for. A d
 
 ## Bundled resources
 
-- `references/task-template.md` — a fillable task template for a review session: diff overview, findings table, verdict, and a self-review hard gate. Copy it into your project's task file, substitute the project-specific commands and slugs (`{{...}}` placeholders), and fill it in as you work.
+- `references/task-template.md` — a fillable task template for a review session: diff overview, findings table, suggested decision, and a self-review hard gate. Copy it into your project's task file, substitute the project-specific commands and slugs (`{{...}}` placeholders), and fill it in as you work.

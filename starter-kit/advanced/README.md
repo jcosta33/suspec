@@ -27,3 +27,4 @@ This tier also carries focused agent guides — `write-audit`, `write-research`,
 requirements) and `checks-reference.md` (common mistakes to check for).
 
 Copy what you need; ignore the rest. Full instructions: `docs/ADOPTING.md`.
+| `adversarial-review` | a deep, hostile re-review of an agent branch — beyond the review packet: re-run validation yourself, six adversarial questions, caller search |

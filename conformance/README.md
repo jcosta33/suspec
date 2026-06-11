@@ -40,6 +40,8 @@ flag the mechanical parts:
 | [`fixtures/violations.md`](./fixtures/violations.md) | One minimal negative fixture per violation class, each with the check it trips and the expected report. |
 | `fixtures/auth-refresh/` · `fixtures/payment-5xx/` · `fixtures/checkout/` | Three end-to-end domains: the spec in both forms (the equivalence pair), a task packet, a review packet, a finding, and an `EXPECTED.md` pinning what a checker must report at each artifact. |
 | [`fixtures/prose-corpus/`](./fixtures/prose-corpus/README.md) | The labeled writing-rules corpus: prose spans with ground-truth labels for the advisory watchlist, plus the precision/recall baseline any detector is scored against. |
+| `fixtures/intake/` | One valid intake snapshot; the expectation is pinned in the file's trailing note. |
+| `fixtures/transformation/` | A valid inventory + change-plan pair; its `EXPECTED.md` pins `C010 preserves-refs-resolve` and `C011 waves-present`. |
 
 ## The three domains and the examples they mirror
 
@@ -74,7 +76,7 @@ exercise it — in the same commit.
 
 | Closed set | Count | Values |
 |---|---|---|
-| Block types (SOL form) | 7 | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`, `TRACE`, `VERDICT` |
+| Block types (SOL form) | 5 | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION` |
 | Strength words | 5 | must, must not, should, should not, may (SOL form: the same words uppercase) |
 | Review results | 7 (4 core + 3 lifecycle) | core: Pass, Fail, Unverified, Blocked · lifecycle: Waived, Stale, Contradicted |
 | Verification methods | 9 | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor` |

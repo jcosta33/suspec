@@ -20,7 +20,9 @@ partly measured complaint against incumbent spec tools is ceremony and generated
 and the #2 OSS tool won its position on exactly the lightweight counter-position (V-002). The deeper
 reading reconciles the adopter's own findings: SOL's precision was praised as a thinking tool (O-002)
 while its presentation was rejected as ceremony (O-012) and its rules lacked tooling (O-003) — one
-coherent position: keep the discipline, demote the formalism, name the tool.
+coherent position: keep the discipline, demote the formalism, name the tool. The public record
+attacks generated spec bloat; the short, curated, conditional configuration is the one that record
+leaves standing — and the internal pilot (`.agents/plans/spec-first-pilot-protocol.md`) tests it.
 
 ## Decision
 

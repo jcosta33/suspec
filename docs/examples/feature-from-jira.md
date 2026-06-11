@@ -50,7 +50,7 @@ Nothing is edited — even the "while we're at it" line stays. It matters in the
 ## Step 2 — Spec: interpret the ticket
 
 The spec turns the ticket into requirements an agent can build against, each with a
-`Verify with:` line — a runnable check is the strongest task-input signal you can give an
+`Verify with:` line — a runnable check is the most useful single line you can hand an
 agent [[ORACLESWE]](../research/sources.md#ORACLESWE). The "remember me" ask is deliberately
 left out, and the drop is recorded where the ticket's author can find it.
 

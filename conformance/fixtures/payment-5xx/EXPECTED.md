@@ -67,10 +67,13 @@ though only the SOL surface has a code that names it.
 |---|---|---|
 | `non-empty-paste` | review rows AC-001, AC-002 | pass — output pasted or linked |
 | `non-empty-paste` | review row AC-003 | the Evidence cell is empty, so the row reads **Unverified** — never Pass |
-| `no-open-critical` | review | **fires** — the blocking question is still open, so this work cannot close; the review status is `blocked` |
+| `no-open-critical` | review | **does not fire** — the open blocking question is correctly reflected as `status: blocked`; the rule guards terminal statuses. Counterfactual: the same packet at `status: pass` would fire it |
 | `trigger-coverage` | review Human attention | pass — names the contradiction, the blocked question, the unverified row, and the security-sensitive path |
 
 ## finding.md
 
 Valid: one claim, evidence, applies/does-not-apply bounds, and future guidance, with `from:`
 and `related:` resolving to this fixture's review and spec ids.
+
+*Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
+unchecked and it claims no completion; the rule binds completion claims, not open work.*

@@ -70,8 +70,7 @@ agent PR reviewed by exception — is
 ## Where files live
 
 - **This repo** — the framework: docs, templates, a starter kit.
-- **Your workspace** — your specs, tasks, reviews, and findings: a dedicated repo,
-  or the same tree inside your project. [docs/03-where-files-live.md](docs/03-where-files-live.md)
+- **Your workspace** — specs, tasks, reviews, findings: a dedicated repo or the same tree in your project ([where files live](docs/03-where-files-live.md)).
 - **Your code repos** — stay clean. The PR links its review packet; that's all.
 
 ## What works today, what comes later
@@ -84,9 +83,9 @@ packets, review packets, findings, the worked examples.
 quality-of-life automation around the same files.
 The contract: [docs/reference/future-cli.md](docs/reference/future-cli.md).
 
-Swarm does **not** promise deterministic code generation, automatic correctness,
-formal verification, or the end of PR review. It promises better inputs, bounded
-tasks, reviewable evidence, and kept context.
+Swarm does **not** promise deterministic generation, automatic correctness, formal
+verification, compiling software from specs, or the end of PR review — it promises
+better inputs, bounded tasks, reviewable evidence, and kept context.
 
 ## What Swarm is / is not
 
@@ -100,8 +99,9 @@ Jira/Linear replacement · a code generator · a replacement for PRs and CI · a
 portal · a complete SDLC platform · a guarantee that agent output is correct.
 
 How it differs from its neighbors: spec-first scaffolds generate plans; trackers
-hold tickets; AI reviewers hunt bugs. Swarm's distinct piece is the **persisted,
-exception-routing review packet** tied to requirement IDs — plus a workspace and an
+hold tickets; AI reviewers hunt bugs; an `AGENTS.md` alone carries standing facts, not
+per-change contracts. Swarm's distinct piece is the **persisted, independent,
+exception-routing review packet** tied to requirement IDs — plus a workspace and one
 honesty rule: anything not enforced by a tool says so.
 
 ## Get started
@@ -115,7 +115,6 @@ Or hand your agent [docs/ADOPTING.md](docs/ADOPTING.md) and let it do the copyin
 
 ## Going deeper
 
-[What is Swarm](docs/01-what-is-swarm.md) · [Basic workflow](docs/02-basic-workflow.md) ·
-[Writing specs](docs/04-writing-specs.md) · [Reviewing output](docs/08-reviewing-output.md) ·
-[Examples](docs/examples/) · [Reference](docs/reference/) ·
+[What is Swarm](docs/01-what-is-swarm.md) · [Basic workflow](docs/02-basic-workflow.md) · [Writing specs](docs/04-writing-specs.md) ·
+[Reviewing output](docs/08-reviewing-output.md) · [Examples](docs/examples/) · [Reference](docs/reference/) ·
 [Design decisions](docs/adrs/) · [Evidence](docs/research/sources.md)

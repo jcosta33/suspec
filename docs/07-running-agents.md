@@ -61,7 +61,7 @@ commands it ran with their real output, and anything learned worth saving as
 a finding. That summary is the raw material for the
 [review packet](08-reviewing-output.md)'s Evidence column — which is why
 output must be pasted, not described. "Tests passed" without the output is
-not evidence [[REFLEXION]](research/sources.md#REFLEXION); at review it is
+not evidence [[EVIBOUND]](research/sources.md#EVIBOUND); at review it is
 recorded as Unverified, not Pass.
 
 If the summary is missing or thin, ask for it before tearing anything down —

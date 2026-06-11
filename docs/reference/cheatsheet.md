@@ -102,7 +102,7 @@ What kind of evidence backs a requirement's `Verify with:` line (internally: pro
 | inventory                                                        | core when the work is brownfield               | `inventory/`                                             |
 | change plan                                                      | core when the work is structural               | `change-plans/`                                          |
 | adr                                                              | advanced                                       | `decisions/`, numbered                                   |
-| audit · bug · research · rfc · prd · threat-model · release-note | advanced                                       | co-located in `specs/<feature>/`, or `intake/` for a bug |
+| audit · bug · research · rfc · prd · threat-model · release-note | advanced                                       | co-located in `specs/<feature>/` |
 
 The full layout, both naming depths, and the code-repo boundary are in
 [where files live](../03-where-files-live.md); every format is catalogued in
@@ -132,12 +132,14 @@ or a CI link; `no-open-critical` — nothing closes with an open blocking questi
 
 ## Appendix — reference values (producer note)
 
-This appendix exists for producers of Swarm tooling and documentation, not for adopters. The
-closed sets above have fixed sizes that tooling and fixtures reconcile against: block types 7 ·
-strength modals 5 · review results 7 (4 core + 3 lifecycle) · verification methods 9 ·
-lifecycle steps 9 · phases 7 · improve operations 10 · check layers 5 (S/P/M/V/O) ·
-edge types 7 · task kinds 17. These counts appear in exactly two places — here and in
-[`conformance/README.md`](../../conformance/README.md) — and nowhere else.
+This appendix exists for producers of Swarm tooling and documentation, not for adopters.
+The closed sets have exact sizes that tooling and fixtures reconcile against — the same
+eight rows, with their member lists, live in
+[`conformance/README.md`](../../conformance/README.md): block types (SOL form) 5 ·
+strength words 5 · review results 7 (4 core + 3 lifecycle) · verification methods 9 ·
+loop steps 6 (+ 2 conditional) · lifecycle steps (advanced) 9 · improve operations 10 ·
+check layers 5 (S/P/M/V/O). These counts appear in exactly two places — here and there —
+and nowhere else; a change to any set updates both, and the fixtures, in one commit.
 
 ## Related
 

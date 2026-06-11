@@ -44,19 +44,22 @@ The row's correct content is `Unverified` plus a Human attention entry.
 
 ## V3 — `TBD` at `status: ready` (`no-tbd-at-ready` / C007, hard error)
 
-A task packet with frontmatter `status: ready` whose Scope reads:
+A spec with frontmatter `status: ready` whose Requirements section reads:
 
 ```markdown
-## Scope
+### AC-001 — Cached repeat queries
+When the same query repeats within a session, the search service must return
+the cached result.
 
-Implement or preserve:
+Verify with: `search-cache.spec.ts`
 
-- AC-001 — return cached results for repeated queries.
-- AC-002 — TBD (waiting on product)
+### AC-002 — TBD (waiting on product)
 ```
 
-**Expected:** flagged — `ready` means an agent may start; a `TBD` inside the scope hands
-the agent an undecided requirement. At `status: draft` the same line is fine.
+**Expected:** flagged — C007 is a spec check: `ready` means tasks may be cut from this
+spec, and a `TBD` requirement hands an agent an undecided behavior. At `status: draft`
+the same line is fine. (A `TBD` inside a task packet is caught one step earlier — the
+task's scope ids must resolve against the spec, and `AC-002` here resolves to nothing.)
 
 ---
 
@@ -93,7 +96,7 @@ report coverage by requirement ID; a duplicated ID makes both ambiguous.
 
 ## V6 — open blocking question at `done` (`no-open-critical`, hard error)
 
-A task packet with frontmatter `status: done` whose Findings section contains:
+A task packet with frontmatter `status: closed` whose Findings section contains:
 
 ```markdown
 ## Findings

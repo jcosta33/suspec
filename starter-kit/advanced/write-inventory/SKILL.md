@@ -18,7 +18,7 @@ map you need before drawing new boundaries.** An audit can correctly flag that a
 violates the architecture, and still leave you unable to fix it safely, because fixing it needs
 answers the audit doesn't carry: who calls this function? who subscribes to this event? what do
 callers actually rely on? An audit alone is not enough preparation for a rewrite or a major
-refactor — write the inventory; it is required before rewrites.
+refactor — write the inventory first — a convention this kit expects before rewrites; nothing enforces it.
 
 Copy the template at [`../../templates/inventory.md`](../../templates/inventory.md). This guide
 is how to fill it well.

@@ -17,8 +17,11 @@
 
 ## Workspace
 
+- The loop: Pull → Spec → Task → Run → Review → Close (+ Inventory / Change Plan for
+  structural work).
 - Specs: `specs/<feature>/spec.md` · tasks: `tasks/` · reviews: `reviews/` ·
-  findings: `findings/` · intake: `intake/` · decisions: `decisions/` · board: `status.md`
+  findings: `findings/` · intake: `intake/` · inventories: `inventory/` ·
+  change plans: `change-plans/` · decisions: `decisions/` · board: `status.md`
 - Templates for every artifact: `templates/`
 - {{For code repos: "Swarm workspace: <path-or-url>"}}
 
@@ -35,10 +38,13 @@
 
 | Slot | Command | Purpose |
 |---|---|---|
-| test | `{{npm test / pytest / …}}` | run the test suite |
-| lint | `{{eslint / ruff / …}}` | static checks |
-| build | `{{build command}}` | production build |
-| typecheck | `{{tsc --noEmit / mypy}}` | types |
+| cmdTest | `{{npm test / pytest / …}}` | run the test suite |
+| cmdLint | `{{eslint / ruff / …}}` | static checks |
+| cmdBuild | `{{build command}}` | production build |
+| cmdTypecheck | `{{tsc --noEmit / mypy}}` | types |
+
+<!-- SOL-form `VERIFY BY <method>:<adapter>:<artifact>` lines resolve their adapter
+     against these slot names (cmdTest, cmdLint, …). Keep the cmd prefix. -->
 
 ## Agent role
 

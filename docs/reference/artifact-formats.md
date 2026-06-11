@@ -63,9 +63,9 @@ convention spec-driven toolkits converge on
   sources (optional, recommended).
 - Each requirement is a `### AC-NNN — name` heading: one sentence of observable behavior
   ("When X, the component must Y.") and a `Verify with:` line. That line is the highest-value
-  line in the file — executable acceptance criteria are the strongest known task-input signal
+  line in the file — a runnable check measurably outperforms prose plans as task input (preliminary)
   [[ORACLESWE]](../research/sources.md#ORACLESWE).
-- A spec with open questions is not `status: ready` (checklist level).
+- An open question keeps a spec out of `status: ready` unless marked "(non-blocking)" (plain form) / `[non-blocking]` (SOL form) — checklist level.
 - Specs are amended in place after review feedback: edit the requirement, keep its ID. What the
   sources asked for but the spec deliberately drops goes under "Dropped from sources" — that's
   where design rationale survives.
@@ -110,7 +110,7 @@ The load-bearing rules:
 
 - **A Pass needs pasted output or a CI link. An empty Evidence cell means Unverified, never
   Pass** (checklist level). "Tests passed" without the output is not evidence
-  [[REFLEXION]](../research/sources.md#REFLEXION).
+  [[EVIBOUND]](../research/sources.md#EVIBOUND).
 - **Spot-check at least one green row's evidence yourself** (convention level) — structure alone
   doesn't remove the reviewer's bias toward agent output
   [[SELFPREFER]](../research/sources.md#SELFPREFER) [[JUDGEBIAS]](../research/sources.md#JUDGEBIAS).
@@ -165,7 +165,7 @@ produces today.
 ## Conditionally-core artifacts
 
 Written when the work is structural or brownfield; skipped otherwise. The skip is required, not
-a concession — indiscriminate process on work that doesn't need it measurably hurts
+a concession — indiscriminate clarification-forcing on work that doesn't need it measurably hurts — extending that to artifacts is design rationale
 [[HUMANEVALCOMM]](../research/sources.md#HUMANEVALCOMM)
 [[ASKORASSUME]](../research/sources.md#ASKORASSUME). No inventory for a single-file cleanup; no
 change plan for an obvious bug fix.

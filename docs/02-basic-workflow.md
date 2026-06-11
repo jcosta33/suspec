@@ -36,7 +36,7 @@ Artifact: [inventory](../starter-kit/templates/inventory.md) → `inventory/`. W
 
 Turn the ask into intent, non-goals, and requirements — one `AC-NNN` per requirement, each with
 a `Verify with:` line. That line is the highest-value line in the file: a runnable acceptance
-check is the strongest task-input signal known [[ORACLESWE]](research/sources.md#ORACLESWE).
+check measurably outperforms prose plans as task input (preliminary) [[ORACLESWE]](research/sources.md#ORACLESWE).
 Record open questions; a spec with open questions is not ready.
 
 Artifact: [spec](../starter-kit/templates/spec.md) → `specs/<feature>/spec.md`. How to write one:
@@ -95,7 +95,7 @@ Artifacts: [finding](../starter-kit/templates/finding.md) → `findings/`,
 | ----------------- | ----------------------------------------------------------- |
 | **Feature**       | the six steps                                               |
 | **Refactor**      | Inventory/Audit → Change Plan → Task → Run → Review → Close |
-| **Bug**           | Pull → Spec check → Task → Run → Review → Close             |
+| **Bug**           | Pull → Spec amend → Task → Run → Review → Close             |
 | **Rewrite**       | Inventory → Audit → Spec + Change Plan → Tasks → …          |
 | **Small cleanup** | Task → Run → Review → Close                                 |
 | **Spike**         | Question → Research → decision                              |
@@ -106,8 +106,9 @@ most bugs don't need a new spec. _Audit_ and _Research_ are advanced artifacts; 
 
 ## When to skip steps
 
-Not every task needs every step — and this is not a concession. Forcing process onto
-already-clear tasks measurably hurts the result
+Not every task needs every step — and this is not a concession. Forcing clarification onto
+already-clear tasks measurably hurts the result (the document analogue is this framework's
+design judgment)
 [[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM)
 [[ASKORASSUME]](research/sources.md#ASKORASSUME). The skip-paths are part of the design:
 
@@ -118,6 +119,7 @@ already-clear tasks measurably hurts the result
 - **Skip Change Plan** for an obvious bug fix or a purely additive feature — it earns its keep
   only when existing behavior must provably survive a structural change.
 - **Skip Spec and Change Plan both** for a small cleanup — the task packet alone bounds it.
+- **Trivial work skips the board too:** a one-line cleanup needs no status row — the PR is enough.
 - **A spike skips nearly everything:** ask the question, do the research, record the decision.
 
 What code-changing work never skips: Run with verification and Review with evidence. These skip
@@ -125,5 +127,5 @@ rules are conventions — nothing in this repo enforces them.
 
 ## Going deeper
 
-There is a more granular nine-step lifecycle for high-risk changes — see
+There is a more granular lifecycle for high-risk changes — see
 [reference/advanced-lifecycle.md](reference/advanced-lifecycle.md). The six steps are the default.

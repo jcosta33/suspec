@@ -45,3 +45,7 @@ ADR-0030 and ADR-0054.
 ## Propagation
 
 All file-producing surfaces; conformance manifest (`format: sol` selector); swarm-cli parser targets.
+
+> **Addendum (2026-06-11):** the reserved machine-artifact contract names are spelled without the
+> infix — `<spec>.ir.json` / `<spec>.plan.json` — consistent with §2; the future-CLI page is their
+> only home. No IR fixtures ship; the schemas are the contract.

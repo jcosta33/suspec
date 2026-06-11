@@ -81,3 +81,6 @@ two files is wrong (the anti-fork rule).
 Valid: one claim, evidence, applies/does-not-apply bounds, and future guidance. This finding
 (`FINDING-shared-write-area`) is also a named source of the change plan in
 `../transformation/change-plan.md`.
+
+*Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
+unchecked and it claims no completion; the rule binds completion claims, not open work.*

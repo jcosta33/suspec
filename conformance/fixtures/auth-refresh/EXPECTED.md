@@ -72,3 +72,6 @@ parts (the empty Evidence cell).
 
 Valid: one claim, evidence, applies/does-not-apply bounds, and future guidance, with `from:`
 and `related:` resolving to this fixture's review and spec ids.
+
+*Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
+unchecked and it claims no completion; the rule binds completion claims, not open work.*

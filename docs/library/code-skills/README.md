@@ -36,8 +36,8 @@ stances fold into the kit and advanced guides (see
 
 ## Coordinating parallel tasks
 
-When several agents run at once, the failure surface is the handoff and the merge, not the workers
-[[PLANCODER]](../../research/sources.md#PLANCODER). Conventions that hold the line — review
+When several agents run at once, preliminary evidence places the failure surface at the handoff, not in the workers
+[[PLANCODER]](../../research/sources.md#PLANCODER) — and merges add their own. Conventions that hold the line — review
 inspects them; nothing enforces them:
 
 - **One worktree (or branch) per task, and write-disjoint scopes.** Two tasks that need the same

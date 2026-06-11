@@ -67,6 +67,11 @@ Advanced pages and tooling contracts sometimes use the precise internal vocabula
 | trace                  | agent run summary              |
 | verdict                | review result                  |
 
+| **wave** | One stage of a change plan; each wave leaves the codebase green and names its verify step. |
+| **preservation guarantee** | A change-plan row naming a behavior that must not change, with its verification — reuses the spec's requirement ids (plan-local: `PG-NNN`). |
+| **workboard** | The hand-edited `status.md` table of open specs, tasks, reviews, and findings. |
+| **watchlist** | The advisory list of vague words a requirement line must pair with an observable criterion. |
+
 ## Related
 
 - [Swarm Reference](cheatsheet.md) — the same vocabulary as lookup tables.

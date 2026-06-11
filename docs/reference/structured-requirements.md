@@ -3,7 +3,9 @@
 *Works today — plain markdown plus your agent; no Swarm tooling required.*
 
 SOL is Swarm's stricter spec surface — a structured requirements notation, selected per file
-with `format: sol` in the spec's frontmatter. The default spec form is plain markdown:
+with `format: sol` in the spec's frontmatter — the frontmatter field is the entire selector. (Some external
+material suffixes SOL files `.swarm.md`; Swarm treats that as a harmless private filename
+convention carrying no meaning of its own.) The default spec form is plain markdown:
 `### AC-NNN` headings with one behavior sentence and a `Verify with:` line (see
 [Writing specs](../04-writing-specs.md)). SOL trades a little writing freedom for shapes a
 reviewer can scan and a parser can read: fixed clause order, explicit strength words, and a
@@ -44,7 +46,10 @@ negative of _should_). See [Strength words](#strength-words).
 note_ — a pointer the reviewer chases; if the named test or command does not exist yet, the
 requirement reviews as **Unverified**, never as a broken spec. SOL
 `VERIFY BY <method>:<adapter>:<artifact>` is a _resolved binding_ — method named, runner
-named, target named. Review consumes only `{ id, verify_ref, result }` with results
+named, target named. A change plan's preservation guarantees use this same field with the
+same two precisions; guarantee rows reuse the spec's own requirement ids via `preserves:`
+(a plan-local guarantee gets `PG-NNN` — usually a sign a spec amendment is owed). There is
+no third verification surface. Review consumes only `{ id, verify_ref, result }` with results
 Pass / Fail / Unverified / Blocked — identical over both forms.
 
 **5. Kind is a projection.** Plain form has one kind: _requirement_. SOL refines kind with
@@ -60,6 +65,10 @@ page defines. The catalogue lives in [Checks](checks.md) — reference implement
 plain, one SOL, identical record sets) to keep the two surfaces from forking.
 
 ## Selecting SOL
+
+The selector is the frontmatter field alone. (Some external material marks SOL files with a
+`.swarm.md` filename suffix; Swarm treats that as a harmless private convention — the filename
+carries no meaning, only `format: sol` does.)
 
 `format: sol` in the frontmatter is the entire selector — per file, opt-in, reversible:
 

@@ -33,12 +33,15 @@ core_checks:
   - { id: C001, name: unique-ids,             severity: hard-error }
   - { id: C002, name: duplicate-id,           severity: hard-error }
   - { id: C003, name: verify-with,            severity: hard-error }
-  - { id: C004, name: one-strength-word,      severity: warning    }
+  - { id: C004, name: one-strength-word,      severity: warning    }   # must / must not / should / should not / may
   - { id: C005, name: non-goals-present,      severity: warning    }
   - { id: C006, name: open-questions-present, severity: warning    }
-  - { id: C007, name: no-tbd-at-ready,        severity: hard-error }
+  - { id: C007, name: no-tbd-at-ready,        severity: hard-error }   # open questions not marked non-blocking included
   - { id: C008, name: sources-named,          severity: warning    }
-  - { id: C009, name: broken-source-link,     severity: hard-error }
+  - { id: C009, name: broken-source-link,     severity: hard-error }   # workspace refs only; bare tracker ids exempt
+  change_plan_checks:
+    - { id: C010, name: preserves-refs-resolve,  severity: hard-error }   # preserves: + guarantee-table ids resolve (PG-NNN = plan-local)
+    - { id: C011, name: waves-present,           severity: warning    }   # kind in {migration, rewrite, schema-change} => non-empty waves, each naming a verify step
 
 # --- The task packet -----------------------------------------------------------
 # Keyed to starter-kit/templates/task.md: a well-formed task presents every
@@ -67,7 +70,7 @@ task_file:
       severity: hard-error
       rule: >-
         No blocking open question remains unresolved anywhere in the packet
-        when its frontmatter status is the terminal value `done`.
+        when its frontmatter status is the terminal value `closed`.
 
 # --- The review packet ----------------------------------------------------------
 # Keyed to starter-kit/templates/review.md.
@@ -145,4 +148,6 @@ fixtures:
   positive: fixtures/conformant-task.md
   negative: fixtures/violations.md
   domains: [fixtures/auth-refresh, fixtures/payment-5xx, fixtures/checkout]
+  intake: fixtures/intake/intake-jira-123.md          # valid intake; expectation pinned in its trailing note
+  transformation: fixtures/transformation             # inventory + change plan; EXPECTED.md pins C010/C011
   prose: fixtures/prose-corpus/labeled.yaml

@@ -21,7 +21,7 @@ The six steps are the default; the full lifecycle is for **high-risk changes**. 
 high-risk when it touches security-sensitive surfaces, public interfaces, or data migrations; when
 several agents will work in parallel on the same feature; or when a wrong result is expensive to
 detect or undo. For everything else, collapse the lifecycle into the six steps — and keep the
-skip-paths: forced process on already-clear tasks measurably hurts
+skip-paths: forced clarification on already-clear tasks measurably hurts (the document analogue is design rationale)
 [[HUMANEVALCOMM]](../research/sources.md#HUMANEVALCOMM)
 [[ASKORASSUME]](../research/sources.md#ASKORASSUME), so skipping is required practice, not a
 concession. This is a convention — nothing in this repo enforces it.
@@ -123,8 +123,8 @@ code correctness [[ORCHID]](../research/sources.md#ORCHID)
 asking [[HUMANEVALCOMM]](../research/sources.md#HUMANEVALCOMM)
 [[HILBENCH]](../research/sources.md#HILBENCH). Repairing the requirement text recovers the loss,
 and the repaired text transfers across models [[CLARIFYGPT]](../research/sources.md#CLARIFYGPT)
-[[SPECFIX]](../research/sources.md#SPECFIX). The strongest known repair is BIND: an executable
-acceptance criterion is the strongest task-input signal yet measured
+[[SPECFIX]](../research/sources.md#SPECFIX). The highest-leverage repair is BIND: an executable
+acceptance criterion measurably outperforms prose plans as task input (preliminary)
 [[ORACLESWE]](../research/sources.md#ORACLESWE). And preliminary multi-agent evidence places the
 planner→coder handoff as the dominant failure surface
 [[PLANCODER]](../research/sources.md#PLANCODER) — which is why CLARIFY and DECONFLICT run *before*
@@ -150,7 +150,7 @@ The four core results — exactly one per requirement per run:
 Blocked and Unverified route differently — Blocked is an environment fix, Unverified is a missing
 binding or a skipped run. A reviewer who cannot tell which happened records Unverified, the weaker
 and more honest claim. And "tests passed" with no command, exit code, or output is not evidence of
-anything [[REFLEXION]](../research/sources.md#REFLEXION) — an empty Evidence cell means Unverified,
+anything [[EVIBOUND]](../research/sources.md#EVIBOUND) — an empty Evidence cell means Unverified,
 never Pass.
 
 The three lifecycle values — each with required fields, without which it cannot be audited:

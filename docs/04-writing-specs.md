@@ -28,7 +28,7 @@ Skip the spec for:
 
 Those go straight to a small task — the [basic workflow](02-basic-workflow.md) page has the
 skip-paths. The threshold is a convention — nothing in this repo enforces it — but it is not
-politeness: forcing process onto already-clear work measurably hurts outcomes
+politeness: forcing clarification onto already-clear work measurably hurts outcomes — and extending that to documents is this framework’s design judgment
 [[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM)
 [[ASKORASSUME]](research/sources.md#ASKORASSUME).
 
@@ -45,8 +45,10 @@ What each part is for:
 - **Non-goals** — what this spec deliberately does not change.
 - **Requirements** — one `### AC-NNN — <name>` per requirement: a single behavior sentence
   ("When X, the component must Y.") and a `Verify with:` line naming a test or command.
-- **Open questions** — anything unresolved. A spec with open questions is not `status: ready`.
+- **Open questions** — anything unresolved. An open question keeps the spec out of `status: ready` unless marked "(non-blocking)" (the SOL form spells the same choice as a `[blocking|non-blocking]` tag).
 - **Affected areas** — the paths the work is expected to touch.
+- A spec is a one-page contract — aim for ~100 lines; past that, you are usually writing
+  two specs (a budget convention, not a rule).
 - **Dropped from sources** — optional, recommended: what the ticket or PRD asked for that this
   spec deliberately leaves out, and why.
 
@@ -58,7 +60,7 @@ nothing blocks you. The full list of common mistakes to check for lives in
 until then they are review checklist items.
 
 1. **Give every requirement a `Verify with:` line.** It is the highest-value line in the file —
-   executable acceptance criteria are the strongest known task-input signal
+   a runnable check measurably outperforms prose plans as task input (preliminary)
    [[ORACLESWE]](research/sources.md#ORACLESWE). Naming a test that doesn't exist yet is fine;
    the review result reads Unverified until it does.
 2. **Use observable verbs.** "Returns 401", "redirects to `/login`", "writes the audit row" —
@@ -87,10 +89,12 @@ until then they are review checklist items.
 These rules are not style preferences. Ambiguous or incomplete requirement text measurably
 degrades agent code correctness [[ORCHID]](research/sources.md#ORCHID)
 [[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM) — and models usually code anyway instead of
-asking [[HILBENCH]](research/sources.md#HILBENCH), so the misreading lands in the diff, not in a
+asking [[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM) [[HILBENCH]](research/sources.md#HILBENCH), so the misreading lands in the diff, not in a
 clarifying question. The fix is in the text: clarifying or repairing the requirement recovers
 correctness, and the repaired text transfers across models
-[[SPECFIX]](research/sources.md#SPECFIX) [[CLARIFYGPT]](research/sources.md#CLARIFYGPT). Half an
+[[SPECFIX]](research/sources.md#SPECFIX) [[CLARIFYGPT]](research/sources.md#CLARIFYGPT) —
+and terse, chat-style task input costs agents a large share of their measured benchmark
+performance [[SWEMUT]](research/sources.md#SWEMUT) (preliminary). Half an
 hour on the spec is cheaper than a review cycle on the wrong implementation.
 
 ## When the spec changes

@@ -14,11 +14,12 @@ The product's wedge is review-by-exception: turning large agent output into requ
 evidence, and a human-attention list. Agent-authored summaries are not trustworthy on their own —
 evaluators favor their own generations [[SELFPREFER]](../research/sources.md#SELFPREFER), judges carry
 position/verbosity biases [[JUDGEBIAS]](../research/sources.md#JUDGEBIAS), and unsupported "done" claims
-are the canonical failure [[REFLEXION]](../research/sources.md#REFLEXION). The external survey found **no
+are the canonical failure [[EVIBOUND]](../research/sources.md#EVIBOUND). The external survey found **no
 tool ships a persisted, independent, exception-routing review packet** (the verified gap — never claim
 "nobody reviews agent output"); it also found every competing tool keeps specs in-repo, while external
 requirements stores exist at the RFC/requirements-repo granularity enterprises already run, with
-drift/discoverability as the known failure mode of separation.
+drift/discoverability as the known failure mode of separation (recorded counter-sources: the
+spec-kit issue threads #1191/#876/#1059 and the Fiberplane "Drift" post — survey V-059/V-024).
 
 ## Decision
 
@@ -78,3 +79,8 @@ scratch rule and memory-dir home are replaced); refines ADR-0049, ADR-0050, ADR-
 
 Templates (task, review, status), docs/03/05/06/08, ADOPTING, kit shell, conformance task/review schemas,
 examples, evals.
+
+> **Addendum (2026-06-11):** the worker's run record folds into the review packet (the run summary
+> + evidence cells); a standalone trace artifact exists only as a reserved machine-record sketch on
+> the future-CLI page. Inventories live in the type folder `inventory/`; the feature folder co-locates
+> only spec-supporting documents (audit, research, prd, rfc).

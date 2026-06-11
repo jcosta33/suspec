@@ -12,7 +12,7 @@ updated: 2026-06-11
 
 Lost context is a top adopter pain, but a multi-tier memory system with promotion protocols is ceremony
 ahead of need for most teams (R-003). What survives sessions must be cheap to write and easy to recall.
-Externalized state is what makes multi-session agent work tractable
+Writing intermediate state to durable files measurably helps multi-step work, and is the recommended pattern for work that spans sessions
 [[CTXENG]](../research/sources.md#CTXENG) [[SCRATCHPAD]](../research/sources.md#SCRATCHPAD).
 
 ## Decision

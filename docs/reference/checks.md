@@ -45,13 +45,15 @@ anything blocks today.
 | ---- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | C001 | `unique-ids`             | Every requirement ID (`AC-NNN`; `C-NNN`/`I-NNN` in SOL form) appears exactly once in the file.                                                                                                                                                       | hard error       |
 | C002 | `duplicate-id`           | No other file in the workspace claims the same frontmatter `id:`, and no requirement ID is reused across specs.                                                                                                                                      | hard error       |
-| C003 | `verify-with`            | Every requirement carries a `Verify with:` line (SOL form: a `VERIFY BY` line). This is the highest-value line in a spec — executable acceptance criteria are the strongest known task-input signal [[ORACLESWE]](../research/sources.md#ORACLESWE). | hard error       |
-| C004 | `one-strength-word`      | Each requirement states exactly one strength word — must, must not, should, or may. Two strength words usually means two requirements.                                                                                                               | warning          |
+| C003 | `verify-with`            | Every requirement carries a `Verify with:` line (SOL form: a `VERIFY BY` line). This is the highest-value line in a spec — a runnable check measurably outperforms prose plans as task input (preliminary) [[ORACLESWE]](../research/sources.md#ORACLESWE). | hard error       |
+| C004 | `one-strength-word`      | Each requirement states exactly one strength word — must, must not, should, should not, or may. Two strength words usually means two requirements.                                                                                                               | warning          |
 | C005 | `non-goals-present`      | A Non-goals section exists and is non-empty — what this spec deliberately does not change.                                                                                                                                                           | warning          |
 | C006 | `open-questions-present` | An Open questions section exists (even if it says "none").                                                                                                                                                                                           | warning          |
-| C007 | `no-tbd-at-ready`        | No `TBD`, `TODO`, `???`, or unresolved open question remains in a spec at `status: ready`. At `status: draft` these are fine.                                                                                                                        | hard error       |
+| C007 | `no-tbd-at-ready`        | No `TBD`, `TODO`, `???`, or unresolved open question (one not marked non-blocking) remains in a spec at `status: ready`. At `status: draft` these are fine.                                                                                                                        | hard error       |
 | C008 | `sources-named`          | Frontmatter `sources:` names at least one origin — a ticket, an intake file, an ADR.                                                                                                                                                                 | warning          |
-| C009 | `broken-source-link`     | Every file path or ID named in `sources:` or in a requirement cross-reference resolves to something that exists.                                                                                                                                     | hard error       |
+| C009 | `broken-source-link`     | Every workspace file path or cross-reference ID named in `sources:` or in a requirement resolves to something that exists. External tracker IDs (a bare `JIRA-123`) are exempt — naming them at all is C008 territory.                                                                                                                                     | hard error       |
+| C010 | `preserves-refs-resolve` | Every entry in a change plan's `preserves:` frontmatter and its Behavioral-preservation-guarantees table resolves to a real requirement ID (or is an explicit `PG-NNN` plan-local guarantee). | hard error       |
+| C011 | `waves-present`          | A change plan whose `kind` is `migration`, `rewrite`, or `schema-change` has a non-empty Transformation waves section, each wave naming its verify step. | warning          |
 
 One semantic note on C003: a `Verify with:` line whose target does not exist yet is **not** a spec
 defect — it is an unresolved note, and the requirement reviews as **Unverified** until the target
@@ -68,11 +70,11 @@ this repository enforces it; `swarm spec check` can verify clause (c).
 
 These guard the evidence chain from agent run to merge decision. **Level: checklist** — review is
 expected to inspect each one; `swarm spec check`'s packet mode can flag the mechanical parts
-(empty Evidence cells, terminal status with open questions).
+(empty Evidence cells, terminal status with open questions). At convention level, the reviewer also spot-checks at least one green row's evidence by hand — structured packets invite rubber-stamping.
 
 - **`non-empty-paste`** — a completion claim binds to pasted output or a CI link, never a bare
   "tests passed". A claim without visible output is not evidence
-  [[REFLEXION]](../research/sources.md#REFLEXION). In a review packet: an empty Evidence cell
+  [[EVIBOUND]](../research/sources.md#EVIBOUND). In a review packet: an empty Evidence cell
   means **Unverified**, never **Pass**.
 - **`no-open-critical`** — work is not closed with an open blocking question. A task or review
   packet whose status is terminal must carry no unresolved blocking question anywhere in it.

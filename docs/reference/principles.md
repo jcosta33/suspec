@@ -2,7 +2,8 @@
 
 *Advanced design note — internal rationale; not needed to use Swarm.*
 
-Swarm centers on clear requirements, bounded tasks, review evidence, and durable findings. The
+Swarm centers on clear requirements, bounded tasks, review evidence, and durable findings.
+The wager behind all four: generation outpaces validation, so the validation side gets the structure. The
 spec holds intended behavior; code holds implementation reality; the review packet and the
 status board connect the two. Everything else in the framework exists to serve that loop —
 and when two design choices collide, the principles below are the tiebreakers.
@@ -56,7 +57,7 @@ in code; neither overwrites the other without a recorded act.
 A well-formed artifact is not a verified one. A tidy coverage table, a green exit code, a
 confident "tests passed" — these are *shape*. Evidence is the pasted output or the CI link a
 reader can inspect; unsupported done-claims are the canonical agent failure
-[[REFLEXION]](../research/sources.md#REFLEXION).
+[[EVIBOUND]](../research/sources.md#EVIBOUND).
 
 - **Consequence.** A Pass needs pasted output or a CI link; an empty Evidence cell means
   Unverified, never Pass; reviewers spot-check at least one green row. These are checklist-level

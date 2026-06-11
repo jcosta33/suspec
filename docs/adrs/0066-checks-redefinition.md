@@ -22,7 +22,7 @@ checks specs.
    satisfying the core checks of `docs/reference/checks.md`. Nothing else is required; no document-copy
    clause; no maturity ladder.
 2. **Evidence rules survive verbatim** (checklist level): `non-empty-paste` — a completion claim binds to
-   pasted output or a CI link, never a bare "tests passed" [[REFLEXION]](../research/sources.md#REFLEXION);
+   pasted output or a CI link, never a bare "tests passed" [[EVIBOUND]](../research/sources.md#EVIBOUND);
    `no-open-critical` — work is not closed with an open blocking question.
 3. **Reference values are producer-internal.** The closed-set cardinalities and their reconciliation
    checks live only in `conformance/README.md` (producer note) and the cheatsheet appendix. Adopter-facing

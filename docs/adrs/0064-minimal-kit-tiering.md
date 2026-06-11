@@ -58,3 +58,8 @@ ADR-0036, ADR-0047, ADR-0056.
 ## Propagation
 
 starter-kit tree, ADOPTING, docs/03/10, .agents dev subset, code-skills library index.
+
+> **Addendum (2026-06-11):** the advanced tier additionally ships `adversarial-review` — a deep
+> hostile re-review guide (with a session task template) for agent branches that warrant more than
+> the review packet. It pairs with a dev-tier copy at `.agents/skills/adversarial-review/`; the pair
+> is registered in the propagation matrix.

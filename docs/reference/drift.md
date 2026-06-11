@@ -7,7 +7,7 @@ evidence showed Y satisfies X — *then*. The moment the requirement text or the
 that confirmation may no longer hold. Drift is the divergence between a requirement and its
 implementation after a recorded Pass; staleness is drift made detectable. A green build is
 shape, not truth — the question is whether the evidence still matches reality, not whether the
-suite still exits zero [[REFLEXION]](../research/sources.md#REFLEXION).
+suite still exits zero [[EVIBOUND]](../research/sources.md#EVIBOUND).
 
 ## What a Pass would record
 

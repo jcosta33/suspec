@@ -5,7 +5,7 @@
 Close is the last step of the loop. The merge happened; the review packet records what was
 verified. What's left is the part most teams skip: keeping what the work taught you. An
 agent session ends and its context evaporates — anything not written to a file is gone.
-Externalized state is what makes multi-session agent work tractable
+Writing intermediate state to durable files measurably helps multi-step work, and is the recommended pattern for work that spans sessions
 [[CTXENG]](research/sources.md#CTXENG) [[SCRATCHPAD]](research/sources.md#SCRATCHPAD).
 
 ## The one rule

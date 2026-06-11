@@ -4,7 +4,7 @@ id: TASK-CONTACT-FORM
 source:
   - SPEC-CONTACT-FORM
 scope: [AC-001, AC-002, AC-003]
-status: done
+status: closed
 ---
 
 # Task: Build the contact form

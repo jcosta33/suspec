@@ -10,8 +10,8 @@ the task hands one slice of it to one pair of hands.
 The packet matters because the handoff is where agent work goes wrong.
 Ambiguous or incomplete task input measurably degrades agent code correctness
 [[ORCHID]](research/sources.md#ORCHID)
-[[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM), and the planner-to-coder
-handoff is the dominant failure surface in multi-agent setups
+[[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM), and preliminary evidence places the planner-to-coder
+handoff as the dominant failure surface in multi-agent code generation
 [[PLANCODER]](research/sources.md#PLANCODER). A task packet is that handoff,
 written down where you can inspect it.
 
@@ -45,7 +45,7 @@ something no listed requirement covers, the agent's instruction is to stop and
 say why — the fix is a spec amendment, not mid-task improvisation.
 
 Fill Verify with real commands, not intentions. Executable acceptance criteria
-are the strongest known task-input signal
+are the part an agent benefits from most — a runnable check measurably outperforms prose plans as task input (preliminary)
 [[ORACLESWE]](research/sources.md#ORACLESWE): a requirement whose check the
 agent can actually run is the one most likely to come back done.
 
@@ -88,7 +88,7 @@ review. Signs it's too big — split it:
 - Affected areas span unrelated parts of the codebase.
 - You can't name a Verify command without saying "and then…".
 
-Too much packet is also a cost: forcing process onto already-clear work
+Too much packet is also a cost: forcing clarification onto already-clear work
 measurably hurts [[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM)
 [[ASKORASSUME]](research/sources.md#ASKORASSUME). A small cleanup is still a
 task — but a one-line Scope, one Verify command, and an empty "Do not change"

@@ -24,7 +24,8 @@ sources:
      earlier instructions more). Each requirement gets a "Verify with:" line —
      it is the highest-value line in this file; prefer a runnable test or
      command. Prefer stricter notation? Any spec can use SOL blocks instead:
-     add "format: sol" to the frontmatter. See reference/structured-requirements.md. -->
+     add "format: sol" to the frontmatter. See `advanced/sol-reference.md` in the starter kit
+     (full reference: the Swarm repo's docs/reference/structured-requirements.md). -->
 
 ### AC-001 — {{short name}}
 
@@ -34,7 +35,7 @@ Verify with: `{{test-name-or-command}}`
 
 ## Open questions
 
-- {{anything unresolved — a spec with open questions is not `status: ready`}}
+- {{anything unresolved — an open question keeps the spec out of `status: ready` unless you mark it "(non-blocking)"}}
 
 ## Affected areas
 

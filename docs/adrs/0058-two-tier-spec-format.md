@@ -27,8 +27,9 @@ industry precedent [[KIRO]](../research/sources.md#KIRO).
    sources (optional, recommended). Each requirement is a `### AC-NNN — <name>` heading with a one-sentence
    behavior ("When X, the component must Y.") and a `Verify with:` line. The `Verify with:` line is the
    highest-value line in the template ([[ORACLESWE]](../research/sources.md#ORACLESWE) — executable
-   acceptance criteria are the strongest known task-input signal); requirements are ordered by importance
-   (instruction-following shows primacy bias and silent omission under density).
+   a runnable check measurably outperforms prose plans as task input (preliminary)); requirements are ordered by importance
+   (instruction-following shows primacy bias and silent omission under density
+   [[IFSCALE]](../research/sources.md#IFSCALE) — preliminary).
 2. **SOL is the optional stricter surface,** selected per file by frontmatter `format: sol`. SOL is a
    *notation* (EARS-shaped blocks: `REQ AC-001:` / `WHEN` / `THE <actor> MUST <response>` / `VERIFY BY`),
    not a language: it carries no version number, and the fields `swarm_language`, `aps_version`,
