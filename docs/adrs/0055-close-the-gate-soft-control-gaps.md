@@ -98,8 +98,8 @@ seam edit, and the two accompanying reconciliations are this change.
 - **Refines:** [0053](./0053-structured-spec-and-review-system.md) (review-as-exceptions is the merge-gate
   payoff), [0043](./0043-checkable-documents.md) (checkable documents; lint stays spec-only).
 - **Grounded by:** the 10-aspect simulation audit (this session), aspects #3 / #4 / #8; oracle inadequacy is
-  measured, not hypothetical — [[SWEBENCH-ADQ]](./research/sources.md#SWEBENCH-ADQ) (7.8% of suite-passing
-  patches are wrong) and [[UTBOOST]](./research/sources.md#UTBOOST) (40.9% of SWE-bench Lite entries mislabeled
+  measured, not hypothetical — [[SWEBENCH-ADQ]](../research/sources.md#SWEBENCH-ADQ) (7.8% of suite-passing
+  patches are wrong) and [[UTBOOST]](../research/sources.md#UTBOOST) (40.9% of SWE-bench Lite entries mislabeled
   passing).
 - **Changes:** the [`review`](./passes/review.md) merge-gate predicate (non-vacuity floor + adequacy-for-high-RISK);
   [`verify` §6.2](./passes/verify.md) (high|critical adequacy BLOCKING); [`bug-report.md`](./artifacts/bug-report.md)

@@ -1,0 +1,256 @@
+# Checks — common mistakes to check for
+
+*Works today — plain markdown plus your agent; no Swarm tooling required.*
+
+This page is Swarm's check catalogue, in four parts: the **core checks** every spec should pass
+(either form), the **evidence checks** for task and review packets, the **writing-rules
+watchlist**, and the **SOL check catalogue** for specs that opt into structured requirements
+(`format: sol`). Reviewers use it as a checklist; tools build against it.
+
+Reference implementation: **`swarm spec check` in swarm-cli**. Wherever this page says a check is
+_toolable_, that is the tool meant.
+
+## The honesty legend
+
+Nothing in this repository runs, so nothing on this page is enforced. Every rule here carries one
+of four levels — read them literally:
+
+| Level          | What it means                                                             |
+| -------------- | ------------------------------------------------------------------------- |
+| **convention** | Expected practice. Nothing enforces it.                                   |
+| **checklist**  | A reviewer is expected to inspect it during review.                       |
+| **toolable**   | A tool can check it mechanically — here, `swarm spec check` in swarm-cli. |
+| **enforced**   | A shipped tool actually rejects violations. **Today, nothing qualifies.** |
+
+Approved phrasings, used throughout Swarm's docs:
+
+> "This is a convention — nothing in this repository enforces it."
+>
+> "A future `swarm spec check` should flag this; until then, treat it as a review checklist item."
+
+A team may adopt any check as blocking _by policy_ — that is the team's gate, not Swarm's.
+
+## Core checks (any spec, either form)
+
+These apply to every spec, whether it uses plain `### AC-NNN` requirements or SOL blocks. Both
+forms encode the same requirement record, so each check means the same thing in both — the
+[C ↔ SOL mapping](#how-core-checks-map-to-sol-codes) below shows the correspondence.
+
+**Level: checklist today; toolable — `swarm spec check` implements exactly this table.**
+The _Checker severity_ column is the contract for that tool (see
+[the severity split](#the-severity-split-the-swarm-spec-check-contract)), not a claim that
+anything blocks today.
+
+| ID   | Name                     | Check                                                                                                                                                                                                                                                | Checker severity |
+| ---- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| C001 | `unique-ids`             | Every requirement ID (`AC-NNN`; `C-NNN`/`I-NNN` in SOL form) appears exactly once in the file.                                                                                                                                                       | hard error       |
+| C002 | `duplicate-id`           | No other file in the workspace claims the same frontmatter `id:`, and no requirement ID is reused across specs.                                                                                                                                      | hard error       |
+| C003 | `verify-with`            | Every requirement carries a `Verify with:` line (SOL form: a `VERIFY BY` line). This is the highest-value line in a spec — executable acceptance criteria are the strongest known task-input signal [[ORACLESWE]](../research/sources.md#ORACLESWE). | hard error       |
+| C004 | `one-strength-word`      | Each requirement states exactly one strength word — must, must not, should, or may. Two strength words usually means two requirements.                                                                                                               | warning          |
+| C005 | `non-goals-present`      | A Non-goals section exists and is non-empty — what this spec deliberately does not change.                                                                                                                                                           | warning          |
+| C006 | `open-questions-present` | An Open questions section exists (even if it says "none").                                                                                                                                                                                           | warning          |
+| C007 | `no-tbd-at-ready`        | No `TBD`, `TODO`, `???`, or unresolved open question remains in a spec at `status: ready`. At `status: draft` these are fine.                                                                                                                        | hard error       |
+| C008 | `sources-named`          | Frontmatter `sources:` names at least one origin — a ticket, an intake file, an ADR.                                                                                                                                                                 | warning          |
+| C009 | `broken-source-link`     | Every file path or ID named in `sources:` or in a requirement cross-reference resolves to something that exists.                                                                                                                                     | hard error       |
+
+One semantic note on C003: a `Verify with:` line whose target does not exist yet is **not** a spec
+defect — it is an unresolved note, and the requirement reviews as **Unverified** until the target
+exists and its output is pasted. The check asks that the line _be there_, not that it already pass.
+
+### When is a workspace valid?
+
+The whole bar, nothing more: a workspace is valid when **(a)** it has a populated `AGENTS.md`
+(aim for ~100 lines — Swarm's own convention, not a cap), **(b)** the core templates are present,
+and **(c)** at least one spec satisfies the core checks above. This is a convention — nothing in
+this repository enforces it; `swarm spec check` can verify clause (c).
+
+## Task and review packet checks
+
+These guard the evidence chain from agent run to merge decision. **Level: checklist** — review is
+expected to inspect each one; `swarm spec check`'s packet mode can flag the mechanical parts
+(empty Evidence cells, terminal status with open questions).
+
+- **`non-empty-paste`** — a completion claim binds to pasted output or a CI link, never a bare
+  "tests passed". A claim without visible output is not evidence
+  [[REFLEXION]](../research/sources.md#REFLEXION). In a review packet: an empty Evidence cell
+  means **Unverified**, never **Pass**.
+- **`no-open-critical`** — work is not closed with an open blocking question. A task or review
+  packet whose status is terminal must carry no unresolved blocking question anywhere in it.
+- **`trigger-coverage`** — the review packet's Human attention section considered every trigger
+  class or marked it n/a: unverified or failed requirements · out-of-scope changes · risky files ·
+  missing test output · changed public interfaces · DB migrations · security-sensitive changes ·
+  new finding candidates · blocked questions. The checklist itself lives in
+  [reviewing output](../08-reviewing-output.md) and the review template.
+
+## Writing rules — the watchlist
+
+**Level: convention.** These word families predict requirements an agent will interpret
+differently than you meant. Automated detection of them is known to be imprecise (precision
+bounded well below 1.0 in field studies [[SMELLS]](../research/sources.md#SMELLS)) — which is
+exactly why this list is an advisory watchlist, not a gate.
+
+**The same-line rule, in plain words:** a risky word is fine when the _same line_ makes it
+checkable — it names who does what to what, gives a number with units, or points at a named test.
+If the line cannot say how you would check it, rewrite the line.
+
+| Family                          | Examples                                                                                       | What to do instead                                                  |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Subjective / promotional        | robust, clean, simple, intuitive, seamless, user-friendly, modern, elegant, proper, reasonable | Replace with the observable behavior you actually want.             |
+| Non-verifiable quality          | fast, performant, scalable, secure, reliable, graceful, sufficient                             | Give a number with units, or name the test that decides it.         |
+| Vague action verbs              | handle, support, manage, improve, optimize, streamline                                         | Say who does what to what.                                          |
+| Loopholes                       | as far as possible, if practical, where feasible                                               | Decide: either it is required or it is not.                         |
+| Ambiguous qualifiers            | significant, minimal, as needed, where appropriate                                             | Quantify, or delete the qualifier.                                  |
+| Comparatives without a baseline | better, faster, more efficient, optimal                                                        | Name the baseline and the margin ("p95 under 200 ms, from 450 ms"). |
+| Ambiguous quantifiers           | all, any, every, some                                                                          | State the exact set ("the three admin endpoints").                  |
+| Bundling connectives            | and, or, and/or joining separable behaviors                                                    | Split — one requirement per behavior.                               |
+| Ambiguous exceptions            | unless, except where                                                                           | Restate as a positive condition ("When X, …").                      |
+| Vague references                | it, this, that, the above                                                                      | Name the thing.                                                     |
+
+Two related habits worth checking alongside the watchlist: a bare "must not" with no paired
+affirmative behavior leaves what _should_ happen undecided — state what the component does
+instead; and uncertainty buried in requirement prose ("probably", "we think") belongs in Open
+questions, not in the requirement.
+
+## The SOL check catalogue (`format: sol` only)
+
+When a spec opts into [structured requirements](structured-requirements.md) with `format: sol`,
+its blocks have enough shape for finer-grained checks. Each `SOL-XNNN` code below names one
+common mistake, what to look for, and the fix.
+
+**Level: every code below is checklist today and toolable — `swarm spec check` reports these
+codes for `format: sol` files. None is enforced.** Codes are stable identifiers: cite them in
+review comments ("SOL-P005 on AC-003") so a fix is unambiguous.
+
+### Structure (`SOL-S…`) — is the block well-formed?
+
+| Code     | Common mistake                                                                                                                     | Fix                                                                                                  |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| SOL-S001 | A trigger line (`WHEN`/`IF`/`WHILE`/`WHERE`) with no actor line after it.                                                          | Add the `THE <actor> MUST <response>` line.                                                          |
+| SOL-S002 | An unknown block type or clause keyword.                                                                                           | Use a documented block type / clause keyword.                                                        |
+| SOL-S003 | An actor line with no strength word (`MUST`/`MUST NOT`/`SHOULD`/`SHOULD NOT`/`MAY`).                                               | Insert the strength word you mean.                                                                   |
+| SOL-S004 | Two blocks share an ID within one file.                                                                                            | Renumber.                                                                                            |
+| SOL-S005 | The ID prefix does not match the block type (e.g. `REQ C-001:`).                                                                   | Use the matching prefix: REQ→`AC-`, CONSTRAINT→`C-`, INVARIANT→`I-`, INTERFACE→`IF-`, QUESTION→`Q-`. |
+| SOL-S006 | `SHOULD`/`SHOULD NOT` with no `BECAUSE` or `EXCEPT` in the block.                                                                  | Add the reason, or strengthen to `MUST`/`MUST NOT`.                                                  |
+| SOL-S007 | A malformed header — missing colon, spaces or illegal characters in the ID.                                                        | Write `TYPE PREFIX-NNN:`.                                                                            |
+| SOL-S008 | Metadata or free prose before the block's first control line.                                                                      | Lead with the condition or actor line; metadata goes at the end.                                     |
+| SOL-S010 | An unknown trailing metadata field.                                                                                                | Use a documented field, or move the text to commentary.                                              |
+| SOL-S011 | A header with a recognized block type but no ID.                                                                                   | Add a `PREFIX-NNN` ID.                                                                               |
+| SOL-S012 | A required spec section missing or out of order.                                                                                   | Add or reorder the section — see the [spec format](artifact-formats.md).                             |
+| SOL-S013 | Hidden characters (zero-width, bidirectional-control, homoglyph) in requirement text — an instruction-injection vector for agents. | Strip them; re-author in printable characters.                                                       |
+| SOL-S014 | A block missing a clause its shape requires.                                                                                       | Add the required clause.                                                                             |
+
+### Prose (`SOL-P…`) — does the sentence pin down behavior?
+
+| Code     | Common mistake                                                                        | Fix                                                                                |
+| -------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| SOL-P001 | A condition with no consequence — the trigger is there, the behavior is not.          | Supply the consequence.                                                            |
+| SOL-P002 | No responsible actor.                                                                 | Name who does it.                                                                  |
+| SOL-P003 | A missing or lowercase strength word where binding force is meant.                    | Write the uppercase modal.                                                         |
+| SOL-P004 | Several separable behaviors bundled into one clause.                                  | Split — one requirement per block.                                                 |
+| SOL-P005 | A watchlist word in a requirement with no same-line observable criterion.             | Apply the same-line rule: who/what, a threshold, or a named test on the same line. |
+| SOL-P006 | An undefined term in a requirement.                                                   | Define it — an in-file `TERM` or the project glossary.                             |
+| SOL-P007 | A bare `MUST NOT` with no paired affirmative behavior.                                | State what the actor does instead.                                                 |
+| SOL-P008 | Uncertainty left in requirement prose instead of a `QUESTION` block / Open questions. | Lift it into a question.                                                           |
+| SOL-P050 | A pronoun with no unique antecedent.                                                  | Name the referent.                                                                 |
+| SOL-P051 | Passive voice hiding the actor.                                                       | Name the actor doing the action.                                                   |
+| SOL-P052 | A requirement sentence beyond ~20 words.                                              | Split or tighten.                                                                  |
+| SOL-P053 | Non-present or non-active phrasing.                                                   | Write present tense, active voice.                                                 |
+| SOL-P054 | A decorative phrase that adds no constraint.                                          | Delete it.                                                                         |
+| SOL-P055 | Repeated context that adds nothing new.                                               | Delete it.                                                                         |
+| SOL-P056 | A comparative with no baseline.                                                       | Name the baseline and the margin.                                                  |
+| SOL-P057 | A term drifting from its glossary definition (synonym, casing variant).               | Use the canonical term.                                                            |
+| SOL-P058 | `SHALL`/`SHALL NOT` used as a strength word.                                          | Write `MUST`/`MUST NOT`.                                                           |
+
+### Cross-references (`SOL-M…`) — do the pieces agree?
+
+| Code     | Common mistake                                                                                                      | Fix                                                                            |
+| -------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| SOL-M001 | An actor, object, or surface that resolves nowhere in the spec or its imports (also: an ID collision across files). | Define the referent, or fix the ID.                                            |
+| SOL-M002 | Two requirements with the same actor + trigger + surface and opposed strength words — a direct contradiction.       | Pick one; record why in the spec.                                              |
+| SOL-M003 | A `DEPENDS ON` / `IMPLEMENTS` / `PRESERVES` reference naming an ID that does not exist.                             | Fix the reference.                                                             |
+| SOL-M004 | A lower-authority file weakening a higher-authority requirement.                                                    | Resolve at the higher authority — see [source authority](source-authority.md). |
+
+### Verification (`SOL-V…`) — is every claim checkable?
+
+| Code     | Common mistake                                                                                                                               | Fix                                                                                |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| SOL-V001 | A requirement block (`REQ`/`CONSTRAINT`/`INVARIANT`) or `INTERFACE` with no `VERIFY BY`.                                                     | Add the binding.                                                                   |
+| SOL-V002 | A `VERIFY BY` whose command or artifact does not resolve.                                                                                    | Point it at something runnable.                                                    |
+| SOL-V003 | Evidence that cannot observe what it claims (e.g. an invariant bound only to one unit test).                                                 | Bind a check that can actually see the property.                                   |
+| SOL-V004 | A Pass recorded against text that has since changed.                                                                                         | Re-run the evidence — never re-bless silently.                                     |
+| SOL-V005 | A review result outside Pass / Fail / Unverified / Blocked, or a lifecycle marker (Waived, Stale, Contradicted) missing its required fields. | Use a valid result; complete the marker's fields.                                  |
+| SOL-V006 | An `INTERFACE` verified by anything other than a contract check.                                                                             | Bind a contract test.                                                              |
+| SOL-V007 | A lifecycle marker on the wrong result (e.g. Waived on a Pass).                                                                              | Remove or correct the marker.                                                      |
+| SOL-V008 | A required binding with no recorded result at review time.                                                                                   | It counts as Unverified — run it, or waive it on the record.                       |
+| SOL-V009 | A `VERIFY BY` evidence type outside the documented set.                                                                                      | Use a documented type — see [structured requirements](structured-requirements.md). |
+| SOL-V010 | A manual or waived result with no named human.                                                                                               | Name who accepted it, and why.                                                     |
+| SOL-V011 | Evidence that does not say what it actually exercised.                                                                                       | Record what ran relative to the requirement.                                       |
+
+### Splitting work (`SOL-O…`) — can tasks run safely in parallel?
+
+These matter when a spec is split into tasks — the [advanced lifecycle](advanced-lifecycle.md)
+covers that step in full.
+
+| Code     | Common mistake                                           | Fix                                                               |
+| -------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
+| SOL-O001 | Two parallel tasks writing the same files.               | Serialize them, or split the write surfaces.                      |
+| SOL-O002 | A dependency cycle between requirements or tasks.        | Break the cycle.                                                  |
+| SOL-O003 | An unresolved blocking question reaching task-splitting. | Answer or downgrade it first — splitting past it commits a guess. |
+| SOL-O004 | A requirement with no declared write/read scope.         | Declare the surfaces it touches.                                  |
+| SOL-O005 | A task writing paths outside its declared scope.         | Declare the path, or stop writing it.                             |
+| SOL-O006 | An imported file duplicating a policy requirement.       | Deduplicate — one home per rule.                                  |
+| SOL-O007 | A requirement assigned to no task.                       | Assign it — coverage is the point of splitting.                   |
+| SOL-O008 | A requirement assigned to two implementing tasks.        | Assign exactly one implementer.                                   |
+
+## How core checks map to SOL codes
+
+One requirement record underlies both spec forms, so a core check and its SOL codes are the same
+question asked of two surfaces — never two different rules. The fixtures under `conformance/` in
+the Swarm repo include simple/SOL equivalence pairs that pin this.
+
+| Core check                    | SOL form                                       |
+| ----------------------------- | ---------------------------------------------- |
+| C001 `unique-ids`             | SOL-S004 / SOL-S005                            |
+| C002 `duplicate-id`           | SOL-M001                                       |
+| C003 `verify-with`            | SOL-V001 / SOL-V002                            |
+| C004 `one-strength-word`      | SOL-S003 / SOL-P003 / SOL-P004                 |
+| C005 `non-goals-present`      | SOL-S012                                       |
+| C006 `open-questions-present` | SOL-S012 / SOL-P008                            |
+| C007 `no-tbd-at-ready`        | SOL-P008 / SOL-O003                            |
+| C008 `sources-named`          | — (frontmatter check; identical in both forms) |
+| C009 `broken-source-link`     | SOL-M003                                       |
+
+The writing-rules watchlist corresponds to SOL-P005 (watchlist word, no same-line criterion),
+SOL-P056 (comparative, no baseline), and SOL-P004 (bundling connectives).
+
+## The severity split — the `swarm spec check` contract
+
+Every check on this page maps to one of two severities. This is the contract the reference
+implementation builds against — until that tool is in front of you, read the split as advice on
+what to fix first, not as anything blocking.
+
+- **Hard error** — the checker must reject (non-zero exit). The defect changes what gets built:
+  a missing or colliding ID, a requirement nobody can verify, a contradiction, a placeholder
+  shipped as ready.
+- **Warning** — the checker must report but not reject. The defect makes the spec weaker or
+  harder to read, and a human should decide.
+
+| Severity   | Checks                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Hard error | C001, C002, C003, C007, C009 · all `SOL-S` codes · SOL-P001–P008 · all `SOL-M` codes · SOL-V001/V002 and V004–V010 · SOL-O001/O002/O003/O005/O007/O008 |
+| Warning    | C004, C005, C006, C008 · SOL-P050–P058 · SOL-V003, SOL-V011 · SOL-O004, SOL-O006                                                                       |
+
+One position-sensitive case: SOL-P056 (comparative, no baseline) is a hard error inside a
+requirement line and a warning in surrounding commentary — commentary may be loose; a requirement
+line _is_ the requirement.
+
+Teams may promote any warning to blocking by policy. Going the other way — accepting a hard error
+— deserves a written note in the review packet saying who accepted it and why.
+
+## Related
+
+- [Structured requirements](structured-requirements.md) — the SOL notation these codes check, and the two-surfaces-one-model rule.
+- [Writing specs](../04-writing-specs.md) — the happy-path guide the core checks back.
+- [Reviewing output](../08-reviewing-output.md) — where the packet checks and the trigger checklist live.
+- [Artifact formats](artifact-formats.md) — every template this page's checks apply to.
+- `conformance/` (Swarm repo) — the checks fixtures: expected results per check, the test data swarm-cli runs against.

@@ -1,102 +1,83 @@
-# checkout — expected outcome (golden-corpus fixture)
+<!-- checks fixture — expected results pinned in EXPECTED.md (this file) -->
 
-This manifest pins the expected outcome of the `checkout` fixture, the inert oracle a
-conformant tool is checked against. It is the authority for this directory: the per-stage files
-reproduce the full `intent → promotion` pipeline, and this manifest records the verdict a
-correct run must produce at each gate.
+# checkout — expected check results
 
-**Expected verdict: PASS (clean, no reconcile).**
+Checks fixture for [the check catalogue](../../../docs/reference/checks.md): cart submission
+and checkout, with two seeded defects — a bundled requirement, and two requirements sharing
+one write area. The results below are known by hand and pin what swarm-cli's
+`swarm spec check` must report (toolable). Until that tool runs, nothing here is enforced —
+reviewers use the same tables as a checklist.
 
-## What this fixture is
+**Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
+share one `id:` — they are one spec written on both surfaces (this directory's equivalence
+pair), not two specs. A real workspace keeps only one, so the pair itself never counts as a
+C002 duplicate.
 
-- **Domain:** checkout (cart submission, charge, order/inventory writes, receipt).
-- **Polarity:** the authored source carries the domain's canonical defect class and must be
-  rejected at `lint`; the improved source repairs it and reaches a mergeable PASS.
-- **Canonical defect class exercised (on the *authored* source, stage 1):**
-  - obligation-bundling — one `REQ` bundling three separable obligations (`SOL-P004`);
-  - write-surface conflict marked parallel — two obligations sharing a write surface in one
-    parallel group (`SOL-O001`).
-  The positive obligation the negative variant violates — single-charge idempotency — is the
-  `INVARIANT I-010` carried with a bound `property` proof.
+## Seeded defects
 
-## Stage files
+| Where | Defect |
+|---|---|
+| AC-001 (both files) | Three separable behaviors bundled into one requirement (validate · charge · email) |
+| AC-002 + AC-003 (both files) | Both write `db/orders` — one write area shared by two requirements |
 
-| Stage | Pass | File | Asserts |
-| ----- | ---- | ---- | ------- |
-| 1 | author | `spec.md` | authored source; parses; carries the seeded `SOL-P004` + `SOL-O001` defects |
-| 2 | lint | (this manifest) | the two BLOCKING diagnostics |
-| 3 | improve | `spec.improved.md` | both diagnostics clear; `AC-010` atomized; the shared write surface deconflicted |
-| 4 | lower | `checkout.ir.json` | typed IR over the improved source; `edges[]` the sole relationship source |
-| 5 | decompose, implement | `task.md` | two work packets with disjoint write surfaces; write surfaces ⊆ assigned `WRITES` |
-| 6 | verify | `trace.md` | `TRACE T-010`/`T-011` + the 7-field provenance table |
-| 7 | review | `review.md` | per-obligation `VERDICT`s; unauthorized-change check; merge-gate outcome |
-| 8 | promote | `finding.md` | the durable finding promoted with full provenance |
+## spec.md (plain form)
 
-> The `task.md` here shows the **pipeline-relevant work-packet frame**, not a full task-file. The task-file-schema `required_sections` rule ([`././conformance.yaml`](././conformance.yaml)) is exercised by [`./conformant-task.md`](./conformant-task.md) (positive) and [`./violations.md`](./violations.md) (negatives).
+| Check | Where | Expected result | Severity |
+|---|---|---|---|
+| C004 `one-strength-word` | AC-001 | pass — exactly one "must" (the bundling hides behind it) | — |
+| Writing-rules watchlist | AC-001 | flagged — bundling connectives joining separable behaviors | advisory (convention) |
+| C001–C003, C005, C006, C008, C009 | — | pass | — |
 
-## Expected lint diagnostics (stage 2, on the authored `spec.md`)
+C007 does not apply: the spec is `status: draft`.
 
-Two BLOCKING diagnostics fire, each in the unified `SOL-<LAYER><NNN>` namespace. Each is
-BLOCKING because it changes *what* gets built. Each names the closed `improve` op that repairs
-it.
+The shared write area has no core check code in plain form: it surfaces only as the
+Affected-areas note and the open question, for a reviewer to catch (checklist).
 
-| Code | Layer | Severity | Span | Defect | Repair |
-| ---- | ----- | -------- | ---- | ------ | ------ |
-| `SOL-P004` | P | BLOCKING | `AC-010` | bundled/overloaded obligation: one `REQ` clause bundles three separable obligations (validate the cart AND charge the card AND email the receipt) | improve op `ATOMIZE` — split into one obligation per block |
-| `SOL-O001` | O | BLOCKING | `AC-011` / `AC-012` | conflicting-tasks-parallel: `AC-011` and `AC-012` share the write surface `db/orders` in one parallel group, violating the safe-parallelism predicate | improve op `SCOPE` — serialize, or split write surfaces |
+## spec.sol.md (`format: sol`)
 
-`Q-010` is a non-blocking `QUESTION` (no `[blocking]` tag), so it raises no `SOL-O003` risk;
-it is resolved at the `improve` stage in favour of serializing `AC-012` behind `AC-011`. No
-`SOL-S012` fires: this is a focused fixture and its sections (`## Intent`, `## Interfaces`,
-`## Obligations`, `## Invariants`, `## Questions`) appear in canonical order.
+| Check | Where | Expected result | Severity |
+|---|---|---|---|
+| SOL-P004 | AC-001 | **fires** — several separable behaviors in one clause | hard error |
+| Every other SOL code (in-file) | — | pass | — |
 
-## Expected after `improve` (stage 3)
+Same defect, two surfaces: the bundling is advisory in plain form and SOL-P004 (hard error)
+in SOL form — choosing `format: sol` is choosing the stricter bar. The fix is the same in
+both: split AC-001 into one requirement per behavior, each with its own verification.
 
-Both BLOCKING diagnostics clear and no `QUESTION` remains:
+## At task-splitting
 
-- `ATOMIZE` split the bundled `AC-010` into three single-obligation REQs — `AC-010`
-  (validate the cart), `AC-013` (charge the card), `AC-014` (email the receipt) — each one
-  obligation per block, sharing the trigger, each with its own `VERIFY BY` selector; the charge
-  REQ keeps `AC-010`'s high `RISK`. Clears `SOL-P004`. No obligation, modality, or binding is
-  dropped (no distillation loss).
-- `SCOPE` deconflicted `AC-011` / `AC-012`: `AC-012` now writes the disjoint surface
-  `db/inventory` (was `db/orders`), and a serializing `DEPENDS ON AC-011` edge was added. With
-  disjoint write surfaces the pair satisfies the safe-parallelism predicate. Clears `SOL-O001`.
-- `Q-010` resolved out-of-band (decision: serialize `AC-012` behind `AC-011`) and removed.
+AC-002 and AC-003 share the write area `db/orders` — explicit `WRITES` clauses in SOL form,
+prose in plain form. Splitting them into two **parallel** tasks fires SOL-O001 (hard error):
+two parallel tasks writing the same files. The shipped `task.md` is the safe resolution —
+one task owns both requirements, so SOL-O001 does not fire on this fixture as shipped.
 
-The `ATOMIZE` and `SCOPE` edits are intent-preserving: the actor, trigger, modality, and the
-union of responses are unchanged; the bundle is split, not reworded, and the inventory write is
-moved to its own surface, not redefined. `ATOMIZE` did set a per-child `RISK` appropriate to
-each split obligation (`AC-010` validate → medium, `AC-014` email → low; `AC-013` charge keeps
-high) — `RISK` is metadata, not one of the twelve semantic-diff categories, so re-grading it
-per child leaves the obligation content intent-preserving.
+## Equivalence assertion
 
-## Expected merge-gate outcome (stage 7) → final
+`spec.md` and `spec.sol.md` encode identical requirement records:
 
-Seven required obligations — the `IF-010` interface contract, the five REQs (`AC-010`, `AC-013`,
-`AC-014`, `AC-011`, `AC-012`), and the invariant `I-010` — are clean `PASS`. The unauthorized-change check confirms each packet wrote
-only inside its declared `WRITES`, and the two packets' write surfaces (`api/src/checkout/submit.ts`
-+ `db/orders`, and `db/inventory`) are pairwise disjoint with `AC-012` ordered behind `AC-011`.
+| id | strength | statement | verification |
+|---|---|---|---|
+| AC-001 | must | When the shopper submits the cart, the checkout service validates the cart and charges the card and emails the receipt (the seeded bundle). | `checkout.spec.ts#submit` — plain: unresolved note · SOL: resolved binding |
+| AC-002 | must | When the charge succeeds, the checkout service writes the order record. | `order-record.spec.ts#writes-order` |
+| AC-003 | must | When the charge succeeds, the checkout service appends the inventory ledger entry. | `inventory.spec.ts#writes-ledger` |
 
-```text
-Gate (single evaluation): PASS — every required obligation PASS; no parallel write conflict.
-Final outcome:            PASS.
-```
+Spec-level record: same intent, non-goals, one non-blocking open question, affected areas,
+and sources in both files (SOL records the question as a `QUESTION` block; plain form as a
+bullet — same record). The SOL `WRITES` clauses are metadata refinement; plain form carries
+the same surfaces under Affected areas. A checker that reads different records out of the
+two files is wrong (the anti-fork rule).
 
-**Final gate: PASS.** No `STALE`/`CONTRADICTED`/`FAIL`/`BLOCKED`/`UNVERIFIED` verdict arises;
-no reconcile is needed (unlike auth-refresh, this chain is clean on first evaluation).
+## task.md and review.md
 
-## Stable identifiers and hashes (consistent across all stages)
+| Check | Where | Expected result |
+|---|---|---|
+| `non-empty-paste` | review rows AC-001, AC-002 | pass — output pasted or linked |
+| `non-empty-paste` | review row AC-003 | the Evidence cell is empty, so the row reads **Unverified** — never Pass |
+| `no-open-critical` | task and review | pass — the open question is non-blocking |
+| `trigger-coverage` | review Human attention | pass — names the unverified row and the DB write surface |
 
-- Obligations: `IF-010`; the bundled `AC-010` atomizes into `AC-010` (validate), `AC-013`
-  (charge), `AC-014` (email); `AC-011` (order record), `AC-012` (inventory ledger); invariant
-  `I-010`; question `Q-010` (resolved at improve); traces `T-010`, `T-011`.
-- Content hashes carried unchanged stage to stage: `IF-010` source `sha256:2a7c…d0`,
-  `AC-010` `sha256:4b1f…12`, `AC-013` `sha256:5c2a…34`, `AC-014` `sha256:6d3b…56`,
-  `AC-011` `sha256:7e4c…78`, `AC-012` `sha256:8f5d…9a`, `I-010` `sha256:3b90…ee`; the promoted
-  finding pins `content_hash: sha256:5c2a…34` (the `AC-013` charge source span).
-- Source specs live in `specs/<feature>/spec.md`; task/trace scratch is gitignored (e.g. `.agents/tasks/`).
+## finding.md
 
-## How this is validated (no runtime)
-
-Inert data (NO RUNTIME): the verdicts above are known independent of any tool and validated by hand; this manifest is the expected-outcome contract a future checker would validate against, not a tool Swarm provides.
+Valid: one claim, evidence, applies/does-not-apply bounds, and future guidance. This finding
+(`FINDING-shared-write-area`) is also a named source of the change plan in
+`../transformation/change-plan.md`.

@@ -1,34 +1,54 @@
-# `.agents/skills/` — curated dev subset (manifest)
+# `.agents/skills/` — the dev subset (manifest)
 
-`.agents/skills/` is **not** the shipped catalogue. It is a **curated subset** of the canonical authoring
-kit (`starter-kit/.agents/skills/`, 20 skills), kept here for working **on this repo** — which is itself a
-docs/spec repo, not a typical adopter.
+`.agents/skills/` is **not** the shipped catalogue. It is the curated set of guides for working
+**on this repo** — itself a docs/spec workspace, not a typical adopter. The shipped surfaces are
+the kit's core guides (`starter-kit/agent/`), the optional tier (`starter-kit/advanced/`), and the
+reference pages under `docs/reference/`.
 
-## Canonical source
+## Single-sourcing
 
-The kit is canonical (ADR-0047, single-sourcing): a rule lands in `docs/` first, then the kit skill, then —
-for the skills mirrored here — this subset. **Make rule changes in `docs/` → the kit, never only here**, so
-this subset never becomes a competing authority.
+A rule lands in `docs/` first (with an ADR under `docs/adrs/`), then the kit, then — for the
+guides mirrored here — this subset. Never change a rule only here; this subset must not become a
+competing authority. Derivation order and per-ADR status:
+`.agents/audits/repositioning-propagation.md`.
 
-## Included (12)
+## Census — included, and why
 
-- **Analysis / discipline:** `empirical-proof`, `pass-review-trace`, `pass-promote-findings`
-- **Authoring personas (6):** `persona-architect`, `persona-auditor`, `persona-documentarian`,
-  `persona-researcher`, `persona-skeptic`, `persona-surveyor`
-- **Author guides exercised in this repo's own work (3):** `write-audit`, `write-research`, `write-rfc`
+| Guide                                              | Counterpart                                                                                                   | Why it is here                                                                                                                                                             |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `review-output`                                    | `starter-kit/agent/review-output/`                                                                            | This repo's own merge discipline: judging a change set against its stated intent with pasted evidence. Carries the dev specifics (grep gates, link audits, no test suite). |
+| `save-findings`                                    | the kit finding convention (`starter-kit/templates/finding.md`); advanced model at `docs/reference/memory.md` | The Close-step rule — route durable discoveries before closing. Dev routing targets: `docs/` + ADR, `.agents/audits/`, the glossary, the sources bibliography.             |
+| `empirical-proof`                                  | folded into the kit's three core guides                                                                       | The evidence rules in standalone form: a completion claim binds to pasted output; without it the result is Unverified, never Pass.                                         |
+| `write-audit` (+ `references/task-template.md`)    | `starter-kit/advanced/write-audit/`                                                                           | Dev audits under `.agents/audits/` are this repo's main self-assessment instrument.                                                                                        |
+| `write-research` (+ `references/task-template.md`) | `starter-kit/advanced/write-research/`                                                                        | Evidence surveys feed this repo's ADRs (e.g. the plan-validation work).                                                                                                    |
+| `write-rfc`                                        | template `starter-kit/advanced/rfc.md`                                                                        | Pre-decision proposals whose accepted form lands as an ADR in `docs/adrs/`.                                                                                                |
+| `persona-surveyor`                                 | `starter-kit/advanced/persona-surveyor/`                                                                      | Synced with the kit's guide; the breadth-survey evidence discipline.                                                                                                       |
+| `persona-skeptic`                                  | folded into the kit's `review-output`                                                                         | Kept standalone here: the review stance plus the adversarial self-review at completion (ADR-0056).                                                                         |
+| `persona-architect`                                | folded into the kit's `write-spec`                                                                            | Dev stance for shaping specs and reference pages: intent not implementation; survey before inventing.                                                                      |
+| `persona-auditor`                                  | folded into the kit's `write-audit`                                                                           | Dev stance for `.agents/audits/` work: observation-only, file:line per finding, severity by blast radius.                                                                  |
+| `persona-researcher`                               | folded into the kit's `write-research`                                                                        | Dev stance for depth research against primary sources — the `docs/research/sources.md` discipline.                                                                         |
+| `persona-documentarian`                            | none shipped (docs are this repo's product)                                                                   | Dev stance for human-facing pages: one frame throughout, every example run, every claim cited.                                                                             |
 
-## Omitted (8) — and why
+## Census — omitted, and why
 
-The spec-pipeline passes (`pass-lint-spec`, `pass-improve-spec`, `pass-lower-spec`, `pass-decompose-spec`),
-the remaining source-author guides (`write-spec`, `write-prd`, `write-bug-report`), and the
-`distillation-discipline` fragment ship in the kit but are **not loaded here**: this repo is developed by
-editing the framework docs/specs directly, so it doesn't run the full author→lower→decompose pipeline on its
-own specs. They remain available in the kit for adopters.
+| Kit guide                                                                                           | Why not here                                                                                                               |
+| --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `write-spec`, `implement-task`                                                                      | This repo is developed by editing the framework docs directly; it does not run the spec → task → implement loop on itself. |
+| `write-bug-report`, `write-prd`, `write-change-plan`, `write-inventory`, `spec-check`, `split-work` | Optional-tier guides for adopter work shapes this repo does not perform; available in the kit when needed.                 |
 
-## Intentional divergence (NOT drift to reconcile)
+Templates are not skills: the frozen formats live at `starter-kit/templates/` and
+`starter-kit/advanced/` — link to them, never restate them.
 
-The copies here point to **framework-internal references** (`docs/…`, the manuals) rather than the *shipped*
-`reference/` cards an adopter loads — because this repo's `.agents/` carries no `reference/` dir (the canonical
-references live in `docs/`). So minor wording / pointer-target differences from the kit are **by design**: the
-load-bearing *rules* track the kit, only the reference targets are repo-appropriate. A diff against the kit
-that shows only reflow or pointer-target differences is expected, not a defect — do not "resync" it.
+## Intentional divergence (not drift to reconcile)
+
+Two differences from the kit are by design — never to be "resynced":
+
+1. **Pointers.** The kit is self-contained: its guides reference only kit files. The copies here
+   may point at `docs/` (the canonical references) and at this repo's own homes
+   (`.agents/audits/`, `docs/adrs/`), because this repo carries the full framework.
+2. **Standalone stances.** The kit folds the architect/skeptic/auditor disciplines into its three
+   core guides and ships only `persona-surveyor` standalone (ADR-0064). The dev subset keeps the
+   stances as separate guides, loaded individually for this repo's own review and authoring work.
+
+A diff against the kit showing only pointer-target or packaging differences is expected. The
+load-bearing rules track `docs/` and the kit.

@@ -1,48 +1,55 @@
-<!--
-payment-5xx golden-corpus POSITIVE fixture — Stage 5 (work packet, passes: decompose, implement).
-The `decompose` pass projects the structured form into a work packet whose write surfaces are a subset of
-the assigned obligations' WRITES (the two-tier lowering rule, the `lower` pass; a packet writing a
-path outside its declared WRITES is SOL-O005, G7). AC-020 and AC-021 share the single write
-surface server/src/payments/charge.ts, so they form one serial packet (no parallel split to
-guard). The `implement` pass executes it. I-001 is verified by a `monitor` proof, which has no
-merge-time execution (see the `verify` pass) — so its row is `pending` here and resolves at the verify/review
-stage from the production dashboard, not from this packet. Only the load-bearing frame is
-shown. Inert oracle data — Swarm runs nothing.
--->
-
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: task
-id: payment-5xx-charge
-status: active
-task_kind: feature
-source: specs/payment-5xx/spec.md
-assigned_obligations: [AC-020, AC-021]
-invariants: [I-001]
-interfaces: [IF-001]
-write_surfaces: [server/src/payments/charge.ts]
-verification_bindings:
-  - AC-020: test:cmdTest:server/tests/payment-5xx.spec.ts#retries-bounded
-  - AC-021: test:cmdTest:server/tests/payment-fail.spec.ts#surfaces-502
-  - I-001:  monitor:cmdMonitor:dashboards/payments/duplicate-captures#zero_double_captures
-parallel_group: payments-edits
-blocked_by: []
+id: TASK-payment-5xx
+source:
+  - SPEC-payment-5xx
+scope: [AC-001, AC-002, AC-003]
+status: review-ready
 ---
 
-# Task: Implement payment-5xx retry and idempotency behavior
+# Task: Payment provider 5xx handling
+
+<!-- Seeded defect carrier: this task was prepared while the spec's blocking question was
+     still open — the situation EXPECTED.md pins as SOL-O003 at task-splitting. -->
+
+## Source
+
+- Spec: `specs/payment-5xx/spec.md` (SPEC-payment-5xx)
 
 ## Scope
 
-### In
-- Implement AC-020 (bounded retry under the same idempotency key) and AC-021 (502 on
-  budget exhaustion), and preserve I-001 (no double capture) within server/src/payments/charge.ts.
+Implement or preserve:
 
-### Out
-- Do not implement unassigned obligations.
-- Do not change behavior outside server/src/payments/charge.ts.
+- AC-001 — at most one capture per idempotency key
+- AC-002 — retry the charge once on a provider 5xx
+- AC-003 — do not retry the charge on a provider 5xx
 
-## Verification matrix
-| Obligation | Required proof                | Actual proof                              | Status  |
-| ---------- | ----------------------------- | ----------------------------------------- | ------- |
-| AC-020     | test:#retries-bounded         | payment-5xx.spec.ts passed                | pass    |
-| AC-021     | test:#surfaces-502            | payment-fail.spec.ts passed               | pass    |
-| I-001      | monitor:#zero_double_captures | duplicate-captures dashboard (no execution at merge) | pending |
+## Do not change
+
+- The provider SDK and its request signing.
+- Payout and refund paths.
+
+## Affected areas
+
+- `server/src/payments/charge.ts`
+
+## Verify
+
+- [ ] `npm test -- payment-idempotency.spec.ts` (AC-001)
+- [ ] `npm test -- payment-retry.spec.ts` (AC-002, AC-003)
+
+## Agent instructions
+
+1. Read the source spec first.
+2. Stay inside this task's scope. If a requirement can't be met as written, stop and say why
+   instead of improvising — AC-002 and AC-003 cannot both be met as written.
+3. Run every Verify item and paste the real output — a claim without output counts as
+   unverified.
+4. Before finishing, re-read your own diff as a skeptic: what would a reviewer flag?
+5. Leave a summary: changed files, commands run with output, and anything learned worth
+   saving as a finding.
+
+## Findings
+
+- Candidate: the provider is idempotent only after the key is persisted — see `finding.md`.

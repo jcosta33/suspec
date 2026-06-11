@@ -1,65 +1,44 @@
-<!--
-payment-5xx golden-corpus POSITIVE fixture — Stage 7 (review + merge gate, pass: review,
-run under the `skeptic` profile, see [./././starter-kit/.agents/skills/persona-skeptic/SKILL.md](./././starter-kit/.agents/skills/persona-skeptic/SKILL.md)). The `review` pass consumes the trace and emits
-per-obligation VERDICT lines carrying a core value optionally decorated with a lifecycle
-value (see the `review` pass). AC-021 is a clean PASS. AC-020 (`test` PASS) and I-001 (`monitor` FAIL) disagree
-about the same no-double-charge property, so both carry the CONTRADICTED decorator with the
-two conflicting evidence refs (see the `review` pass). Per the proof-strength preorder
-(model > property|contract > test > static > manual|monitor) the `test` PASS is the *working
-assumption* over the `monitor` FAIL — but a working assumption does NOT close the contradiction:
-a CONTRADICTED on any required obligation BLOCKS the merge gate until reconciled (see the `review` pass). The
-reconcile note records the resolution — the production double-captures came from concurrent
-requests racing before the idempotency key persisted (a real defect the harness test never
-exercised), the code is fixed with a single-flight guard, and both proofs are re-run and now
-agree — after which the CONTRADICTED decorator drops and the gate opens. Inert oracle data.
--->
-
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: review
-id: payment-5xx-charge-review
-source_trace: traces/payment-5xx-charge-trace.md
-source_spec: specs/payment-5xx/spec.md
+id: REVIEW-payment-5xx
+task: TASK-payment-5xx
+pr: https://example.test/pr/641
+status: blocked
 ---
 
-# Review: payment-5xx charge
+# Review: Payment provider 5xx handling
 
-## Per-obligation verdicts
+## Summary
 
-VERDICT IF-001: PASS
-REASON The charge-card interface contract holds — the `charge-card-contract` contract proof verifies the declared request/response shape (a required `VERIFY BY` binding; an INTERFACE in scope is a judged obligation at the merge gate). The gate still BLOCKS below on the CONTRADICTED invariant, independent of this PASS.
-EVIDENCE contract:cmdContract:charge-card-contract passed
+The charge path now retries once on a provider 5xx with the same idempotency key, and the
+idempotency test passes. The diff satisfies AC-002 and thereby violates AC-003 — the spec
+contradicts itself, and its blocking question is still open.
 
-VERDICT AC-020: PASS (CONTRADICTED by review: bounded-retry test and the production duplicate-captures monitor disagree about the no-double-charge property)
-REASON Bounded-retry harness test PASSes, but the production monitor observes duplicate captures on the same key; the two proofs disagree about the no-double-charge property.
-EVIDENCE test:cmdTest:payment-5xx.spec.ts#retries-bounded passed
-EVIDENCE monitor:cmdMonitor:duplicate-captures#zero_double_captures failed
+## Changed files
 
-VERDICT AC-021: PASS
-REASON Budget-exhaustion test asserts a 502 with the structured `processor-unavailable` body returned inside the 30s budget.
-EVIDENCE payment-fail.spec.ts output in review log
+- `server/src/payments/charge.ts`
 
-VERDICT I-001: FAIL (CONTRADICTED by review: the production duplicate-captures monitor contradicts the bounded-retry test on the no-double-charge property)
-REASON Production duplicate-captures count is non-zero over the window, contradicting the harness test that exercises a single-flight retry path.
-EVIDENCE monitor:cmdMonitor:duplicate-captures#zero_double_captures failed
-EVIDENCE test:cmdTest:payment-5xx.spec.ts#retries-bounded passed
+## Requirement coverage
 
-## Final verdict
-Gate: every required obligation is PASS or WAIVED; none STALE/CONTRADICTED/FAIL/BLOCKED/UNVERIFIED.
-Result: BLOCKED — AC-020 and I-001 are CONTRADICTED (and I-001's core is FAIL). The `test`
-PASS outranks the `monitor` FAIL in the proof-strength preorder and is the working assumption,
-but a CONTRADICTED required obligation blocks the gate until the disagreement is reconciled
-(see the `review` pass) — contradiction is never resolved by picking the more convenient result.
+| ID | Result | Evidence | Human attention |
+|---|---|---|---|
+| AC-001 | Pass | `npm test -- payment-idempotency.spec.ts` → `at-most-one-capture ✓` (full output in PR run #209) | no |
+| AC-002 | Pass | `npm test -- payment-retry.spec.ts` → `retries-once ✓` (full output in PR run #209) | yes |
+| AC-003 | Unverified | | yes |
 
-## Reconcile note
-Reconcile applied (the not-silent discipline, see the `review` pass). The disagreeing proofs were re-examined,
-not picked between: the harness test exercised retries on a *single* in-flight request, so it
-never witnessed the real defect — two concurrent requests for the same idempotency key both
-passed the not-yet-persisted-key check and each captured a charge. The code was fixed with a
-single-flight guard that persists the idempotency key before any capture, server/src/payments/charge.ts
-was edited, and both proofs were re-run against the new surface: the bound `test`
-`payment-5xx.spec.ts#retries-bounded` (extended with a concurrent-request case) PASSed and the
-`monitor` `duplicate-captures#zero_double_captures` window now reports zero double captures.
-The two proofs now agree, so the CONTRADICTED decorator drops from AC-020 and I-001, I-001
-resolves to a clean PASS, and with every required obligation PASS the merge gate opens: final
-outcome PASS. Note (see the `review` pass): the contradiction was closed only when both proofs agreed — never
-by silently trusting the stronger oracle's working assumption.
+## Human attention
+
+1. AC-002 and AC-003 contradict — same trigger, opposed strength words. The code satisfies
+   AC-002, so AC-003 cannot also hold; the spec owner must drop one before any merge.
+2. The spec's blocking question (provider idempotency across retries) is still open — this
+   work should not have been prepared past it, and it cannot close while the question stands.
+3. AC-003 has an empty Evidence cell, so the row reads Unverified — never Pass. Its `no-retry`
+   case was never run; running it against this diff would fail by construction.
+4. `server/src/payments/charge.ts` is security-sensitive (it moves money). Spot-checked the
+   AC-001 row by re-running `npm test -- payment-idempotency.spec.ts` locally: same output.
+
+## Suggested decision
+
+Block until the spec resolves the AC-002/AC-003 contradiction and answers the blocking
+question; re-review against the corrected spec.

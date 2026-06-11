@@ -1,224 +1,107 @@
-# {{title}}
+# Run notes: {{title}}
 
-## Metadata
+- Task packet: `tasks/{{TASK-slug}}.md`
+- Spec: `specs/{{feature}}/spec.md` · Change plan: `change-plans/{{slug}}.md`
+- Worktree / branch: {{branch}}
+- Created: {{YYYY-MM-DD}} · Status: active
 
-- Id: {{id}}
-- Source spec: {{source}}
-- Status: active
-- Type: task
-- task_kind: rewrite
-- Pass: implement
-- Profile/stance: Builder
-
----
-
-> ⚠️ **REWRITE PASS** — distinct from refactor. A refactor preserves behaviour
-> end to end; a rewrite changes some of it deliberately. Make the behaviour delta
-> explicit before changing code; prove two surfaces (the delta and the preserved
-> non-delta); halt and amend the spec on any emergent change.
+> **Rewrite task** — distinct from a refactor: behavior changes on purpose. The recorded delta is
+> the contract; everything outside it is preserved and proven preserved. Halt on any emergent
+> change the delta does not name.
 >
-> **`cmd*` slots:** `cmdValidate` / `cmdTest` / `cmdFormat` resolve from
-> `AGENTS.md > Commands`. If `AGENTS.md` is missing or a needed slot is
-> undefined, ask the user before substituting — never guess a command.
+> **Commands** resolve from the code repo's `AGENTS.md` Commands table. For any command you need
+> that is undefined, ask the user — do not guess.
 
----
+## Scope (from the task packet)
 
-## Parent contract
+Implement (the delta) and preserve (everything else):
 
-The inherited hand-off: objective + deliverable + acceptance bar + boundaries
-(owned vs forbidden paths). One paragraph.
+- AC-001 — {{delta: behavior that changes}}
+- AC-002 — {{preservation: behavior that must not change}}
 
----
+Do not change: {{areas the packet rules out}}
 
-## Scope
+## Behavior delta (as recorded in the sources)
 
-**In:** what this step rewrites.
-**Out:** do not implement unassigned obligations; do not change behaviour outside
-the assigned write surfaces or outside the behaviour-delta table below; do not
-weaken constraints, invariants, or non-goals.
-
----
-
-## Assigned obligations
-
-The exact assigned SOL blocks (`REQ` / `CONSTRAINT` / `INVARIANT` / `INTERFACE`),
-pasted verbatim.
-
----
-
-## Behaviour delta
-
-The explicit before/after list. **Anything not listed here MUST be preserved.**
-Leave no `Behaviour change?` blank — every aspect is either in the delta or
-preserved.
+Copied from the spec / change plan — not invented here. Anything not listed is preserved. No row
+left undecided.
 
 | Aspect | Before | After |
-| ------ | ------ | ----- |
-|        |        |       |
+|---|---|---|
+| | | |
 
----
+## Equivalence check for the preserved surface
 
-## Acceptance criteria
+The check that would *fail* if behavior outside the delta changed: differential (old path behind a
+shim, diffed on the preserved surface), golden-output captured before the change, or
+property-based. If the existing suite is the only check, state why it suffices for this change.
 
-Each a checkbox; all checked before this task is done. Include explicit
-**preservation criteria** ("preserves prior behaviour X") for the non-delta — a
-rewrite that tests only its delta proves nothing about the regression risk.
+-
 
-- [ ] (delta)
-- [ ] (preservation)
+## Caller inventory
 
----
+Every caller of every rewritten symbol, whole codebase, string forms included (dynamic dispatch,
+registries, reflection, generated code, config). Paste the search; account for each caller.
 
-## Module plan
-
-Which modules are touched and what changes in each.
-
-| Module | Change | Behaviour change? |
-| ------ | ------ | ----------------- |
-|        |        |                   |
-
----
-
-## Constraints and invariants
-
-The SOL blocks this task MUST preserve, pasted verbatim.
-
----
+| Caller | Updated for the new behavior / verified under the preserved one |
+|---|---|
+| | |
 
 ## Progress checklist
 
-- [ ] Read the packet and the driving spec/audit in full
-- [ ] Confirm owned paths ⊆ assigned `WRITES` surfaces (no `SOL-O005`)
-- [ ] Fill the behaviour-delta table
-- [ ] Derive acceptance criteria (delta + preservation)
-- [ ] Capture the non-delta equivalence oracle before touching code; `cmdTest` green
-- [ ] Inventory all callers (`git grep` across the whole codebase + string forms)
-- [ ] Rewrite in batches; `cmdValidate` + `cmdTest` after each, pasted as you go
-- [ ] Prove the delta (assertion-flip for `test`-bound criteria, both transitions pasted)
-- [ ] Prove the non-delta against the equivalence oracle
-- [ ] Write TRACE claims (`IMPLEMENTS` / `PRESERVES` / `CHANGED` / `PROOF`) + provenance
-- [ ] Resolve every promotion item
-- [ ] Self-review answered with evidence pasted
+- [ ] Packet, spec, and change plan read; the delta is recorded in the sources before any code
+- [ ] ACs cover the delta *and* the preserved surface
+- [ ] Equivalence baseline captured before touching code; suite green
+- [ ] Caller inventory complete; search output pasted
+- [ ] Rewrite in batches; checks run and pasted per batch
+- [ ] Delta ACs proven (flip transition pasted for new tests)
+- [ ] Preserved surface proven by the equivalence check (or the sufficiency note recorded)
+- [ ] Findings recorded; self-review answered
 
----
+## Evidence (paste actual command output — never paraphrase)
 
-## Implementation or step trace
-
-What changed, per obligation.
-
-- ***
-
-## Verification matrix
-
-ID → required proof → actual proof → 7-value status, per obligation.
-
-| ID | Required proof | Actual proof (pasted) | Status |
-| -- | -------------- | --------------------- | ------ |
-|    |                |                       |        |
-
----
+- Check command (last lines + exit):
+- Test command (last lines + exit):
+- Flip transition per new delta test:
+- Equivalence check output (or the recorded sufficiency justification):
+- Caller search (call syntax + string form):
 
 ## Decisions
 
-- ***
+In-scope choices the requirements did not constrain. Work that grew beyond the estimate is noted
+here, not reverted.
+
+-
 
 ## Findings
 
-- ***
+"Redesign while we're here" temptations, off-delta discoveries — candidates for the workspace's
+`findings/` at Close.
 
-## Assumptions
+-
 
-- [pending]
+## Blocked questions
 
----
+An emergent behavior change the delta does not name (halt: amend upstream or preserve), an
+ambiguous AC.
 
-## Unassigned changes
-
-Any change outside the assigned obligations, with reason + authorizing ID or
-`none`.
-
-- none
-
-## Promotion queue
-
-Discoveries to promote, with target + status. All MUST be resolved before close.
-
-- ***
-
----
-
-## Blockers
-
-- ***
+-
 
 ## Next steps
 
-Concrete starting points if this session ends incomplete.
-
-- ***
-
----
+-
 
 ## Self-review
 
-> **Hard gate.** The task is not complete until every question below has a written
-> answer directly beneath it, with the named output pasted verbatim. Rewrites are
-> riskier than refactors precisely because behaviour is permitted to change — act
-> as a senior engineer doing an adversarial review of your own diff.
+Answer in writing, evidence pasted. Behavior is permitted to change here — which is exactly where
+an unintended change hides.
 
-### Verification outputs (paste actual command output — do not paraphrase)
-
-- `git status` →
-- `cmdValidate` (last 2 lines):
-- `cmdTest` (last 2 lines):
-
-### Behaviour-delta integrity
-
-Does every behaviour change you made appear in the delta table? Did any change
-sneak in that was not planned? For the preserved non-delta, what is the
-equivalence oracle, would it fail if behaviour changed, and is its output pasted?
-
-Answer:
-
-### Two-surface proof
-
-Is every delta criterion proven against its check binding (assertion-flip
-transition pasted for `test`-bound ones)? Is every preservation criterion proven
-by the equivalence oracle (or the sufficient-oracle justification recorded if the
-suite was the only oracle)?
-
-Answer:
-
-### Caller migration
-
-Did you `git grep` every caller of the rewritten symbols across the *whole*
-codebase, including string forms (dynamic dispatch, registries, reflection,
-generated code, config)? Did you update each for the new behaviour or verify each
-still works under the preserved behaviour? Is the search output pasted?
-
-Answer:
-
-### Scope
-
-Did I touch only the assigned obligations and only the declared write surfaces
-(no `SOL-O005`)? Did "redesign while we're here" creep in? Are all promotion
-items resolved? Correct in-scope work that grew beyond the estimate is noted in
-Decisions, not reverted.
-
-Answer:
-
-### Completeness
-
-Is anything left stubbed, TODO'd, or half-rewritten? Could the next developer
-continue from this task file alone?
-
-Answer:
-
-### Final adversarial step
-
-What is now subtly different that the oracle does not cover? What else could make
-this more stable or correct? Do not close without this.
-
-Answer:
-
-Only when every answer above is written is this task complete.
+- **Delta integrity:** does every behavior change in the diff appear in the recorded delta?
+  Did anything sneak in?
+- **Two surfaces:** is every delta AC proven by its check, and the preserved surface by the
+  equivalence check (or recorded sufficiency note)?
+- **Callers:** every caller found — string forms included — and accounted for, search pasted?
+- **Scope:** nothing outside the packet's areas; off-delta discoveries recorded as findings.
+- **Completeness:** nothing stubbed or half-rewritten; the next session could continue from this
+  file alone.
+- **Independence:** no review result issued on your own work.

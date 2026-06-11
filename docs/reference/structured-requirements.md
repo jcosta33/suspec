@@ -1,0 +1,358 @@
+# Structured requirements (SOL)
+
+*Works today — plain markdown plus your agent; no Swarm tooling required.*
+
+SOL is Swarm's stricter spec surface — a structured requirements notation, selected per file
+with `format: sol` in the spec's frontmatter. The default spec form is plain markdown:
+`### AC-NNN` headings with one behavior sentence and a `Verify with:` line (see
+[Writing specs](../04-writing-specs.md)). SOL trades a little writing freedom for shapes a
+reviewer can scan and a parser can read: fixed clause order, explicit strength words, and a
+resolved verification binding on every requirement. Reach for it on high-risk work, or when
+you want a spec that swarm-cli can check mechanically. The requirement shape follows the
+EARS controlled-requirements pattern, which has industry precedent in agent-facing spec
+tooling [[KIRO]](../research/sources.md#KIRO).
+
+## Two surfaces, one model
+
+This section is the normative home of the shared data model — every other page and template
+links here; none restates it. Plain markdown and SOL are two surfaces over **one requirement
+record**; nothing downstream — task packets, review packets, checks — depends on which
+surface a spec uses.
+
+**1. The requirement record.** Every requirement, in either form, is the same
+form-agnostic record:
+
+```
+{ id, strength, statement, verify_refs[], kind, edges[] }
+```
+
+and every spec adds one spec-level record:
+`{ intent, non_goals[], open_questions[], affected_areas[], sources[] }`.
+`edges` holds relationships to other requirements (dependencies, affected ids). SOL writes
+them as metadata clauses; in plain form they live in prose, or are simply absent.
+
+**2. Shared ID namespace.** A plain `### AC-001` heading and a SOL `REQ AC-001:` header mint
+the _same_ id. Both address cross-file as `SPEC-x#AC-NNN`. Rewriting a spec from plain form
+to SOL (or back) keeps every id — references from tasks, reviews, and findings never break.
+
+**3. Shared strength words.** The strength scale is one enum across both surfaces. Plain form
+uses one lowercase binding word per requirement sentence (_must_, _must not_, _should_,
+_may_); SOL uses the same words uppercase, as explicit tokens (plus `SHOULD NOT` as the
+negative of _should_). See [Strength words](#strength-words).
+
+**4. One verification field, two precisions.** Plain `Verify with: <ref>` is an _unresolved
+note_ — a pointer the reviewer chases; if the named test or command does not exist yet, the
+requirement reviews as **Unverified**, never as a broken spec. SOL
+`VERIFY BY <method>:<adapter>:<artifact>` is a _resolved binding_ — method named, runner
+named, target named. Review consumes only `{ id, verify_ref, result }` with results
+Pass / Fail / Unverified / Blocked — identical over both forms.
+
+**5. Kind is a projection.** Plain form has one kind: _requirement_. SOL refines kind with
+its block types — requirement (`REQ`), constraint (`CONSTRAINT`), invariant (`INVARIANT`),
+interface (`INTERFACE`), open question (`QUESTION`). No plain-form block syntax is ever
+invented; a plain spec that needs those distinctions switches the file to `format: sol`.
+
+**6. Checks key on the record, never on the surface.** The core spec checks (unique ids, a
+verification note per requirement, one binding strength word, no `TBD` in `status: ready`)
+apply to the record and therefore to both forms; the SOL-only checks add shape rules this
+page defines. The catalogue lives in [Checks](checks.md) — reference implementation:
+`swarm spec check` in swarm-cli. Conformance fixtures ship surface-equivalence pairs (one
+plain, one SOL, identical record sets) to keep the two surfaces from forking.
+
+## Selecting SOL
+
+`format: sol` in the frontmatter is the entire selector — per file, opt-in, reversible:
+
+```yaml
+---
+type: spec
+id: SPEC-auth-refresh
+title: Auth refresh
+status: draft
+owner: auth-team
+sources:
+  - intake/AUTH-731.md
+format: sol
+---
+```
+
+Everything else about the file is an ordinary spec (see
+[Artifact formats](artifact-formats.md)): markdown headings and prose stay; the requirements
+are written as SOL blocks instead of `### AC-NNN` headings. Prose around blocks is
+commentary — binding meaning (condition, actor, strength, verification) lives inside the
+blocks. That separation is a convention nothing in this repo enforces; review inspects it as
+a checklist item.
+
+## How a block is written
+
+- A block opens with a **bare, flush-left header line**: the block keyword, the id, and a
+  **trailing colon** — `REQ AC-001:`. Without the colon the line is plain prose.
+- The **body** is the contiguous run of non-blank lines after the header. The next block
+  header, a blank line, or a markdown heading closes it — there is no closing delimiter and
+  no significant indentation. Never put a blank line inside a block.
+- Keywords and strength words are **uppercase and case-sensitive**. Lowercase _must_ /
+  _should_ in body text is prose and carries no force.
+- Condition text is **opaque**: what follows `WHEN` / `WHILE` / `WHERE` / `IF` is captured
+  verbatim as one line of text. No expression syntax exists inside it.
+
+Each block type has a fixed id prefix:
+
+| Block        | Id prefix | Example  |
+| ------------ | --------- | -------- |
+| `REQ`        | `AC-`     | `AC-001` |
+| `CONSTRAINT` | `C-`      | `C-001`  |
+| `INVARIANT`  | `I-`      | `I-001`  |
+| `INTERFACE`  | `IF-`     | `IF-001` |
+| `QUESTION`   | `Q-`      | `Q-001`  |
+
+Ids are unique within a file. A wrong prefix or a duplicate id is a check in
+[Checks](checks.md); swarm-cli's `swarm spec check` flags both (toolable).
+
+## Block shapes
+
+### REQ — required behavior
+
+Under stated conditions, an actor produces an observable response. Clauses appear in
+canonical order; bracketed clauses are optional:
+
+```sol
+REQ AC-001:
+WHEN the user submits the signup form
+AND the email field is empty
+THE client MUST show "Email is required"
+AND THE client MUST NOT send a signup request
+VERIFY BY test:cmdTest:signup-empty-email
+DEPENDS ON AC-000
+WRITES src/signup/**
+RISK medium
+```
+
+- The condition keywords are the EARS keywords [[KIRO]](../research/sources.md#KIRO), in
+  order: `WHERE` (optional-feature inclusion), `WHILE` (state), `WHEN` (trigger), `IF`
+  (fault/error). A requirement with no condition keyword is ubiquitous — it always applies.
+- `THEN` is optional sugar after `IF` only; never after `WHEN` / `WHILE` / `WHERE`.
+- `THE <actor> <STRENGTH> <response>` is the mandatory consequence. The strength word is the
+  first uppercase strength token in the line (longest match — `MUST NOT` before `MUST`);
+  everything before it is the actor, everything after is the response. If the actor or
+  response itself contains a strength word, backtick it or reword — a parser will not guess.
+- `AND THE …` chaining is permitted; each consequence is a separate requirement record
+  sharing the conditions and the verification binding. Long chains read better as blocks.
+- `BECAUSE` (rationale) and `EXCEPT` (exception) are optional — except that a `SHOULD` /
+  `SHOULD NOT` consequence needs one of them in the same block (checklist item; toolable via
+  `swarm spec check`).
+- `VERIFY BY` is expected on every `REQ` — the highest-value line in the block
+  [[ORACLESWE]](../research/sources.md#ORACLESWE). A missing one is a review checklist item
+  today; `swarm spec check` flags it (toolable).
+
+### CONSTRAINT — restriction on the solution space
+
+Bounds _how_ requirements may be satisfied rather than requesting a behavior; it persists
+across tasks as a guard. Same consequence shape as `REQ`, with `WHERE` as the only condition
+keyword:
+
+```sol
+CONSTRAINT C-001:
+THE auth client MUST NOT import from `server/*`
+BECAUSE the client bundle must not embed server-only secrets
+VERIFY BY static:cmdLint:dependency-boundary-check
+AFFECTS src/auth/**
+```
+
+A constraint verifies like anything else — a static check, a contract, or `manual:` review.
+
+### INVARIANT — always-held property
+
+A property that holds at all times, not a one-time behavior. Body shape is
+`<property> MUST|MUST NOT <hold>`; only those two strength words apply. Don't write
+`ALWAYS` / `NEVER` — the block's semantics already say it.
+
+```sol
+INVARIANT I-001:
+A user MUST NOT have more than one active refresh token family
+VERIFY BY property:cmdTest:token-family-invariant
+```
+
+Prefer a `property`, `model`, or `static` verification method here — those can assert a
+property over all states, where a single unit test samples one. A one-time triggered
+behavior belongs in a `REQ` instead.
+
+### INTERFACE — declared boundary
+
+Names a boundary — API, function, schema, command — that other requirements reference.
+
+```sol
+INTERFACE IF-001:
+`refreshSession` RETURNS `Session | AuthExpired`
+ACCEPTS:
+  - `refreshToken: string`
+ERRORS:
+  - network-timeout
+  - invalid-refresh-token
+OWNED BY auth-client
+VERIFY BY contract:cmdContract:refresh-session-contract
+```
+
+`ACCEPTS:` and `ERRORS:` introduce contiguous bullet lines (a blank line would close the
+block). An interface verifies with a `contract:` method — a check that the declared shape
+matches reality (checklist item; toolable via swarm-cli's `swarm spec check`).
+
+### QUESTION — marked ambiguity
+
+Records an unresolved ambiguity instead of hedged prose. The `[blocking|non-blocking]` tag
+is part of the header, before the colon:
+
+```sol
+QUESTION Q-001 [blocking]:
+Should expired sessions redirect to `/login` or show an inline re-auth modal?
+AFFECTS AC-001
+```
+
+A spec with an open blocking question is not `status: ready` — do not prepare tasks from the
+requirements it `AFFECTS` until it is answered. This is a convention the review step
+inspects, not something any tool blocks today.
+
+## Strength words
+
+SOL recognizes these strength words and no others:
+
+| Word         | Force                                                         |
+| ------------ | ------------------------------------------------------------- |
+| `MUST`       | Required; not satisfying it fails review.                     |
+| `MUST NOT`   | Forbidden.                                                    |
+| `SHOULD`     | Strong default; needs a same-block `BECAUSE` or `EXCEPT`.     |
+| `SHOULD NOT` | Strong prohibition; needs a same-block `BECAUSE` or `EXCEPT`. |
+| `MAY`        | Optional; carries no obligation.                              |
+
+`SHALL` / `SHALL NOT` are not strength words — write `MUST` / `MUST NOT`. `CAN` and `WILL`
+state capability or prediction and carry no force; don't use them where a strength word
+belongs. In a plain-markdown spec the same scale appears as one lowercase binding word per
+requirement sentence ("the component must …").
+
+## VERIFY BY — the resolved verification binding
+
+```
+VERIFY BY <method>[:<scope>]:<adapter>:<artifact>[#<selector>]
+```
+
+- **method** — one of: `static`, `test`, `contract`, `property`, `model`, `perf`,
+  `security`, `manual`, `monitor`.
+- **scope** — only when the method is `test`: `unit`, `integration`, or `e2e` (`test:e2e:…`).
+- **adapter** — the runner, resolved through the workspace `AGENTS.md > Commands` table (the
+  `cmd*` slots): the binding names _how to run it_ without hard-coding a shell line.
+- **artifact** — the file or target the adapter runs; the optional `#selector` narrows to a
+  sub-target such as one test name.
+
+A bare reference with no method segment is legal but weaker — the reviewer has to infer how
+to check it. Method strength and selection guidance live in [Checks](checks.md); how results
+land in the review packet is [Reviewing output](../08-reviewing-output.md).
+
+## Metadata clauses
+
+These may trail a `REQ`, `CONSTRAINT`, or `INVARIANT`. They carry no behavioral force; they
+inform task splitting and review routing.
+
+| Clause                               | Meaning                                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------------------- |
+| `DEPENDS ON <id-list>`               | Hard ordering against other requirements.                                             |
+| `WRITES <path-list>`                 | Surfaces this requirement's implementation owns (conflict basis when splitting work). |
+| `READS <path-list>`                  | Read set.                                                                             |
+| `AFFECTS <id-or-path-list>`          | Downstream impact set.                                                                |
+| `RISK <low\|medium\|high\|critical>` | Risk tier — feeds review-by-exception.                                                |
+
+## Cross-file references
+
+Qualify an id with its spec id using a hash: `SPEC-auth-refresh#AC-001`. The hash (not a
+colon) keeps references unambiguous — the colon already ends block headers and separates
+`VERIFY BY` segments. Tasks, review packets, and findings use the same form.
+
+## Grammar (EBNF appendix)
+
+Nothing in this repo parses SOL. This grammar is the contract swarm-cli's parser builds
+against (toolable); when you write SOL without tooling, treat it as the writing convention
+plus the review checklist above. Trimmed to the productions that matter:
+
+```ebnf
+block        = req | constraint | invariant | interface | question;
+
+req          = "REQ", ws, ac_id, ":", nl, req_body;
+constraint   = "CONSTRAINT", ws, c_id, ":", nl, constraint_body;
+invariant    = "INVARIANT", ws, i_id, ":", nl, invariant_body;
+interface    = "INTERFACE", ws, if_id, ":", nl, interface_body;
+question     = "QUESTION", ws, q_id, ws,
+               "[", ( "blocking" | "non-blocking" ), "]", ":", nl, question_body;
+
+ac_id        = "AC-", digits;   c_id  = "C-", digits;   i_id = "I-", digits;
+if_id        = "IF-", digits;   q_id  = "Q-", digits;
+
+req_body     = [ "WHERE", ws, condition, nl ]
+               [ "WHILE", ws, condition, nl ]
+               [ "WHEN",  ws, condition, nl ]
+               [ "IF",    ws, condition, [ ws, "THEN" ], nl ]
+               actor_clause, { "AND", ws, actor_clause }
+               [ "BECAUSE", ws, prose, nl ]
+               [ "EXCEPT",  ws, prose, nl ]
+               verify_line,
+               { metadata_clause };
+actor_clause = "THE", ws, actor, ws, strength, ws, response, nl;
+
+constraint_body = [ "WHERE", ws, condition, nl ]
+                  actor_clause, { "AND", ws, actor_clause }
+                  [ "BECAUSE", ws, prose, nl ]
+                  [ "EXCEPT",  ws, prose, nl ]
+                  verify_line,
+                  { metadata_clause };
+
+invariant_body  = property, ws, ( "MUST" | "MUST NOT" ), ws, predicate, nl,
+                  [ "BECAUSE", ws, prose, nl ],
+                  verify_line,
+                  { metadata_clause };
+
+interface_body  = signature, ws, "RETURNS", ws, type_ref, nl,
+                  [ "ACCEPTS:", nl, bullet, { bullet } ]
+                  [ "ERRORS:",  nl, bullet, { bullet } ]
+                  [ "OWNED BY", ws, owner, nl ]
+                  verify_line;
+bullet          = ws, "-", ws, prose, nl;
+
+question_body   = question_text, nl,
+                  "AFFECTS", ws, ref_list, nl;
+
+verify_line  = "VERIFY BY", ws, verify_ref, nl;
+verify_ref   = method, [ ":", scope ], ":", adapter, ":", artifact, [ "#", selector ];
+method       = "static" | "test" | "contract" | "property" | "model"
+             | "perf" | "security" | "manual" | "monitor";
+scope        = "unit" | "integration" | "e2e";        (* only when method = "test" *)
+
+metadata_clause = "DEPENDS ON", ws, ref_list, nl
+                | "WRITES",  ws, path_list, nl
+                | "READS",   ws, path_list, nl
+                | "AFFECTS", ws, ref_list, nl
+                | "RISK",    ws, ( "low" | "medium" | "high" | "critical" ), nl;
+
+strength     = "MUST NOT" | "MUST" | "SHOULD NOT" | "SHOULD" | "MAY";  (* longest match *)
+
+ref_list     = ref, { ",", ws, ref };
+ref          = ac_id | c_id | i_id | if_id | q_id | cross_ref;
+cross_ref    = spec_id, "#", ( ac_id | c_id | i_id | if_id | q_id );
+path_list    = path, { ",", ws, path };
+digits       = digit, { digit };
+(* condition, prose, actor, response, property, predicate, question_text:
+   opaque one-line text — no expression syntax inside.
+   "#" appears only in cross_ref and the verify_ref selector;
+   SOL has no comment token. *)
+```
+
+## Versioning
+
+The notation is unversioned: there is no version field in a spec's frontmatter and no
+versioned grammar name. Framework releases are git tags on this repository; `format: sol`
+is the parser hook for swarm-cli — the only thing a tool needs to decide how to read the
+file.
+
+## Related
+
+- [Writing specs](../04-writing-specs.md) — the plain-markdown default and when to step up to SOL.
+- [Checks](checks.md) — the common mistakes to check for, over both surfaces.
+- [Artifact formats](artifact-formats.md) — spec frontmatter and the other file types.
+- [Reviewing output](../08-reviewing-output.md) — how verification results become review results.
+- [Future CLI](future-cli.md) — the structured form a parser would emit from this notation.

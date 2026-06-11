@@ -1,64 +1,128 @@
-# Conformance violations — expected-FAIL fixtures
+# Checks fixtures — violations
 
-One minimal example per violation class. Each must make a checker return **non-conformant**,
-citing the named rule from `./conformance.yaml`. This is the checker's regression suite: if a
-checker passes any of these, the checker (or the manifest) is wrong.
+*Advanced design note — internal rationale; not needed to use Swarm.*
+
+One minimal negative fixture per violation class. Each snippet must be flagged by a
+checker applying [`../conformance.yaml`](../conformance.yaml) — or by a reviewer applying
+[the checks reference](../../docs/reference/checks.md) by hand — with exactly the named
+check at the named severity. A checker that stays silent on any of these is wrong; so is
+one that reports a different check. Inert fixture data — nothing here runs.
 
 ---
 
-## V1 — empty paste slot (`content_rules: non-empty-paste`)
+## V1 — empty paste slot (`non-empty-paste`, hard error)
+
+A task packet's Verify section, every box checked, no output anywhere:
 
 ```markdown
-## Verification matrix
+## Verify
 
-- `{{cmdValidate}}` (last 2 lines):
-- `{{cmdTest}}` (last 2 lines):
+- [x] `npm test -- export-json.spec.ts` (AC-001)
+- [x] `npm run lint` (AC-002)
 ```
 
-**Expected:** FAIL — required paste slots are bare placeholders (no fenced output, no `n/a` + reason). This is the hallucinated-completion hole the gate exists to surface.
+**Expected:** flagged — both items claim completion with no pasted output, no CI link,
+and no `n/a` + reason. A claim without visible output is unverified; this is the
+hallucinated-completion hole the rule exists to close.
 
 ---
 
-## V2 — missing required section (`task_file.required_sections`)
+## V2 — Pass with an empty Evidence cell (`pass-needs-evidence`, hard error)
 
-A task file presenting `## Parent contract`, `## Scope`, `## Assigned obligations`, `## Constraints and invariants`, `## Implementation or pass trace`, `## Promotion queue`, and `## Self-review` — but **no `## Verification matrix`**.
+A review packet's coverage table:
 
-**Expected:** FAIL — `Verification matrix` is a member of the manifest's closed `required_sections` set; a task missing it cannot carry the proof side of any obligation.
-
----
-
-## V3 — missing required `Commands` row (`agents_md.required_command_rows`)
-
-An `AGENTS.md > Commands` table binding `Validation` and `Test` but **omitting `Format`**.
-
-**Expected:** FAIL — `Format` is a required command row; skills that close a session by formatting have nothing to resolve.
-
----
-
-## V4 — illegal placeholder namespace (`placeholders.rule`)
-
-A template introducing `{{cmdFrobnicate}}` — a new `cmd*` slot absent from the catalogue and introduced without an ADR.
-
-**Expected:** FAIL — the `cmd*` namespace is reserved; new slots require an ADR. (A vendor extension would be `{{vendor:frobnicate}}`, which is legal.)
-
----
-
-## V5 — unresolved blocking `QUESTION` at close (`content_rules: no-open-critical`)
-
-```sol
-QUESTION Q-001 [blocking]:
-Which auth scheme — resolve before implementing?
-AFFECTS AC-001
+```markdown
+| ID | Result | Evidence | Human attention |
+|---|---|---|---|
+| AC-001 | Pass |  | no |
 ```
 
-…in a task file whose frontmatter `status` is the terminal value `done`.
-
-**Expected:** FAIL — an unresolved `[blocking]` `QUESTION` remains in a task whose `status` is `done`; `done` is terminal and MUST NOT carry an open blocking decision.
+**Expected:** flagged — an empty Evidence cell means **Unverified**, never **Pass**.
+The row's correct content is `Unverified` plus a Human attention entry.
 
 ---
 
-## V6 — required-suite slot missing for the task type (`required_suite`)
+## V3 — `TBD` at `status: ready` (`no-tbd-at-ready` / C007, hard error)
 
-A `refactor` task whose `### Verification outputs` pastes `{{cmdTest}}` but has **no `behaviour-preservation` evidence and no `{{cmdValidateDeps}}` checkpoint**.
+A task packet with frontmatter `status: ready` whose Scope reads:
 
-**Expected:** FAIL — the `refactor` required suite includes `ValidateDeps`, `Typecheck`, `Test`, and `behaviour-preservation`; a green test suite alone is not equivalence proof.
+```markdown
+## Scope
+
+Implement or preserve:
+
+- AC-001 — return cached results for repeated queries.
+- AC-002 — TBD (waiting on product)
+```
+
+**Expected:** flagged — `ready` means an agent may start; a `TBD` inside the scope hands
+the agent an undecided requirement. At `status: draft` the same line is fine.
+
+---
+
+## V4 — requirement without a `Verify with:` line (C003 `verify-with`, hard error)
+
+A spec's Requirements section:
+
+```markdown
+### AC-003 — rate-limit responses
+
+When a client exceeds 100 requests per minute, the API must return 429.
+```
+
+**Expected:** flagged — no `Verify with:` line (SOL form: no `VERIFY BY`). The
+verification line is the highest-value line in a spec; without it the requirement can
+only ever review as Unverified.
+
+---
+
+## V5 — duplicate requirement ID (C001 `unique-ids`, hard error)
+
+One spec, two headings claiming the same ID:
+
+```markdown
+### AC-001 — accept the coupon code
+
+### AC-001 — reject expired coupons
+```
+
+**Expected:** flagged — `AC-001` appears twice in one file. Tasks scope work and reviews
+report coverage by requirement ID; a duplicated ID makes both ambiguous.
+
+---
+
+## V6 — open blocking question at `done` (`no-open-critical`, hard error)
+
+A task packet with frontmatter `status: done` whose Findings section contains:
+
+```markdown
+## Findings
+
+- Open question (blocking): should a refresh rotate the whole token family, or
+  only the access token? Undecided — AC-002 implemented on a guess.
+```
+
+**Expected:** flagged — `done` is terminal, and a blocking question is still open inside
+the packet. The status must stay non-terminal (or the review go to `needs-human`) until
+the question is resolved.
+
+---
+
+## V7 — out-of-scope change unflagged (`trigger-coverage`, warning)
+
+A task whose Affected areas list `src/auth/refresh.ts`, reviewed by a packet that says:
+
+```markdown
+## Changed files
+
+- `src/auth/refresh.ts`
+- `src/billing/invoice.ts`
+
+## Human attention
+
+None — all requirements pass.
+```
+
+**Expected:** flagged — `src/billing/invoice.ts` is outside the task's Affected areas
+and no Human attention entry routes it. An out-of-scope change is an exception trigger;
+the packet must surface it even when every requirement row is green.

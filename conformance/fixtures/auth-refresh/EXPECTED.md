@@ -1,91 +1,74 @@
-# auth-refresh — expected outcome (golden-corpus POSITIVE fixture)
+<!-- checks fixture — expected results pinned in EXPECTED.md (this file) -->
 
-This manifest pins the expected outcome of the `auth-refresh` positive (must-pass)
-fixture, the inert oracle a conformant tool is checked against (see [`././conformance.yaml`](././conformance.yaml)). It is the authority
-for this directory: the per-stage files reproduce the full `intent → promotion` pipeline,
-and this manifest records the verdict a correct run must produce at each gate.
+# auth-refresh — expected check results
 
-**Expected verdict: PASS after reconcile.**
+Checks fixture for [the check catalogue](../../../docs/reference/checks.md): silent token
+refresh on 401, with two seeded spec defects. The results below are known by hand and pin
+what swarm-cli's `swarm spec check` must report (toolable). Until that tool runs, nothing
+here is enforced — reviewers use the same tables as a checklist.
 
-## What this fixture is
+**Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
+share one `id:` — they are one spec written on both surfaces (this directory's equivalence
+pair), not two specs. A real workspace keeps only one, so the pair itself never counts as a
+C002 duplicate.
 
-- **Domain:** auth-refresh (silent token refresh on 401).
-- **Polarity:** positive — the obligation set must lower cleanly and reach a mergeable PASS.
-- **Canonical defect cluster exercised (on the *authored* source, stage 1):**
-  a vague-quality predicate (`SOL-P005`), a `SHOULD` with no `BECAUSE`/`EXCEPT` (`SOL-S006`),
-  a missing-verification binding (`SOL-V001`), the no-unbounded-retry `INVARIANT` (`I-001`),
-  and a blocking `QUESTION` (`Q-001`).
+## Seeded defects
 
-## Stage files
+| Where | Defect |
+|---|---|
+| AC-002 (both files) | No verification line |
+| AC-003 (both files) | "handle … gracefully" — watchlist words, no same-line criterion |
 
-| Stage | Pass | File | Asserts |
-| ----- | ---- | ---- | ------- |
-| 1 | author | `spec.md` | authored source; parses; carries the seeded defects |
-| 2 | lint | (this manifest) | the three BLOCKING diagnostics + the blocking-QUESTION note |
-| 3 | improve | `spec.improved.md` | the three diagnostics clear; `Q-001` resolved and removed |
-| 4 | lower | `auth-refresh.ir.json` | typed IR; the two chained REQs each split per clause — `AC-001` → `AC-001.1`/`AC-001.2`, `AC-002` → `AC-002.1`/`AC-002.2` (six nodes: `IF-001`, `AC-001.1/.2`, `AC-002.1/.2`, `I-001`); `edges[]` the sole relationship source |
-| 5 | decompose, implement | `task.md` | work packet frame; write surfaces ⊆ assigned `WRITES` |
-| 6 | verify | `trace.md` | `TRACE T-001` + the 7-field provenance table; one binding per surface obligation (`IF-001`, `AC-001`, `AC-002`, `I-001`) |
-| 7 | review | `review.md` | one `VERDICT` per required binding **including the `IF-001` interface contract** (an INTERFACE in scope is a judged obligation, merge-gate); merge-gate outcome |
-| 8 | promote | `finding.md` | the durable finding promoted with full provenance |
+## spec.md (plain form)
 
-> The `task.md` here shows the **pipeline-relevant work-packet frame** (scope + the verification matrix the trace consumes), not a full task-file. The task-file-schema `required_sections` rule ([`././conformance.yaml`](././conformance.yaml)) is exercised by the dedicated schema fixtures [`./conformant-task.md`](./conformant-task.md) (positive) and [`./violations.md`](./violations.md) (negatives).
+| Check | Where | Expected result | Severity |
+|---|---|---|---|
+| C003 `verify-with` | AC-002 | **fires** — no `Verify with:` line | hard error |
+| Writing-rules watchlist | AC-003 | flagged — vague verb plus non-verifiable quality; nothing on the line says how to check it | advisory (convention) |
+| C001, C002, C004–C006, C008, C009 | — | pass | — |
 
-## Expected lint diagnostics (stage 2, on the authored `spec.md`)
+C007 does not apply: the spec is `status: draft`.
 
-Three BLOCKING diagnostics fire, each in the unified `SOL-<LAYER><NNN>` namespace (the SOL error catalogue). Each
-is BLOCKING because it changes *what* gets built. Each names the closed `improve` op (the `improve` pass) or
-direct edit that repairs it.
+## spec.sol.md (`format: sol`)
 
-| Code | Layer | Severity | Span | Defect | Repair |
-| ---- | ----- | -------- | ---- | ------ | ------ |
-| `SOL-V001` | V | BLOCKING | `AC-002` | obligation has no `VERIFY BY` binding (no verification path) | improve op `BIND` |
-| `SOL-S006` | S | BLOCKING | `AC-002` | `SHOULD` with no accompanying `BECAUSE`/`EXCEPT` | Edit: add `BECAUSE`, or raise to `MUST` |
-| `SOL-P005` | P | BLOCKING | `I-001` | vague-quality predicate with no same-line observable criterion | improve op `CONCRETIZE`/`QUANTIFY` |
+| Check | Where | Expected result | Severity |
+|---|---|---|---|
+| SOL-V001 | AC-002 | **fires** — no `VERIFY BY` | hard error |
+| SOL-P005 | AC-003 | **fires** — watchlist word with no same-line observable criterion | hard error |
+| Every other SOL code | — | pass | — |
 
-Plus a blocking-QUESTION risk recorded as a note: `Q-001` is `[blocking]` and `AFFECTS AC-002`.
-`AC-002` MUST NOT reach the `lower` pass while `Q-001` is open; a blocking `QUESTION` that does
-reach `lower` is **`SOL-O003`** (blocking-question-reaches-lowering, the SOL error catalogue). In this fixture
-`Q-001` is resolved at the `improve` stage, so `SOL-O003` does **not** fire downstream — it is
-the risk the open question would have raised had it survived to lowering.
+The same two defects on two surfaces: C003 and SOL-V001 are one rule asked of two forms.
+Note the asymmetry on AC-003 — the watchlist hit is advisory in plain form, while SOL-P005
+is a hard error: choosing `format: sol` is choosing the stricter bar.
 
-## Expected after `improve` (stage 3)
+## Equivalence assertion
 
-All three BLOCKING diagnostics clear and no blocking `QUESTION` remains:
+`spec.md` and `spec.sol.md` encode identical requirement records:
 
-- `NORMALIZE` resolved `AC-002`'s `SHOULD` to `MUST` (owner judged the session-clear
-  mandatory, so no `BECAUSE` is needed) — clears `SOL-S006`.
-- `CONCRETIZE` fixed `I-001`'s threshold to the literal `1` and named the measured quantity —
-  clears `SOL-P005`.
-- `BIND` attached a `test` proof to `AC-002` and a `property` proof to `I-001` (an `INVARIANT`
-  prefers `property`/`model`/`static`, the `verify` pass) — clears `SOL-V001`.
-- `Q-001` resolved out-of-band (decision: redirect to `/login`) and removed — clears the
-  `SOL-O003` risk before lowering.
+| id | strength | statement | verification |
+|---|---|---|---|
+| AC-001 | must | When a request returns 401 and a refresh token is present, the auth client replays the original request once with a refreshed session. | `auth-refresh.spec.ts#replays-after-refresh` — plain: unresolved note · SOL: resolved binding |
+| AC-002 | must | When the refresh token is itself expired, the auth client redirects to `/login`. | none in either form (the seeded defect) |
+| AC-003 | must | When the refresh request times out, the auth client handles the failure gracefully. | `auth-refresh.spec.ts#timeout` |
 
-## Expected merge-gate outcome (stage 7) → final
+Spec-level record: same intent, non-goals, open questions (none), affected areas, and
+sources in both files. The SOL `WRITES` clauses are metadata refinement — plain form carries
+the same paths under Affected areas. A checker that reads different records out of the two
+files is wrong (the anti-fork rule).
 
-`IF-001` (the interface contract), `AC-001`, and `I-001` are clean `PASS`AC-002` is `PASS (STALE …)`: its bound test PASSed, but
-`web/src/http/client.ts` was edited after the recorded PASS, so its source no longer matches
-(the `review` pass). A STALE required obligation is not mergeable.
+## task.md and review.md
 
-```text
-Gate (first evaluation): BLOCKED — AC-002 is STALE.
-Reconcile (option 1):       re-run the bound proof against the current surface.
-Gate (re-evaluation):       AC-002 → PASS; every required obligation PASS.
-Final outcome:              PASS.
-```
+| Check | Where | Expected result |
+|---|---|---|
+| `non-empty-paste` | review rows AC-001, AC-003 | pass — output pasted or linked |
+| `non-empty-paste` | review row AC-002 | the Evidence cell is empty, so the row reads **Unverified** — never Pass |
+| `no-open-critical` | task and review | pass — no open blocking question |
+| `trigger-coverage` | review Human attention | pass — names the unverified row and the risky file |
 
-**Final gate: BLOCKED → (reconcile) → PASS.** A STALE verdict is never silently re-blessed
-(the `review` pass); the reconcile re-ran the proof and produced a fresh matching PASS.
+These are checklist-level rules; `swarm spec check`'s packet mode can flag the mechanical
+parts (the empty Evidence cell).
 
-## Stable identifiers and hashes (consistent across all stages)
+## finding.md
 
-- Obligations: `IF-001`, `AC-001` (IR-split `AC-001.1`/`AC-001.2`), `AC-002`, `I-001`; question `Q-001`; trace `T-001`.
-- Content hashes carried unchanged stage to stage: `AC-001` source `sha256:9b2e…41`,
-  `I-001` source `sha256:7d10…aa`, `IF-001` source `sha256:1f4a…c0`; the promoted finding
-  pins `content_hash: sha256:9b2e…41` (the `AC-001` source span).
-- Source specs live in `specs/<feature>/spec.md`; task/trace scratch is gitignored (e.g. `.agents/tasks/`).
-
-## How this is validated (no runtime)
-
-Inert data (NO RUNTIME): the verdicts above are known independent of any tool and validated by hand; this manifest is the expected-outcome contract a future checker would validate against, not a tool Swarm provides.
+Valid: one claim, evidence, applies/does-not-apply bounds, and future guidance, with `from:`
+and `related:` resolving to this fixture's review and spec ids.

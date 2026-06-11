@@ -3,7 +3,7 @@ type: audit
 id: critical-review-aspects
 status: draft
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-11
 ---
 
 # Audit: 10 critical aspects to watch out for in a review of Swarm
@@ -170,6 +170,14 @@ remain watch-items **by design** (a deliberate consequence of Invariant 1 — th
 - **#9 adoption dead-ends** → `docs/ADOPTING.md` disambiguates the skills-copy destination (silent-failure
   warning) and `starter-kit/AGENTS.md` startup rule #1 clarifies the task file is run scratch, not a committed
   repo file.
+
+## Resolution status (2026-06-11)
+
+Aspects 1–2, 5–7, 9–10 are affected by ADRs 0057–0068 — see the ledger (`docs/adrs/README.md`).
+The repositioning reshapes the surfaces those aspects watch (the enforcement-level honesty
+framework, the two-tier spec format, the workspace and review-packet model, checks as review
+checklists, the kit re-tiering); the watch-list itself remains a valid reviewer's lens.
+Aspects #3, #4, #8 keep their ADR-0055 dispositions above.
 
 ## Recommended obligations (prose — candidate watch-disciplines a spec/ADR could carry)
 

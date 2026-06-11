@@ -1,92 +1,148 @@
-# Swarm conformance manifest. INERT VERSIONED DATA — Swarm runs nothing.
+# conformance.yaml — the checks contract as data. Inert: nothing in this
+# repository runs it.
 #
-# This is the machine-readable encoding of the conformance definition: the
-# testable definition a future checker would honour and the artifact a human
-# uses to validate a repository BY HAND today. Per Invariant 1 (NO RUNTIME),
-# nothing here executes — Swarm ships the contract, never the checker.
-# The prose sources of truth are the SOL language reference and the per-task-kind
-# suite in the `verify` pass (the Swarm reference); this manifest
-# mirrors them and conformance/fixtures/ guards against drift.
+# This file is the machine-readable shadow of docs/reference/checks.md (the
+# prose reference is canonical; this file restates it as testable data) and of
+# the packet templates at starter-kit/templates/. The reference consumer is
+# swarm-cli's `swarm spec check`; a reviewer can apply every rule by hand.
+# The files under fixtures/ pin the expected results and guard this file and
+# the prose from drifting apart.
 #
-# Copyable skeleton: fill every {{placeholder}} / replace each "<what goes here>".
-# Do not add structure beyond this manifest's shape; do not introduce new
-# cmd*/no-prefix names without an ADR.
+# Severity legend (the two-way split):
+#   hard-error  a checker must reject the file
+#   warning     a checker should flag it; teams may treat any warning as
+#               blocking by policy
 
-version: 0.1.0                    # <semver of this manifest; bump on contract change>
-language: SOL/0.1                 # the discriminator this manifest targets (meta.language; see `the versioning reference`)
+version: 0.2.0   # contract version of this file; bump on any rule change
 
-# --- The task-file schema (keyed to the task.md template) --------------------
-# A conformant task.md MUST present every required_sections H2 heading and MUST
-# satisfy every content_rules entry.
+# --- Spec form selector -------------------------------------------------------
+# The default spec form is plain structured markdown. A spec opts into the
+# stricter SOL notation per file with frontmatter `format: sol`. Both forms
+# encode the same requirement record; every check below keys on the record,
+# never the surface (the per-domain equivalence pairs under fixtures/ prove it).
+spec_form:
+  default: simple
+  selector: "format: sol"                                  # frontmatter key, per file; absent = simple form
+  frontmatter: [type, id, title, status, owner, sources]   # + the optional `format` key above
+
+# --- Core spec checks (either form) -------------------------------------------
+# Mirrors the "Core checks" table in docs/reference/checks.md. IDs are stable;
+# the prose reference defines each rule in full — this list pins id, name, and
+# severity so a checker and the fixtures can cite them.
+core_checks:
+  - { id: C001, name: unique-ids,             severity: hard-error }
+  - { id: C002, name: duplicate-id,           severity: hard-error }
+  - { id: C003, name: verify-with,            severity: hard-error }
+  - { id: C004, name: one-strength-word,      severity: warning    }
+  - { id: C005, name: non-goals-present,      severity: warning    }
+  - { id: C006, name: open-questions-present, severity: warning    }
+  - { id: C007, name: no-tbd-at-ready,        severity: hard-error }
+  - { id: C008, name: sources-named,          severity: warning    }
+  - { id: C009, name: broken-source-link,     severity: hard-error }
+
+# --- The task packet -----------------------------------------------------------
+# Keyed to starter-kit/templates/task.md: a well-formed task presents every
+# required H2 section and satisfies every content rule.
 task_file:
-  required_sections:             # H2 headings that MUST be present (task.md contract: `../templates/task.md`)
-    - Parent contract
+  frontmatter: [type, id, source, scope, status]
+  required_sections:
+    - Source
     - Scope
-    - Assigned obligations
-    - Constraints and invariants
-    - Implementation or pass trace
-    - Verification matrix
-    - Promotion queue
-    - Self-review
+    - Do not change
+    - Affected areas
+    - Verify
+    - Agent instructions
+    - Findings
   content_rules:
-    - id: non-empty-paste        # evidence over claim (Invariant 5)
-      applies_to: "Verification matrix"
+    - id: non-empty-paste
+      applies_to: Verify
+      severity: hard-error
       rule: >-
-        every required paste slot holds non-empty, non-placeholder text — a fenced
-        command-output block, or `n/a` with a one-line reason — never a bare
-        `[Paste output]` placeholder.
+        Every completion claim binds to pasted command output or a CI link — a
+        fenced output block under the Verify item, or `n/a` with a one-line
+        reason — never a bare "tests passed" or an unfilled placeholder. A
+        claim without visible output is unverified.
     - id: no-open-critical
-      applies_to: "(whole task: frontmatter status + any QUESTION block)"
+      applies_to: whole packet (frontmatter status + every section)
+      severity: hard-error
       rule: >-
-        no blocking QUESTION remains unresolved anywhere in the task when
-        frontmatter status is the terminal value done.
+        No blocking open question remains unresolved anywhere in the packet
+        when its frontmatter status is the terminal value `done`.
 
-# --- Required AGENTS.md > Commands rows --------------------------------------
-# <adapter> slots in SOL `VERIFY BY` bindings resolve through this table (see
-# the `verify` pass); a binding whose adapter has no row is unresolvable.
-# Slot names are the cmd* slots bound in AGENTS.md > Commands.
-agents_md:
-  required_command_rows: [cmdValidate, cmdTest, cmdFormat]                                 # MUST be present; absence is non-conformant
-  extended_command_rows: [cmdInstall, cmdTypecheck, cmdLint, cmdBuild, cmdValidateDeps, cmdBenchmark, cmdContract, cmdSecurity]   # SHOULD be present when the required-suite references them
-  out_of_contract:       [cmdMarkdownLint, cmdLinkCheck, cmdCitationCheck]                  # MAY be present; never required
+# --- The review packet ----------------------------------------------------------
+# Keyed to starter-kit/templates/review.md.
+review_file:
+  frontmatter: [type, id, task, pr, status]
+  status_enum: [draft, pass, blocked, needs-human]
+  required_sections:
+    - Summary
+    - Changed files
+    - Requirement coverage
+    - Human attention
+    - Suggested decision
+  optional_sections:
+    - Change-plan coverage      # only when the task executes a change plan; same columns
+  coverage_table:
+    columns: [ID, Result, Evidence, Human attention]
+    result_enum: [Pass, Fail, Unverified, Blocked]
+  content_rules:
+    - id: pass-needs-evidence   # the packet-side face of non-empty-paste
+      applies_to: Requirement coverage, Change-plan coverage
+      severity: hard-error
+      rule: >-
+        A Pass needs pasted output or a CI link in its Evidence cell. An empty
+        Evidence cell means Unverified, never Pass.
+    - id: no-open-critical
+      applies_to: whole packet
+      severity: hard-error
+      rule: >-
+        No blocking open question remains unresolved in a review whose status
+        is `pass`; an open blocking question makes the status `blocked` or
+        `needs-human`.
+    - id: trigger-coverage
+      applies_to: Human attention
+      severity: warning
+      rule: >-
+        The Human attention section routes every applicable exception trigger
+        or marks it n/a: unverified or failed requirements, out-of-scope
+        changes, risky files, missing test output, changed public interfaces,
+        DB migrations, security-sensitive changes, new finding candidates,
+        blocked questions. The mechanical part a checker can flag: a changed
+        file outside the task's Affected areas that no Human attention entry
+        mentions.
 
-# --- The legal placeholder set -----------------------------------------------
-# Namespaces: cmd* and "" (no prefix) are reserved — new names need an ADR;
-# swarm: is framework-owned; project: is consumer-owned; any other prefix
-# (vendor:) is a legal vendor extension a runner leaves untouched.
-placeholders:
-  legal_prefixes: ["cmd", "", "swarm:", "project:"]   # "" = framework scaffolding names
+# --- Command slots (advisory) ----------------------------------------------------
+# Adapter slots a Verify item or `Verify with:` line may name instead of a
+# literal command; each resolves through the workspace's `AGENTS.md > Commands`
+# table. Advisory: no slot is required, and absence never fails a check.
+commands:
+  level: advisory
+  slots: [cmdInstall, cmdBuild, cmdTest, cmdLint, cmdTypecheck, cmdFormat,
+          cmdValidate, cmdBenchmark, cmdSecurity]
   rule: >-
-    a runner substitutes every required placeholder and leaves unrecognised ones
-    untouched; it does not introduce names in the cmd*/no-prefix namespace without an ADR.
+    A named slot with no Commands row resolves to nothing — the claim it backs
+    reviews as Unverified until a real command and its pasted output exist.
 
-# --- The unified lint scheme -------------------------------------------------
-# One prefix `SOL`, five layers, form `SOL-<LAYER>NNN`. Every diagnostic record
-# has the shape {code, severity, layer, span, message, suggest}. The full
-# catalogue (the SOL error catalogue) is the source of truth; this is its inert shadow.
-lint:
-  scheme: "SOL-<LAYER>NNN"
-  layers: { S: SYNTAX, P: PROSE, M: SEMANTIC, V: VERIFICATION, O: ORCHESTRATION }
-  record_shape: [code, severity, layer, span, message, suggest]
-  catalogue_ref: the SOL error catalogue   # the Swarm language reference is the source of truth
-  retired_prefixes: [APS-]                           # APS- is not a code prefix
+# --- Placeholder namespaces -------------------------------------------------------
+# Who owns which placeholder prefix in templates and packets. A tool leaves
+# every prefix it does not recognize untouched.
+placeholders:
+  namespaces:
+    - prefix: "cmd"
+      owner: this contract
+      rule: reserved for the adapter slots above; a new cmd* name lands in this file first
+    - prefix: "project:"
+      owner: the adopting workspace
+      rule: consumer-owned; this contract never assigns it meaning
+    - prefix: "<vendor>:"
+      owner: any tool vendor
+      rule: any other namespaced prefix is a legal vendor extension, left untouched
 
-# --- The per-task-kind required verification suite ---------------------------
-# The (proof-type, phase) defaults resolving to cmd* slots. The canonical
-# per-task-kind matrix lives in the `verify` pass; this is its machine-readable shadow.
-#   - bare entries     = cmd* adapter slots, resolved through AGENTS.md > Commands
-#   - gate:<name>      = an equivalence/coverage gate; the legal tokens are exactly
-#                        these five:
-#                          gate:acceptance-criteria-coverage  every acceptance criterion maps to a passing proof
-#                          gate:regression-test               a test that failed before the change and passes after
-#                          gate:behaviour-preservation        a property/differential/metamorphic preservation check
-#                          gate:scope-disjointness            merged workers' OWNED paths are pairwise disjoint
-#                          gate:merge-intent                  each conflict resolution preserves both obligations' intent
-#   - merged:<slot>    = the slot runs on the post-integration merged result
-required_suite:
-  feature:            [cmdValidate, cmdTest, cmdValidateDeps, gate:acceptance-criteria-coverage]
-  fix:                [cmdValidate, cmdTest, gate:regression-test]
-  refactor:           [cmdValidateDeps, cmdTypecheck, cmdTest, gate:behaviour-preservation]
-  # … one row per task_kind; full matrix mirrors the `verify` pass …
-  # <add the remaining task_kind rows here, each row a list of cmd* slots and gate:<name> tokens>
-  orchestration:      [merged:cmdValidate, merged:cmdTest, gate:scope-disjointness, gate:merge-intent]
+# --- Fixtures ----------------------------------------------------------------------
+# Where the pinned expectations live. See ./README.md for the map and the
+# per-domain equivalence pairs.
+fixtures:
+  positive: fixtures/conformant-task.md
+  negative: fixtures/violations.md
+  domains: [fixtures/auth-refresh, fixtures/payment-5xx, fixtures/checkout]
+  prose: fixtures/prose-corpus/labeled.yaml

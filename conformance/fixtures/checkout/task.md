@@ -1,60 +1,57 @@
-<!--
-checkout golden-corpus fixture — Stage 5 (work packets, passes: decompose, implement).
-The `decompose` pass projects the structured form into work packets whose write surfaces are a subset of
-the assigned obligations' WRITES (the two-tier lowering rule; a packet writing a path outside
-its declared WRITES is SOL-O005). The checkout IR decomposes into two packets with DISJOINT
-write surfaces — `checkout-submit` owns the service code (api/src/checkout/submit.ts) and the
-order record (db/orders); `checkout-inventory` owns the inventory ledger (db/inventory) and is
-serialized behind `checkout-submit` by `blocked_by`, mirroring the AC-012 DEPENDS ON AC-011
-edge. Because the two packets' WRITES are pairwise disjoint and the dependency is explicit, the
-safe-parallelism predicate holds and no SOL-O001 fires (this is exactly the defect the authored
-source carried; see ./EXPECTED.md). Only the load-bearing frame is shown. Inert oracle data —
-Swarm runs nothing.
--->
-
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: task
-id: checkout-submit
-status: active
-task_kind: feature
-source: specs/checkout/spec.md
-assigned_obligations: [AC-010, AC-013, AC-014, AC-011]
-invariants: [I-010]
-interfaces: [IF-010]
-write_surfaces: [api/src/checkout/submit.ts, db/orders]
-verification_bindings:
-  - AC-010: test:cmdTest:api/tests/checkout.spec.ts#validates-cart
-  - AC-013: test:cmdTest:api/tests/checkout.spec.ts#charges-card
-  - AC-014: test:cmdTest:api/tests/checkout.spec.ts#emails-receipt
-  - AC-011: test:cmdTest:api/tests/order-record.spec.ts#writes-order
-  - I-010:  property:cmdTest:api/tests/checkout.properties.ts#charge_at_most_once
-parallel_group: checkout-edits
-blocked_by: []
+id: TASK-checkout
+source:
+  - SPEC-checkout
+scope: [AC-001, AC-002, AC-003]
+status: review-ready
 ---
 
-# Task: Implement checkout submit, charge, and order-write path
+# Task: Cart submission and checkout
+
+## Source
+
+- Spec: `specs/checkout/spec.md` (SPEC-checkout)
 
 ## Scope
 
-### In
-- Implement AC-010, AC-013, AC-014, AC-011, and preserve I-010 within
-  api/src/checkout/submit.ts and db/orders.
+Implement or preserve:
 
-### Out
-- Do not implement unassigned obligations.
-- Do not write db/inventory (owned by the serialized `checkout-inventory` packet).
+- AC-001 — validate the cart, charge the card, email the receipt
+- AC-002 — write the order record on successful charge
+- AC-003 — append the inventory ledger entry on successful charge
 
-## Verification matrix
-| Obligation | Required proof              | Actual proof                            | Status |
-| ---------- | --------------------------- | --------------------------------------- | ------ |
-| AC-010     | test:#validates-cart        | checkout.spec.ts validates-cart passed  | pass   |
-| AC-013     | test:#charges-card          | checkout.spec.ts charges-card passed    | pass   |
-| AC-014     | test:#emails-receipt        | checkout.spec.ts emails-receipt passed  | pass   |
-| AC-011     | test:#writes-order          | order-record.spec.ts writes-order passed| pass   |
-| I-010      | property:#charge_at_most_once| checkout.properties.ts passed          | pass   |
+This is deliberately one task, not two: AC-002 and AC-003 both write `db/orders`, and two
+parallel tasks on one write area conflict.
 
-## Serialized companion packet (write-disjoint)
-The `checkout-inventory` packet covers AC-012, owns the disjoint surface `db/inventory`, and
-carries `blocked_by: [checkout-submit]` (the AC-012 DEPENDS ON AC-011 edge). Its binding is
-`test:cmdTest:api/tests/inventory.spec.ts#writes-ledger`. Disjoint WRITES + explicit ordering
-satisfy the safe-parallelism predicate — the SOL-O001 the authored source tripped is cleared.
+## Do not change
+
+- The cart service and its pricing logic.
+- The payment provider client — consume it, don't edit it.
+
+## Affected areas
+
+- `api/src/checkout/submit.ts`
+- `db/orders`
+
+## Verify
+
+- [ ] `npm test -- checkout.spec.ts` (AC-001)
+- [ ] `npm test -- order-record.spec.ts` (AC-002)
+- [ ] `npm test -- inventory.spec.ts` (AC-003)
+
+## Agent instructions
+
+1. Read the source spec first.
+2. Stay inside this task's scope. If a requirement can't be met as written, stop and say why
+   instead of improvising.
+3. Run every Verify item and paste the real output — a claim without output counts as
+   unverified.
+4. Before finishing, re-read your own diff as a skeptic: what would a reviewer flag?
+5. Leave a summary: changed files, commands run with output, and anything learned worth
+   saving as a finding.
+
+## Findings
+
+- Candidate: the order record and inventory ledger share one write area — see `finding.md`.

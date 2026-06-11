@@ -1,62 +1,53 @@
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: spec
-swarm_language: SOL/0.1
-aps_version: 0.1
-spec_version: 0.1.0
-id: payment-5xx
-status: draft
+id: SPEC-payment-5xx
+title: Payment provider 5xx handling
+status: ready
+owner: payments-team
+sources:
+  - PAY-883
 ---
 
-# Spec: Payment-processor 5xx handling
-
-<!--
-payment-5xx golden-corpus POSITIVE fixture — Stage 1 (authored source, pass: author).
-This is the only spec artifact a human writes (see [../../../starter-kit/.agents/templates/spec.md](../../../starter-kit/.agents/templates/spec.md)); the spec.md convention marks it
-human-authored. It is inert oracle data: nothing runs it. As authored it carries the
-payment-5xx canonical defect cluster that the `lint` pass (see EXPECTED.md) surfaces —
-  SOL-M002 (AC-020 asserts MUST retry AND MUST NOT retry on one trigger — a contradiction),
-  SOL-P005 (AC-021 "handle failures gracefully" — a high-risk word, no observable criterion),
-plus a blocking QUESTION (Q-001) that, if it reached the `lower` pass unresolved, would be
-SOL-O003 (blocking-question-reaches-lowering). The contradiction's deconflict introduces a
-no-double-charge idempotency invariant whose only honest oracle is a production observation —
-the `monitor` proof type the verify stage exercises.
--->
+# Payment provider 5xx handling
 
 ## Intent
-When the payment processor returns a 5xx the service retries the charge a bounded
-number of times under the same idempotency key, so a transient processor outage is
-absorbed without ever charging the customer twice.
 
-## Interfaces
+When the payment provider returns a 5xx, the payments service absorbs the transient outage
+without ever charging the customer twice.
 
-INTERFACE IF-001:
-`chargeCard` ACCEPTS `ChargeRequest` RETURNS `Charge | ProcessorError`
-ERRORS:
-  - processor-5xx
-  - idempotency-conflict
-OWNED BY payments-service
-VERIFY BY contract:cmdContract:charge-card-contract
+## Non-goals
 
-## Obligations
+- Provider failover or multi-provider routing.
+- Card-declined (4xx) handling.
 
-REQ AC-020:
-WHEN the processor returns a 5xx
-THE payments service MUST retry the charge
-AND THE payments service MUST NOT retry the charge
-AFFECTS I-001
+## Requirements
 
-REQ AC-021:
-WHEN a payment attempt fails
-THE payments service MUST handle failures gracefully
-VERIFY BY test:cmdTest:server/tests/payment-fail.spec.ts#surfaces-error
+### AC-001 — at most one capture
 
-## Invariants
+When the same idempotency key is submitted twice, the payments service must capture at most
+one charge.
 
-INVARIANT I-001:
-the same idempotency key MUST NOT result in more than one captured charge
+Verify with: `npm test -- payment-idempotency.spec.ts` (case `at-most-one-capture`)
 
-## Questions
+### AC-002 — retry on 5xx
 
-QUESTION Q-001 [blocking]:
-Should a 503 from the processor be retried automatically or surfaced to the user for a manual retry?
-AFFECTS AC-020
+When the provider returns a 5xx, the payments service must retry the charge once with the
+same idempotency key.
+
+Verify with: `npm test -- payment-retry.spec.ts` (case `retries-once`)
+
+### AC-003 — no retry on 5xx
+
+When the provider returns a 5xx, the payments service must not retry the charge.
+
+Verify with: `npm test -- payment-retry.spec.ts` (case `no-retry`)
+
+## Open questions
+
+- Blocking: is the provider's charge endpoint idempotent across retries? AC-002 and AC-003
+  cannot both stand until this is answered.
+
+## Affected areas
+
+- `server/src/payments/charge.ts`

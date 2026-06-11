@@ -1,49 +1,37 @@
-<!--
-auth-refresh golden-corpus POSITIVE fixture — Stage 8 (promotion, pass: promote).
-After reconcile (AC-002 re-run -> PASS, gate open), a durable discovery from the task is
-promoted into a finding carrying full provenance (mandated by the `promote` pass;
-schema in [the finding template](./././starter-kit/.agents/templates/finding.md)): origin_obligations,
-origin_traces, the pass+profile that produced it, reviewer/tool, content_hash, confidence,
-and applies-when bounds. The memory/INDEX.md MAP gains one link with a "Load when" condition;
-no procedure is inlined there (see the `promote` pass). Inert oracle data.
--->
-
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: finding
-id: refresh-storm-on-shared-401
-status: promoted
-related_obligations: [AC-001, I-001]
-confidence: high
+id: FINDING-refresh-storm
+status: candidate
+from: REVIEW-auth-refresh
+date: 2026-06-11
+related: [SPEC-auth-refresh#AC-001]
 ---
 
-# Finding: A single expired token can fan out to N concurrent 401s
+# Finding: A single expired token fans out into N concurrent refresh calls
 
-## Claim
-Concurrent in-flight requests each see the 401 and independently call refreshSession;
-without a single-flight guard this violates I-001 in aggregate even though each request
-retries at most once.
+## What we learned
 
-## Provenance
-- origin_obligations: [REQ.auth-refresh.AC-001, INVARIANT.auth-refresh.I-001]
-- origin_traces: [auth-refresh-client-trace#T-001]
-- pass: verify; profile: skeptic
-- reviewer_or_tool: review.md (human review)
-- content_hash: sha256:9b2e…41
-- confidence: high
+When several requests are in flight as the token expires, each sees its own 401 and
+independently triggers a refresh — every request replays only once, yet the client still
+issues N parallel refresh calls for one expired token.
 
-## Applies when
-- Multiple requests can be in flight when a token expires.
+## Evidence
 
-## Does not apply when
-- The client serializes all auth-bearing requests.
+REVIEW-auth-refresh: the concurrency case added during review showed three parallel refresh
+calls for one expired token — `npm test -- auth-refresh.spec.ts`, case `concurrent-401s`,
+output in PR run #88.
 
----
+## Where it applies
 
-The promotion also adds one recall link to the memory MAP (the index says *when to load*
-the entry; it never inlines the finding's procedure, per the `promote` pass):
+- Any client where multiple authenticated requests can be in flight at token expiry.
 
-```text
-# memory/INDEX.md  (excerpt)
-- [Refresh storm on shared 401](./findings/refresh-storm-on-shared-401.md)
-  — Load when: implementing or reviewing concurrent token-refresh paths.
-```
+## Where it does not apply
+
+- Clients that serialize all authenticated requests.
+
+## Future guidance
+
+Guard the refresh path with a single-flight lock: the first 401 refreshes, concurrent 401s
+await the same promise. A spec for token-refresh work should carry that as an explicit
+requirement with its own test.

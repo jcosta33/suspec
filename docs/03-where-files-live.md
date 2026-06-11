@@ -1,0 +1,90 @@
+# Where files live
+
+*Works today — plain markdown plus your agent; no Swarm tooling required.*
+
+Three pieces, three homes:
+
+| Piece                   | What it is                                                            | Where it lives                                                 |
+| ----------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **The Swarm framework** | This repository — the docs, templates, and agent guides you copy from | Upstream. You read and copy from it; your work never goes here |
+| **Your workspace**      | Where your specs, tasks, reviews, and findings live                   | Its own repo, or a folder inside your code repo (below)        |
+| **Your code repos**     | Where the code lives                                                  | Untouched — Swarm adds nothing to them                         |
+
+## The workspace
+
+```text
+your-workspace/
+  specs/
+    checkout/            # one folder per feature — durable intent
+      spec.md            #   the spec
+      research.md        #   supporting docs sit beside the spec they serve
+  intake/                # tracker items, captured verbatim (see 10-integrations.md)
+  tasks/                 # task packets — one per unit of agent work
+  reviews/               # review packets — the durable record of each task
+  findings/              # lessons saved at Close
+  inventory/             # appears when structural work needs it
+  change-plans/          # appears when structural work needs it
+  decisions/             # project decisions, numbered (0001-, 0002-, …)
+  status.md              # the hand-edited workboard
+  .agents/               # agent tooling only — never project content
+```
+
+Two kinds of folder:
+
+- **Feature folders** (`specs/<feature>/`) hold durable intent: the spec plus whatever fed it
+  (research, audit, PRD), side by side — so requirement → evidence is one folder hop.
+- **Type folders** (`intake/`, `tasks/`, `reviews/`, `findings/`, `inventory/`, `change-plans/`)
+  hold the flow of work. They are **committed, not scratch** — the review packet that links its PR
+  is the record of what was done and how it was checked. `inventory/` and `change-plans/` appear
+  only when structural work needs them (see [brownfield work](05-brownfield-and-change-plans.md)).
+
+Both naming depths are valid: flat files (`tasks/012-checkout-totals.md`) for small projects, or a
+folder per item with an `NNN-` prefix when items grow attachments. A file declares what it is in
+its frontmatter (`type: spec`, `type: task`, …) — the formats live in the
+[kit templates](../starter-kit/templates/) and [artifact formats](reference/artifact-formats.md);
+this page never restates them. `.agents/` holds only the tooling your agent CLI loads
+(see [integrations](10-integrations.md)); your content never lives there.
+
+## One repo or two?
+
+Both are first-class:
+
+- **Co-located** — a single-repo team keeps the same tree inside its code repo, optionally under a
+  visible `swarm/` directory at the root. Same layout, one less repo.
+- **External** — a standalone workspace repo: useful when one set of specs governs several code
+  repos, or when the people shaping specs are not the people merging code. Think of it as a
+  Git-native, agent-readable form of the requirements store larger organizations already keep
+  outside their code.
+
+Separation has a known cost — specs can drift from the code they describe. The review packet is
+where that surfaces; see the drift note below.
+
+## Your code repos stay clean
+
+A code repo needs **nothing** to work with Swarm. At most:
+
+- a one-line pointer in its `AGENTS.md` — `Swarm workspace: <path or url>; read the task packet
+you are given`;
+- the kit's `.gitignore.additions`, so anything transient an agent writes locally stays out of
+  commits;
+- optionally, the `implement-task` agent guide copied into the repo's skills directory
+  (see [integrations](10-integrations.md)).
+
+Task packets reach the agent by paste or by path. The PR remains the merge mechanism; it links the
+review packet in the workspace, and the packet is the record. Committed Swarm content in code
+repos — specs, reviews, findings — stays out of bounds. That is a convention — nothing in this
+repo enforces it — but it is what keeps adoption from dirtying a single product repo.
+
+## When specs change (and drift)
+
+A spec is amended in place after review feedback: edit the requirement, keep its ID, and note any
+material cut under "Dropped from sources". There is no regeneration step. Drift between workspace
+and code surfaces at review time — a coverage row that no longer matches the code reads Fail or
+Unverified — and a spec known to lag reality is marked `stale` on the
+[status board](../starter-kit/templates/status.md) until someone amends it.
+
+## Next
+
+- [Basic workflow](02-basic-workflow.md) — the loop these folders serve.
+- [Writing specs](04-writing-specs.md) — what goes in `specs/<feature>/spec.md`.
+- [Adopting Swarm](ADOPTING.md) — the copy checklist that sets this tree up.

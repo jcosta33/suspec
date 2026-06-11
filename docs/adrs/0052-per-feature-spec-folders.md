@@ -32,12 +32,12 @@ required `type:` frontmatter envelope** with obligation-blocks already spec-only
 
 The fix is grounded in the field's convergent convention (web-verified, June 2026): the two leading
 spec-driven tools both organize **per-feature folders** — GitHub Spec Kit scaffolds `specs/<NNN-feature>/`
-(spec + plan + tasks + research co-located) [[SPECKIT]](./research/sources.md#SPECKIT); Amazon Kiro uses
+(spec + plan + tasks + research co-located) [[SPECKIT]](../research/sources.md#SPECKIT); Amazon Kiro uses
 `.kiro/specs/<feature>/` and writes requirements in **EARS**, Swarm's SOL clause shape
-[[KIRO]](./research/sources.md#KIRO). ADRs have a settled home: a sequentially-numbered in-repo
-`decisions/` directory [[ADR-CONV]](./research/sources.md#ADR-CONV). Co-locating a feature's supporting
+[[KIRO]](../research/sources.md#KIRO). ADRs have a settled home: a sequentially-numbered in-repo
+`decisions/` directory [[ADR-CONV]](../research/sources.md#ADR-CONV). Co-locating a feature's supporting
 artifacts with its contract is exactly what closes the requirements↔output traceability gap that 2025 SE
-research names as the dominant failure mode [[REDEFO]](./research/sources.md#REDEFO).
+research names as the dominant failure mode [[REDEFO]](../research/sources.md#REDEFO).
 
 ## Decision
 
@@ -54,7 +54,7 @@ with the thing it serves.
    [ADR-0050](./0050-swarm-is-a-spec-repo-discipline.md); a deliberately-kept review lands in the feature
    folder.)
 2. **Project-wide decisions live in `decisions/`** — sequentially-numbered ADRs (`0001-<slug>.md`), one
-   decision per immutable file, superseded rather than rewritten [[ADR-CONV]](./research/sources.md#ADR-CONV).
+   decision per immutable file, superseded rather than rewritten [[ADR-CONV]](../research/sources.md#ADR-CONV).
    This is the single home for the one artifact that is genuinely cross-cutting, not feature-bound.
 3. **Durable recall lives in `.agents/memory/`** — `finding`s, `patterns/`, `glossary`, and `INDEX.md` (the
    load-*when* map). This is unchanged; it is where promotion already targets. The memory `INDEX` may point at
@@ -65,7 +65,7 @@ with the thing it serves.
    **replaced** by this model.
 5. **Lint scope is unchanged.** Obligation blocks stay spec-only and the semantic lint stays spec-only —
    the only reliable machine-check for a non-spec artifact is structural (its `type:` envelope + required
-   sections), because prose-smell precision is bounded ~48–59% [[SMELLS]](./research/sources.md#SMELLS). The
+   sections), because prose-smell precision is bounded ~48–59% [[SMELLS]](../research/sources.md#SMELLS). The
    subtractive/advisory document-check direction is already parked in
    [ADR-0043](./0043-checkable-documents.md); this ADR does not extend it.
 
@@ -112,9 +112,9 @@ docs and `promote.md` routing reconciled to the three-home model; each template 
   PR-as-trace unchanged).
 - Aligns with: [0032](./0032-memory-model.md) (findings → `.agents/memory/`),
   [0043](./0043-checkable-documents.md) (lint stays spec-only; no document-lint built here).
-- Grounded by: [[SPECKIT]](./research/sources.md#SPECKIT), [[KIRO]](./research/sources.md#KIRO),
-  [[ADR-CONV]](./research/sources.md#ADR-CONV), [[SMELLS]](./research/sources.md#SMELLS),
-  [[REDEFO]](./research/sources.md#REDEFO).
+- Grounded by: [[SPECKIT]](../research/sources.md#SPECKIT), [[KIRO]](../research/sources.md#KIRO),
+  [[ADR-CONV]](../research/sources.md#ADR-CONV), [[SMELLS]](../research/sources.md#SMELLS),
+  [[REDEFO]](../research/sources.md#REDEFO).
 - Does NOT change: the obligation grammar, any closed set, the nine steps, the verdicts, or the artifact
   taxonomy.
 

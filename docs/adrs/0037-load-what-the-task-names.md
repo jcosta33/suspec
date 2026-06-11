@@ -21,7 +21,7 @@ routing then depends on `description` quality: a vague or over-broad description
 and the agent has no authoritative statement of what it should load for the pass it is in.
 (Practitioner reports preliminarily suggest directive, exclusion-bearing descriptions
 activate more reliably than passive ones; the direction is illustrative, not load-bearing,
-and the kernel does not rest routing on it [[ACTIVATION-BLOG]](./research/sources.md#ACTIVATION-BLOG).)
+and the kernel does not rest routing on it [[ACTIVATION-BLOG]](../research/sources.md#ACTIVATION-BLOG).)
 Second, leaning on always-evaluated descriptions pushes toward more conditioning being
 ambiently present, which works against the density discipline that protects adherence and
 cost (§31). §26.4 resolves this by naming the canonical doctrine and demoting self-assessment

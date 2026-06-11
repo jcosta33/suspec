@@ -1,32 +1,31 @@
 # Common evasions and the response
 
-The full catalogue of evasions the empirical-proof gate needs to defeat. The body of `SKILL.md` keeps
-the most-frequent ones inline; the full catalogue (including those, for completeness) lives here so
-the agent can pull it up when one surfaces in conversation.
+The full catalogue of evasions the evidence rule needs to defeat. The body of `SKILL.md` keeps the
+most frequent ones inline; the complete list (including those, for completeness) lives here so the
+agent can pull it up when one surfaces in conversation.
 
-Every row cites the rule that backs the response — the citation is non-authoritative delivery of a
-meaning owned by the language and verify/review references (the `review` step, the `verify` step), not a redefinition of
-it. The response is always the same shape: **run the proof and paste the verbatim output.**
+The response is always the same shape: **run the check and paste the verbatim output.** These are
+review-checklist conventions — nothing in this repo enforces them.
 
-| 🚩 Evasion | Response |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| "The output is too long to paste." | Paste the resolved command, the exit condition, and the runner's summary line(s) — not the whole log. The summary is what backs the verdict; the noise above it does not. |
-| "I already ran it earlier in the session." | Re-run after every change. A proof pasted before a later edit is stale and no longer backs the claim (the `verify` step). |
-| "It's obvious from the diff that the test passes." | A diff does not run tests. "Obvious from the diff" is a prediction, not a recorded run. Run the tests; paste the output. |
-| "The CI will catch it." | The discipline is the agent's gate, not the CI's. The CI is a future deterministic home for the gate, not a substitute for running the proof now. |
-| "It would slow down the session." | The session's value is correctness, not speed. A `PASS` with no pasted proof is `UNVERIFIED` (the `verify` step), so the "fast" path produced nothing the gate accepts. |
-| "I'm reviewing in good faith — pasting is performative." | Treat trust as a vulnerability to remove, not a virtue. In `review`, run the bound proofs yourself; the worker's paste is a past moment, not the present verdict (the `review` step). |
-| "The test command failed for environmental reasons unrelated to my changes." | That is `BLOCKED`, not `PASS` — truth is *unknown*, not true. Surface the env issue as a blocker and fix the environment, then re-run; never silently mark complete (the `review` step). |
-| "Schema validated, so the output is correct." | Shape is not truth (the `verify` step). A well-formed JSON / schema-valid structured output says nothing about whether the *value* is correct; such a binding is `UNVERIFIED`. |
-| "The judge model said it passes." | A `manual`/LLM-judge verdict counts only with recorded judge identity, an independent reviewer (implementer ≠ reviewer), and dual judgment for `RISK high`/`critical` (the `review` step). A bare `manual PASS` is `UNVERIFIED`. |
-| "I bundled all the checks into one 'all green' line." | One `VERDICT` per required binding (the `verify` step). A bundled paste hides which binding ran and which is missing — a missing one is `SOL-V008` / `UNVERIFIED`. |
-| "There's no command in `AGENTS.md` for this, so I used a reasonable one." | Do not guess a command. A binding whose adapter has no `cmd*` row is `SOL-V002` / `BLOCKED`; name the missing slot and ask the user (the `verify` step). |
-| "One concrete test passes, so the high-risk obligation is proven." | For `RISK high`/`critical`, a single concrete `test` is an inadequate oracle (the `verify` step). Record `oracle_adequacy` — what it exercised, with mutation/metamorphic/property/coverage evidence — or it is `SOL-V011`. |
-| "It worked when I checked it in production." | A production observation binds as `monitor` (a lagging, weakest-rank signal, the `verify` step), not as a passing `test`, and it must still be pasted as real recorded evidence — not asserted. |
+| Evasion | Response |
+| --- | --- |
+| "The output is too long to paste." | Paste the resolved command, the exit condition, and the summary lines — not the whole log. The summary is what backs the result; the noise above it does not. |
+| "I already ran it earlier in the session." | Re-run after every change. A proof pasted before a later edit is stale and no longer backs the claim. |
+| "It's obvious from the diff that the test passes." | A diff runs nothing. "Obvious from the diff" is a prediction, not a recorded run. Run the check; paste the output. |
+| "The CI will catch it." | The discipline is this session's gate, not CI's. A CI link is acceptable evidence only when you opened it and read the result. |
+| "It would slow down the session." | The session's value is correctness, not speed. A Pass with no pasted evidence records as Unverified, so the "fast" path produced nothing the review accepts. |
+| "I'm reviewing in good faith — pasting is performative." | Trust is the vulnerability this rule removes, not a virtue. In review, run the checks yourself; the worker's paste is a past moment, not the present result. |
+| "The command failed for environmental reasons unrelated to my changes." | That is Blocked, not Pass — truth is unknown, not true. Surface the environment issue as a blocker, fix it, re-run; never silently mark complete. |
+| "Schema validated, so the output is correct." | Shape is not truth. Well-formed output says nothing about whether the value is correct; such a claim is Unverified. |
+| "The judge model said it passes." | A model-judged result counts only with the judge identity recorded and a judge independent of whoever produced the work. A bare "the judge approved" is Unverified. |
+| "I bundled all the checks into one 'all green' line." | One paste per claim. A bundled paste hides which check ran and which never did — a claim with no run of its own is Unverified. |
+| "There's no command in the Commands table for this, so I used a reasonable one." | Do not guess a command. Name the missing entry and ask; a guessed command proves nothing about the real project, and the claim stays Blocked until the real one runs. |
+| "One test passes, so the risky requirement is proven." | For risky surfaces, one example is a weak oracle. Record what the check actually exercised relative to the requirement — not merely that a command exited zero — and say where the coverage stops. |
+| "It worked when I checked it in production." | A production observation is the weakest, laggiest signal, and it still must be pasted as recorded evidence — not asserted from memory. |
 
 ## How to use this table
 
-When the agent (or the user) catches itself reasoning toward one of these evasions, look up the row,
-paste the response, and run the verification. The point is not to win the argument — it is to make the
-cost of *skipping* the verification (a public exchange of evasion + response) higher than the cost of
+When you (or the user) catch the reasoning drifting toward one of these, look up the row, paste
+the response, and run the check. The point is not to win the argument — it is to make the cost of
+*skipping* the verification (a visible exchange of evasion + response) higher than the cost of
 just running the command and pasting its output.

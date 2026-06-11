@@ -1,22 +1,27 @@
-# labeled.yaml — the labeled SOL-P prose corpus (inert oracle data)
+# labeled.yaml — the labeled writing-rules corpus (inert fixture data)
 #
-# Each item is one short APS prose span paired with its ground-truth label. The label is
-# either `clean` (no SOL-P code should fire) or a single `SOL-Pxxx` code that MUST fire,
-# with the reason it fires. Nothing here runs: this is the gold set a SOL-P detector (or a
-# human reviewer) is scored against to compute the ≥0.90 precision / ≥0.85 recall baseline.
+# Each item is one short requirement-prose span paired with its ground-truth label. The
+# label is either `clean` (nothing should fire) or the single `SOL-Pxxx` code from the
+# checks catalogue (docs/reference/checks.md) that should fire, with the reason. Nothing
+# here runs: this is the gold set a writing-rules detector — swarm-cli's
+# `swarm spec check`, or a human reviewer — is scored against to compute the
+# precision/recall baseline in ./README.md.
 #
 # Field meaning:
 #   id       stable item id (P-NNN), unique within this file.
-#   text     the prose span under judgment (the binding clause or commentary line).
-#   context  binding | commentary. The force of every SOL-P rule depends on this: a span is
-#            BINDING iff inside a REQ/CONSTRAINT/INVARIANT block, COMMENTARY everywhere else.
+#   text     the prose span under judgment (the requirement clause or commentary line).
+#   context  binding | commentary. The force of every writing rule depends on this: a span
+#            is binding inside a requirement/constraint/invariant, commentary elsewhere.
 #   label    clean | <SOL-Pxxx>. The expected outcome.
 #   expect   the exact code a correct detector fires (none on a clean span).
-#   severity blocking | advisory | none. Matches the catalogue for the code.
-#   reason   why this label is correct — hand-checkable, written to a Cohen's k >= 0.6 floor.
+#   severity blocking | advisory | none — this corpus's recording of the catalogue's
+#            hard-error | warning split for the code.
+#   reason   why this label is correct — hand-checkable, written to a Cohen's k >= 0.6
+#            inter-annotator floor (a second reviewer should assign the same label from
+#            the reason alone).
 #
-# Near-miss twins are paired on purpose: a defect span and its clean fix differ only by the
-# same-line observable criterion, so a detector that confuses them is caught.
+# Near-miss twins are paired on purpose: a problem span and its clean fix differ only by
+# the same-line observable criterion, so a detector that confuses them is caught.
 
 items:
 

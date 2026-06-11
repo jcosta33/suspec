@@ -52,3 +52,21 @@ enforcement claims with no named (aspirational) checker
 ## Gate evidence log
 
 (appended per increment)
+
+## Gate evidence — 2026-06-11 (full rebuild)
+
+```
+user-tier banned-token hits: 0   (2 earlier hits were "compiler" inside is-not denial lists — allowed context)
+all-tiers banned-token hits: 0
+counts outside the two homes: 0  (present in conformance/README.md + cheatsheet appendix)
+label problems: 0                (18 re-added after a formatting hook stripped them)
+broken links outside docs/adrs/: 0
+citation anchor/path problems: 0 (16 ADR files had pre-existing ./research path typos — fixed)
+adr historical broken links: 33  (immutable ledger bodies referencing pages now in git history — accepted)
+C-check numbering: reconciled to the canonical C001–C009 of docs/reference/checks.md across
+conformance.yaml, fixtures, cheatsheet, and starter-kit/advanced/checks-reference.md
+```
+
+All 13 surfaces rebuilt this pass (single continuous execution; SHAs in the commits
+"ADRs 0057-0068…" and "Rebuild: practical-first repositioning…"). The swarm-cli row
+remains OPEN — sibling-repo resync is the one outstanding surface.

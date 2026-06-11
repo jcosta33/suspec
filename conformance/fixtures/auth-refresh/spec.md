@@ -1,62 +1,50 @@
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: spec
-swarm_language: SOL/0.1
-aps_version: 0.1
-spec_version: 0.1.0
-id: auth-refresh
+id: SPEC-auth-refresh
+title: Silent token refresh on 401
 status: draft
+owner: auth-team
+sources:
+  - AUTH-731
 ---
 
-# Spec: Silent token refresh on 401
-
-<!--
-auth-refresh golden-corpus POSITIVE fixture — Stage 1 (authored source, pass: author).
-This is the only spec artifact a human writes (see ../../../starter-kit/.agents/templates/spec.md); the spec.md convention marks it
-human-authored. It is inert oracle data: nothing runs it. As authored, it carries three
-seeded defects that the `lint` pass (see ./EXPECTED.md) is expected to surface —
-SOL-V001 (AC-002 has no VERIFY BY), SOL-S006 (AC-002 SHOULD with no BECAUSE/EXCEPT),
-SOL-P005 (I-001 vague-quality predicate) — plus a blocking QUESTION (Q-001) that, if it
-reached the `lower` pass unresolved, would be SOL-O003.
--->
+# Silent token refresh on 401
 
 ## Intent
-When an access token expires mid-session the client transparently refreshes it
-and replays the original request, without ever looping.
 
-## Interfaces
+When an access token expires mid-session, the web client refreshes it transparently and
+replays the original request, so the user never sees a spurious login screen.
 
-INTERFACE IF-001:
-`refreshSession` RETURNS `Session | AuthExpired`
-ERRORS:
-  - network-timeout
-  - invalid-refresh-token
-OWNED BY auth-client
-VERIFY BY contract:cmdContract:refresh-session-contract
+## Non-goals
 
-## Obligations
+- Server-side token issuance or rotation policy — owned by the identity service.
+- Long-lived offline sessions.
 
-REQ AC-001:
-WHEN a request returns 401 AND a refresh token is present
-THE auth client MUST call `refreshSession` once
-AND THE auth client MUST replay the original request with the new session
-VERIFY BY test:cmdTest:web/tests/auth-refresh-401.spec.ts#replays-after-refresh
-DEPENDS ON IF-001
-WRITES web/src/http/client.ts
-AFFECTS I-001
-RISK high
+## Requirements
 
-REQ AC-002:
-WHEN the refresh token is expired
-THE auth client SHOULD clear the local session
-AND THE auth client MUST redirect to `/login`
+### AC-001 — replay on 401
 
-## Invariants
+When a request returns 401 and a refresh token is present, the auth client must replay the
+original request once with a refreshed session.
 
-INVARIANT I-001:
-the retry count for a single original request MUST NOT exceed one
+Verify with: `npm test -- auth-refresh.spec.ts` (case `replays-after-refresh`)
 
-## Questions
+### AC-002 — expired refresh token ends the session
 
-QUESTION Q-001 [blocking]:
-Should an expired refresh token redirect to `/login` or open an inline re-auth modal?
-AFFECTS AC-002
+When the refresh token is itself expired, the auth client must redirect to `/login`.
+
+### AC-003 — refresh timeout
+
+When the refresh request times out, the auth client must handle the failure gracefully.
+
+Verify with: `npm test -- auth-refresh.spec.ts` (case `timeout`)
+
+## Open questions
+
+- None.
+
+## Affected areas
+
+- `web/src/http/client.ts`
+- `web/src/auth/refresh.ts`

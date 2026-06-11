@@ -1,13 +1,19 @@
 # decisions/
 
-**Architecture Decision Records (ADRs)** — the project-wide decisions that shaped this repo. One decision per
-file, **sequentially numbered** (`0001-`, `0002-`, …), in decision order. An ADR is **immutable**: to change a
-past decision you write a new ADR that supersedes it (set the old one's status to `superseded`), never edit
-the old body. That chain is the record of *why* the repo is the way it is.
+Architecture decision records for this workspace — one numbered file per
+decision.
 
-This is the home for the one artifact that is genuinely **project-wide** rather than tied to a single feature.
-Everything feature-scoped (a spec and its audit / research / bug-report / …) lives in its own
-`specs/<feature>/` folder; durable findings live in `.agents/memory/`.
+## Rules
 
-Copy `.agents/templates/adr.md` to start one. `0001-adopt-swarm.md` is a seed example — keep it (it records
-*this* decision) or replace it.
+- **Numbered.** `NNNN-short-title.md`, monotonically increasing, numbers never
+  reused.
+- **Immutable.** Once accepted, a decision file is never edited into a
+  different decision. To change course, write a new ADR that supersedes the
+  old one and mark the old one `superseded by NNNN`.
+- **Small.** Context, the decision, consequences — a page, not an essay.
+
+These rules are a convention — nothing in the workspace enforces them. The
+ledger is only useful if every entry can be trusted not to have been
+rewritten.
+
+`0001-adopt-swarm.md` is the seed entry. Copy its shape for the next decision.

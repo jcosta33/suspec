@@ -1,63 +1,74 @@
-# The Step-Output Rubrics
+# Step rubrics
 
-> Swarm's producer-side self-tests: nine per-step quality predicates that score whether an agent actually *performed* a step, plus the four cross-step predicates the suite scores wherever the relevant artifact appears. These rubrics measure the framework's own behaviour. They are not installed into any adopted project.
+*Advanced design note — internal rationale; not needed to use Swarm.*
 
-Swarm is markdown-only, provider-neutral, and has **no runtime**. These rubrics are **inert scoring data**: each predicate is a boolean assertion a human reviewer (or a future eval harness) decides by reading a step's input artifact and its output artifact, never by running a tool. Nothing here executes.
+This directory holds Swarm's producer-side self-tests: one rubric per step of the loop —
+**Pull → Spec → Task → Run → Review → Close** — that scores whether a step was actually
+*performed*, not just whether its output file matches a template. They grade this repository's
+own examples and fixtures, and any agent executing the loop. They are not installed into an
+adopted workspace: an adopter gets the templates and guides, not these pages.
 
-## What these rubrics are — and are not
+## What a rubric is
 
-The golden corpus pins *what a correct flow produces* — the expected obligations, traces, and verdicts of each fixture. The **step-output rubrics** are the complementary half: the scoring criteria the suite runs *against a candidate step's actual output* to decide whether the transformation was performed correctly. They exist because **schema-validity is not correctness**. A `task.md` can be perfectly well-formed and still drop an obligation; a `review.md` can carry every required `VERDICT` block and still be summary-only. The grammar checks (the `SOL-S` lint family and the task-file violation classes) already cover well-formedness; these rubrics grade *step behaviour* — did the transformation preserve the obligations, bindings, scopes, authorities, and verdicts it was contracted to preserve.
+Each rubric is a small set of **checkable boolean predicates** over a step's **input artifact**
+and **output artifact** — never a quality score, never a running tool. A predicate either holds
+or it does not, and it is decidable by reading the two files alone. **A single failing predicate
+fails the step.**
 
-Each rubric is a small set of **checkable predicates**, not a Likert or quality score. A predicate either holds or it does not. The suite reports the count of failing predicates per step, and **a single failing predicate fails the step**. Every predicate is decidable against the step's input artifact plus its output artifact alone — no runtime, no tool under test is presumed.
+Rubrics exist because a well-formed file is not a well-performed step. A task packet can match
+[the template](../starter-kit/templates/task.md) perfectly and still pull a requirement its spec
+never stated; a review packet can have every column filled and still rest on the agent's own
+summary. The [checks catalogue](../docs/reference/checks.md) covers format and hygiene; these
+rubrics grade the transformation between the files.
 
-These are **producer-side self-tests**. They measure the Swarm framework's own validity fixtures and any agent executing the flow. They are deliberately *not* part of the starter kit an adopter installs: an adopted project gets the authoring skills, reference cards, and templates, but not these rubrics, because an adopter does not re-grade the framework. That is why these pages live under `evals/` and may freely link sibling `docs/` pages.
+Every predicate here is a **checklist**-level rule: a scorer decides it by reading; nothing in
+this repository runs or enforces it. Where a predicate is toolable, the page says so and names
+the swarm-cli command.
 
-## The nine rubrics, one per step
+## The rubrics
 
-The rubrics are indexed in flow order. Each page states that step's output-grading predicates (what a correct output MUST exhibit) and re-states the cross-step predicates the suite scores at that stage.
+| Step | Rubric | Grades |
+|---|---|---|
+| Pull | [pull.md](pull.md) | verbatim capture, provenance, no editorializing |
+| Spec | [spec.md](spec.md) | requirement form, fidelity to sources, surfaced uncertainty |
+| Task | [task.md](task.md) | scope drawn from the source, boundaries declared, checks mapped |
+| Run | [run.md](run.md) | complete summary, real output, declared exceptions |
+| Review | [review.md](review.md) | full coverage, evidence-backed results, routed exceptions, honest gate |
+| Close | [close.md](close.md) | findings saved, board updated, nothing left dangling |
 
-| Step | Phase(s) | Rubric | Grades |
-| --- | --- | --- | --- |
-| `author` | entry | [author.md](author.md) | source fidelity, stance, surfaced uncertainty |
-| `lint` | PARSE + NORMALIZE | [lint.md](lint.md) | parse-validity decided, blocking recall, non-mutation, severity |
-| `improve` | NORMALIZE | [improve.md](improve.md) | intent preserved, no distillation loss, closed op set |
-| `lower` | LOWER | [lower.md](lower.md) | total obligation preservation, binding/authority survival, edge soundness |
-| `decompose` | LOWER | [decompose.md](decompose.md) | write-disjoint packets, DAG order, total coverage, context |
-| `implement` | EXECUTE | [implement.md](implement.md) | scope-faithful diff, obligation coverage, trace honesty |
-| `verify` | VERIFY | [verify.md](verify.md) | proof-result completeness, adapter resolution, provenance |
-| `review` | REVIEW | [review.md](review.md) | verdict completeness/correctness, sceptical independence, gate |
-| `promote` | PROMOTE | [promote.md](promote.md) | nothing durable left task-local, provenance, stance, no spurious |
+The conditional steps — Inventory and Change Plan — produce authored documents, so they are
+scored with [spec.md](spec.md)'s fidelity predicates against their own templates. Teams running
+the full nine-step lifecycle score the finer steps with
+[advanced-lifecycle.md](advanced-lifecycle.md).
 
-The nine steps and their phase mapping are the canonical set fixed in the [flow graph](./docs/reference/cheatsheet.md); these rubrics add no step and remove none.
+## The cross-step predicates
 
-## The four cross-step predicates
+Four predicates are not owned by a single step: they assert the loop-wide invariants, and the
+suite scores them wherever the relevant artifact appears. Each rubric page re-states the ones
+that apply at its step; this table is the single definition.
 
-Four predicates are not owned by a single step. The suite scores them **wherever the relevant artifact appears**, because they are the flow-wide correctness invariants the corpus exists to defend. Each per-step rubric page re-states the cross-step predicates that apply at its stage; this table is the single definition.
+| Predicate | What it asserts | Scored at |
+|---|---|---|
+| **Re-parses clean** | Every file a step writes still reads as its `type:` — frontmatter fields and required sections per its template, so a second reader reconstructs the same artifact. | Pull, Spec, Task, Review, Close |
+| **Chain unbroken** | The requirement → task → review chain holds end to end: every scoped requirement reaches a review row, and every task scope item, verify item, and review row names a requirement that exists upstream. | Task, Run, Review |
+| **Result consistent with evidence** | Every recorded result matches what its evidence actually shows: a Pass carries pasted output or a CI link; an empty Evidence cell means Unverified, never Pass. | Run, Review |
+| **Drift surfaced** | A mismatch between what the spec says and what was built is named somewhere visible — a coverage row, a Human attention entry, a board item — never silently passed. | Review, Close |
 
-| Cross-step predicate | What it asserts | Scored at the output of |
-| --- | --- | --- |
-| **Parse-validity** | Every emitted SOL artifact re-parses clean against the grammar; no step emits a structurally invalid block. | `author`, `improve`, `lower`, `decompose`, `promote` |
-| **Trace-completeness** | The backward chain `obligation → task → trace → verdict` is unbroken: every assigned obligation reaches a verdict, and every verdict names an obligation that exists upstream. | `decompose`, `implement`, `verify`, `review` |
-| **Verdict-correctness** | Each `VERDICT` is consistent with its evidence and the 7-value verdict model (4 core + 3 lifecycle decorators); no decorator is applied without its condition, no core verdict contradicts its proof result. | `verify`, `review` |
-| **Drift-detection** | The step classifies and surfaces each drift class — stale spec drift, undocumented implementation drift, stale proof drift, and memory drift — rather than silently passing it. | `review`, `promote`; the stale-memory and unauthorized-change fixtures |
+## How a rubric is scored
 
-Drift-detection is defined without a runtime: drift is found by the `review` and `promote` steps comparing the approved obligation set against the recorded evidence and the higher-authority sources, never by observing a running system. A step that fails to flag a drift class present in its fixture fails the drift-detection predicate **even if every other predicate holds**.
+1. Read the step's input artifact and its output artifact.
+2. Decide each predicate on the rubric page as a boolean, citing the span that decides it.
+3. Re-check the cross-step predicates listed for that step.
+4. Report the failing predicates. **Any failing predicate fails the step.**
 
-## How a rubric is scored (no runtime)
+Because every predicate is decided from the files alone, the score is reproducible by hand today
+and automatable later without trusting the agent under test. The
+[checks fixtures](../conformance/README.md) are the pinned test data a checker scores these
+predicates over.
 
-For a candidate step output, a reviewer (or future harness):
+## Related
 
-1. Reads the step's **input artifact** and its **output artifact**.
-2. Evaluates each predicate on that rubric page as a boolean, citing the span that decides it.
-3. Re-evaluates the cross-step predicates listed for that stage.
-4. Reports the count of failing predicates. **Any failing predicate fails the step.**
-
-Because every predicate is decidable from the two artifacts alone, the score is reproducible by hand today and automatable by a future harness without either trusting or running the tool under test. The held-out mutated variants in the corpus are the contamination guard: a step that satisfies a rubric on the canonical fixture but not on its semantically equivalent mutated twin has memorized the label, not executed the transformation, and is scored a fail on that step.
-
-## Related references
-
-- [The golden corpus](./docs/reference/golden-corpus.md) — the inert fixture suite these rubrics are scored over; defines the nine rubrics and the cross-step predicates this directory expands.
-- [The flow graph](./docs/reference/cheatsheet.md) — the canonical counts (7 blocks, 5 modals, 7 verdicts, 9 proof types, 9 steps, 10 improve operations, 5 lint layers) every rubric cites.
-- [The step guides](./docs/passes/) — the per-step contracts each rubric grades against.
-- [The lint catalogue](./docs/language/errors.md) — every `SOL-<LAYER>NNN` code a rubric references.
-- [Drift and staleness](./docs/reference/drift-and-staleness.md) — the four staleness conditions the drift-detection cross-step predicate scores.
+- [Basic workflow](../docs/02-basic-workflow.md) — the loop these rubrics grade.
+- [Checks](../docs/reference/checks.md) — the format and hygiene catalogue these rubrics build on.
+- [Templates](../starter-kit/templates/) — the frozen artifact formats every rubric reads against.
+- [Advanced-lifecycle rubrics](advanced-lifecycle.md) — the finer-step bars for high-risk work.

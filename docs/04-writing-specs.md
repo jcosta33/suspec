@@ -1,0 +1,137 @@
+# Writing specs
+
+*Works today — plain markdown plus your agent; no Swarm tooling required.*
+
+A spec is one markdown file that answers, before any code is written: **what should the system
+do, for whom, how will we know it works, and what is deliberately out of scope?** It is the
+contract between whoever wants the change and whoever — or whatever — builds it: an agent should
+be able to work from it without coming back with questions, and a reviewer should be able to
+check the result against it row by row.
+
+A spec is **not** a task (that's the bounded work packet cut from it — see
+[Creating tasks](06-creating-tasks.md)), a design brainstorm, a change plan, a PR description,
+an audit, or a bug report. It records intended behavior; how the code gets there is the
+implementer's call.
+
+## When to write one — and when not
+
+Write a spec when behavior changes: a user-visible feature, an API or business-rule change,
+anything where two people (or one person and one agent) need to agree on acceptance criteria, or
+a bug that revealed missing expected behavior worth pinning down.
+
+Skip the spec for:
+
+- a trivial rename,
+- formatting-only changes,
+- a one-liner already covered by an existing requirement,
+- routine housekeeping with no behavior change.
+
+Those go straight to a small task — the [basic workflow](02-basic-workflow.md) page has the
+skip-paths. The threshold is a convention — nothing in this repo enforces it — but it is not
+politeness: forcing process onto already-clear work measurably hurts outcomes
+[[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM)
+[[ASKORASSUME]](research/sources.md#ASKORASSUME).
+
+## The template
+
+The format is frozen in the kit — copy
+[`starter-kit/templates/spec.md`](../starter-kit/templates/spec.md) rather than reinventing it.
+What each part is for:
+
+- **Frontmatter** — `type: spec`, an `id` (`SPEC-<slug>`), `title`, `status` (`draft` until the
+  open questions are answered, then `ready`), an `owner` (the person who answers questions
+  during the work), and `sources` (the ticket or intake file this spec distills).
+- **Intent** — one to three sentences: the behavior change and why.
+- **Non-goals** — what this spec deliberately does not change.
+- **Requirements** — one `### AC-NNN — <name>` per requirement: a single behavior sentence
+  ("When X, the component must Y.") and a `Verify with:` line naming a test or command.
+- **Open questions** — anything unresolved. A spec with open questions is not `status: ready`.
+- **Affected areas** — the paths the work is expected to touch.
+- **Dropped from sources** — optional, recommended: what the ticket or PRD asked for that this
+  spec deliberately leaves out, and why.
+
+## Writing rules
+
+All advisory — they make requirements checkable, and a reviewer can inspect each one, but
+nothing blocks you. The full list of common mistakes to check for lives in
+[`reference/checks.md`](reference/checks.md); a future `swarm spec check` should flag them —
+until then they are review checklist items.
+
+1. **Give every requirement a `Verify with:` line.** It is the highest-value line in the file —
+   executable acceptance criteria are the strongest known task-input signal
+   [[ORACLESWE]](research/sources.md#ORACLESWE). Naming a test that doesn't exist yet is fine;
+   the review result reads Unverified until it does.
+2. **Use observable verbs.** "Returns 401", "redirects to `/login`", "writes the audit row" —
+   not "handles", "supports", "manages", "improves".
+3. **One behavior per requirement.** If the sentence needs an "and", it is usually two
+   requirements — split them so each can pass or fail on its own.
+4. **Name the actor.** "The client must…", "The API must…" — never "it should" or a passive
+   "errors are logged" that leaves the doer unknown.
+5. **One binding word per requirement** — must, must not, should, or may — and mean it: a
+   "should" hands the agent a decision; make sure that's intended.
+6. **Order requirements by importance.** Agents weight earlier instructions more — put the
+   requirement you would block the merge over first.
+7. **Lift uncertainty into Open questions.** A hedge inside a requirement ("probably", "if
+   feasible") buries a decision; a listed question gets answered before `ready`.
+8. **Watch the vague words.** _Fast, robust, scalable, secure, gracefully, significant, as
+   needed_ — each is fine with a same-sentence number or observable behavior, and a smell
+   without one. The watchlist is advisory, never a gate.
+9. **Keep Non-goals honest.** List the things a reasonable reader might assume are included but
+   aren't — Non-goals are where scope disputes go to be settled cheaply.
+10. **Celebrate "Dropped from sources".** Recording what you cut, and why, is where design
+    rationale lives — the next person to pick up the ticket sees the decision instead of
+    re-litigating it.
+
+## Why this much care
+
+These rules are not style preferences. Ambiguous or incomplete requirement text measurably
+degrades agent code correctness [[ORCHID]](research/sources.md#ORCHID)
+[[HUMANEVALCOMM]](research/sources.md#HUMANEVALCOMM) — and models usually code anyway instead of
+asking [[HILBENCH]](research/sources.md#HILBENCH), so the misreading lands in the diff, not in a
+clarifying question. The fix is in the text: clarifying or repairing the requirement recovers
+correctness, and the repaired text transfers across models
+[[SPECFIX]](research/sources.md#SPECFIX) [[CLARIFYGPT]](research/sources.md#CLARIFYGPT). Half an
+hour on the spec is cheaper than a review cycle on the wrong implementation.
+
+## When the spec changes
+
+Amend in place. Review feedback, a discovered edge case, a change of direction — edit the
+requirement, keep its ID (a renumbered AC silently breaks every task scope, review row, and
+finding that references it), and record any material cut under Dropped from sources. New
+behavior gets new IDs; retired requirements keep their ID with a one-line note rather than
+freeing the number. There is no regeneration step and no version field — git history is the
+history. A spec known to lag the code is marked `stale` on the status board until someone
+amends it (see [Where files live](03-where-files-live.md)).
+
+## Stricter notation: SOL
+
+For high-risk work, any spec can switch its requirements to SOL — a stricter structured
+requirements notation — by adding `format: sol` to the frontmatter. Same requirement, two
+surfaces:
+
+```markdown
+### AC-001 — Expired refresh token redirects to login
+
+When the refresh token is expired, the client must clear the local
+session and redirect to `/login`.
+
+Verify with: `auth-refresh-expired-token.test`
+```
+
+```text
+REQ AC-001:
+WHEN the refresh token is expired
+THE client MUST clear the local session
+AND THE client MUST redirect to `/login`
+VERIFY BY test:cmdTest:auth-refresh-expired-token
+```
+
+The IDs, the binding words, and the verification line carry over one-for-one, and review reads
+both forms identically — SOL just fixes the clause order and makes the binding explicit. The
+notation reference is [`reference/structured-requirements.md`](reference/structured-requirements.md).
+
+## Next
+
+- [Creating tasks](06-creating-tasks.md) — cut the spec into bounded agent work.
+- [Brownfield and change plans](05-brownfield-and-change-plans.md) — when the work is
+  structural, the spec gets a companion document.

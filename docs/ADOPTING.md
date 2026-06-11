@@ -1,81 +1,64 @@
 # Adopting Swarm
 
-Swarm is markdown only — there's nothing to install or run. You adopt it by **handing your coding agent the
-prompt below**, which tells it to pull the framework from `github.com/jcosta33/swarm` and integrate the
-right pieces into your repo. It works two ways: **instantiating a fresh repo** as a Swarm spec/docs repo (the
-common case — most teams don't yet keep specs separately), and **integrating into an existing repo**.
+Swarm is files, not software. Adoption is copying a handful of templates and filling
+in one bootloader. Three paths, in order of preference.
 
-Swarm lives in a **spec / documentation repo** (where intent is authored and reviewed). **Code repos stay
-pristine** — a good SOL spec is self-legible, so a developer's repo needs essentially nothing from Swarm.
+## 1. Manual adoption (five minutes)
 
-## The prompt — copy this to your agent
+In the repo that will hold your specs and reviews — a dedicated workspace repo, or
+your project repo for a co-located setup ([where files live](03-where-files-live.md)):
 
-> **Adopt the Swarm framework into this repository.**
->
-> 1. **Get Swarm.** Clone or read `https://github.com/jcosta33/swarm` — a markdown-only framework, nothing to
->    build or run. Its authoritative instructions are `docs/ADOPTING.md` and `starter-kit/README.md`; read
->    both first. The pieces you'll use are under `starter-kit/` (the authoring kit) and, for a code repo,
->    `docs/library/code-skills/`.
->
-> 2. **Decide this repo's role** — ask me if it isn't obvious:
->    - **Spec / docs repo** — it authors and reviews specs (intent). *This is the default for a new or empty
->      repo.*
->    - **Code repo** — it implements against specs kept elsewhere; keep it pristine.
->    - **Co-located** (a solo project) — one repo does both: do the spec-repo steps **and** drop in the
->      code-repo skill.
->
-> 3. **Spec / docs repo (including a fresh repo you are instantiating as one):**
->    - Copy `starter-kit/.agents/{reference,templates,memory}` into this repo's `.agents/`. Copy
->      `starter-kit/.agents/skills/` **into the directory my agent CLI actually scans** — `.claude/skills/`
->      for Claude Code, otherwise `.agents/skills/` — beside any skills I already have (their
->      `pass-*`/`persona-*`/`write-*` names won't collide with mine). **Don't leave the skills in
->      `.agents/skills/` if my CLI scans `.claude/skills/`** — there they sit unread, and the failure is
->      silent (no error, the skills just never activate).
->    - Put `starter-kit/AGENTS.md` at my repo **root** as `AGENTS.md`. If one already exists, **merge** by
->      heading — keep my content and stop for my approval on any conflict. Add `CLAUDE.md` and `GEMINI.md` as
->      **symlinks** to `AGENTS.md` (`ln -s AGENTS.md CLAUDE.md` and `ln -s AGENTS.md GEMINI.md`) — one
->      bootloader, many agent tools. Do **not** use `@AGENTS.md` import aliases (a regular file that just
->      `@`-imports `AGENTS.md`); the entrypoints are symlinks so there is a single file, never a copy to drift.
->    - Create a top-level **`specs/`** with **one folder per feature** — `specs/<feature>/spec.md` is
->      the contract (where the `author` step writes), and that feature's supporting docs (audit, research,
->      bug-report, PRD, RFC, …) sit beside it in the same folder. Create a top-level **`decisions/`** for ADRs
->      (numbered `0001-`, `0002-`, …); findings live in `.agents/memory/`. **`.agents/` holds only tooling.**
->      The kit ships an example `specs/001-contact-form/` and a seed `decisions/0001-adopt-swarm.md` — copy
->      their shape, then replace them.
->    - Append `starter-kit/.gitignore.additions` to my `.gitignore`.
->    - Fill the `AGENTS.md` `## Commands` table from my real test/lint/build commands (read
->      `package.json`/`Makefile`/CI and confirm with me) and `## Project facts` from my stack and conventions.
->
-> 4. **Code repo:** keep it **pristine** — do *not* add SOL reference cards or copy specs in (the spec is the
->    whole interface). At most, copy the one skill `docs/library/code-skills/implement-and-verify/` into my
->    skills dir (the discipline that makes parallel-agent output trustworthy), and append
->    `starter-kit/.gitignore.additions`. When I implement an obligation I prove each `VERIFY BY` and open a PR
->    naming the obligation ids — the PR is the trace and verdict; anything durable goes back to the spec repo
->    as a linked PR.
->
-> 5. **Report** what you created, copied, and merged, and anything you need me to confirm. This adoption is
->    **additive** — do not delete or overwrite my files.
+1. Copy `starter-kit/templates/` → `templates/` (8 files: spec, task, review,
+   finding, status, intake, inventory, change-plan).
+2. Copy `starter-kit/agent/` → the directory your agent CLI scans for skills
+   (`.claude/skills/` for Claude Code; otherwise `.agents/skills/`). It contains
+   `AGENTS.md` plus three guides: `write-spec`, `implement-task`, `review-output`.
+3. Move that `AGENTS.md` to your repo **root** and fill its `{{placeholders}}` —
+   your test/lint/build commands and standing project facts. Add `CLAUDE.md` and
+   `GEMINI.md` as symlinks to it (`ln -s AGENTS.md CLAUDE.md`) — one bootloader,
+   many agent tools, never a copy that can drift.
+4. Copy `starter-kit/decisions/` → `decisions/` and append
+   `starter-kit/.gitignore.additions` to your `.gitignore`.
+5. Create `specs/`, `intake/`, `tasks/`, `reviews/`, `findings/`, and a `status.md`
+   from the template. Write one spec for your next non-trivial change.
 
-## What you end up with
+Optional, when you need them: copy pieces of `starter-kit/advanced/` (audit,
+research, bug, ADR, RFC, PRD templates and their guides). The advanced audit
+template is the recommended first taste for brownfield teams.
 
-A **spec / docs repo:**
+## 2. Agent-assisted adoption
 
-```text
-specs/<feature>/       # one folder per feature: spec.md + its supporting docs (audit/research/…)
-decisions/             # project-wide ADRs, numbered (0001-, …)
-.agents/
-  skills/  reference/  templates/  memory/   # Swarm tooling, nothing else
-AGENTS.md  (+ CLAUDE.md, GEMINI.md symlinks)
-```
+Hand your coding agent this prompt:
 
-A **code repo:** unchanged, plus at most `.agents/skills/implement-and-verify/` and a `.gitignore` line.
-No `.swarm/` directory, no mount, no version file — to upgrade, re-run the prompt against a newer checkout
-(it overwrites Swarm's `pass-*`/`persona-*`/`write-*` skills and leaves yours and your specs untouched).
+> Adopt the Swarm framework into this repository. Read
+> `https://github.com/jcosta33/swarm` — specifically `docs/ADOPTING.md` and
+> `starter-kit/README.md` — then perform the manual-adoption steps above for me:
+> copy the templates and agent guides, place `AGENTS.md` at the repo root with
+> `CLAUDE.md`/`GEMINI.md` symlinks, fill its Commands table from my real
+> test/lint/build setup (read package.json/Makefile/CI and confirm with me),
+> create the workspace folders, and append the gitignore additions. This is
+> additive — do not delete or overwrite my files; stop and ask on any conflict.
 
-## Notes
+## 3. Future CLI adoption
 
-- **One spec, many code repos.** Obligation ids are namespaced and SOL has cross-spec references
-  (`spec-id#AC-001`), so a code repo's PR can name an obligation that lives in a central spec repo.
-- **Brownfield is non-destructive.** The only merge point is the root `AGENTS.md`/`CLAUDE.md`; existing code
-  is `observed` until an audit + a spec govern it (adoption never retrofits specs). See
-  [`model/workspace.md`](model/workspace.md) for the source-code surface policies.
+`swarm init` will do the above mechanically. It does not exist yet — the contract
+is [reference/future-cli.md](reference/future-cli.md).
+
+## Code repos
+
+A code repo that implements against your specs needs **nothing**. At most:
+
+- a one-line pointer in its `AGENTS.md`: _"Swarm workspace: `<path-or-url>` — read
+  the task packet you are given before coding"_;
+- the `implement-task` guide copied into its skills directory;
+- the `.gitignore.additions` lines.
+
+The agent works from the task packet; the PR links the workspace review packet.
+Specs, reviews, and findings never live in the code repo (convention — nothing
+enforces it; that's the point of keeping the workspace authoritative).
+
+## Upgrading
+
+Re-copy `starter-kit/templates/` and `starter-kit/agent/` from a newer checkout.
+Your specs, tasks, reviews, findings, decisions, and `AGENTS.md` are yours — the
+kit never touches them.

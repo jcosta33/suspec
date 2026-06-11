@@ -1,88 +1,121 @@
 # Swarm
 
-**Swarm is a way to write software specs that AI agents can build from reliably.** You write the spec in
-controlled Markdown; agents read it, implement it, and prove they met it. The **spec — not the code — is the
-source of truth**, the way OpenAPI, Terraform, and Kubernetes treat a declared `spec` as authoritative and
-reconcile reality against it.
+**A lightweight spec and review workflow for teams using coding agents.**
 
-Put another way, it is a **structured specification & review system**: the same structure that lets an agent
-build reliably lets a reviewer check the result by **exception** — the failed or unverified obligations and
-unauthorized changes — instead of re-reading the whole diff.
+Turn tickets into clear specs, specs into agent-ready tasks, and agent output into
+evidence you can review — plain markdown, any agent, no runtime.
 
-This repository is **markdown only**. Nothing here runs: every "tool" Swarm describes — a linter, a planner,
-a checker, a CLI — is a *contract a future tool could build against*, never code this repo ships.
+## The problem
 
-- **The spec is the source.** Requirements are written as **SOL** obligations (the Swarm Obligation Language)
-  inside ordinary `*.md` files — e.g. `WHEN the request fails THE client MUST retry once VERIFY BY
-  test:cmdTest:retry`. Plain Markdown around them carries the explanation.
-- **Agents do the work.** An agent takes a spec through a short set of **steps** — write it, sharpen it, plan
-  it, implement it, prove it, review it, fold the learnings back — and the bar to merge is simple: **every
-  required obligation has a passing proof.**
+Coding agents increase code volume; they don't increase your capacity to direct and
+check it. The mess collects in five places: vague tickets pasted into chat, context
+re-explained every session, agents drifting off-scope, giant PRs nobody can honestly
+review, and lessons lost the moment the session ends.
 
-## The flow
+Swarm is not an agent. Claude Code, Codex, Cursor, Aider — or a human — does the
+coding. Swarm organizes the work around them, and invests where the bottleneck
+actually is: **generation outpaces validation**, so the review side gets the structure.
 
-Intent flows from rough inputs to durable knowledge through nine ordered steps:
+## The loop
 
-```text
-author → lint → improve → lower → decompose → implement → verify → review → promote
+```
+Pull ──▶ Spec ──▶ Task ──▶ Run ──▶ Review ──▶ Close
+ │        │        │        │        │          │
+intake   spec     task    branch   review     finding
+snapshot                  + code   packet     + status
 ```
 
-Research, audits, and bug reports become a `*.md` spec; it's sharpened and turned into a structured
-form and a plan; the plan yields bounded work packets; an agent implements each and records what it did;
-verification and review judge it against the spec's obligations; durable discoveries fold back into memory.
+1. **Pull** the work — snapshot the ticket into `intake/`.
+2. **Spec** it — a one-page contract: requirements with IDs and `Verify with:` notes.
+3. **Task** it — a bounded packet an agent can finish in one sitting.
+4. **Run** it — your agent CLI, in its own git worktree.
+5. **Review** it — coverage, evidence, and a human-attention list, not a 3,000-line diff.
+6. **Close** it — save what you learned as a finding; update the board.
 
-The notation is small and closed — **7 obligation block types**, **5 modals** (`MUST`/`MUST NOT`/`SHOULD`/
-`SHOULD NOT`/`MAY`), proofs bound with `VERIFY BY <type>:<adapter>:<artifact>` across **9 proof types**, and
-**7 verdicts**. The exact members of every set live in one place: [`docs/reference/cheatsheet.md`](docs/reference/cheatsheet.md).
+Structural or brownfield work adds two optional steps — an **inventory** (map what
+exists) and a **change plan** (how the codebase changes safely). Small cleanups skip
+straight to Task. The full guide: [docs/02-basic-workflow.md](docs/02-basic-workflow.md).
 
-## Where the files go
+## Sixty seconds of Swarm
 
-Swarm lives in a **spec / documentation repo** — where intent is authored and reviewed. **Code repos stay
-pristine.** ([ADR-0050](docs/adrs/0050-swarm-is-a-spec-repo-discipline.md))
+A requirement in a spec:
 
-- A **spec repo** adopts the **starter kit** (the authoring skills, the rule cards, the templates). Specs
-  live in **per-feature folders** — `specs/<feature>/` holds the contract plus its supporting docs (audit,
-  research, …); decisions live in **`decisions/`** (numbered ADRs); durable memory in **`.agents/memory/`**.
-  One spec can govern **many** code repos — obligation ids are namespaced (`spec-id#AC-001`).
-- A **code repo** takes **almost nothing**: a good SOL spec is self-legible, so no rule cards and no specs go
-  there. At most one optional `implement-and-verify` skill. The **PR** (naming the obligation ids it
-  satisfies, with CI + review) is the record; durable outcomes flow back to the spec repo as linked PRs.
-- **Co-located** (a solo project) does both in one repo.
+```markdown
+### AC-001 — Expired refresh token redirects to login
+When the refresh token is expired, the client must clear the local
+session and redirect to `/login`.
 
-`.agents/` holds only tooling; there's no `.swarm/` directory and no version file — to upgrade, re-copy the
-kit. Nothing executes; the files are inert reference data and copyable templates.
+Verify with: `auth-refresh-expired-token.test`
+```
 
-## How to adopt
+And the review packet that comes back after an agent run:
 
-**→ [`docs/ADOPTING.md`](docs/ADOPTING.md)** has a single copy-paste prompt: hand it to your coding agent
-and it pulls Swarm and integrates the right pieces, whether you're starting a fresh spec repo or adding to
-an existing one.
+```markdown
+| ID     | Result     | Evidence                       | Human attention |
+|--------|------------|--------------------------------|-----------------|
+| AC-001 | Pass       | test output pasted             | no              |
+| AC-002 | Unverified | no test output found           | yes             |
 
-## The one rule: NO RUNTIME
+## Human attention
+1. AC-002 has no pasted test output.
+2. Retry logic changed in `src/auth/client.ts` — outside task scope.
+```
 
-Swarm ships markdown, not software. Everything that "runs" is a contract a future tool builds against, never
-something this repo executes — and a `PASS` verdict requires a real proof that actually ran, not a
-structurally valid artifact [[REFLEXION]](docs/research/sources.md#REFLEXION). The full set of standing
-principles is in [`docs/PRINCIPLES.md`](docs/PRINCIPLES.md); what Swarm deliberately is *not* is in
-[`docs/NON-GOALS.md`](docs/NON-GOALS.md).
+That table is the point: instead of reading the whole diff, you read which
+requirements passed **with evidence**, which didn't, and where your eyes are needed.
+An empty evidence cell means *Unverified*, never *Pass*. The full demo — a 40-file
+agent PR reviewed by exception — is
+[docs/examples/large-pr-review.md](docs/examples/large-pr-review.md).
 
-## Where the docs live
+## Where files live
 
-- [`docs/language/`](./docs/language/) — the SOL and APS references, the error catalogue, versioning.
-- [`docs/model/`](./docs/model/) — [how Swarm works](./docs/model/how-swarm-works.md), the artifacts, source
-  authority, and what makes a valid Swarm repo.
-- [`docs/passes/`](./docs/passes/) — one page per step.
-- [`docs/reference/`](./docs/reference/) — the [cheatsheet](./docs/reference/cheatsheet.md) (every closed
-  set), proof types, the structured form, the promotion protocol, the glossary.
-- [`docs/artifacts/`](./docs/artifacts/) — the contract for each artifact (spec, task, trace, review,
-  finding, ADR, and the source-document types).
-- [`docs/library/`](./docs/library/) — the authoring skills and the heuristic profiles.
-- [`docs/adrs/`](./docs/adrs/) — the decision ledger.
-- [`starter-kit/`](./starter-kit/) — the files an adopter copies (skills, reference cards, templates, and a
-  scaffold).
+- **This repo** — the framework: docs, templates, a starter kit.
+- **Your workspace** — your specs, tasks, reviews, and findings: a dedicated repo,
+  or the same tree inside your project. [docs/03-where-files-live.md](docs/03-where-files-live.md)
+- **Your code repos** — stay clean. The PR links its review packet; that's all.
 
-Together, `docs/` + `starter-kit/` **are** Swarm; the references here are complete and defer to nothing else.
+## What works today, what comes later
 
----
+**Today** (markdown + your agent, nothing to install): the templates, specs, task
+packets, review packets, findings, the worked examples.
 
-Swarm **v0.1** · language **SOL/0.1**, **APS 0.1**.
+**Later** (a CLI, in progress as `swarm-cli`): `swarm pull`, `swarm spec check`,
+`swarm task new`, `swarm worktree create`, `swarm review`, `swarm status` — the
+quality-of-life automation around the same files.
+The contract: [docs/reference/future-cli.md](docs/reference/future-cli.md).
+
+Swarm does **not** promise deterministic code generation, automatic correctness,
+formal verification, or the end of PR review. It promises better inputs, bounded
+tasks, reviewable evidence, and kept context.
+
+## What Swarm is / is not
+
+**Is:** a spec format agents can work from · a task-packet format that bounds agent
+work · a review-packet format that shows where human attention goes · a findings
+convention so lessons survive the session · a starter kit of markdown templates ·
+a workspace convention that keeps all of it out of your code repos.
+
+**Is not:** an agent or agent runtime · a compiler · a programming language · a
+Jira/Linear replacement · a code generator · a replacement for PRs and CI · a docs
+portal · a complete SDLC platform · a guarantee that agent output is correct.
+
+How it differs from its neighbors: spec-first scaffolds generate plans; trackers
+hold tickets; AI reviewers hunt bugs. Swarm's distinct piece is the **persisted,
+exception-routing review packet** tied to requirement IDs — plus a workspace and an
+honesty rule: anything not enforced by a tool says so.
+
+## Get started
+
+1. Copy `starter-kit/templates/` into your workspace (8 files).
+2. Copy `starter-kit/agent/` next to your agent's skills (4 files).
+3. Fill `AGENTS.md` with your commands and facts.
+4. Write one spec for your next non-trivial change. Run the loop once.
+
+Or hand your agent [docs/ADOPTING.md](docs/ADOPTING.md) and let it do the copying.
+
+## Going deeper
+
+[What is Swarm](docs/01-what-is-swarm.md) · [Basic workflow](docs/02-basic-workflow.md) ·
+[Writing specs](docs/04-writing-specs.md) · [Reviewing output](docs/08-reviewing-output.md) ·
+[Examples](docs/examples/) · [Reference](docs/reference/) ·
+[Design decisions](docs/adrs/) · [Evidence](docs/research/sources.md)

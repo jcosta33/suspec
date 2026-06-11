@@ -1,17 +1,107 @@
-# Conformance contract
+# Checks fixtures
 
-Machine-readable conformance data for Swarm-adopting repos. A checker (the Swarm CLI, or any tool) reads this to answer *"is this repo / task file Swarm-conformant?"* without re-deriving the rules from prose.
+*Advanced design note — internal rationale; not needed to use Swarm.*
 
-**Swarm itself runs nothing** — this directory is inert contract data, not an executor. The checker is a separate-tool concern; what ships here is the contract it validates against and a fixture suite that pins the expected verdicts.
+Test data for [the checks reference](../docs/reference/checks.md), consumed by swarm-cli.
+Every check in that reference is a claim about what a correct checker reports on a given
+file; this directory pins those reports as fixtures, per the two-way severity split
+(hard error / warning). swarm-cli's `swarm spec check` is the reference consumer — its
+test suite runs against these files — and a reviewer working by hand can use them the
+same way: apply the checks, compare against the pinned expectation.
 
-## What's here
+**Nothing in this directory runs.** It is data, not a runner: Swarm ships the contract
+([`conformance.yaml`](./conformance.yaml)) and the fixtures that test it, never the checker.
 
-- **`conformance.yaml`** — the manifest: the sections a well-formed task file must have, the required `AGENTS.md > Commands` rows, the legal placeholder namespaces, and the per-task-kind required verification suite.
-- **`fixtures/conformant-task.md`** — a task file that passes every rule.
-- **`fixtures/violations.md`** — one minimal example per violation class, each with the rule it breaks and the expected verdict. This is the checker's regression suite and the guard against the manifest drifting from the prose rules.
+## When is a workspace valid?
 
-## Provenance
+The whole bar, in one breath: a workspace is valid when **(a)** it has a populated
+`AGENTS.md` (aim for ~100 lines — guidance, not a cap), **(b)** the core templates are
+present, and **(c)** at least one spec satisfies the core checks of
+[the checks reference](../docs/reference/checks.md). Nothing else is required. This is a
+convention — nothing in this repository enforces it; `swarm spec check` can verify clause (c).
 
-The manifest is the machine-readable shadow of the framework's directory-layout, `AGENTS.md`, template-placeholder, flow-graph, and verification-gate rules. The framework definition is canonical; this manifest restates it as testable data, and the fixtures fail if the two disagree.
+## The two evidence rules
 
-> A future checker is what makes this enforceable. Until one runs, the contract still serves: it is the precise, testable definition a runtime must honour, and a human can validate a repo against it by hand.
+Checklist level — review is expected to inspect both; `swarm spec check`'s packet mode can
+flag the mechanical parts:
+
+- **`non-empty-paste`** — a completion claim binds to pasted output or a CI link, never a
+  bare "tests passed" [[REFLEXION]](../docs/research/sources.md#REFLEXION). In a review
+  packet, an empty Evidence cell means **Unverified**, never **Pass**.
+- **`no-open-critical`** — work is not closed with an open blocking question; a task or
+  review whose status is terminal carries no unresolved blocking question anywhere in it.
+
+## What is in this directory
+
+| Path | Holds |
+|---|---|
+| [`conformance.yaml`](./conformance.yaml) | The checks contract as data: spec-form selector, core check list with severities, task and review packet schemas, the evidence rules, advisory command slots, placeholder namespaces. |
+| [`fixtures/conformant-task.md`](./fixtures/conformant-task.md) | A task packet that passes every task check — the positive oracle. |
+| [`fixtures/violations.md`](./fixtures/violations.md) | One minimal negative fixture per violation class, each with the check it trips and the expected report. |
+| `fixtures/auth-refresh/` · `fixtures/payment-5xx/` · `fixtures/checkout/` | Three end-to-end domains: the spec in both forms (the equivalence pair), a task packet, a review packet, a finding, and an `EXPECTED.md` pinning what a checker must report at each artifact. |
+| [`fixtures/prose-corpus/`](./fixtures/prose-corpus/README.md) | The labeled writing-rules corpus: prose spans with ground-truth labels for the advisory watchlist, plus the precision/recall baseline any detector is scored against. |
+
+## The three domains and the examples they mirror
+
+Each fixture domain covers the same ground as one worked example in `docs/examples/` —
+the example teaches the workflow; the fixture pins the checker results over equivalent
+artifacts:
+
+| Fixture domain | Worked example |
+|---|---|
+| `fixtures/auth-refresh/` | [feature-from-jira](../docs/examples/feature-from-jira.md) |
+| `fixtures/payment-5xx/` | [bug-fix](../docs/examples/bug-fix.md) |
+| `fixtures/checkout/` | [large-pr-review](../docs/examples/large-pr-review.md) |
+
+## The equivalence pairs (the anti-fork proof)
+
+A spec is written in plain structured markdown by default, or in the stricter SOL
+notation per file via frontmatter `format: sol` — but both surfaces encode one and the
+same requirement record, and every check keys on the record, never the surface
+(see [structured requirements](../docs/reference/structured-requirements.md)). Each
+domain therefore ships the **same spec in both forms**, and its `EXPECTED.md` pins that
+a checker extracts the identical record set — same requirement IDs, same strength words,
+same verification references — from either file. If the two forms ever drift into
+different check behavior, these pairs are the fixtures that catch it.
+
+## Reference values (reconciliation) — producer note
+
+This section is for maintainers of Swarm and of tools that consume it. The closed sets
+below have exact sizes, and those sizes appear in exactly two places: **here** and the
+appendix of [the cheatsheet](../docs/reference/cheatsheet.md). Adopter-facing pages list
+values, never counts. A change to any set updates both places — and the fixtures that
+exercise it — in the same commit.
+
+| Closed set | Count | Values |
+|---|---|---|
+| Block types (SOL form) | 7 | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`, `TRACE`, `VERDICT` |
+| Strength words | 5 | must, must not, should, should not, may (SOL form: the same words uppercase) |
+| Review results | 7 (4 core + 3 lifecycle) | core: Pass, Fail, Unverified, Blocked · lifecycle: Waived, Stale, Contradicted |
+| Verification methods | 9 | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor` |
+| Loop steps | 6 (+ 2 conditional) | Pull, Spec, Task, Run, Review, Close (+ Inventory, Change Plan for structural work) |
+| Lifecycle steps (advanced) | 9 | author, lint, improve, lower, decompose, implement, verify, review, promote |
+| Improve operations | 10 | NORMALIZE, ATOMIZE, CONCRETIZE, QUANTIFY, BIND, SCOPE, CLARIFY, DECONFLICT, COMPRESS, PROMOTE |
+| Check layers | 5 | S (structure), P (prose), M (cross-references), V (verification), O (splitting work) — code form `SOL-<LAYER>NNN` |
+
+Reconciliation duties this note carries:
+
+- The core check IDs and severities in [`conformance.yaml`](./conformance.yaml) match
+  [the checks reference](../docs/reference/checks.md) row for row.
+- The task and review section lists in [`conformance.yaml`](./conformance.yaml) match
+  the templates at `starter-kit/templates/` heading for heading.
+- Every fixture's pinned expectation agrees with both; a fixture that disagrees means
+  the contract, the prose, or the fixture is wrong — find out which before shipping.
+
+## How a checker uses this directory
+
+1. Read the rules from [`conformance.yaml`](./conformance.yaml) (or implement
+   [the checks reference](../docs/reference/checks.md) directly — they must agree).
+2. Run over [`fixtures/conformant-task.md`](./fixtures/conformant-task.md): the expected
+   report is empty.
+3. Run over each snippet in [`fixtures/violations.md`](./fixtures/violations.md): each
+   must produce exactly the named check at the named severity.
+4. Run over each domain's artifacts and compare against its `EXPECTED.md` — including
+   the equivalence pair, where both spec forms must yield the same record set.
+5. Score any writing-rules detector against
+   [`fixtures/prose-corpus/labeled.yaml`](./fixtures/prose-corpus/labeled.yaml) and check
+   it against the baseline in [its README](./fixtures/prose-corpus/README.md).

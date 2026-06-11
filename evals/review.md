@@ -1,39 +1,59 @@
-# `review` — step-output rubric
+# Review — step rubric
 
-> The output-quality predicate for the `review` step: a candidate `review.md` MUST carry a `VERDICT` for every required obligation, make each verdict match the recorded evidence with lifecycle decorators applied where their condition holds, judge claims independently of the trace's self-report, list every diff hunk outside the write surface, and compute the merge gate by the gate rule without asserting past a FAIL/UNVERIFIED. Each predicate is a boolean a reviewer decides by comparing the source spec, the diff, the proof evidence, and the emitted review — no runtime.
+*Advanced design note — internal rationale; not needed to use Swarm.*
 
-`review` is the `REVIEW`-phase step, run under the `skeptic` profile. It judges trace claims, applies the lifecycle decorators (`WAIVED`/`STALE`/`CONTRADICTED`), and computes the merge gate. Its rubric grades whether the review is **complete, evidence-correct, sceptically independent, and gate-honest**.
+> The bar for the Review step: every scoped requirement has a coverage row, every result matches
+> its evidence, every exception is routed to a human, the suggested decision follows the table,
+> and the reviewer spot-checked at least one green row. Each predicate is a boolean a scorer
+> decides by comparing the spec, the diff, and the run record against the review packet.
 
-**Input artifact:** the source `spec.md`, the diff, and the `trace.md` proof evidence.
-**Output artifact:** the `review.md` (per-obligation verdicts + the merge-gate result).
+Review is the wedge: it turns a large diff into requirement coverage, evidence, and a short list
+of what needs human attention. This rubric grades whether the packet earns that trust.
 
-## Output-grading predicates
+**Input artifact:** the source spec (the scoped requirements), the diff or PR, and the run
+summary with its pasted output.
+**Output artifact:** the review packet ([template](../starter-kit/templates/review.md)).
 
-Each predicate MUST hold. Any single failing predicate fails the step.
+## Predicates
+
+Each predicate must hold. Any single failing predicate fails the step.
 
 | # | Predicate | Holds when | Fails when |
-| --- | --- | --- | --- |
-| R1 | **Verdict completeness** | Every required obligation carries a `VERDICT` in `review.md`. | A required obligation has no verdict. |
-| R2 | **Verdict-correctness** | Each core verdict matches the recorded evidence, **and** lifecycle decorators (`WAIVED`/`STALE`/`CONTRADICTED`) are applied wherever their condition holds. | A verdict contradicts its evidence, or a decorator's condition holds but the decorator is missing (e.g. an edited-after-PASS surface not marked `STALE`). |
-| R3 | **Sceptical independence** | The review judges trace claims against the **source spec, the diff, and the proof evidence** — not against the trace's self-report. | A verdict is justified only by the implementer's summary — summary-only evidence. |
-| R4 | **Unauthorized-change caught** | Any diff hunk **outside** the `WRITES` surface is listed in the review. | An out-of-surface diff hunk goes unlisted. |
-| R5 | **Gate computed** | The merge-gate result follows the gate rule — *all required verdicts `PASS` or `WAIVED`; none `STALE`/`CONTRADICTED`/`FAIL`/`BLOCKED`/`UNVERIFIED`* — and is **not asserted past** a `FAIL`/`UNVERIFIED`. | The gate opens with a required obligation `STALE`/`FAIL`/`UNVERIFIED`, or the gate result contradicts the verdict set. |
+|---|---|---|---|
+| V1 | **Coverage complete** | Every requirement in the task's scope has a row in the coverage table — plus one row per preservation guarantee when the task executes a change plan. | A scoped requirement has no row; it can neither pass nor route to a human. |
+| V2 | **Empty evidence means Unverified** | Every Pass row carries pasted output or a CI link; a row with an empty Evidence cell is recorded Unverified, never Pass. | A Pass stands on no evidence — "tests passed" with nothing under it is not evidence [[REFLEXION]](../docs/research/sources.md#REFLEXION). |
+| V3 | **Exceptions routed** | Every exception trigger present in the work has a Human attention entry — the trigger list is in the review template, from unverified requirements through out-of-scope changes to blocked questions. | A triggering condition exists in the inputs (an Unverified row, an undeclared edit, a risky file) with no entry routing it. |
+| V4 | **Gate honest** | The packet's status and Suggested decision follow the table: no merge suggestion while any row shows Fail, or Unverified without a routed exception. | The decision contradicts the table — asserted past a Fail or an unrouted Unverified. |
+| V5 | **Spot-check recorded** | The reviewer re-checked at least one green row's evidence and the packet says so. | No spot-check is recorded — the table was rubber-stamped. |
 
-### Decorator and gate checks a reviewer applies
+## Notes for the scorer
 
-- For R2, the lifecycle decorators have conditions a reviewer decides from evidence: `STALE` when the recorded source/surface hash no longer matches the current write surface; `CONTRADICTED` when a higher-authority source disagrees with the obligation; `WAIVED` when an explicit, recorded waiver covers a required obligation. A decorator applied without its condition, **or** a condition holding with no decorator, both fail R2.
-- For R5, a `STALE` required obligation is **not** a failure but is **not mergeable** either — the gate stays closed (`BLOCKED`) until the STALE is reconciled (re-run the proof, amend the spec, or fix the code), never silently re-blessed. A gate that opens over an un-reconciled `STALE` fails R5.
+- Independence is the spine of V2–V4: results are judged against the spec, the diff, and the
+  pasted evidence — never against the run summary's self-assessment alone. Reviewers favor
+  their own and agent output without structure
+  [[SELFPREFER]](../docs/research/sources.md#SELFPREFER)
+  [[JUDGEBIAS]](../docs/research/sources.md#JUDGEBIAS); V5 is the standing countermeasure.
+- A Blocked row is honest, not a defect: the check could not run. What V4 forbids is treating
+  Blocked as Pass. Teams running the full lifecycle also apply the extended result values here —
+  scored by [advanced-lifecycle.md](advanced-lifecycle.md).
+- Drafting the packet and computing the gate is toolable — a future `swarm review` in swarm-cli;
+  until then every predicate on this page is a checklist a scorer reads by hand.
 
 ## Cross-step predicates scored here
 
-The suite scores three cross-step predicates at the `review` output:
+- **Chain unbroken** — every scoped requirement reaches a row (V1 is its expression here), and
+  every row names a requirement that exists upstream.
+- **Result consistent with evidence** — V2 and V4 are its expressions here.
+- **Drift surfaced** — a requirement the code no longer matches, or behavior the spec never
+  asked for, is named in a row or a Human attention entry — never silently re-blessed.
 
-- **Trace-completeness** — every assigned obligation reaches a verdict (R1 is its review-stage expression), and every verdict names an obligation that exists upstream.
-- **Verdict-correctness** — each `VERDICT` is consistent with its evidence and the 7-value model; R2 is its review-stage expression.
-- **Drift-detection** — the review classifies and surfaces **stale spec drift** (approved obligation with no matching evidence), **undocumented implementation drift** (observed behaviour with no approved obligation), and **stale proof drift** (a passing binding no longer exercising its obligation), rather than silently passing them. A drift class present in the fixture but unflagged fails this predicate even if R1–R5 all hold.
+## Not graded here
+
+Whether findings were saved and the board updated — that is the Close step, scored by
+[close.md](close.md).
 
 ## Related
 
-- [The `review` step guide](./docs/passes/review.md) — the skeptic-profile contract, the decorator conditions (R2), and the merge-gate rule (R5) this rubric grades.
-- [The flow graph](./docs/reference/cheatsheet.md) — the 7-value verdict model (4 core + 3 lifecycle) R2 checks against.
-- [Drift and staleness](./docs/reference/drift-and-staleness.md) — the four staleness conditions the drift-detection predicate scores.
+- [Review template](../starter-kit/templates/review.md) — the frozen format and the exception-trigger list.
+- [Reviewing output](../docs/08-reviewing-output.md) — the guide for the step under test.
+- [Advanced-lifecycle rubrics](advanced-lifecycle.md) — the extended result model and merge gate for high-risk work.

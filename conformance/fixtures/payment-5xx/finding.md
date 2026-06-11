@@ -1,53 +1,36 @@
-<!--
-payment-5xx golden-corpus POSITIVE fixture — Stage 8 (promotion, pass: promote).
-After reconcile (the CONTRADICTED between the bounded-retry test and the duplicate-captures
-monitor closed once both proofs agreed, gate open), a durable discovery from the task is
-promoted into a finding carrying full provenance (per the finding schema in
-[./././starter-kit/.agents/templates/finding.md](./././starter-kit/.agents/templates/finding.md)): origin_obligations,
-origin_traces, the pass+profile that produced it, reviewer/tool, content_hash, confidence,
-and applies-when bounds. The memory/INDEX.md MAP gains one link with a "Load when" condition;
-no procedure is inlined there (see the `promote` pass). Inert oracle data.
--->
-
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: finding
-id: idempotency-key-required-on-5xx-retry
-status: promoted
-related_obligations: [AC-020, I-001]
-confidence: high
+id: FINDING-idempotency-key-persistence
+status: candidate
+from: REVIEW-payment-5xx
+date: 2026-06-11
+related: [SPEC-payment-5xx#AC-001]
 ---
 
-# Finding: A 5xx retry without an idempotency key risks a double-capture
+# Finding: Persist the idempotency key before the first capture attempt
 
-## Claim
-Retrying a charge after a processor 5xx without carrying — and persisting — a single
-idempotency key risks double-capturing the customer: the first attempt may have captured
-before the 5xx was returned, and a naive retry captures again. The defect the harness test
-never witnessed was concurrent requests racing before the key persisted; a single-flight
-guard that persists the idempotency key before any capture is the lesson, and it is what
-keeps a bounded retry (AC-020) from violating the no-double-charge invariant (I-001).
+## What we learned
 
-## Provenance
-- origin_obligations: [REQ.payment-5xx.AC-020, INVARIANT.payment-5xx.I-001]
-- origin_traces: [payment-5xx-charge-trace#T-001]
-- pass: verify; profile: skeptic
-- reviewer_or_tool: review.md (human review)
-- content_hash: sha256:4f6a…e2
-- confidence: high
+The provider deduplicates charges only after our idempotency key reaches its storage: two
+concurrent submissions raced past the not-yet-persisted key and both captured. A
+single-request test can never witness this defect.
 
-## Applies when
-- A charge is retried after a processor 5xx, and multiple requests for the same key can be in flight.
+## Evidence
 
-## Does not apply when
-- The idempotency key is persisted before any capture and a single-flight guard serializes retries on that key.
+REVIEW-payment-5xx: the staging monitor `duplicate-captures` reported two captures for one
+idempotency key (dashboard link in the review packet) while the single-request test suite
+stayed green throughout PR run #209.
 
----
+## Where it applies
 
-The promotion also adds one recall link to the memory MAP (the index says *when to load*
-the entry; it never inlines the finding's procedure, see the `promote` pass):
+- Any retry or replay path that reuses an idempotency key, including automatic 5xx retries.
 
-```text
-# memory/INDEX.md  (excerpt)
-- [Idempotency key required on 5xx retry](./findings/idempotency-key-required-on-5xx-retry.md)
-  — Load when: implementing or reviewing a payment retry path that re-submits a charge after a 5xx.
-```
+## Where it does not apply
+
+- Providers that deduplicate server-side regardless of key timing (ours does not).
+
+## Future guidance
+
+Persist the key, then charge — and give every idempotency requirement a concurrent-request
+test case, not just a single-request one.

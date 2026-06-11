@@ -18,7 +18,7 @@ Every task type declares a **required validation suite** drawn from the `AGENTS.
 2. **Instantiated** as one `[Paste output]` slot per required command in each skill's `references/task-template.md` `### Verification outputs` block (and the flat skill-less templates).
 3. **Referenced** by skill bodies in prose via the named `AGENTS.md > Commands > …` entry ([0018](./0018-agents-md-command-contract.md)), degrading to "ask the user" when unbound.
 
-The self-review hard gate requires **one pasted proof per required command** — `empirical-proof`'s "one verification per claim" rule applied to a now-complete, per-task-type suite: a passed check with no pasted output is not a proof [[REFLEXION]](./research/sources.md#REFLEXION). A required slot is satisfied by pasted output or by an explicit `n/a` with a one-line reason; it cannot be silently omitted.
+The self-review hard gate requires **one pasted proof per required command** — `empirical-proof`'s "one verification per claim" rule applied to a now-complete, per-task-type suite: a passed check with no pasted output is not a proof [[REFLEXION]](../research/sources.md#REFLEXION). A required slot is satisfied by pasted output or by an explicit `n/a` with a one-line reason; it cannot be silently omitted.
 
 This is **orthogonal to [0020](./0020-activation-by-self-assessment.md)**: 0020 governs *which* skills/personas activate (routing); this ADR governs *what proof a task must contain once active* (deliverable completeness). Requiring validations does not re-introduce a deterministic router — it makes the self-review deliverable uniform however the skill activated. It is the compensating mechanism, on the output side, for the routing determinism 0020 relaxed.
 

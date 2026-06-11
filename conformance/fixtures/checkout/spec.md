@@ -1,76 +1,54 @@
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: spec
-swarm_language: SOL/0.1
-aps_version: 0.1
-spec_version: 0.1.0
-id: checkout
+id: SPEC-checkout
+title: Cart submission and checkout
 status: draft
+owner: checkout-team
+sources:
+  - SHOP-2041
 ---
 
-# Spec: Cart submission and checkout
-
-<!--
-checkout golden-corpus fixture — Stage 1 (authored source, pass: author).
-This is the only spec artifact a human writes; the spec.md convention marks it
-human-authored. It is inert oracle data: nothing runs it. As authored, it carries the
-checkout domain's canonical defect class that the `lint` pass (see ./EXPECTED.md) is
-expected to surface:
-  - SOL-P004 (AC-010 bundles three separable obligations in one REQ — validate the cart
-              AND charge the card AND email the receipt) — repaired by improve op ATOMIZE.
-  - SOL-O001 (AC-011 and AC-012 share the write surface `db/orders` and are planned in the
-              same parallel group, violating the safe-parallelism predicate) — repaired by
-              improve op SCOPE.
-The positive obligation the negative variant violates — single-charge idempotency — is the
-INVARIANT I-010 carried below with a bound property proof.
--->
+# Cart submission and checkout
 
 ## Intent
-When a shopper submits their cart the service validates it, charges the card, writes the
-order and inventory records, and emails a receipt — charging the card at most once.
 
-## Interfaces
+When a shopper submits their cart, the checkout service validates it, charges the card, and
+records the sale — charging the card at most once.
 
-INTERFACE IF-010:
-`submitCart` RETURNS `OrderConfirmation | CheckoutError`
-ERRORS:
-  - card-declined
-  - cart-expired
-OWNED BY checkout-service
-VERIFY BY contract:cmdValidate:openapi/checkout.yaml#submitCart
+## Non-goals
 
-## Obligations
+- Cart editing, promotions, and tax calculation — owned by the cart service.
+- Refunds and chargebacks.
 
-REQ AC-010:
-WHEN the cart is submitted
-THE checkout service MUST validate the cart AND charge the card AND email the receipt
-VERIFY BY test:cmdTest:api/tests/checkout.spec.ts#submit
-DEPENDS ON IF-010
-AFFECTS I-010
-WRITES api/src/checkout/submit.ts
-RISK high
+## Requirements
 
-REQ AC-011:
-WHEN the cart is submitted
-THE checkout service MUST write the order record
-VERIFY BY test:cmdTest:api/tests/order-record.spec.ts#writes-order
-WRITES db/orders
-RISK medium
+### AC-001 — submit the cart
 
-REQ AC-012:
-WHEN the cart is submitted
-THE checkout service MUST write the inventory ledger
-VERIFY BY test:cmdTest:api/tests/inventory.spec.ts#writes-ledger
-WRITES db/orders
-RISK medium
+When the shopper submits the cart, the checkout service must validate the cart and charge
+the card and email the receipt.
 
-## Invariants
+Verify with: `npm test -- checkout.spec.ts` (case `submit`)
 
-INVARIANT I-010:
-a single submitted cart MUST NOT result in more than one card charge
-VERIFY BY property:cmdTest:api/tests/checkout.properties.ts#charge_at_most_once
+### AC-002 — order record
 
-## Questions
+When the charge succeeds, the checkout service must write the order record.
 
-QUESTION Q-010:
-Should AC-011 and AC-012 run in one transaction or two?
-AFFECTS AC-011
+Verify with: `npm test -- order-record.spec.ts` (case `writes-order`)
+
+### AC-003 — inventory ledger
+
+When the charge succeeds, the checkout service must append the inventory ledger entry.
+
+Verify with: `npm test -- inventory.spec.ts` (case `writes-ledger`)
+
+## Open questions
+
+- Non-blocking: should the order record and the ledger entry share one transaction? Both
+  write into `db/orders` today — splitting them into parallel tasks would put two tasks on
+  one write area.
+
+## Affected areas
+
+- `api/src/checkout/submit.ts`
+- `db/orders` — AC-002 and AC-003 both write here

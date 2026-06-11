@@ -1,43 +1,54 @@
-<!--
-auth-refresh golden-corpus POSITIVE fixture — Stage 5 (work packet, passes: decompose, implement).
-The `decompose` pass projects the structured form into a work packet whose write surfaces are a subset of
-the assigned obligations' WRITES (the two-tier lowering rule, see the `lower` pass; a packet writing a
-path outside its declared WRITES is SOL-O005, G7). The `implement` pass executes it. Only the
-load-bearing frame is shown. Inert oracle data — Swarm runs nothing.
--->
-
 ---
+# checks fixture — expected results pinned in EXPECTED.md
 type: task
-id: auth-refresh-client
-status: active
-task_kind: feature
-source: specs/auth-refresh/spec.md
-assigned_obligations: [AC-001, AC-002]
-invariants: [I-001]
-interfaces: [IF-001]
-write_surfaces: [web/src/http/client.ts]
-verification_bindings:
-  - AC-001: test:cmdTest:web/tests/auth-refresh-401.spec.ts#replays-after-refresh
-  - AC-002: test:cmdTest:web/tests/auth-refresh-expired.spec.ts#clears-and-redirects
-  - I-001:  property:cmdTest:web/tests/auth-refresh.properties.ts#no_unbounded_retry
-parallel_group: client-edits
-blocked_by: []
+id: TASK-auth-refresh
+source:
+  - SPEC-auth-refresh
+scope: [AC-001, AC-002, AC-003]
+status: review-ready
 ---
 
-# Task: Implement auth-refresh client behavior
+# Task: Silent token refresh on 401
+
+## Source
+
+- Spec: `specs/auth-refresh/spec.md` (SPEC-auth-refresh)
 
 ## Scope
 
-### In
-- Implement AC-001, AC-002, and preserve I-001 within web/src/http/client.ts.
+Implement or preserve:
 
-### Out
-- Do not implement unassigned obligations.
-- Do not change behavior outside web/src/http/client.ts.
+- AC-001 — replay the original request once with a refreshed session
+- AC-002 — expired refresh token redirects to `/login`
+- AC-003 — refresh timeout surfaces a failure
 
-## Verification matrix
-| Obligation | Required proof              | Actual proof                          | Status |
-| ---------- | --------------------------- | ------------------------------------- | ------ |
-| AC-001     | test:#replays-after-refresh | auth-refresh-401.spec.ts passed       | pass   |
-| AC-002     | test:#clears-and-redirects  | auth-refresh-expired.spec.ts passed   | pass   |
-| I-001      | property:#no_unbounded_retry| auth-refresh.properties.ts passed     | pass   |
+## Do not change
+
+- Token issuance and rotation policy — owned by the identity service.
+- `web/src/auth/storage.ts` — the session storage format is out of bounds.
+
+## Affected areas
+
+- `web/src/http/client.ts`
+- `web/src/auth/refresh.ts`
+
+## Verify
+
+- [ ] `npm test -- auth-refresh.spec.ts` (AC-001, AC-003)
+- [ ] AC-002 — the spec names no verification; expect Unverified at review unless a test is
+      added and its output pasted
+
+## Agent instructions
+
+1. Read the source spec first.
+2. Stay inside this task's scope. If a requirement can't be met as written, stop and say why
+   instead of improvising.
+3. Run every Verify item and paste the real output — a claim without output counts as
+   unverified.
+4. Before finishing, re-read your own diff as a skeptic: what would a reviewer flag?
+5. Leave a summary: changed files, commands run with output, and anything learned worth
+   saving as a finding.
+
+## Findings
+
+- Candidate: concurrent 401s fan out into parallel refresh calls — see `finding.md`.

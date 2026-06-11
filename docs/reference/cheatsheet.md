@@ -1,164 +1,147 @@
-# The Flow Graph: Canonical Counts and the Default-Suite Matrix
+# Swarm Reference
 
-> Swarm's reference for the flow graph: the canonical cardinalities of every closed set (block types, modals, verdicts, proof types, phases, steps, improve operations, lint layers) and the per-task-kind default-suite matrix that ties them together.
+*Works today — plain markdown plus your agent; no Swarm tooling required.*
 
-Swarm is markdown-only, provider-neutral, and has **no runtime**. Nothing on this page is shipped code: the parser, linter, structured-form builder, scheduler, proof runner, and the `swarm` CLI are all **contracts** a future tool would build against, never code this repo ships (Invariant 1, NO RUNTIME). A "pass" is a transformation a human or agent performs by hand today, following a pass guide; a "gate" is a check a reviewer applies by reading evidence.
+One page of lookup tables: labels, results, verification methods, artifact homes, the loop, and
+the check ids. Definitions live in the linked pages; the exact file formats live in the kit
+templates ([`starter-kit/templates/`](../../starter-kit/templates/)) and are never restated here.
 
-This is the **count-reconciliation hub**. Every closed set in Swarm has exactly one cardinality, and that number MUST be identical wherever it appears — in the SOL language reference, the structured-form schema, the lint catalogue, the pass guides, and the conformance manifest. Conformance pins these as acceptance checks A10–A16: a count that differs between any two documents is a failing check. This page is where the numbers are gathered, cross-linked, and laid against each other.
+## The loop
 
-## Canonical counts
-
-Each row is a **closed set**: the conformance contract forbids adding, removing, or reordering its members in v0.1. The "Acceptance check" column is the reconciliation anchor a conformance review cites. The "Reference" column links the sibling framework page that defines that set's members in full.
-
-| Closed set | Count | Members (in canonical order) | Acceptance check | Reference |
-| --- | --- | --- | --- | --- |
-| Block types | **7** | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`, `TRACE`, `VERDICT` | A10 | [SOL](./language/SOL.md) |
-| Modals | **5** | `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY` | A11 | [SOL](./language/SOL.md) |
-| Verdicts | **7** (4 core + 3 lifecycle) | core: `PASS`, `FAIL`, `BLOCKED`, `UNVERIFIED` · lifecycle: `WAIVED`, `STALE`, `CONTRADICTED` | A12 | [proof types](proof-types.md) |
-| Proof types | **9** | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor` | A13 | [proof types](proof-types.md) |
-| Phases | **7** | `PARSE`, `NORMALIZE`, `LOWER`, `EXECUTE`, `VERIFY`, `REVIEW`, `PROMOTE` | A14 | (this page, §Phases and steps) |
-| Steps | **9** | `author`, `lint`, `improve`, `lower`, `decompose`, `implement`, `verify`, `review`, `promote` | A14 | (this page, §Phases and steps) |
-| Improve operations | **10** | `NORMALIZE`, `ATOMIZE`, `CONCRETIZE`, `QUANTIFY`, `BIND`, `SCOPE`, `CLARIFY`, `DECONFLICT`, `COMPRESS`, `PROMOTE` | A15 | (this page) |
-| Lint layers | **5** (S/P/M/V/O) | `S` SYNTAX, `P` PROSE, `M` SEMANTIC, `V` VERIFICATION, `O` ORCHESTRATION | A16 | [errors](./language/errors.md) |
-
-Notes that prevent miscounting:
-
-- **Block types: 7, not 10.** `TASK-MAP`, `FINDING`, and `ADR` are downstream artifacts, not SOL block types. Three block types carry binding force (the *obligation blocks* `REQ`, `CONSTRAINT`, `INVARIANT`); the other four declare a boundary (`INTERFACE`), mark ambiguity (`QUESTION`), claim implementation (`TRACE`), or judge an obligation (`VERDICT`).
-- **Modals: 5, not 7.** `SHALL`/`SHALL NOT` are not modals and are forbidden in binding clauses (flagged `SOL-P058`); `CAN`/`WILL` are *non-modal* and likewise forbidden (`SOL-P003`). Only the five uppercase modals bind.
-- **Proof types: exactly 9.** The set is closed. `unit`/`integration`/`e2e` are scope *qualifiers* under `test` (written `test:unit:`, etc.), not types; `runtime` is not a type and maps to `monitor`. An unknown `<type>` is `SOL-V009`.
-- **Phases vs steps: 7 vs 9 — do not conflate.** A *phase* is a conceptual stage (a fixed-order taxonomy of *where* work sits); a *step* is a schedulable transformation (the unit a human/agent/tool actually runs). Several steps may map to one phase.
-- **Improve operations: exactly 10, closed.** "Improve the spec" with no named operation is not a valid request; an improve pass MUST NOT invent operations outside the set. Note `NORMALIZE` and `PROMOTE` name *both* an improve operation and (separately) a phase / a step — same word, different layer.
-- **Lint layers: 5.** One prefix `SOL`, five layers, form `SOL-<LAYER>NNN`. APS prose violations surface as `SOL-P###` codes within this single namespace.
-
-## Phases and steps
-
-The seven phases are a single fixed order; a conformant description MUST present them in exactly this order and MUST NOT add, remove, or reorder them in v0.1:
-
-```text
-PARSE -> NORMALIZE -> LOWER -> EXECUTE -> VERIFY -> REVIEW -> PROMOTE
+```
+Pull → (Inventory) → Spec → (Change Plan) → Task → Run → Review → Close
+        brownfield          structural
 ```
 
-The nine steps are the schedulable transformations, listed in flow order. A launcher MAY interleave steps across specs, but for a single obligation the partial order MUST hold (an obligation cannot be `verify`-ed before `implement`, nor `implement`-ed before `lower`):
+| Step                            | What it produces                                                |
+| ------------------------------- | --------------------------------------------------------------- |
+| **Pull**                        | an intake file — the upstream ticket, captured verbatim         |
+| **Inventory** _(conditional)_   | a map of existing code before structural/brownfield work        |
+| **Spec**                        | intent, non-goals, requirements with `Verify with:` lines       |
+| **Change Plan** _(conditional)_ | how the codebase changes while named behavior provably survives |
+| **Task**                        | a bounded task packet an agent can run                          |
+| **Run**                         | the change, on its own branch, plus an agent run summary        |
+| **Review**                      | a review packet — requirement coverage, evidence, exceptions    |
+| **Close**                       | merge or block, board update, findings saved                    |
 
-```text
-author -> lint -> improve -> lower -> decompose -> implement -> verify -> review -> promote
-```
+Not every task needs every step — the skip rules and per-shape flows are in
+[the basic workflow](../02-basic-workflow.md).
 
-### Pass → phase mapping
+## IDs and labels
 
-| Pass | Phase(s) | Lint layer(s) it owns | Note |
-| --- | --- | --- | --- |
-| `author` | entry (pre-`PARSE`) | — | First Swarm-visible artifact (`spec.md`); not itself analyzable. |
-| `lint` | `PARSE` + `NORMALIZE` | S, P, M, V, O | Non-mutating; the only pass that straddles two phases (well-formedness + smell detection). |
-| `improve` | `NORMALIZE` | answers the codes mapped to the 10 improve operations | Runs only after `lint`; strictly semantics-preserving (R-IMPROVE). |
-| `lower` | `LOWER` | O | Emits the structured form (the obligations) and the two derived graphs; needs a lint-clean, approved spec. |
-| `decompose` | `LOWER` | O | Partitions the structured form into write-disjoint work packets; consumes the structured form, not the surface prose. |
-| `implement` | `EXECUTE` | — | Produces the change for assigned obligations only; records TRACE claims. |
-| `verify` | `VERIFY` | V | The only profile-independent pass; one verdict per `VERIFY BY` binding. |
-| `review` | `REVIEW` | M, V | Judges claims, applies lifecycle decorators, computes the merge gate. |
-| `promote` | `PROMOTE` | — | Moves durable discoveries into provenance-anchored artifacts. |
+| Prefix     | Artifact      | Example                  |
+| ---------- | ------------- | ------------------------ |
+| `SPEC-`    | spec          | `SPEC-auth-refresh`      |
+| `TASK-`    | task packet   | `TASK-auth-refresh-1`    |
+| `REVIEW-`  | review packet | `REVIEW-auth-refresh-1`  |
+| `FINDING-` | finding       | `FINDING-rotated-tokens` |
+| `INV-`     | inventory     | `INV-billing`            |
+| `CHANGE-`  | change plan   | `CHANGE-billing-split`   |
 
-Of the nine steps, the six analysis steps — `lint`, `improve`, `lower`, `decompose`, `review`, `promote` — each ship a **dedicated pass guide**; `implement` is served by **nine per-`task_kind` implement guides**, `author` by **six author guides**, and `verify` by the `empirical-proof` cross-cutting fragment (ADR-0042/0051). Every pass now has a guide, but a guide is an optional aid, not a conformance gate — the pass contract is the binding artifact. Pass guides are SOFT control: they MUST NOT define SOL/APS semantics, modality, authority order, or verification meaning [[SKILLBP]](./research/sources.md#SKILLBP). The authoring guides ship in the starter kit; the implement-side guides are `docs/library/code-skills/` reference (ADR-0051).
+Requirement labels inside a spec:
 
-## The proof-type × phase default-suite matrix
+| Label    | Meaning                                              | Where    |
+| -------- | ---------------------------------------------------- | -------- |
+| `AC-NNN` | acceptance criterion — a verifiable requirement      | any spec |
+| `C-NNN`  | constraint — restricts _how_ requirements may be met | SOL form |
+| `I-NNN`  | invariant — a property that must keep holding        | SOL form |
+| `IF-NNN` | interface — a declared boundary                      | SOL form |
+| `Q-NNN`  | open question, optionally `[blocking]`               | SOL form |
 
-Each task kind (the `task_kind:` enum) carries a **default suite**: a set of `(proof-type @ phase)` requirements recommending which proofs SHOULD be bound and at which phase they run. The suites are **recommendations**, not a closed law — an author MAY override per obligation, and a binding-completeness check (the `SOL-V` layer) verifies coverage or an explicit justification for any omission. See [proof types](proof-types.md) for the binding grammar.
+A file's identity is its frontmatter `type:`, never its filename — see
+[artifact formats](artifact-formats.md). SOL is the optional structured-requirements notation
+(`format: sol`) — see [structured requirements](structured-requirements.md).
 
-| `task_kind` | Default suite — `(proof-type @ phase)` |
-| --- | --- |
-| `feature` | `test @ VERIFY`, `static @ VERIFY`; `contract @ VERIFY` if any `INTERFACE` touched |
-| `fix` | `test @ VERIFY` (regression test reproducing the defect), `static @ VERIFY` |
-| `refactor` | `test @ VERIFY` (behaviour-preservation), `property\|contract @ VERIFY` for invariants/boundaries |
-| `rewrite` | `test @ VERIFY`, `static @ VERIFY`; `contract @ VERIFY` if any `INTERFACE` touched |
-| `migration` | `test @ VERIFY`, `static @ VERIFY`, `contract @ VERIFY` (boundary conformance) |
-| `upgrade` | `test @ VERIFY`, `static @ VERIFY`, `contract @ VERIFY` (dependency contracts) |
-| `performance` | `perf @ VERIFY`, `test @ VERIFY`, `static @ VERIFY` |
-| `testing` | `test @ VERIFY`, `static @ VERIFY` |
-| `documentation` | `static @ VERIFY` (lint/APS); `manual @ REVIEW` for accuracy |
-| `integration` | `contract @ VERIFY`, `test @ VERIFY`, `static @ VERIFY` |
-| `spec-writing` | `static @ NORMALIZE` (lint/APS); no executable suite (no code yet) |
-| `research-writing` | `static @ NORMALIZE` (lint/APS); no executable suite |
-| `audit-writing` | `static @ NORMALIZE` (lint/APS); no executable suite |
-| `bug-report-writing` | `static @ NORMALIZE` (lint/APS); no executable suite |
-| `deepen-audit` | `static @ NORMALIZE` (lint/APS); `manual @ REVIEW` for evidence |
-| `review` | `manual @ REVIEW` over recorded evidence; re-run of bound `cmd*` proofs |
-| `orchestration` | `static @ LOWER` (disjointness check); `manual @ REVIEW` |
+## Review results
 
-How to read the matrix:
+One result per requirement row in the review packet (internally: verdicts).
 
-- The **phase** in each cell is where the proof runs. Code-producing kinds run their executable proofs at `VERIFY`; the document-producing kinds (`*-writing`, `deepen-audit`) have no executable suite and only lint at `NORMALIZE`; `orchestration` checks write-surface disjointness at `LOWER`.
-- A `manual @ REVIEW` entry is the honest escape hatch where no executable oracle exists (`manual` MUST still carry a `REASON` and an `EVIDENCE` ref — see [proof types](proof-types.md)).
-- `property\|contract` means *either* type satisfies the row.
+| Result         | Meaning                                                                 |
+| -------------- | ----------------------------------------------------------------------- |
+| **Pass**       | Verified — pasted output or a CI link sits in the Evidence cell.        |
+| **Fail**       | Verified, and the requirement is not met.                               |
+| **Unverified** | No evidence. Every empty Evidence cell reads as Unverified, never Pass. |
+| **Blocked**    | Cannot be verified until something else is resolved.                    |
 
-### The conformance-manifest shadow (`cmd*` slots and gates)
+Lifecycle results, used in advanced workflows to qualify an earlier result:
 
-The conformance manifest encodes the same matrix as the machine-readable `required_suite` in `conformance.yaml`, resolving each `(proof-type @ phase)` recommendation to concrete `cmd*` adapter slots (looked up through `AGENTS.md > Commands`) plus named equivalence/coverage gates. The proof-type matrix above is the human-readable canonical view; the YAML is its shadow. The five gate tokens are defined here so the matrix is self-contained:
+| Result           | Meaning                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Waived**       | A Fail or Unverified explicitly accepted by a named human, with reason and expiry.                                 |
+| **Stale**        | A prior Pass whose evidence predates a change to the requirement or the code it exercised — see [drift](drift.md). |
+| **Contradicted** | Two pieces of evidence disagree, or the code disagrees with the requirement.                                       |
 
-| Gate token | Check |
-| --- | --- |
-| `acceptance-criteria-coverage` | Every acceptance criterion of the obligation maps to a passing proof. |
-| `regression-test` | A test that failed before the change and passes after. |
-| `behaviour-preservation` | A property/differential/metamorphic check that the change preserves prior behaviour. |
-| `scope-disjointness` | The merged workers' `OWNED` paths are pairwise disjoint. |
-| `merge-intent` | Each merge-conflict resolution preserves both obligations' intent. |
+The evidence rules and exception triggers are in [reviewing output](../08-reviewing-output.md).
 
-A `merged:` prefix on a slot means it runs on the post-integration merged result. Illustrative manifest rows (the full set mirrors this page row-for-row):
+## Verification methods
 
-```yaml
-required_suite:
-  feature:        [cmdValidate, cmdTest, cmdValidateDeps, gate:acceptance-criteria-coverage]
-  fix:            [cmdValidate, cmdTest, gate:regression-test]
-  refactor:       [cmdValidateDeps, cmdTypecheck, cmdTest, gate:behaviour-preservation]
-  orchestration:  [merged:cmdValidate, merged:cmdTest, gate:scope-disjointness, gate:merge-intent]
-```
+What kind of evidence backs a requirement's `Verify with:` line (internally: proof types).
 
-## The verdict model (7 = 4 core + 3 lifecycle)
+| Method     | One line                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| `test`     | An executable test exercises the behavior (unit/integration/e2e are scopes of this one method).        |
+| `static`   | Type-check, lint, build, or static analysis over the code as written.                                  |
+| `contract` | A boundary check against a declared interface — API schema, consumer contract.                         |
+| `property` | A property-based check over generated inputs; strong for invariants.                                   |
+| `model`    | An exhaustive or model-checked argument; the strongest, and the rarest.                                |
+| `perf`     | A measured benchmark against a stated budget.                                                          |
+| `security` | A scanner or a targeted security test against an attack class.                                         |
+| `manual`   | A named human checked it and recorded what they saw — always with a reason and the observation itself. |
+| `monitor`  | A production probe or alert observes the behavior after merge.                                         |
 
-A verdict carries **exactly one** core value and **zero or more** lifecycle decorators. The four core values are mutually exclusive; a single bound proof on a single run lands in exactly one.
+## Artifacts and where they live
 
-| Role | Value | Meaning |
-| --- | --- | --- |
-| Core | `PASS` | A bound proof ran and its result satisfies the obligation. |
-| Core | `FAIL` | A bound proof ran and its result contradicts the obligation. |
-| Core | `BLOCKED` | A bound proof could not run (missing prerequisite/tool/adapter/env/fixture); truth unknown, not false. |
-| Core | `UNVERIFIED` | No acceptable proof was bound, or a binding exists but no run was attempted. |
-| Lifecycle | `WAIVED` | Decorates `FAIL` or `UNVERIFIED`: explicitly accepted as an exception (authority, reason, expiry). |
-| Lifecycle | `STALE` | Decorates a prior `PASS`: its evidence no longer matches current source/surface hashes (drift — see [drift and staleness](drift-and-staleness.md)). |
-| Lifecycle | `CONTRADICTED` | Decorates any core: two proofs disagree, or a `TRACE`/code disagrees with the obligation. |
+| Artifact                                                         | Tier                                           | Home in the workspace                                    |
+| ---------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------- |
+| intake                                                           | core (recommended for tracker-originated work) | `intake/`                                                |
+| spec                                                             | core                                           | `specs/<feature>/spec.md`                                |
+| task packet                                                      | core                                           | `tasks/`                                                 |
+| review packet                                                    | core                                           | `reviews/`                                               |
+| finding                                                          | core                                           | `findings/`                                              |
+| status board                                                     | core                                           | `status.md`                                              |
+| inventory                                                        | core when the work is brownfield               | `inventory/`                                             |
+| change plan                                                      | core when the work is structural               | `change-plans/`                                          |
+| adr                                                              | advanced                                       | `decisions/`, numbered                                   |
+| audit · bug · research · rfc · prd · threat-model · release-note | advanced                                       | co-located in `specs/<feature>/`, or `intake/` for a bug |
 
-`BLOCKED` and `UNVERIFIED` MUST NOT be conflated (they route differently — an environment fix vs. a binding/execution gap). The merge gate expects **one verdict per required `VERIFY BY` binding**, and all required bindings must be `PASS`/`WAIVED` to merge.
+The full layout, both naming depths, and the code-repo boundary are in
+[where files live](../03-where-files-live.md); every format is catalogued in
+[artifact formats](artifact-formats.md).
 
-When two proofs disagree (`CONTRADICTED`), the tie-break uses a fixed proof-strength order over the nine types:
+## Checks — the quick list
 
-```text
-model  >  property | contract  >  test  >  static  >  manual | monitor
-```
+Common mistakes to check for in a spec. **Level: checklist today; toolable — swarm-cli's
+`swarm spec check` implements this list.** Full descriptions, the honesty legend, and the SOL
+catalogue are in [checks](checks.md).
 
-A reconciliation caveat: only the **counts** are frozen, not every row of the default-suite matrix. The suites are recommendations — an author MAY override per obligation, and a kind's suite may evolve without a language-version change. Likewise the `cmd*` slot names in the manifest shadow (`cmdValidate`, `cmdValidateDeps`, etc.) are project-resolved through `AGENTS.md > Commands`; their exact spelling is a manifest convention, while the proof-type matrix above is the canonical layer.
+| ID   | Name                                                                       | Severity   |
+| ---- | -------------------------------------------------------------------------- | ---------- |
+| C001 | `unique-ids` — every requirement ID appears exactly once                   | hard error |
+| C002 | `duplicate-id` — no other file claims the same `id:`                       | hard error |
+| C003 | `verify-with` — every requirement carries a `Verify with:` line            | hard error |
+| C004 | `one-strength-word` — exactly one of must / must not / should / may        | warning    |
+| C005 | `non-goals-present` — a non-empty Non-goals section exists                 | warning    |
+| C006 | `open-questions-present` — an Open questions section exists                | warning    |
+| C007 | `no-tbd-at-ready` — no `TBD`/`TODO`/unresolved question at `status: ready` | hard error |
+| C008 | `sources-named` — frontmatter `sources:` names at least one origin         | warning    |
+| C009 | `broken-source-link` — every named source resolves                         | hard error |
 
-## Artifact homes (where everything lives)
+Packet checks (checklist level): `non-empty-paste` — a completion claim binds to pasted output
+or a CI link; `no-open-critical` — nothing closes with an open blocking question;
+`trigger-coverage` — the Human attention section considered every exception class.
 
-An artifact is homed by **scope**, not by type ([ADR-0052](./adrs/0052-per-feature-spec-folders.md)): a
-feature is the unit of organization, and feature-scoped artifacts co-locate with the spec they serve. One
-table, so "where does X go?" is answerable in one place.
+## Appendix — reference values (producer note)
 
-| Artifact | Scope | Home |
-| --- | --- | --- |
-| `spec.md` | feature | `specs/<feature>/spec.md` |
-| `audit` · `research` · `bug-report` · `prd` · `rfc` · `threat-model` | feature | `specs/<feature>/` — co-located beside the spec |
-| `adr` | project-wide | `decisions/` — sequentially numbered, one per file |
-| `finding` | durable recall | `.agents/memory/findings/<slug>.md` |
-| `memory/INDEX.md` · `glossary.md` · `patterns/` | durable recall | `.agents/memory/` |
-| `task` · `trace` · `review` · `status` · `task-orchestration` | execution scratch | gitignored (`.agents/tasks/`) or the linked PR — a *kept* review may land in `specs/<feature>/` |
-
-The asymmetry — `specs/` is per-feature folders, `decisions/` is flat numbered files — is deliberate: an ADR
-is the one genuinely project-wide artifact, not bound to a single feature. The `spec.md` naming marks the
-**Swarm-format** files (the spec + emitted `*.md`); everything else is a plain-`.md` working artifact.
+This appendix exists for producers of Swarm tooling and documentation, not for adopters. The
+closed sets above have fixed sizes that tooling and fixtures reconcile against: block types 7 ·
+strength modals 5 · review results 7 (4 core + 3 lifecycle) · verification methods 9 ·
+lifecycle steps 9 · phases 7 · improve operations 10 · check layers 5 (S/P/M/V/O) ·
+edge types 7 · task kinds 17. These counts appear in exactly two places — here and in
+[`conformance/README.md`](../../conformance/README.md) — and nowhere else.
 
 ## Related
 
-- [SOL](./language/SOL.md) — the block-type and modal semantics behind their counts here.
-- [proof types](proof-types.md) — the `VERIFY BY` binding grammar, adapter resolution, proof-type → `cmd*` mapping, and verdict mechanics.
-- [errors](./language/errors.md) — the five lint layers and the `SOL-<LAYER>NNN` code catalogue.
-- [drift and staleness](drift-and-staleness.md) — how a prior `PASS` becomes `STALE` and the maturity ladder.
-- [structured form](structured-form.md) — where the obligations and the two derived graphs emitted by `lower` are defined.
+- [The basic workflow](../02-basic-workflow.md) — the loop, per-shape flows, skip rules.
+- [Checks](checks.md) — every check in full, with the honesty legend.
+- [Glossary](glossary.md) — every term on this page, defined.
+- [The advanced lifecycle](advanced-lifecycle.md) — the finer-grained step model under the loop.

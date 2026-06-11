@@ -3,7 +3,7 @@ type: audit
 id: dx-dogfooding-swarm-cli
 status: living
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-11
 title: DX of using Swarm to build swarm-cli (dogfooding findings)
 ---
 
@@ -117,3 +117,13 @@ Findings are grounded in this session's swarm-cli commits (the kit re-sync, the 
 `packages/core` → `src/modules/Sol` migration, the command-surface audit + collapse, the dashboard fix) and
 the swarm-repo commits (ADR-0055/0056 + their derived-layer propagation). Living doc — appended to as the
 `swarm lint` build and later increments add experience.
+
+## §5 Closing note (2026-06-11)
+
+- **G3 (derived layer silently lags ADRs) is now mitigated:** ADRs 0057–0068 introduced a propagation
+  matrix (`.agents/audits/repositioning-propagation.md`) — each ADR × derived surface flips to `done`
+  only with the commit SHA that landed it, so a stale card/skill is a visible empty cell instead of a
+  silent lag. The freshness check this audit recommended remains a candidate for a future tool; the
+  matrix is its by-hand form.
+- **F5 (`content_hash` undefined) is unaffected** by ADRs 0057–0068: the field stays a future-tool
+  concern, and the choice recorded here (raw span) stands until a tool pins it.

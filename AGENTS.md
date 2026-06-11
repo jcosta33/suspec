@@ -1,88 +1,74 @@
 # AGENTS.md — working on the Swarm framework
 
-<!-- The always-loaded bootloader for an agent working ON this repo (the Swarm
-     framework itself). Facts-only, ≤200 lines / 25 KB (the cap Swarm levies on its
-     own AGENTS.md, §31.1). Procedures live in the skills under `.agents/skills/`. -->
-
 ## What this repo is
 
-This repo **is** the Swarm framework — a markdown-only, provider-neutral, obligation-centered **spec
-format and way of working**: you write specs, agents build from them. It ships **no runtime**: every
-"parser/linter/planner/checker/CLI" is a contract a future tool builds against, never code this repo runs.
+This repo **is** the Swarm framework — *a lightweight spec and review workflow for teams using
+coding agents*, shipped as markdown: docs, templates, and a starter kit. It ships **no runtime**:
+anything described as checkable names its checker (the reference implementation in progress is
+`swarm-cli`, a sibling repo); everything else is convention or review checklist, and says so.
 
-- `docs/` — the self-standing framework (the product): `language/`, `model/`, `passes/`,
-  `artifacts/`, `library/`, `reference/`, `research/`, `adrs/`, `examples/` + `PRINCIPLES.md`,
-  `NON-GOALS.md`, `positioning.md`. The references here are complete; nothing defers to an
-  external doc.
-- `starter-kit/` — the **spec-repo authoring kit** a consuming repo adopts (ADR-0050/0051):
-  `starter-kit/.agents/{skills,reference,templates,memory}` + `starter-kit/AGENTS.md`. The code-implementation
-  skills are **not** in the kit — they're reference at `docs/library/code-skills/`; the SOL/passes manuals are
-  `docs/` only; the golden corpus is top-level `conformance/`.
-- `evals/` — rubrics. `conformance/` — the golden corpus (producer test data for a future checker).
-- `.agents/` — this repo's agent-tool surface: `skills/` (a **curated subset** for developing *this* repo —
-  this repo is itself a docs/spec repo) and `audits/` (dev audits).
+- `docs/` — the product: a numbered happy path (`01`–`10`), `reference/` (the deep layer:
+  structured requirements, checks, artifact formats, advanced lifecycle, future CLI, memory),
+  `examples/` (three flagship walkthroughs; `large-pr-review.md` is the demo), `ADOPTING.md`,
+  `adrs/` (the decision ledger), `research/sources.md` (the evidence bibliography).
+- `starter-kit/` — what adopters copy: `templates/` (8), `agent/` (bootloader + 3 guides),
+  `examples/`, `decisions/`, `advanced/` (optional tier).
+- `conformance/` — checks fixtures (test data for `docs/reference/checks.md`; swarm-cli's oracle).
+- `evals/` — per-step output rubrics. `.agents/` — this repo's own dev tooling, audits, and plans.
 
 ## Startup
-1. Read the current task / request first.
-2. Load only the skill, pass, or context file the task names (`.agents/skills/`); do not always-load.
-3. Treat `.md` SOL blocks as authoritative over prose summaries.
-4. Map every completion claim to evidence (paste real output; a claim without it is unverified).
 
-## Universal rules (the conventions that keep this repo coherent)
-- **The shipped framework (`docs/` + `starter-kit/`) is the product and the single source of truth.** All
-  changes go there (+ an ADR under `docs/adrs/`). (The old `.agents/specs/swarm/` build source has been
-  deleted — it was historical scaffolding, no longer kept.)
-- **`docs/` is the sole canonical home (ADR-0051 retired the `language`/`passes` twins).** The kit no longer
-  ships copies of the manuals, so there is no file-pair to eyeball-diff. The shipped **skills + `reference/`
-  cards** are still *derived* from `docs/` (single-sourced, ADR-0047): a rule lands in `docs/` first, then the
-  skill/card is brought into line — never treat a skill or card as the authority over `docs/`.
-- **Evidence discipline (§0.7 — real science, not astrology).** Every load-bearing empirical
-  claim cites a **verified** entry in `docs/research/sources.md`; non-peer-reviewed (caveated)
-  sources never carry a `MUST`-level claim; a fabricated or misattributed source is never
-  introduced. Web-verify a source (venue + finding) before grounding a claim on it.
-- **Citations.** Research is cited **contextually** — `[[KEY]](…/research/sources.md#KEY)` inline in the
-  doc whose claim it grounds, resolving to a real anchor in `docs/research/sources.md`docs/research/`
-  holds **only** that bibliography (no standalone research essays / "research layer"); the rest of `docs/`
-  carries no `.agents/specs` paths.
-- **Original framework, not a migration.** Present Swarm as originally designed — no
-  buffet / à-la-carte / "Earlier Swarm framing" / migration self-presentation. ADRs keep their
-  supersession ledger (internal decision history) but neutral wording.
-- **Self-standing.** `docs/` defers to no external or build-source document; `.agents/` is an
-  agent-tool compatibility surface, never the canonical home of intent.
-- **Carrier.** Skills ship as `SKILL.md` (discoverable, surgically `description`-activated), not
-  `GUIDE.md`. Profiles are the `persona-*` skills under `skills/`; there is no `profiles/` dir.
+1. Read the current task/request first; load only the skill or reference it names.
+2. Treat the ADRs (`docs/adrs/`) as the recorded intent; the build brief
+   (`.agents/plans/build-brief.md`) carries voice/vocabulary rules for doc work.
+3. Map every completion claim to evidence — paste real output; a claim without it is unverified.
+4. Adversarial self-review before declaring done (ADR-0056): re-read your own diff as a skeptic;
+   never self-issue a review verdict.
 
-## Canonical closed sets (counts MUST reconcile everywhere; hub: `docs/reference/cheatsheet.md`)
-- 7 block types · 5 modals · 7 verdicts (4 core + 3 lifecycle) · 9 proof types · 7 phases ·
-  9 steps · 10 improve operations · 5 lint layers (S/P/M/V/O) · 7 edge types · 17 `task_kind` values.
-  (The `pass-*` skill-dir prefix and `type: pass-guide` are stable skill identifiers — the *steps* are the 9.)
+## Universal rules
+
+- **Fresh-product voice.** No migration framing ("previously/renamed/now") anywhere except
+  `docs/adrs/`. The framework is presented as originally designed.
+- **Honesty framework (ADR-0063).** Rules carry a level: convention · checklist · toolable
+  (names swarm-cli's command) · enforced (only with a shipped tool — today, nothing). Never
+  write enforcement-sounding claims without a level.
+- **Vocabulary tiers (ADR-0057).** User tier (README, `docs/01–10`, `docs/examples/`,
+  kit core): step · requirement/AC · evidence · review result (Pass/Fail/Unverified/Blocked) ·
+  checks · structured requirements · writing rules · workspace · save a finding. Reference tier
+  may also use the precise internal terms (pass, obligation, proof, verdict, SOL codes);
+  `docs/reference/glossary.md` maps both directions.
+- **No counts ceremony.** Closed-set cardinalities live in exactly two places:
+  `conformance/README.md` (producer reconciliation note) and the cheatsheet appendix.
+  Everywhere else lists values, never counts.
+- **Citations are contextual.** Every load-bearing empirical claim cites a verified entry
+  inline — the `[[KEY]]` form linking the matching anchor in `docs/research/sources.md` — and the citation moves with the claim.
+  Non-verified sources never carry a MUST-level claim; fact-shaped statements without a
+  source are labeled design rationale. Web-verify before adding to `sources.md`.
+- **Single-sourcing.** Formats are frozen in ADRs 0058/0060/0061/0067/0068 and shipped at
+  `starter-kit/templates/` — everything else links, never restates. A rule lands in `docs/`
+  first; kit guides and dev skills derive from it (propagation matrix:
+  `.agents/audits/repositioning-propagation.md`).
 
 ## Pointers
-- Skills — the **authoring** catalogue (author guides, analysis pass guides, fragments, 6 authoring personas) ships at `starter-kit/.agents/skills/`; the **code-implementation** skills (per-kind implement guides, 7 code personas, `implement-and-verify`) are reference at `docs/library/code-skills/`; `.agents/skills/` is the curated dev subset
-- Language reference (SOL / APS / errors / versioning): `docs/language/`
-- The pipeline, artifacts, conformance: `docs/model/`, `docs/artifacts/`
-- The evidence base (verified / caveated / rejected sources): `docs/research/sources.md`
-- Architecture decisions (the ledger): `docs/adrs/README.md`
-- Dev audits: `.agents/audits/`
+
+- Decisions: `docs/adrs/README.md` (0001–0068; 0057–0068 are the current architecture)
+- Plans: `.agents/plans/practical-swarm-repositioning-plan.md` (+ inputs/, validation survey)
+- Dev skills (curated subset for working on this repo): `.agents/skills/` — see
+  `.agents/SKILLS-MANIFEST.md`
+- Evidence: `docs/research/sources.md` (verified / caveated / rejected — never cite rejected)
 
 ## Commands
-<!-- This repo is markdown-only and ships no build/test toolchain. There are no `cmd*`
-     proof adapters to bind: the framework's own "obligations" are coherence properties,
-     not code. Coherence is verified by deterministic checks an agent runs by hand —
-     counts reconcile across docs, `[[KEY]]` citations resolve, internal links resolve,
-     fences balanced, fixture JSON valid, no `GUIDE.md` / stale-structure refs — and by the
-     conformance golden corpus under `conformance/fixtures/`. No runtime
-     executes any of this (Invariant 1, NO RUNTIME). -->
+
 | Slot | Command | Resolves |
-| --- | --- | --- |
-| — | (none shipped) | markdown-only repo; coherence checked by hand against the gates above |
+|---|---|---|
+| — | (none) | markdown-only repo; coherence is checked by the gates in the propagation matrix |
 
 ## Workflow
-- Work from `main`: commit and push directly to `main` (no branches/PRs). **This is the producer-repo
-  dogfooding workflow only** — it is *not* the adopted-project default. A project that adopts Swarm
-  follows the isolation policy (ADR-0046): a spec/audit is implemented in a `worktree+branch` off the base,
-  not on `main`. Do not read this repo's main-only convention as the shipped default.
-- Commit messages end: `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`.
+
+Work from `main`: commit and push directly to `main` (producer convention only — adopters
+follow their own branching; tasks run in worktrees per `docs/07-running-agents.md`).
+Commit messages end: `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
 
 ## Compatibility
-`CLAUDE.md`, `GEMINI.md` (and peers) are symlinks to this file — one bootloader, many agent tools.
+
+`CLAUDE.md` and `GEMINI.md` are symlinks to this file — one bootloader, many agent tools.

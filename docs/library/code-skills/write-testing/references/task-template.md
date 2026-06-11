@@ -1,256 +1,105 @@
-# {{title}}
+# Run notes: {{title}}
 
-## Metadata
+- Task packet: `tasks/{{TASK-slug}}.md`
+- Driving doc (spec / audit / bug report, if any): `{{path}}`
+- Worktree / branch: {{branch}}
+- Created: {{YYYY-MM-DD}} · Status: active
 
-- Slug: {{slug}}
-- task_kind: testing
-- pass: implement
-- Stance: Test-Author
-- Source `task.md`: {{taskFile}}
-- Driving doc (spec / audit / bug report, if any): {{specFile}}
-- Owned paths (write_surfaces): {{writeSurfaces}}
-- Created: {{createdAt}}
-- Status: active
-
----
-
-> **TESTING IMPLEMENT PASS** — Test behaviour, not implementation. Each test fails for one reason.
-> Flip the assertion and the test must still mean something. Coverage is a map, not a score.
+> **Testing task** — tests are the deliverable. Test behavior, not implementation. Each test fails
+> for one reason. Flip every assertion and prove the test means something. Coverage is a map, not
+> a score.
 >
-> **Commands:** `{{cmdTest}}` / `{{cmdValidate}}` resolve from `AGENTS.md > Commands`. A coverage
-> report and a single-test / flip-and-rerun runner are NOT in the standard contract — for any slot
-> you need that is undefined, ask the user; do not guess. If `AGENTS.md` is missing, ask before
-> substituting any command.
+> **Commands** resolve from the code repo's `AGENTS.md` Commands table. A coverage report and a
+> single-test / flip-and-rerun runner are often project-specific — for any command you need that is
+> undefined, ask the user; do not guess.
 
----
+## Scope (from the task packet)
 
-## Parent contract
-
-(The inherited hand-off, pasted from the `task.md`: objective + deliverable + acceptance bar +
-boundaries — owned vs forbidden paths. For a testing task the owned paths are the test files and any
-test-support surface; production code is forbidden unless an obligation authorises it.)
-
----
-
-## Scope
-
-**In:** (the assigned obligations whose behaviour this packet tests — nothing wider)
-
--
-
-**Out:** Do not test behaviour another packet owns. Do not edit production code to ease testing
-without an authorising obligation. Do not chase a coverage percentage. Do not stabilise an existing
-flaky test here (that is a different task kind). Do not fix a production bug the tests expose inline
-— promote it.
-
----
-
-## Assigned obligations
-
-(The exact SOL blocks, pasted verbatim — the `REQ` / `CONSTRAINT` / `INVARIANT` / `INTERFACE` ids
-whose behaviour these tests exercise.)
-
--
-
-## Constraints and invariants
-
-(The `CONSTRAINT` / `INVARIANT` SOL blocks this task MUST preserve, pasted verbatim. Note: an
-`INVARIANT` is a universal predicate — one concrete example is a weak oracle for it; prefer a
-property/metamorphic/mutation-backed test and record `oracle_adequacy`, per `verify`.)
-
--
-
----
+- Test: the behavior the listed ACs name — nothing another task owns.
+- Do not change: production code (unless the packet says so); an existing flaky test (its own
+  task); a production bug the tests expose (a finding, fixed in its own task).
 
 ## Coverage gap
 
-(The behaviour currently untested or undertested — stated as behaviour the caller cares about, not
-as a line/file percentage. Which module, which behaviour, which conditions.)
+The behavior currently untested or undertested — stated as behavior a caller depends on, not a
+percentage. Which module, which behavior, which conditions.
 
 -
-
----
 
 ## Test cases
 
-(The cases this task adds. One test per row, one reason to fail per test. "Reason this test exists"
-names the behaviour it guards.)
+One test per row, one reason to fail per test.
 
-| Behaviour under test | Inputs / setup | Expected outcome | Reason this test exists | Criterion id (if oracle) |
-| -------------------- | -------------- | ---------------- | ----------------------- | ------------------------ |
-|                      |                |                  |                         |                          |
-
----
+| Behavior under test | Inputs / setup | Expected outcome | Why this test exists | AC (if it verifies one) |
+|---|---|---|---|---|
+| | | | | |
 
 ## Test placement
 
-(Where each test goes per the project's testing conventions — file naming, directory, runner. Pick
-the convention closest to the code under test; do not guess.)
+Per the project's conventions — file naming, directory, runner. A test in the wrong place never
+runs.
 
-| Test case | File path | Test runner |
-| --------- | --------- | ----------- |
-|           |           |             |
-
----
-
-## Plan
-
-(Written before writing tests. Each coverage-gap behaviour mapped to a case in the table above.)
-
-1.
-2.
-3.
-
----
+| Test case | File path | Runner |
+|---|---|---|
+| | | |
 
 ## Progress checklist
 
-- [ ] Packet read in full (parent contract, scope, assigned obligations, constraints/invariants)
-- [ ] Owned paths confirmed ⊆ assigned obligations' `WRITES` surfaces (no `SOL-O005`; no production
-      code touched without an authorising obligation)
-- [ ] Coverage gap named as behaviour (not a percentage)
-- [ ] Test cases enumerated (the table above)
-- [ ] Test placement decided per project convention (the table above)
+- [ ] Packet and driving doc read; coverage gap named as behavior
+- [ ] Test cases enumerated; placement decided per project convention
 - [ ] Each test written against the public surface, one reason to fail
-- [ ] Each test FLIPPED → fails → restored → passes (paste the transition below)
-- [ ] Each `test`-bound criterion confirmed to fail when *its criterion* is violated (not an
-      adjacent condition)
-- [ ] High-risk / `INVARIANT` obligations carry an adequate oracle; `oracle_adequacy` recorded
-- [ ] `{{cmdTest}}` passes overall (paste output below)
-- [ ] `{{cmdValidate}}` passes (paste output below)
-- [ ] TRACE claims written (`IMPLEMENTS` / `PRESERVES` / `CHANGED` / `PROOF` per obligation)
-- [ ] Promotion queue resolved (bugs exposed, hard-to-test findings) — none left unpromoted
-- [ ] Self-review hard gate fully answered
+- [ ] Each test flipped → fails → restored → passes (transition pasted below)
+- [ ] Each AC-bound test confirmed to fail when *its* requirement is violated, not an adjacent
+      condition
+- [ ] High-stakes requirements / invariants carry a strengthened check (property, metamorphic,
+      mutation) with a note of what it exercised
+- [ ] Whole suite green after the final edit (output pasted)
+- [ ] Findings recorded (bugs exposed, hard-to-test designs); self-review answered
 
----
+## Evidence (paste actual command output — never paraphrase)
 
-## Implementation or step trace
-
-(What was added/changed, per assigned obligation. One short paragraph each.)
-
--
+- Test command, whole suite (last lines + exit):
+- Check command (last lines + exit):
+- Flip transition per new test (fails flipped → passes restored) — representative sample:
 
 ## Decisions
 
-(Test-design choices the obligations did not constrain — placement convention chosen, oracle type
-chosen for a high-risk obligation, etc. A criterion you could NOT build a fail-when-violated test
-for does NOT go here; it goes to Blockers as a rebind request.)
+Test-design choices the requirements did not constrain — placement convention, check type chosen
+for a high-stakes requirement. An AC you could *not* build a fail-when-violated test for goes to
+Blocked questions, not here.
 
 -
 
 ## Findings
 
-(Behaviour the tests surfaced — a real bug, a hidden coupling, a hard-to-test design. Promote
-durable findings before close.)
+A real bug a test exposed, production code too coupled to test cleanly, a missing AC — candidates
+for the workspace's `findings/` at Close.
 
 -
 
-## Promotion queue
+## Blocked questions
 
-(Every discovery: a bug a test exposed, production code too coupled to test cleanly, a missing
-acceptance criterion — with a target + status. ALL must be resolved before this task closes.)
-
-| Discovery | Target | Status |
-| --------- | ------ | ------ |
-|           |        |        |
-
----
-
-## Blockers
-
-(A criterion for which no fail-when-violated test can be built — surfaced upstream as a rebind
-request (`test` → `command` / `manual`); a missing command/runner; production code that must change
-to be testable. Do not weaken a test or the production code to route around a blocker.)
+An AC with no buildable fail-when-violated test (ask the spec owner to rebind it to a command or
+manual check); a missing runner; production code that must change to be testable.
 
 -
 
 ## Next steps
 
-(Concrete starting points if this session ends incomplete.)
-
 -
-
----
-
-## Verification matrix
-
-(Per obligation/criterion: the check the spec named, the required proof, the actual pasted proof,
-the observed status. `implement` records only the observed `proof_result`; the verdict is decided
-downstream at `verify`/`review`.)
-
-| Obligation / criterion | Check binding (`test`/`command`/`manual`) | Required proof | proof_result |
-| ---------------------- | ----------------------------------------- | -------------- | ------------ |
-|                        |                                           |                |              |
-
----
 
 ## Self-review
 
-Stop. Tests that step when the code is commented out, tests that assert on internals, and tests that
-bundle unrelated behaviours are net-negative — they cost maintenance and catch nothing. Act as a
-senior engineer hostile to all three, about to greenlight this work for the merge gate.
+Answer in writing, evidence pasted. A test that passes when the code is commented out, asserts on
+internals, or bundles behaviors is net-negative — it costs maintenance and catches nothing.
 
-> **Hard gate.** The task is not complete until every question below has a written answer directly
-> beneath it, and every command result is the actual pasted output — not a paraphrase, not a
-> prediction.
-
-### Verification outputs (paste actual command output — do not paraphrase)
-
-- `{{cmdTest}}` (last 2 lines):
-- `{{cmdValidate}}` (last 2 lines):
-- For each new test: the flip transition — output proving it FAILS when the assertion is flipped (or
-  the production path is commented out), then PASSES when restored. Paste a representative sample:
-
-### Did I do only this step?
-
-- Every change traces to an assigned obligation, or it is recorded as an unassigned change with a
-  reason + authorizing ID or `none`. No production code touched without an authorising obligation?
-  Answer:
-
-### Owned paths
-
-- No file outside the union of assigned `WRITES` surfaces was touched (no `SOL-O005`)?
-  Answer:
-
-### Behaviour over implementation
-
-- Do the tests exercise the public surface, or did they reach into internals (private methods,
-  module-private state)? Will each survive a reasonable refactor that preserves behaviour?
-  Answer:
-
-### Failure-mode clarity
-
-- Does each test fail for one specific reason? When it fails, will the message tell the developer
-  what behaviour broke? Confirmed by flipping each assertion?
-  Answer:
-
-### Right reason for criterion-bound tests
-
-- For every test that is a criterion's oracle: does it assert the behaviour the criterion describes
-  and fail when *that criterion* is violated, not when an adjacent condition changes? For any
-  `RISK high|critical` or `INVARIANT` obligation, is the oracle adequate (property / metamorphic /
-  mutation) with `oracle_adequacy` recorded (no `SOL-V011`)? Any criterion you could not test was
-  surfaced upstream as a rebind request, not silently dropped?
-  Answer:
-
-### Placement and determinism
-
-- Is each test placed per the project's conventions? Are the tests deterministic — no ordering,
-  timing, shared-state, network, or randomness dependency that could flake under CI?
-  Answer:
-
-### Promotion
-
-- Are all promotion-queue items resolved — every bug a test exposed and every hard-to-test finding
-  given a target and status? Nothing left unpromoted?
-  Answer:
-
-### Final adversarial step
-
-- What behaviour is still untested that I should have covered? What break in the code would still
-  pass my suite? Did I actually run all the gates, or did I trust my memory? Do not leave the work
-  without this final step.
-  Answer:
-
-Only when every answer above is written, and every verification output is the real pasted result, is
-this task complete.
+- **Flips:** did every new test fail when flipped and pass when restored, transitions pasted?
+- **Behavior:** does each test exercise the public surface and survive a behavior-preserving
+  refactor — no internals asserted?
+- **One reason:** does each test fail for one reason, with a message that says what behavior broke?
+- **Right reason:** does each AC-bound test fail when *its* requirement is violated? High-stakes
+  checks strengthened and noted?
+- **Determinism:** no ordering, timing, shared-state, network, or randomness dependency that could
+  flake in CI?
+- **Scope:** no production code edited outside the packet; bugs exposed recorded as findings; no
+  review result issued on your own work.

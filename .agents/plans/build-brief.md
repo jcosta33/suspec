@@ -39,11 +39,11 @@ platform · a formal verification system · a guarantee that agent output is cor
    / "A future `swarm spec check` should flag this; until then treat it as a review checklist item."
 3. **Page labels.** Every page under `docs/01–10`, `docs/reference/`, `docs/examples/` carries
    exactly one italic line under its H1:
-   - `*Works today — plain markdown plus your agent; no Swarm tooling required.*`
+   - ``
    - `*Future automation — a contract for tooling that does not exist yet; nothing on this page runs today.*` (future-cli.md only)
    - `*Advanced design note — internal rationale; not needed to use Swarm.*`
-   At most ONE future-CLI aside per happy-path page, phrased "(future CLI: `swarm review` will
-   draft this packet — today you or your agent fills the template)".
+     At most ONE future-CLI aside per happy-path page, phrased "(future CLI: `swarm review` will
+     draft this packet — today you or your agent fills the template)".
 4. **No counts ceremony.** Never recite cardinalities ("7 block types · 5 modals…"). List values,
    not counts. Counts live only in `conformance/README.md` (producer note) + the cheatsheet appendix.
 5. **Short beats complete.** Happy-path pages ≤ ~150 lines. Reference pages as tight as accuracy allows.
@@ -55,25 +55,25 @@ platform · a formal verification system · a guarantee that agent output is cor
 
 ## Vocabulary (user tier ↔ reference tier)
 
-| Say (user docs, kit core, examples) | Reference tier may also use |
-|---|---|
-| step | pass |
-| requirement / acceptance criterion (AC) | obligation |
-| evidence / verification method | proof / proof type |
-| review result: Pass, Fail, Unverified, Blocked | verdict (incl. lifecycle: Waived, Stale, Contradicted) |
-| save a finding | promote |
-| checks / "common mistakes to check for" | lint codes `SOL-XNNN` (checks.md only) |
-| structured requirements (SOL) | SOL — a notation, never "a language", never versioned |
-| writing rules / spec hygiene | APS |
-| review stance / role | profile |
-| prepare tasks / split work | lower / decompose (advanced-lifecycle + future-cli only) |
-| agent run summary (review packet evidence) | trace (future-cli only) |
-| workspace | spec repo |
-| six-step loop | nine-step lifecycle (advanced-lifecycle.md only) |
+| Say (user docs, kit core, examples)            | Reference tier may also use                              |
+| ---------------------------------------------- | -------------------------------------------------------- |
+| step                                           | pass                                                     |
+| requirement / acceptance criterion (AC)        | obligation                                               |
+| evidence / verification method                 | proof / proof type                                       |
+| review result: Pass, Fail, Unverified, Blocked | verdict (incl. lifecycle: Waived, Stale, Contradicted)   |
+| save a finding                                 | promote                                                  |
+| checks / "common mistakes to check for"        | lint codes `SOL-XNNN` (checks.md only)                   |
+| structured requirements (SOL)                  | SOL — a notation, never "a language", never versioned    |
+| writing rules / spec hygiene                   | APS                                                      |
+| review stance / role                           | profile                                                  |
+| prepare tasks / split work                     | lower / decompose (advanced-lifecycle + future-cli only) |
+| agent run summary (review packet evidence)     | trace (future-cli only)                                  |
+| workspace                                      | spec repo                                                |
+| six-step loop                                  | nine-step lifecycle (advanced-lifecycle.md only)         |
 
 Spec frontmatter: `type, id, title, status, owner, sources[]` (+ optional `format: sol`).
 No `swarm_language`, no `aps_version`, no `spec_version`, no `.swarm.` infix anywhere.
-File discrimination = frontmatter `type:`. IDs: SPEC-*, TASK-*, REVIEW-*, FINDING-*, INV-*, CHANGE-*;
+File discrimination = frontmatter `type:`. IDs: SPEC-_, TASK-_, REVIEW-_, FINDING-_, INV-_, CHANGE-_;
 requirements `AC-NNN` (constraints `C-NNN`, invariants `I-NNN` in SOL form).
 
 ## The loop (the only workflow first-contact docs teach)
@@ -81,6 +81,7 @@ requirements `AC-NNN` (constraints `C-NNN`, invariants `I-NNN` in SOL form).
 ```
 Pull → Spec → Task → Run → Review → Close
 ```
+
 Two conditional steps for structural/brownfield work: **Inventory** (before Spec) and
 **Change Plan** (after Spec). Per-shape flows: feature (6 steps) · refactor (Inventory/Audit →
 Change Plan → Task → Run → Review → Close) · bug (Pull → Spec check → Task → Run → Review → Close) ·
@@ -119,4 +120,4 @@ public interfaces · DB migrations · security-sensitive changes · new finding 
 - Forced process on already-clear tasks measurably hurts [[HUMANEVALCOMM]] [[ASKORASSUME]] — hence the skip-paths.
 - Reviewers favor their own/agent output without structure [[SELFPREFER]] [[JUDGEBIAS]]; "tests passed"
   without output is not evidence [[REFLEXION]].
-Do NOT cite METR without its caveat; do not invent numbers.
+  Do NOT cite METR without its caveat; do not invent numbers.

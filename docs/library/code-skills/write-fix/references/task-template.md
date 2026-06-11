@@ -1,245 +1,105 @@
-# {{title}}
+# Run notes: {{title}}
 
-## Metadata
+- Task packet: `tasks/{{TASK-slug}}.md`
+- Bug report: `{{path}}`
+- Spec defining the broken behavior (if any): `{{path}}`
+- Worktree / branch: {{branch}}
+- Created: {{YYYY-MM-DD}} · Status: active
 
-- Slug: {{slug}}
-- Agent: {{agent}}
-- Branch: {{branch}}
-- Base: {{baseBranch}}
-- Worktree: {{worktreePath}}
-- Created: {{createdAt}}
-- Status: active
-- Type: task
-- task_kind: fix
-- pass: implement
-- profile: skeptic
-
----
-
-> 🔧 **FIX PASS** — Reproduce the defect deterministically, patch the root cause
-> (not the symptom), add a regression test that fails before the patch and passes
-> after, run the full suite, and record TRACE claims with pasted proof.
+> **Fix task** — reproduce the defect, patch the root cause (not the symptom), bind a regression
+> test that fails before the patch and passes after, run the full suite, paste the evidence.
 >
-> **AGENTS.md command slots:** `{{cmdValidate}}` / `{{cmdTest}}` resolve from the
-> consuming repo's `AGENTS.md > Commands`. For any slot not defined there
-> (`{{cmdLint}}`, `{{cmdTypecheck}}`, an install command) — **ask the user; do not
-> guess.** A guessed test command produces a false signal about whether the bug is
-> gone. If `AGENTS.md` is missing, ask before substituting any slot.
+> **Commands** resolve from the code repo's `AGENTS.md` Commands table. For any command you need
+> that is undefined, ask the user — do not guess; a guessed test command is a false signal about
+> whether the bug is gone.
 >
-> **Flaky?** If the failing test is non-deterministic, this is the wrong template —
-> a flake's oracle is a loop-run, not a deterministic reproduction. Use the
-> `fix-flaky-test` guide instead.
+> **Flaky?** If the failing test is non-deterministic, this is the wrong scaffold — a flake's
+> evidence is a loop run, not a single reproduction. Use the `fix-flaky-test` guide instead.
 
----
+## Scope (from the task packet)
 
-## Parent contract
+- In: the named defect and its ACs only.
+- Do not change: {{areas the packet rules out}}; neighboring bugs and "while I'm here" cleanup go
+  to Findings.
 
-- Objective (one paragraph): fix the defect described in the linked bug report.
-- Deliverable: the minimal patch + a regression test, red before and green after.
-- Acceptance bar: the pre-patch reproduction and the failing → passing regression
-  transition are pasted; `{{cmdValidate}}` and `{{cmdTest}}` are clean.
-- Owned paths (from `write_surfaces`): <list>
-- Forbidden paths: anything outside the owned paths — touching one is `SOL-O005`.
+## Reproduction (paste actual output — the bug must fire here)
 
----
+Re-run the bug report's reproduction in *this* worktree before patching. If it does not fire, do
+not patch — record a blocked question and investigate the environment discrepancy (it is itself a
+finding, not a dismissal).
 
-## Linked docs
-
-- Bug report / defect description: `{{bugReportFile}}`
-- Spec defining the broken behaviour (if any): `<path>`
-- Related audit (if the bug intersects an audited area): `<path>`
-
----
-
-## Scope
-
-- **In:** the assigned obligation(s) and the named defect only.
-- **Out:** unassigned obligations; behaviour outside the assigned write surfaces;
-  weakening any constraint, invariant, or non-goal; neighbouring bugs and "while
-  I'm here" cleanup (these go to the promotion queue).
-
----
-
-## Assigned obligations
-
-(Paste the assigned SOL blocks verbatim — `REQ` / `CONSTRAINT` / `INVARIANT` /
-`INTERFACE`. Use their IDs as scope.)
-
----
-
-## Constraints and invariants
-
-(The SOL blocks this task MUST preserve, not relax.)
-
----
-
-## Reproduction (paste actual output — the bug MUST fire here)
-
-Re-run the bug report's reproduction in *this* worktree. If it does not fire, do
-not patch — record a blocker and investigate the environment discrepancy (it is
-itself a finding, not a dismissal).
-
-```
-[paste reproduction command output — the bug should fire]
+```text
+{{paste reproduction output — the bug firing}}
 ```
 
----
+## Hypothesis trail
 
-## Plan
+Each fix attempt is a row. When an attempt fails, write what that teaches the next one — the trail
+is what stops the next attempt from repeating a dead end.
 
-1.
-2.
-3.
+| # | Hypothesis | Attempt | Outcome | What it teaches |
+|---|---|---|---|---|
+| 1 | | | | |
 
----
+## Root cause
 
-## Iteration trail
-
-(Each fix attempt is a row. When an attempt fails, write the reflection that drives
-the next one — not just *what* failed but *what that teaches*. The trail is the
-verbal-feedback loop the next iteration reads to avoid repeating a dead end.)
-
-| Trial # | Hypothesis | Attempt | Outcome | Next adjustment (verbal reflection) |
-| ------- | ---------- | ------- | ------- | ----------------------------------- |
-| 1       | …          | …       | …       | —                                   |
-
----
+- **Symptom:** {{what fails, where}} — `{{file}}:{{line}}`
+- **Cause:** {{the mechanism — the state plus input that triggers it}} — `{{file}}:{{line}}`
+- Why this is the cause and not merely where the failure became visible:
 
 ## Progress checklist
 
-- [ ] Bug report read in full; reproduction understood
-- [ ] Reproduction re-run; bug fires (output pasted)
-- [ ] Root cause located at the `file:line` cited in the bug report
-- [ ] Patch implemented at the root cause (minimal change)
-- [ ] Regression test added; fails before patch (verified by patching out the fix and re-running)
-- [ ] Regression test passes after patch
-- [ ] `{{cmdValidate}}` clean (output pasted)
-- [ ] `{{cmdTest}}` clean — full suite, not just the regression test (output pasted)
-- [ ] No scope creep; related findings promoted
-- [ ] No file touched outside owned paths (no `SOL-O005`)
-- [ ] TRACE block written: `IMPLEMENTS` / `PRESERVES` / `CHANGED` / `PROOF`
+- [ ] Bug report read; reproduction re-run in this worktree, output pasted
+- [ ] Cause located at file:line — traced from the symptom, not the first suspicious line
+- [ ] Minimal patch at the cause
+- [ ] Regression test added — fails with the fix patched out (verified, output pasted)
+- [ ] Regression test passes with the fix restored (output pasted)
+- [ ] Full suite + checks clean after the final edit (output pasted)
+- [ ] No bundling; related defects recorded as findings
 - [ ] Self-review answered with pasted evidence
 
----
+## Evidence (paste actual command output — never paraphrase)
 
-## Implementation or step trace
-
-(What changed, per obligation, and *why this patch addresses the cause* — not the
-symptom. The reviewer checks this.)
-
-- ***
-
----
-
-## Verification matrix
-
-| Obligation ID | Required proof | Actual proof (pasted) | proof_result (`passed`/`failed`/`blocked`/`unverified`) |
-| ------------- | -------------- | --------------------- | ------------------------------------------------------- |
-|               |                |                       |                                                         |
-
-> `proof_result` is the *observed* run outcome. The uppercase verdict (one of the 7
-> values — 4 core `PASS`/`FAIL`/`BLOCKED`/`UNVERIFIED` + 3 lifecycle
-> `WAIVED`/`STALE`/`CONTRADICTED`) is decided downstream at `verify`/`review`, not
-> here. Do not self-certify a PASS.
-
----
-
-## Promotion queue
-
-(Discoveries outside scope — neighbouring bugs, refactor opportunities, missing
-tests elsewhere. Each needs a target + status; all MUST be resolved before close.)
-
-| Discovery | Target (bug-report / audit / follow-up) | Status |
-| --------- | --------------------------------------- | ------ |
-|           |                                         |        |
-
----
-
-## Unassigned changes
-
-(Any change not traceable to an assigned obligation — with reason + authorizing ID,
-or `none`. Judged at `review`. Default: there should be none.)
-
-- none
-
----
+- Pre-patch reproduction (the bug fires):
+- Regression test, fix patched out (goes red):
+- Regression test, fix restored (goes green):
+- Full test suite after the final edit (last lines + exit):
+- Check command (last lines + exit):
 
 ## Decisions
 
-- ***
+Why this patch addresses the cause — the reviewer checks exactly this. ("The patch worked" is
+evidence, not a decision; it goes above.)
+
+-
 
 ## Findings
 
-- ***
+Neighboring bugs, refactor opportunities, missing tests elsewhere — candidates for the workspace's
+`findings/` at Close.
 
-## Assumptions
+-
 
-- [pending]
+## Blocked questions
 
----
+A reproduction that will not fire, a requirement the fix cannot meet as written.
 
-## Blockers
-
-- ***
+-
 
 ## Next steps
 
-- ***
-
----
+-
 
 ## Self-review
 
-> **Hard gate.** Every question below has a written answer directly beneath it, and
-> the two required proofs are pasted verbatim. A fix that addresses the symptom
-> rather than the cause leaves the bug latent — close as a senior engineer hostile
-> to "looks fine". The Skeptic stance applies: refute your own patch by default.
+Answer in writing, evidence pasted. A symptom-patch leaves the bug latent — close as a reviewer
+hostile to "looks fine".
 
-### Verification outputs (paste actual command output — do not paraphrase)
-
-- `git status` →
-- Pre-patch reproduction (the bug actually fires in this worktree):
-- Failing regression test (the fix patched out — test goes red):
-- Passing regression test (the fix restored — test goes green):
-- `{{cmdValidate}}` (last 2 lines):
-- `{{cmdTest}}` (last 2 lines, full suite):
-- `git diff --stat`:
-
-### Root-cause coverage
-
-- Did I patch the root cause cited in the bug report (`file:line`), or did I
-  suppress a symptom elsewhere? Could the bug recur via a different path under the
-  same cause?
-  Answer:
-
-### Regression-test integrity
-
-- Does the regression test fail when I patch out my fix? Did I verify it (the
-  failing-test output is pasted above)? Does it assert on behaviour, not internal
-  state?
-  Answer:
-
-### Side effects
-
-- Did the patch change behaviour anywhere else? Did `{{cmdTest}}` pass for the rest
-  of the suite, not just the regression test?
-  Answer:
-
-### Scope and write surfaces
-
-- Is every change traceable to the assigned obligation, or recorded as an
-  `## Unassigned changes` row? Did I touch any file outside my owned paths
-  (`SOL-O005`)? Are related defects promoted rather than bundled?
-  Answer:
-
-### Related defects
-
-- The bug report listed defects nearby. Did I check whether any are now triggered
-  or fixed by my patch, and leave them as promoted follow-up work?
-  Answer:
-
-### Minimality
-
-- Is this the *minimum* fix? Did I sneak in a "small improvement" that changes
-  behaviour beyond the bug?
-  Answer:
+- **Root cause:** did the patch land at the cause's file:line, or suppress a symptom elsewhere?
+  Could the bug recur via a different path under the same cause?
+- **Regression test:** does it fail when the fix is patched out — verified, transition pasted? Does
+  it assert behavior, not internal state?
+- **Side effects:** did the full suite pass after the final edit, output pasted?
+- **Scope:** minimal fix only; related defects recorded as findings, not bundled; nothing outside
+  the packet's areas touched.
+- **Independence:** no review result issued on your own work.

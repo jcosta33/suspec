@@ -1,57 +1,36 @@
 ---
 type: adr
-id: 0001-adopt-swarm
+id: 0001
+title: Adopt Swarm for this workspace
 status: accepted
-created: 2026-06-07
-updated: 2026-06-07
-supersedes:
-superseded_by:
+date: {{YYYY-MM-DD}}
 ---
 
-# ADR-0001: Adopt Swarm for this repo
-
-*Lives in: `decisions/` — project-wide decisions, sequentially numbered (`0001-`, `0002-`, …), one per file, superseded rather than rewritten.*
-
-> This is a **seed** ADR — an example showing what `decisions/` is for and the shape an ADR takes. Keep it (it
-> genuinely records the decision to adopt Swarm) or replace it with your own first decision.
+# 0001 — Adopt Swarm for this workspace
 
 ## Context
 
-This repo is the place our intent lives. We want specs that AI agents can build from reliably, with every
-obligation bound to a check and a clear trail from requirement to evidence — rather than ad-hoc prompts.
+{{team}} uses coding agents for a growing share of its changes. The code
+arrives faster than we can specify and review it: requirements live in ticket
+threads, agents get prompted from memory, and "done" claims reach review
+without evidence.
 
 ## Decision
 
-Adopt the Swarm framework. Specs and their supporting docs live in per-feature folders under `specs/<feature>/`;
-project-wide decisions live here in `decisions/`; Swarm tooling (skills, reference cards, templates, memory)
-lives under `.agents/`; the repo-root `AGENTS.md` is the always-loaded bootloader.
+This repository is our Swarm workspace:
 
-## Alternatives considered
-
-| Alternative | Why rejected |
-| --- | --- |
-| Keep authoring specs ad-hoc in prose | No obligation/verification structure; agents build unreliably, and there's no requirement→evidence trail. |
-| Invent our own spec format | Swarm already provides the obligation language (SOL), the steps, and the artifact set; reinventing them is cost without benefit. |
+- Durable intent lives in `specs/<feature>/spec.md`; supporting docs sit
+  beside it.
+- Work flows through committed artifacts: `intake/`, `tasks/`, `reviews/`,
+  `findings/`; `status.md` is the board.
+- Every agent task starts from a task packet; every result is judged through
+  a review packet — a Pass needs pasted output or a CI link.
+- Decisions land here in `decisions/`, numbered and immutable.
+- Code repositories stay pristine: they hold code; this workspace holds
+  intent and evidence.
 
 ## Consequences
 
-### Positive
-
-- Every feature has one home for its contract and its supporting evidence.
-- Obligations bind to proofs; reviews render verdicts against them.
-
-### Negative
-
-- A short ramp: contributors learn the artifact homes and the SOL clause shape.
-
-### Neutral / tradeoffs
-
-- Intent now lives as structured Markdown, committed alongside the work.
-
-## Status
-
-accepted
-
-## Affected obligations / constraints
-
-- Adds: none (a process decision, not an obligation).
+- Reviews read coverage tables and routed exceptions instead of raw diffs.
+- The workspace grows with every task — that record is the point, not clutter.
+- These rules are conventions; the team holds them in review, not a tool.
