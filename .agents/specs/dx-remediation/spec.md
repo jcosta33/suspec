@@ -17,8 +17,11 @@ home, an evidence model that assumes CLI-runnable checks, and missing paths for 
 shapes. This spec turns every verified register finding into a checkable requirement or a
 recorded drop. It is a wide, shallow catalogue (one line of behavior per finding), so it runs
 long deliberately; the frozen-format subset is sequenced by `CHANGE-dx-formats`. Every
-`Verify with:` line below fails against the baseline tree (`dc10f39`) — pre-flight pasted in
-the authoring session — so none can read green before its fix lands.
+executable `Verify with:` gate fails against the baseline tree — pre-flighted in the authoring
+session and re-flighted after the challenge round — so none can read green before its fix
+lands. A four-lens challenge round (surveyor · architect · economist · canon-coherence)
+reshaped fourteen requirements and added nine; the reshapes are in place under their original
+ids.
 
 ## Non-goals
 
@@ -26,42 +29,58 @@ the authoring session — so none can read green before its fix lands.
 - No new artifact types and no ninth template — the run summary becomes a section, not a file.
 - No template-repo split, no SOL grammar/catalogue changes (the shadow *claim* is scoped
   instead — AC-040), no rescoring of the audit itself.
+- No new coverage-row result values: Pass · Fail · Unverified · Blocked is closed (waivers are
+  recorded, never written into a row's Result — AC-014).
 - No cross-workspace board aggregation and no portfolio-placement guidance (recorded drop).
 
 ## Requirements
 
 <!-- Importance order: the 9-of-11 finding first, the evidence-model cluster second,
      work-shape paths third, then packet/board/commands formats, adoption honesty,
-     discoverability, and surface-consistency sweeps. One behavior per AC. -->
+     discoverability, surface-consistency sweeps, and the challenge-round additions.
+     One behavior per AC. -->
 
-### AC-001 — The run summary has a home
+### AC-001 — The run summary has a home, as a digest
 
-The task packet format must carry a `## Run summary` section the implementing agent fills
-(changed files, commands run with output, out-of-scope edits, blocked questions).
+The task packet format must carry a `## Run summary` section the implementing agent fills as
+the **handoff digest** — changed files, a one-line per-command result digest that cites the
+Verify items' pasted output blocks, out-of-scope edits, blocked questions, finding-candidate
+notes. The Verify section stays the single home of pasted evidence; the summary cites it,
+never duplicates it (two paste homes is the Contradicted-evidence class).
 
 Verify with: `grep -q '^## Run summary' starter-kit/templates/task.md`
 
 ### AC-002 — Every surface that demands the run summary names its home
 
-Every page or guide that asks an agent for a run summary (in any phrasing — "run summary",
-"leave a summary", "the agent's summary") must name the task packet's Run summary section as
-its location.
+Every surface that *instructs* an agent to produce a run summary must name the task packet's
+Run summary section as its location. The instructing surfaces, enumerated: docs/02 (step 4),
+docs/07, docs/08 (the consumer side), `starter-kit/templates/task.md`,
+`starter-kit/AGENTS.md` (instruction 5), both implement-task guides and their `.agents/skills`
+mirrors, the three docs/examples walkthroughs, and
+`starter-kit/examples/feature-from-ticket/task.md`. Reference-tier *descriptive* mentions
+(glossary, step-bars, future-cli) are covered once by the glossary entry naming the home —
+they do not each restate it.
 
-Verify with: `grep -rliE "run summary|leave a summary|agent's summary" docs starter-kit --include='*.md' | grep -v 'docs/adrs/' | xargs grep -LiE '## Run summary|Run summary section' — returns nothing`
+Verify with: `grep -LiE '## Run summary|Run summary section' docs/02-basic-workflow.md docs/07-running-agents.md docs/08-reviewing-output.md starter-kit/templates/task.md starter-kit/AGENTS.md starter-kit/.agents/skills/implement-task/SKILL.md docs/library/code-skills/implement-task/SKILL.md docs/examples/feature-from-jira.md docs/examples/bug-fix.md docs/examples/large-pr-review.md starter-kit/examples/feature-from-ticket/task.md — returns nothing`
 
-### AC-003 — Manual evidence is Pass-grade at user tier
+### AC-003 — The Pass-evidence rule admits manual evidence, amended once and swept everywhere
 
-docs/06 (where Verify is defined), docs/08, and the kit review-output guide must each state
-that a named human's recorded observation (who judged, what they saw) is Pass-grade evidence
-for a `manual` verification method.
+The canonical sentence is amended in one form — "A Pass needs pasted output, a CI link, or,
+for a manual Verify method, a named human's recorded observation (who judged, what they
+saw)" — and **every** surface restating the old two-option form carries the amended form:
+docs/02, docs/06, docs/08 (both sites), the review template comment, checks.yaml's
+`pass-needs-evidence` rule, the cheatsheet (both sites), artifact-formats, principles,
+step-bars (both sites), the kit checks-reference card, the kit review-output guide, the seed
+ADR, and the large-pr-review example. A three-surface patch would fork the bar against the
+other ten — the defect class AC-043 exists to close.
 
-Verify with: `grep -LiE 'named human|who judged' docs/06-creating-tasks.md docs/08-reviewing-output.md starter-kit/.agents/skills/review-output/SKILL.md — returns nothing`
+Verify with: `grep -rln 'or a CI link' docs starter-kit checks --include='*.md' --include='*.yaml' | grep -v 'docs/adrs/' | xargs grep -LiE 'named human|manual' — returns nothing`
 
 ### AC-004 — The seed ADR does not foreclose manual evidence
 
-The kit's seed ADR (`decisions/0001-adopt-swarm.md`) must state the evidence rule in a form
-that admits the manual method, so an adopting HIL/embedded team does not formally decide its
-primary verification mode can never produce a Pass.
+The kit's seed ADR (`decisions/0001-adopt-swarm.md`) must state the evidence rule in the
+amended AC-003 form, so an adopting HIL/embedded team does not formally decide its primary
+verification mode can never produce a Pass.
 
 Verify with: `grep -qiE 'named human|manual check' starter-kit/decisions/0001-adopt-swarm.md`
 
@@ -87,18 +106,23 @@ protocol (same seed or fixed dataset, metric, threshold).
 
 Verify with: `grep -qiE 'stochastic|same seed' docs/04-writing-specs.md`
 
-### AC-008 — Performance discipline covers model quality
+### AC-008 — Performance discipline names its model-quality delta
 
-The write-performance guide's trigger and rules must cover model-quality metrics (eval-gated
-requirements), not only systems metrics.
+The write-performance guide's trigger gains an eval-gated model-quality clause, and the guide
+gains one scoped paragraph stating the stochastic delta (pinned seed/dataset, variance budget,
+eval-run link as evidence) that points at docs/04's protocol rule (AC-007). The nine rules and
+the Skip list stay systems-shaped — the guide stays focused per ADR-0064.
 
 Verify with: `grep -qiE 'model quality|eval metric' docs/library/code-skills/write-performance/SKILL.md`
 
-### AC-009 — Post-merge evidence has a documented pattern
+### AC-009 — Post-merge evidence has a documented pattern, inside the existing taxonomy
 
 The advanced lifecycle page must document the pattern for requirements whose only honest
-evidence is producible after merge (infra applies, soak metrics): Waived-with-expiry at the
-gate, closed when the post-merge evidence lands.
+evidence is producible after merge (infra applies, soak metrics) using the taxonomy it already
+has: the row records **Blocked**; the human routes it as an exception and records the waiver
+(who · why · expiry) per the existing required fields; the merge proceeds on the waiver; a
+follow-up review row supplies the Pass and lapses the waiver. Merged packets are never edited
+— closure is a new row, not a mutation.
 
 Verify with: `grep -qiE 'post-merge|soak' docs/reference/advanced-lifecycle.md`
 
@@ -117,26 +141,37 @@ channel (email / DM) alongside tracker shapes.
 
 Verify with: `grep -qE 'gh-pr|pull-request' starter-kit/templates/intake.md && grep -qiE 'email|dm' starter-kit/templates/intake.md`
 
-### AC-012 — One spec, many platforms is legal
+### AC-012 — One spec, many platforms is legal, on every restating surface
 
-The split-work guide's coverage rule must carve out the platform case: the same requirement id
-may be scoped to N platform tasks when each task verifies it on its own platform.
+The assigned-to-exactly-one-task coverage rule must carve out the platform case — the same
+requirement id may be scoped to N platform tasks when each task verifies it on its own
+platform — on **all three** surfaces that state the rule: the split-work guide, the advanced
+lifecycle's decompose bar restatement, and step-bars. The carve-out states the coverage
+semantics: a requirement reads green at spec level only when every platform task's packet
+shows Pass; per-platform results never substitute for each other.
 
-Verify with: `grep -qi 'platform' starter-kit/advanced/split-work/SKILL.md`
+Verify with: `grep -qi 'platform' starter-kit/advanced/split-work/SKILL.md && grep -qi 'platform' docs/reference/advanced-lifecycle.md && grep -qi 'platform' docs/reference/step-bars.md`
 
-### AC-013 — Solo adopters get an independence default
+### AC-013 — Solo adopters get the same independence rule, stated
 
-docs/08 must state the solo default for the implementer-≠-reviewer rule: one party implements
-and the other reviews, where a party may be the human or the agent.
+docs/08 must state the solo default with "party" pinned at the actor of the diff: whoever
+produced the diff — human hand or agent session — does not fill the packet. Agent implements →
+the human reviews; human implements → a fresh agent session reviews. Self-review stays
+mandatory and verdict-free (ADR-0056); the phrasing mirrors AC-030's team rule.
 
 Verify with: `grep -qi 'solo' docs/08-reviewing-output.md`
 
-### AC-014 — Waive-and-merge is representable at user tier
+### AC-014 — Waive-and-merge is representable, without touching row results
 
-The review packet must give a reviewer who waives a non-Pass row and merges a documented way
-to record it (form per Q1), without weakening "an empty Evidence cell means Unverified".
+The review packet must record a waiver as **who waived · which rows · why · expiry**, with the
+row's Result staying what the evidence says (the result enum is untouched), a terminal packet
+status for the merged-with-waiver outcome (per Q1's recommended resolution), and the gate
+honesty bar amended where it is stated (docs/08, step-bars V4) to read "no merge suggestion
+past a Fail or unrouted Unverified **without a recorded waiver**". The template comment points
+at the advanced lifecycle for expiry semantics; the glossary maps the user-tier phrase to the
+reference-tier Waived annotation.
 
-Verify with: `grep -qi 'waiv' starter-kit/templates/review.md`
+Verify with: `grep -qiE 'who waived|waived by' starter-kit/templates/review.md && grep -qi 'expiry' starter-kit/templates/review.md`
 
 ### AC-015 — The review packet names its reviewer
 
@@ -145,43 +180,56 @@ named-human requirement has a place to land.
 
 Verify with: `grep -qE '^reviewer:' starter-kit/templates/review.md`
 
-### AC-016 — Non-requirement Verify items have a row home
+### AC-016 — Non-requirement Verify items keep one evidence home
 
-The review template must state where results for non-AC Verify items (full suite, typecheck)
-land for plain spec tasks.
+The review template must state where non-AC Verify results (full suite, typecheck) live: their
+pasted output stays under their Verify items in the task packet, the Run summary digests them,
+and a failed, stale, or skipped suite routes through Human attention under the existing
+missing-test-output trigger. The coverage table stays requirement-keyed — no generic rows.
 
 Verify with: `grep -qi 'suite' starter-kit/templates/review.md`
 
-### AC-017 — A blocked task is visible on the board
+### AC-017 — A blocked task is visible on the board, as board vocabulary
 
-The status board's task-row vocabulary must include a blocked state (depth per Q2).
+The status board's task-row vocabulary must include a blocked state as **board-only**
+vocabulary, extending the precedent the template's own comment already draws for specs
+("in-progress / done / stale are board states"); the task frontmatter enum is untouched. The
+template additionally seeds a review example row, so a blocked review is visible as itself.
 
-Verify with: `grep -E 'review-ready' starter-kit/templates/status.md | grep -qi 'blocked'`
+Verify with: `grep -E 'review-ready' starter-kit/templates/status.md | grep -qi 'blocked' && grep -qi 'REVIEW-' starter-kit/templates/status.md`
 
 ### AC-018 — The shipped board carries no template residue
 
-`starter-kit/status.md` (the live board instance) must contain no `{{placeholder}}` rows.
+`starter-kit/status.md` (the live board instance) must contain no `{{placeholder}}` rows —
+it ships empty except a comment-only example row (a fictional-but-real-looking row is lorem
+ipsum that doesn't look like lorem ipsum).
 
 Verify with: `! grep -q '{{' starter-kit/status.md`
 
-### AC-019 — The Commands table documents multi-context slots
+### AC-019 — The Commands table documents multi-context slots, contract-neutrally
 
-The kit `AGENTS.md` Commands block must document the convention for multiple commands per
-kind — polyglot and multi-repo estates (form per Q3).
+The kit `AGENTS.md` Commands block must document the multi-context convention in two steps:
+first, a monorepo with a root dispatcher (`turbo run test`, `make test`) keeps single slots;
+where contexts truly diverge, the Commands table repeats once per context under a named
+sub-heading — slot names stay the canonical set, the context lives in the heading, and one
+line states resolution (a task resolves slots against the sub-table its Affected areas name).
+No new slot-name grammar; the `cmd` prefix rules in checks.yaml are untouched.
 
-Verify with: `grep -qiE 'per-repo|polyglot' starter-kit/AGENTS.md`
+Verify with: `grep -qiE 'per-repo|polyglot|dispatcher' starter-kit/AGENTS.md`
 
-### AC-020 — The full slot set is named in the kit
+### AC-020 — The full slot set is discoverable from the kit
 
-The kit `AGENTS.md` Commands block must name the full contract slot set, including
-`cmdSecurity`.
+The kit `AGENTS.md` Commands block keeps its four starter rows and gains one line naming the
+remaining contract slots (cmdInstall, cmdFormat, cmdValidate, cmdBenchmark, cmdSecurity) with
+checks.yaml as their registry — "add a row when your estate has one". No empty placeholder
+rows.
 
 Verify with: `grep -q 'cmdSecurity' starter-kit/AGENTS.md`
 
 ### AC-021 — Adoption does not claim two minutes
 
-docs/ADOPTING.md must state an honest time for path 1 (the measured 10–16 minutes, or no
-number).
+docs/ADOPTING.md must state an honest time for path 1 — consistent with the measured range
+(roughly 10–25 minutes across the audit's stopwatches, ~15 typical) — or no number.
 
 Verify with: `! grep -qi 'two minutes' docs/ADOPTING.md`
 
@@ -198,10 +246,11 @@ docs/ADOPTING.md's dedicated-repo path must include the first commit, not stop a
 
 Verify with: `grep -qi 'git commit' docs/ADOPTING.md`
 
-### AC-024 — The placeholder step names the board
+### AC-024 — The adopter is told the board is theirs to seed
 
-docs/ADOPTING.md's fill-the-placeholders step must name `status.md` among the files with
-placeholders.
+docs/ADOPTING.md's fill step must name `status.md` as the adopter's board to seed — "replace
+the example row with your first spec/task rows" — without claiming it carries placeholders
+(AC-018 makes that claim false).
 
 Verify with: `grep -A4 'Fill the' docs/ADOPTING.md | grep -q 'status.md'`
 
@@ -221,14 +270,17 @@ Verify with: `grep -qri 'windows' docs/ADOPTING.md docs/10-integrations.md`
 
 ### AC-027 — The integrations table covers Copilot
 
-docs/10's per-tool table must carry a GitHub Copilot row.
+docs/10's per-tool table must carry a GitHub Copilot row (verified against Copilot's current
+custom-instructions mechanism at write time — no guessed behavior).
 
 Verify with: `grep -qi 'copilot' docs/10-integrations.md`
 
-### AC-028 — The Cursor row carries a concrete recipe
+### AC-028 — The Cursor row pins the stable facts, links the rest
 
-docs/10's Cursor row must state how a rule file is actually made from a guide (`.mdc`,
-frontmatter).
+docs/10's Cursor row must state the durable shape — one guide → one `.mdc` rule file, manual
+conversion, scope with globs rather than always-on — and link Cursor's own rules documentation
+for the current frontmatter schema rather than transcribing it (a transcribed third-party
+schema is a decay magnet).
 
 Verify with: `grep -qi '\.mdc' docs/10-integrations.md`
 
@@ -257,17 +309,20 @@ docs/reference/glossary.md must carry a worktree entry.
 
 Verify with: `grep -qi 'worktree' docs/reference/glossary.md`
 
-### AC-033 — Finding candidates have one staging path
+### AC-033 — Finding candidates have one staging path, shown not narrated
 
 docs/09, the task template, and all three examples must agree that finding candidates stage in
-the task packet's Findings section (the run summary may mirror, never replace).
+the task packet's Findings section — the **only** staging surface (no sanctioned mirror; a
+mirror is a second home with a courtesy title). The examples demonstrate the section itself,
+not prose about it.
 
-Verify with: `grep -LiE 'Findings section' docs/09-saving-findings.md starter-kit/templates/task.md docs/examples/feature-from-jira.md docs/examples/bug-fix.md docs/examples/large-pr-review.md — returns nothing`
+Verify with: `( for f in docs/examples/feature-from-jira.md docs/examples/bug-fix.md docs/examples/large-pr-review.md; do grep -A4 '^## Findings' "$f" | grep -qE '^- [A-Za-z]' || exit 1; done ) && grep -qi 'Findings section' docs/09-saving-findings.md — each example demonstrates a filled Findings section, not a bare heading`
 
-### AC-034 — The flow table has a performance shape
+### AC-034 — Performance work finds its flow
 
-docs/02's flow-by-shape table must carry a performance-work row (baseline-first discipline,
-pointing at the per-kind guide).
+docs/02 must connect performance-shaped work to its flow — as a table row or in the
+under-table note where Spec-amend, Audit, and Research are already glossed — stating the
+baseline-first discipline and pointing at the write-performance guide.
 
 Verify with: `grep -qi 'performance' docs/02-basic-workflow.md`
 
@@ -278,10 +333,12 @@ review ids.
 
 Verify with: `grep -qE 'AUDIT-|INV-' starter-kit/templates/finding.md`
 
-### AC-036 — The exception triggers name infrastructure risk classes
+### AC-036 — The risky-files examples include infrastructure
 
-docs/08's exception-trigger examples must include infrastructure risk classes (IAM policies,
-security groups, state moves, destroys).
+docs/08's **risky-files trigger examples** gain the infrastructure classes (IAM policies,
+security groups, state moves, destroys) — explicitly no new trigger class and no edit to the
+review template comment or checks.yaml, so the class list stays identical across all three
+restating surfaces.
 
 Verify with: `grep -qiE 'IAM|security group' docs/08-reviewing-output.md`
 
@@ -294,24 +351,28 @@ Verify with: `! grep -q 'REFLEXION' checks/README.md`
 
 ### AC-038 — The contract declares the task status enum
 
-checks.yaml's task_file must declare the task status enum
-(ready / running / review-ready / closed, plus Q2's answer).
+checks.yaml's task_file must declare the task status enum as the four values
+artifact-formats.md already defines — ready / running / review-ready / closed — with no Q2
+dependency. Any future fifth value enters via an ADR amending artifact-formats first.
 
 Verify with: `grep -qE 'ready.*running.*review-ready.*closed' checks/checks.yaml`
 
-### AC-039 — cmdBenchmark is not called non-contract
+### AC-039 — No cmd-prefixed name is called non-contract
 
-The adversarial-review task template must not describe `cmdBenchmark` as a non-contract value
-while checks.yaml lists it in the slot set.
+The adversarial-review task template must not describe any `cmd*`-prefixed value as
+non-contract (the contract reserves the prefix): `cmdBenchmark` joins the resolvable slot
+list, and the non-contract example moves into the consumer namespace (`project:*`).
 
-Verify with: `! grep -qE 'Non-contract.*cmdBenchmark|cmdBenchmark.*Non-contract' starter-kit/advanced/adversarial-review/references/task-template.md`
+Verify with: `! grep -qiE 'non-contract[^.]*cmd[A-Z]' starter-kit/advanced/adversarial-review/references/task-template.md`
 
-### AC-040 — The shadow claim is scoped to what it shadows
+### AC-040 — The shadow claim is scoped on both its surfaces
 
-checks.yaml's header must scope its machine-readable-shadow claim to the structural checks it
-actually carries — it does not carry the SOL catalogue.
+checks.yaml's header must scope its machine-readable-shadow claim to the **core checks** and
+packet schemas it actually carries, and checks/README.md's "implement the checks reference
+directly — they must agree" claim must gain the same scope (the SOL catalogue is prose-only).
+Same commit, both surfaces, the existing term "core checks" — no third name for the set.
 
-Verify with: `grep -qiE 'shadows? (only )?the (core|structural)' checks/checks.yaml`
+Verify with: `grep -qiE 'shadows? (only )?the core' checks/checks.yaml && grep -qiE 'SOL.*prose-only|prose-only.*SOL' checks/README.md`
 
 ### AC-041 — The threat-model template has no duplicated cross-reference
 
@@ -335,35 +396,122 @@ bar in the kit.
 
 Verify with: `manual — side-by-side read of the two rules, recorded with who judged in the review packet`
 
+### AC-044 — The session maintains the board, the human reads it
+
+The board's upkeep moves to the agent sessions that exist at each transition: the kit
+`AGENTS.md` closing instruction gains the clause that the finishing agent flips its task's
+board row (to review-ready, with the packet link at close), the review-output guide's closing
+checklist gains the review-ready → closed flip, and docs/02/09 state that the session does the
+edit while the human reads the board. Convention level; no new artifact. This is the only
+transformation that attacks the audit's unanimous sustainability floor (11/11 predicted the
+hand-edited board dies first).
+
+Verify with: `grep -qiE 'board row|update the board|updates the board' starter-kit/AGENTS.md`
+
+### AC-045 — The spot-check leaves a trace
+
+The review template carries one line — `Spot-checked: {{which green row you re-ran}}` —
+template-carried, not contract-required (the AC-015 envelope), so a rubber-stamped packet and
+a spot-checked packet are no longer byte-identical. AC-043's rule text points at it.
+
+Verify with: `grep -q 'Spot-checked:' starter-kit/templates/review.md`
+
+### AC-046 — The run summary has a custody path when the agent can't write the workspace
+
+docs/07 must state who writes the Run summary section in an external-workspace or sandboxed
+topology: the runner or human relays the agent's emitted summary into the task packet at
+handoff.
+
+Verify with: `grep -qiE 'cannot write|relays? the' docs/07-running-agents.md`
+
+### AC-047 — Tracker-owned task state gets an honest board exit
+
+docs/02's skip rules gain the tracker clause: when a tracker (Jira/Linear) owns task state,
+the board is optional — keep the review-packet links in the tracker rows instead.
+
+Verify with: `grep -qiE 'tracker.*board|board.*tracker' docs/02-basic-workflow.md`
+
+### AC-048 — The contract states its frontmatter-list semantics
+
+checks.yaml must state in one line whether its frontmatter lists are minimum-required (extra
+keys legal) or exhaustive — decided deliberately, so the kit's own `reviewer:` field (AC-015)
+cannot read as non-conformant against the contract.
+
+Verify with: `grep -qiE 'extra keys' checks/checks.yaml`
+
+### AC-049 — The AUDIT- prefix is registered
+
+docs/reference/artifact-formats.md's ID-conventions line must register `AUDIT-*` (two shipped
+templates already use it; AC-035 widens its reach).
+
+Verify with: `grep -q 'AUDIT-' docs/reference/artifact-formats.md`
+
+### AC-050 — The flagship demo points at the uncooperative case
+
+docs/examples/large-pr-review.md must acknowledge the uncooperative variant (no packet, silent
+author) and point at the AC-010 post-hoc flow — the demo's "main use case" claim currently
+shows only the cooperative implementer.
+
+Verify with: `grep -qiE 'post-hoc|uncooperative|without a task packet|arrives as code' docs/examples/large-pr-review.md`
+
+### AC-051 — The Bug flow names its no-spec exit
+
+docs/02's flow notes must state where a bug with no covering spec goes — the AC-010 post-hoc
+flow — at the surface where the week-one reader dead-ends ("Spec amend" presupposes a spec).
+
+Verify with: `grep -qiE 'no covering spec|without a spec' docs/02-basic-workflow.md`
+
+### AC-052 — The packet author is a fresh party, at the rule's own site
+
+docs/08's packet-author line ("you or your agent fills the template") must name a fresh
+session or second party — never the implementing session — mirroring AC-013/AC-030's
+invariant at the site where a junior actually reads it.
+
+Verify with: `grep -qiE 'fresh (agent )?session|second agent' docs/08-reviewing-output.md`
+
 ## Open questions
 
-- Q1 — Does **Waived** graduate to the user tier (a review status / coverage-row value), or
-  does waive-and-merge stay a documented convention pointing at the advanced lifecycle?
-  Blocks the exact form of AC-014 and the review-format wave of CHANGE-dx-formats.
-- Q2 — Does the task frontmatter status enum gain `blocked`, or is blocked board-vocabulary
-  only? Blocks the depth of AC-017 and AC-038's final enum.
-- Q3 — Multi-command slot syntax: suffix-namespaced slots (`cmdTest:web`) or per-repo
-  sub-tables? Blocks AC-019's exact form.
+All three carry recommended resolutions from the challenge round (surveyor · architect ·
+economist · coherence); ADR-0072 confirms or overrides.
+
+- Q1 — Waive-and-merge form. **Recommended:** row results untouched (no fifth value, ever);
+  waiver recorded as who · which rows · why · expiry; **one additive terminal packet status**
+  for merged-with-waiver (the convention-only branch leaves Dex's verified defect standing —
+  a decided packet dangling at `needs-human`); expiry semantics stay reference-tier
+  (advanced-lifecycle, AC-009); glossary maps the tiers. Cost honestly named: widens PG-007 to
+  a second enumerated delta (review status_enum, additive).
+- Q2 — Blocked task state. **Recommended:** board-vocabulary only, riding the spec-row
+  precedent already in the template's comment; the task frontmatter enum and AC-038's contract
+  enum stay the four values. (All four lenses converged; no counter-argument survived.)
+- Q3 — Multi-context Commands. **Recommended:** root-dispatcher single slots documented first
+  (the prevailing monorepo answer); per-context sub-tables where contexts truly diverge —
+  contract-neutral, canonical slot names, context in the heading. Suffix-minted slot names
+  (`cmdTest:web`, `cmdTestIos`) rejected: colon collides with the SOL adapter grammar and the
+  namespace shapes, and any suffix grammar forces an unbudgeted contract change.
 
 Decisions already made (recorded, closed): the run summary lives **in the task packet** as a
-section — it travels with the work order, the review packet quotes it, and the template set
-stays at eight. The retrofit flow lands in **docs/08** plus the intake template's source
-shapes (no new page). The reviewer field (AC-015) is template-carried but **not**
-contract-required — keeps CHANGE-dx-formats' single-rejection-delta envelope.
+digest section (Verify keeps the evidence; the contract's prose notes the summary cites,
+never replaces — coherence's drift guard). The retrofit flow lands in **docs/08** plus the
+intake template's source shapes (no new page). The reviewer field (AC-015) and spot-check
+line (AC-045) are template-carried but **not** contract-required. ADR-0072 must record
+partial supersession of ADR-0060's addendum ("the worker's run record folds into the review
+packet") — AC-001 reverses that clause.
 
 ## Affected areas
 
 - `starter-kit/templates/{task,status,intake,review,finding,spec}.md`, `starter-kit/AGENTS.md`,
   `starter-kit/status.md`, `starter-kit/decisions/0001-adopt-swarm.md`,
-  `starter-kit/advanced/{split-work/,threat-model.md,adversarial-review/}` — sequenced by
-  `CHANGE-dx-formats`
+  `starter-kit/examples/feature-from-ticket/`,
+  `starter-kit/advanced/{split-work/,threat-model.md,adversarial-review/,checks-reference.md}`
+  — sequenced by `CHANGE-dx-formats`
 - `checks/checks.yaml`, `checks/fixtures/`, `checks/README.md`
 - `docs/02, 04, 06, 07, 08, 09, ADOPTING, 10`, `docs/reference/{glossary,advanced-lifecycle,
-  artifact-formats,cheatsheet,step-bars}.md`
+  artifact-formats,cheatsheet,step-bars,principles}.md`, `docs/01` (evidence-sentence sweep)
 - `starter-kit/.agents/skills/{implement-task,review-output}/`,
   `docs/library/code-skills/{implement-task,write-performance}/`
 - `docs/examples/` (all three)
-- one new ADR recording the format amendments (Q1–Q3)
+- one new ADR recording the format amendments, the Q1–Q3 resolutions, and the ADR-0060
+  addendum supersession
 
 ## Dropped from sources
 
