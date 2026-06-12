@@ -4,8 +4,9 @@ This folder **is** a Swarm workspace. Copy it whole — as a new repo, or as a f
 existing project — fill in `AGENTS.md`, and run the loop.
 
 ```sh
-cp -r starter-kit my-workspace        # a dedicated workspace repo (git init it)
-cp -r starter-kit your-repo/workspace # or co-located inside your project
+cp -R starter-kit my-workspace        # a dedicated workspace repo (git init it)
+cp -R starter-kit your-repo/workspace # or co-located inside your project
+# (-R, not -r: on macOS, -r would replace the kit's symlinks with stale copies)
 ```
 
 What you copied:

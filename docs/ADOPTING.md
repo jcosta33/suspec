@@ -11,8 +11,9 @@ Copy the kit whole, as a dedicated workspace repo or a folder inside your projec
 ([where files live](03-where-files-live.md)):
 
 ```sh
-cp -r starter-kit my-workspace && cd my-workspace && git init   # dedicated repo
-cp -r starter-kit <your-project>/workspace                      # or co-located
+cp -R starter-kit my-workspace && cd my-workspace && git init   # dedicated repo
+cp -R starter-kit <your-project>/workspace                      # or co-located
+# (-R, not -r: on macOS, -r would replace the kit's symlinks with stale copies)
 ```
 
 Then:

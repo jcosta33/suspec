@@ -63,4 +63,4 @@ mixing agents and humans on the same board need no separate process.
 ## Next
 
 - [Where files live](03-where-files-live.md) — the workspace these integrations feed.
-- [Adopting Swarm](ADOPTING.md) — the copy checklist, including the guide install.
+- [Adopting Swarm](ADOPTING.md) — one copy of the kit, including the guide wiring.

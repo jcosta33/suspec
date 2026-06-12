@@ -127,3 +127,13 @@ additionally covers: the workspace-shaped kit (copy-whole adoption + `.agents/sk
 the `checks/checks.yaml` path + v0.3.0, and `step-bars.md` replacing `evals/` as the
 step-quality reference. The template-repo split/mirror is deferred to public launch per
 ADR-0069 §4.
+
+**Restructure verification (2026-06-12, post-0069–0071):** 3-lens fresh-eyes workflow (cold
+adoption walk, claims sweep, coherence) — 7 confirmed findings, 0 refuted, all fixed same day:
+1 BLOCKER (`cp -r` dereferences the kit's symlinks on macOS BSD cp — all three documented
+commands now use `cp -R`, verified by pasted test: `CLAUDE.md -> AGENTS.md` survives the copy),
+2 MAJOR stale `agent/` references in shipped kit surfaces (advanced/README, write-prd), docs/03
+tree missing the bootloader line, the dev review-output skill un-propagated for 0070/0071
+(conformance/evals → checks), and docs/10's "copy checklist" footer. The coherence lens died on
+an API error; compensated by a targeted semantic grep (copy-checklist / 12-file / rubric /
+copy-the-templates patterns) — one hit, fixed.

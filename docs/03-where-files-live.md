@@ -14,6 +14,7 @@ Three pieces, three homes:
 
 ```text
 your-workspace/
+  AGENTS.md              # the bootloader (CLAUDE.md / GEMINI.md symlink to it)
   specs/
     checkout/            # one folder per feature — durable intent
       spec.md            #   the spec

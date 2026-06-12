@@ -5,7 +5,7 @@ description: >-
   Judge a change set in this repo before it lands: refute by default, re-run the
   checks yourself, paste your own evidence, route exceptions to a human. ALWAYS
   apply when asked to review changes, decide whether an edit to docs/,
-  starter-kit/, conformance/, or evals/ is ready to commit, or fill a review
+  starter-kit/, or checks/ is ready to commit, or fill a review
   packet. Never mark Pass from the author's pasted output alone, leave a Pass
   with an empty Evidence cell, or review a change you authored. Skip for
   authoring the documents under review.
@@ -41,7 +41,7 @@ evidence is still command output â€” the grep, the link check, the `git diff` â€
    - every relative link resolves; every `[[KEY]]` resolves to an anchor in
      `docs/research/sources.md`;
    - the banned-token greps, tier-scoped per the matrix;
-   - counts appear only in the producer note (`conformance/README.md`) and the cheatsheet
+   - counts appear only in the producer note (`checks/README.md`) and the cheatsheet
      appendix;
    - user-tier pages use user-tier vocabulary only;
    - a format change updates its fixtures, examples, and templates in the same commit;

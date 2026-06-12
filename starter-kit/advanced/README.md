@@ -1,7 +1,8 @@
 # Advanced templates and guides
 
-Everything in this directory is optional. The core kit (`templates/` + `agent/`)
-covers the everyday loop — copy pieces from here only when the work calls for them.
+Everything in this directory is optional. The core kit (`templates/` + the
+`.agents/skills/` guides) covers the everyday loop — copy pieces from here only
+when the work calls for them.
 
 ## Templates (this directory)
 
