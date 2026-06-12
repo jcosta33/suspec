@@ -48,7 +48,7 @@ problem ADR-0070 fixes for "conformance".
 ## Consequences
 
 Accepted. Supersedes the standalone `evals/` surface (as re-keyed by the repositioning);
-refines ADR-0065/0066 framing. The bars keep their predicate ids (S/T/R/V/C series) so
+refines ADR-0065/0066 framing. The bars keep their predicate ids (P/S/T/R/V/C series) so
 existing producer records that cite them stay readable.
 
 ## Propagation

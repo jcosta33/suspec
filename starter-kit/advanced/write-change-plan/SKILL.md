@@ -17,14 +17,14 @@ change _safely_?" Write one when the work is primarily structural — it spans m
 preserve behavior while touching risky code, needs sequencing, or will land as a diff too
 large to interpret without a map. Skip it for an obvious bug fix or a small cleanup.
 
-Copy the template at [`../../templates/change-plan.md`](../../templates/change-plan.md). The
+Copy the template at `templates/change-plan.md`. The
 frontmatter `kind` names the transformation: refactor · rewrite · migration ·
 dependency-upgrade · performance · test-infra · mechanical-cleanup · architecture-cleanup ·
 schema-change. The kind lives on the plan; the task packets keep one shape regardless.
 
 ## Baseline and target come from the inventory
 
-The Baseline section cites the inventory ([`../write-inventory/SKILL.md`](../write-inventory/SKILL.md))
+The Baseline section cites the inventory (`advanced/write-inventory/SKILL.md`)
 — it never re-derives the current state from memory. The Target state says what the code looks
 like after, _including what explicitly stays unchanged_. A reviewer who can't diff these two
 sections in their head can't judge the waves between them. No inventory yet and the work is a
@@ -71,7 +71,7 @@ call returns zero"). A shim without a removal condition is permanent by default.
   defending a half-landed change.
 - **Task split** — one row per task: which wave, which guarantee and requirement IDs. Each task
   packet then runs isolated like any other (template at
-  [`../../templates/task.md`](../../templates/task.md)), its Scope reading "implement or
+  `templates/task.md`), its Scope reading "implement or
   preserve". The plan's Review focus section is the reviewer's starting exception list, written
   by the person who knew where the risk was before the diff existed.
 

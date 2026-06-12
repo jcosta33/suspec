@@ -54,3 +54,10 @@ Two differences from the kit are by design — never to be "resynced":
 A diff against the kit showing only pointer-target or packaging differences is expected. The
 load-bearing rules track `docs/` and the kit.
 
+3. **Kit-skill surfacing (known consequence of ADR-0069).** The kit ships
+   `starter-kit/.claude/skills → ../.agents/skills`, so Claude sessions in THIS repo also
+   discover the kit's three adopter-facing guides (`write-spec`, `implement-task`,
+   `review-output`). They are kit content, not dev guidance — do not apply them to work on
+   this repo. The kit `review-output` shares its name with the dev copy; which one a session
+   surfaces is harness-dependent and not guaranteed. The dev set remains `.agents/skills/`.
+

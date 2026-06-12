@@ -18,7 +18,8 @@ cp -R starter-kit <your-project>/workspace                      # or co-located
 
 Then:
 
-1. **Fill `AGENTS.md`** — the `{{placeholders}}` in the Commands table and project facts.
+1. **Fill the `{{placeholders}}`** — `AGENTS.md` (Commands table, project facts) and the
+   seed ADR's date and team in `decisions/0001-adopt-swarm.md`.
    In a dedicated workspace repo the Commands table names the commands of the code repos
    this workspace governs (or stays as placeholders until that's decided); the
    `For code repos:` line is the pointer you copy *out* to each code repo's own

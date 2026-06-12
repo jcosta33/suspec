@@ -44,3 +44,6 @@ Accepted. Refines ADR-0033.
 ## Propagation
 
 docs/examples, README link, kit example (derived from feature-from-jira), conformance name-mapping.
+
+> **Ledger note (2026-06-12):** refined by ADR-0071 — the step bars are the scoring reference
+> applied to the examples.

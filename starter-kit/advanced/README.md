@@ -30,4 +30,4 @@ questions, caller search) — and two reference cards: `sol-reference.md`
 (structured requirements) and `checks-reference.md` (common mistakes to check
 for).
 
-Copy what you need; ignore the rest. Full instructions: `docs/ADOPTING.md`.
+Copy what you need; ignore the rest. Full instructions: `docs/ADOPTING.md` in the Swarm repo.

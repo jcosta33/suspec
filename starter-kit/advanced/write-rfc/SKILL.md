@@ -18,7 +18,7 @@ this approach won and the rejected options get re-litigated from scratch. An RFC
 version: one proposal, the problem forcing it, the alternatives weighed against it, and the
 exact decision requested — so _why this and not that_ outlives the change.
 
-Copy the template at [`../rfc.md`](../rfc.md) and fill it — this guide is how to fill it well.
+Copy the template at `advanced/rfc.md` and fill it — this guide is how to fill it well.
 
 ## The stance: advocate, commit to nothing
 
@@ -86,6 +86,6 @@ RFC's status flips to `accepted`.
 ## Next
 
 Accepted? Record the choice as an ADR in `decisions/` and write the spec from the proposal
-(template at [`../../templates/spec.md`](../../templates/spec.md)), each naming this RFC in
+(template at `templates/spec.md`), each naming this RFC in
 its sources. Rejected or superseded? Flip the status and leave the file — the recorded
 comparison is still the cheapest insurance against re-arguing it next year.

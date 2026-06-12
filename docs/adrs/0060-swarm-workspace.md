@@ -84,3 +84,6 @@ examples, evals.
 > + evidence cells); a standalone trace artifact exists only as a reserved machine-record sketch on
 > the future-CLI page. Inventories live in the type folder `inventory/`; the feature folder co-locates
 > only spec-supporting documents (audit, research, prd, rfc).
+
+> **Ledger note (2026-06-12):** the workspace layout this ADR prescribes is shipped pre-built
+> by the starter kit per ADR-0069.

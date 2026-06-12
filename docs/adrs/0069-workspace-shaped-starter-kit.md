@@ -64,3 +64,11 @@ update). ADOPTING.md collapses to one copy step plus per-tool symlink notes.
 
 starter-kit tree, ADOPTING, root README (get-started), docs/03, docs/10, kit AGENTS.md,
 `.agents/SKILLS-MANIFEST.md` counterpart paths, propagation matrix.
+
+> **Addendum (2026-06-12):** two corrections from the same-day verification passes. (1) The
+> copy command is `cp -R` — on macOS BSD cp, `-r` dereferences the kit's three symlinks into
+> stale copies; all live surfaces document `-R`. (2) `decisions/` ships a short governance
+> README plus the `0001-adopt-swarm` seed entry, not a one-line README like the seven flow
+> folders. Known consequence, recorded in `.agents/SKILLS-MANIFEST.md`: the kit's nested
+> `.claude/skills` symlink surfaces the three kit guides in Claude sessions on the Swarm repo
+> itself.

@@ -15,7 +15,7 @@ description: >-
 Most specs become exactly one task packet — if that's true here, write it and stop. Split when
 the work is too big for one agent run, or when several agents will work in parallel and a
 collision would be expensive. The output is N task packets (template at
-[`../../templates/task.md`](../../templates/task.md)), each self-contained, plus a few lines
+`templates/task.md`), each self-contained, plus a few lines
 recording the order they run in.
 
 ## Cut along requirements, cover them all

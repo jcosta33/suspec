@@ -129,3 +129,6 @@ reconciling README / PRINCIPLES / `conformance.md` with this model.
 - Does NOT change: the obligation grammar, any closed set, or the intent/reality/observed reconciliation design.
 
 > **Ledger note (2026-06-11):** naming clauses (§2) superseded by ADR-0057; refined by ADR-0062.
+
+> **Ledger note (2026-06-12):** the kit ships the six prescribed flow folders pre-built per
+> ADR-0069 (the goldilocks update's form, realized).

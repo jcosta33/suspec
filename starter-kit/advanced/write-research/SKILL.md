@@ -17,7 +17,7 @@ description: >-
 A research note answers one decision-informing question by mapping the options and the evidence,
 then stops. Its job is to leave the decision space well-mapped, not to close it: the decision is
 made later, when someone lifts the findings into a spec or an ADR. Use the template at
-`../research.md`; do not reinvent its sections.
+`advanced/research.md`; do not reinvent its sections.
 
 The discipline is evidentiary: cite or omit. A claim that cannot survive a citation falls out of
 the document. These rules are conventions backed by review — nothing in this repository enforces
@@ -28,7 +28,7 @@ them automatically.
 Investigate one question in depth against primary sources. Keep observation distinct from claim,
 keep your confidence honest, and refuse to let the inquiry harden into a decision. For a
 breadth survey instead — what prevails across many products, patterns, or users — also load
-`../persona-surveyor/SKILL.md`; it carries the extra rules breadth needs.
+`advanced/persona-surveyor/SKILL.md`; it carries the extra rules breadth needs.
 
 ## Rules
 
@@ -97,7 +97,7 @@ the reader back the question they came with.
 
 ## What does not belong
 
-- Requirements in any form: no AC items, no SOL blocks (`../sol-reference.md`) — those belong in
+- Requirements in any form: no AC items, no SOL blocks (`advanced/sol-reference.md`) — those belong in
   the spec someone writes _from_ this note.
 - Opinion or "best practice" with no cited primary source.
 - A decision. Findings survey; they do not conclude.

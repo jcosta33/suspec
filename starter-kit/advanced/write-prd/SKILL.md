@@ -16,7 +16,7 @@ A PRD records **what outcome is wanted and why**. The spec written from it recor
 system must do. Keeping the two apart gives every future requirement a single, citable origin:
 six months on, "why does this requirement exist?" has a file to point at instead of a memory.
 
-Copy the template at [`../prd.md`](../prd.md) and fill it — this guide is how to fill it well.
+Copy the template at `advanced/prd.md` and fill it — this guide is how to fill it well.
 
 ## The one boundary
 
@@ -87,6 +87,6 @@ eventual spec is who benefits.
 ## Next
 
 When the intent is settled, write the spec from it (the `write-spec` guide in `.agents/skills/`,
-template at [`../../templates/spec.md`](../../templates/spec.md)) and list this PRD in the
+template at `templates/spec.md`) and list this PRD in the
 spec's `sources:`. If the _approach_ is still contested, an RFC comes between the two — see
-[`../write-rfc/SKILL.md`](../write-rfc/SKILL.md).
+`advanced/write-rfc/SKILL.md`.

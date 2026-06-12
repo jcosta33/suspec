@@ -70,7 +70,9 @@ ambiguity even when every requirement is otherwise well-formed. The `Verify with
 demands is the highest-value line in the file: a runnable check outperforms prose plans as
 task input (preliminary evidence) [[ORACLESWE]](../research/sources.md#ORACLESWE).
 
-The form half of S1 is toolable — swarm-cli's `swarm spec check` flags a requirement with no
+Not graded here: whether the requirements are *satisfiable*, and whether the eventual change
+meets them — those surface at the Run and Review bars. The form half of S1 is toolable —
+swarm-cli's `swarm spec check` flags a requirement with no
 id or verification method; the fidelity half (S2–S4) needs the sources open beside the spec.
 The conditional steps produce authored documents too: score an inventory or change plan with
 these same predicates against its own template, reading "sources" as the codebase observed
@@ -86,12 +88,13 @@ these same predicates against its own template, reading "sources" as the codebas
 |---|---|---|---|
 | T1 | **Scope drawn from the source** | Every requirement id in the packet's scope exists in the named spec or change plan. | The scope carries an id its sources never defined, or an id from a document the packet does not name. |
 | T2 | **Boundaries declared** | "Do not change" is present and substantive — it names real areas the agent must leave alone. | The section is missing, empty, or boilerplate that bounds nothing. |
-| T3 | **Checks mapped** | Every scoped requirement has a Verify item the agent can run (or an explicit manual check with its observation recorded). | A scoped requirement has no mapped check — its result is predetermined to be Unverified. |
+| T3 | **Checks mapped** | Every scoped requirement has a Verify item the agent can run (or an explicit manual check with its observation recorded), and every Verify item names a scoped requirement id. | A scoped requirement has nothing that checks it, or a Verify item checks nothing in scope. |
 
 A packet that invents a requirement, omits its boundaries, or leaves a requirement uncheckable
 hands the agent exactly the ambiguity the spec existed to remove — and preliminary evidence
 places the handoff into the coding agent as the dominant multi-agent failure surface
-[[PLANCODER]](../research/sources.md#PLANCODER).
+[[PLANCODER]](../research/sources.md#PLANCODER). Not graded here: whether the agent honored
+the packet — a perfect packet ignored at Run fails the Run bar, not this one.
 
 ## Run — honest record
 
@@ -133,7 +136,8 @@ Independence is the spine of V2–V4: results are judged against the spec, the d
 pasted evidence — never against the run summary's self-assessment alone. Reviewers favor their
 own and agent output without structure [[SELFPREFER]](../research/sources.md#SELFPREFER)
 [[JUDGEBIAS]](../research/sources.md#JUDGEBIAS); V5 is the standing countermeasure. A Blocked
-row is honest, not a defect — what V4 forbids is treating Blocked as Pass. Drafting the packet
+row is honest, not a defect — what V4 forbids is treating Blocked as Pass. Not graded here:
+whether findings were saved and the board updated — that is the Close bar. Drafting the packet
 and computing the gate is toolable — a future `swarm review` in swarm-cli.
 
 ## Close — durable memory
@@ -153,7 +157,9 @@ C1 cuts both ways: scan the record for discovery-shaped statements ("turns out�
 when Y") and check each reached a finding — *and* check that what reached `findings/` is
 durable; scratch notes saved as findings pollute the set the next session loads. Where review
 feedback changed what a requirement should say, the spec is amended in place under its existing
-AC id — an unamended spec the review contradicted is a C3 pending item.
+AC id — an unamended spec the review contradicted is a C3 pending item. Not graded here: the
+merge decision itself — that was the Review bar's gate; Close is graded on what the workspace
+remembers afterwards.
 
 ## The cross-step predicates
 
@@ -191,7 +197,8 @@ reference-tier names — the [glossary](glossary.md) maps them back.
 - **`decompose`** — parallel tasks have pairwise-disjoint written files or an explicit
   dependency serializes them; the partition respects dependency order, no cycles; every
   in-scope requirement is assigned to exactly one task; each task carries its requirements as
-  stated, not paraphrased.
+  stated, not paraphrased. When several agents run at once, any coordination record's owned
+  paths are pairwise disjoint across workers, confirmed before anyone spawns.
 - **`implement`** — scored by the Run bar, sharpened by one scope predicate: the diff stays
   inside the task's affected areas, and the recorded changed-file set is never narrower than
   the diff.

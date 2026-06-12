@@ -45,7 +45,7 @@ platform · a formal verification system · a guarantee that agent output is cor
      At most ONE future-CLI aside per happy-path page, phrased "(future CLI: `swarm review` will
      draft this packet — today you or your agent fills the template)".
 4. **No counts ceremony.** Never recite cardinalities ("7 block types · 5 modals…"). List values,
-   not counts. Counts live only in `conformance/README.md` (producer note) + the cheatsheet appendix.
+   not counts. Counts live only in `checks/README.md` (producer note) + the cheatsheet appendix.
 5. **Short beats complete.** Happy-path pages ≤ ~150 lines. Reference pages as tight as accuracy allows.
    Every file useful; review evidence over planning prose.
 6. **Citations stay contextual.** Load-bearing empirical claims cite inline:

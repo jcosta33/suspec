@@ -61,7 +61,7 @@ invented; a plain spec that needs those distinctions switches the file to `forma
 verification note per requirement, one binding strength word, no `TBD` in `status: ready`)
 apply to the record and therefore to both forms; the SOL-only checks add shape rules this
 page defines. The catalogue lives in [Checks](checks.md) — reference implementation:
-`swarm spec check` in swarm-cli. Conformance fixtures ship surface-equivalence pairs (one
+`swarm spec check` in swarm-cli. The checks fixtures (`checks/` in the Swarm repo) ship surface-equivalence pairs (one
 plain, one SOL, identical record sets) to keep the two surfaces from forking.
 
 ## Selecting SOL

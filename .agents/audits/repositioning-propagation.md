@@ -9,8 +9,10 @@ created: 2026-06-11
 
 Tracks ADRs 0057–0068 across the 13 derived surfaces. A cell flips to `done` only with the
 commit SHA that landed it. Derivation order (never violated): ADRs → docs/ + README →
-examples → starter-kit → .agents/ dev subset → docs/library/code-skills → conformance/ +
-evals/ → sweep → swarm-cli → close.
+examples → starter-kit → .agents/ dev subset → docs/library/code-skills → checks/ +
+docs/reference/step-bars.md → sweep → swarm-cli → close.
+(Historical note: the last two stations were named `conformance/ + evals/` until ADRs
+0070/0071 renamed and dissolved them; the frozen rows below keep the old names.)
 
 | Surface | 0057 | 0058 | 0059 | 0060 | 0061 | 0062 | 0063 | 0064 | 0065 | 0066 | 0067 | 0068 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -137,3 +139,25 @@ tree missing the bootloader line, the dev review-output skill un-propagated for 
 (conformance/evals → checks), and docs/10's "copy checklist" footer. The coherence lens died on
 an API error; compensated by a targeted semantic grep (copy-checklist / 12-file / rubric /
 copy-the-templates patterns) — one hit, fixed.
+
+> **Process deviation (2026-06-12, recorded):** ADR-0070's same-commit clause was breached
+> for the root bootloader — `AGENTS.md` kept `conformance/`/`evals/` references through
+> 77e6bb0..f4594e0 and was swept only at the close-out commit 7ac4d91. End state consistent;
+> future renames fold the bootloader into the rename commit itself.
+
+> **Adversarial re-review (2026-06-12, second pass, prior framing closed):** 6 hostile lenses +
+> refute-by-default verification (30 agents) over 4d8c850..9cdcea0. **22 confirmed (6 MAJOR,
+> 16 MINOR), 2 refuted, 1 conflict adjudicated** (the REFLEXION drop on step-bars R2/V2 was a
+> recorded misbinding correction, not silent loss — no fix). All 22 fixed in the commit carrying
+> this note. The MAJORs: (1) advanced guides' file-relative refs broke under the documented
+> copy-to-`.agents/skills/` flow — all refs now workspace-root-relative like the core guides,
+> proven resolving in a fresh `cp -R` copy; (2) the kit's nested `.claude/skills` symlink
+> surfaces kit guides in dev sessions on this repo — documented as a known consequence
+> (SKILLS-MANIFEST §3, bootloader, ADR-0069 addendum); (3) docs/03's canonical tree omitted
+> `advanced/`, `examples/`, `.gitignore.additions`; (4) step-bars T3 had silently weakened to
+> one direction — bidirectionality restored, plus the four dropped "not graded here" boundaries
+> and the decompose coordination-record clause; (5) `structured-requirements.md:64` was an 8th
+> live file the conformance→checks sweep missed; (6) the six ADRs that 0069–0071 refine carried
+> no 2026-06-12 ledger notes — all six noted, rows appended. Process deviations recorded above;
+> ADR-0069 gained a dated addendum (cp -R, decisions/ README, skill surfacing); ADR-0071's
+> predicate enumeration corrected to P/S/T/R/V/C.

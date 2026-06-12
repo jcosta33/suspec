@@ -25,7 +25,7 @@ repository enforces it; it costs one short file per lesson.
    knowingly. The failure mode is neither saving nor dropping — candidates rotting in a closed
    task packet nobody reopens.
 3. **Write one file per lesson** in `findings/`, from the template at
-   [`../../templates/finding.md`](../../templates/finding.md): what we learned (one claim),
+   `templates/finding.md`: what we learned (one claim),
    the evidence, where it applies, where it does not, what to do differently next time. The
    `from:` field names the task or review it came out of — a finding without provenance can't
    be re-checked when someone doubts it later.

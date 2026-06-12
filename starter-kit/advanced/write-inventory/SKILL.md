@@ -20,7 +20,7 @@ answers the audit doesn't carry: who calls this function? who subscribes to this
 callers actually rely on? An audit alone is not enough preparation for a rewrite or a major
 refactor — write the inventory first — a convention this kit expects before rewrites; nothing enforces it.
 
-Copy the template at [`../../templates/inventory.md`](../../templates/inventory.md). This guide
+Copy the template at `templates/inventory.md`. This guide
 is how to fill it well.
 
 ## The stance: map, don't judge
@@ -89,6 +89,6 @@ as a change plan built on guesses.
 ## Next
 
 The inventory feeds the change plan — Baseline cites it, preservation guarantees grow from its
-Observed behavior rows ([`../write-change-plan/SKILL.md`](../write-change-plan/SKILL.md)). If
+Observed behavior rows (`advanced/write-change-plan/SKILL.md`). If
 mapping surfaced real violations worth recording in their own right, write the audit too
-([`../write-audit/SKILL.md`](../write-audit/SKILL.md)).
+(`advanced/write-audit/SKILL.md`).

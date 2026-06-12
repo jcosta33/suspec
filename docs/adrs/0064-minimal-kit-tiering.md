@@ -63,3 +63,7 @@ starter-kit tree, ADOPTING, docs/03/10, .agents dev subset, code-skills library 
 > hostile re-review guide (with a session task template) for agent branches that warrant more than
 > the review packet. It pairs with a dev-tier copy at `.agents/skills/adversarial-review/`; the pair
 > is registered in the propagation matrix.
+
+> **Ledger note (2026-06-12):** adoption framing (the 12-file copy checklist) superseded by
+> ADR-0069 — the kit is copied whole as a workspace; the core/advanced tiering and the guide
+> set survive unchanged.

@@ -15,7 +15,7 @@ description: >-
 
 An audit makes a code area legible so the work on it can be planned. It records what is true
 **today**, grounds each claim in evidence, names the risk that state carries — and stops there.
-Use the template at `../audit.md`; do not reinvent its sections.
+Use the template at `advanced/audit.md`; do not reinvent its sections.
 
 Audits fail in two directions: they drift into prescription (telling the reader what to build —
 a spec's job), or they stay vague (impressions and TODO-scrapes nobody can act on). The rules
@@ -73,7 +73,7 @@ is a Blocker. When a call is contestable, record the reasoning inline so a revie
 
 The template's candidate-requirements section describes, in plain prose, what a future spec
 should require. Write what the spec should carry, not how to change the code. Do not write
-AC items or SOL blocks (`../sol-reference.md`) — a requirement acquires force only when someone
+AC items or SOL blocks (`advanced/sol-reference.md`) — a requirement acquires force only when someone
 lifts it into a spec, and an audit that writes requirements lets an observation be read as an
 approved decision nobody made.
 

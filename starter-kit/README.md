@@ -30,7 +30,8 @@ advanced/            optional templates, guides, and reference cards — copy pi
 
 After copying:
 
-1. Fill the `{{placeholders}}` in `AGENTS.md` — the Commands table and project facts.
+1. Fill the `{{placeholders}}` — in `AGENTS.md` (Commands table, project facts) and in
+   `decisions/0001-adopt-swarm.md` (date, team).
 2. If your agent is not Claude Code, point it at `.agents/skills/` — a symlink like the
    shipped `.claude/skills` one, or a copy into wherever your tool scans.
 3. Write one spec for your next non-trivial change: `specs/<feature>/spec.md`. Run the loop.

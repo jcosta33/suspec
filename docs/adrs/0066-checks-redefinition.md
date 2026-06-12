@@ -53,3 +53,6 @@ refines ADR-0063.
 ## Propagation
 
 conformance/ (README, yaml, fixtures), checks.md, cheatsheet appendix, evals, swarm-cli.
+
+> **Ledger note (2026-06-12):** the checks fixtures' home renamed to `checks/` by ADR-0070;
+> step-output scoring became the step-bars reference page per ADR-0071.

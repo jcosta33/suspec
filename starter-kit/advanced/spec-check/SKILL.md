@@ -27,7 +27,7 @@ the report to the author (or switch hats explicitly and edit _after_ the report 
 ## The core checks
 
 Run each against the spec (full catalogue with IDs and severities:
-[`../checks-reference.md`](../checks-reference.md)):
+`advanced/checks-reference.md`):
 
 | ID   | Check                                                                                  | Severity   |
 | ---- | -------------------------------------------------------------------------------------- | ---------- |
@@ -68,7 +68,7 @@ think") that belongs in Open questions.
 If the spec opts into structured requirements (`format: sol` in the frontmatter), also walk
 the SOL check catalogue — same discipline, finer grain. It lives in the Swarm repo at
 `docs/reference/checks.md`; the kit does not carry it. The notation itself is in
-[`../sol-reference.md`](../sol-reference.md).
+`advanced/sol-reference.md`.
 
 ## The report
 
