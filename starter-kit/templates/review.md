@@ -28,7 +28,7 @@ status: {{draft | pass | waived | blocked | needs-human}}
      A Pass needs pasted output, a CI link, or, for a manual Verify method, a
      named human's recorded observation (who judged, what they saw). An empty
      Evidence cell means Unverified, never Pass. Suite/typecheck output stays
-     under the task's Verify items — the Run summary digests it; a failed or
+     under the task's Verify items — the Run summary section digests it; a failed or
      missing suite routes below via the missing-test-output trigger. -->
 
 Spot-checked: {{which green row's evidence you re-ran yourself}}

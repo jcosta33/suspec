@@ -35,9 +35,10 @@ evidence is still command output — the grep, the link check, the `git diff` �
    _your_ output. A check you could not run is Unverified, not Pass.
 3. **One row per claim.** List what the change set claims to do — each intent item, each ADR row
    it propagates — and give each a result: Pass · Fail · Unverified · Blocked. A Pass needs
-   pasted output. **An empty Evidence cell means Unverified, never Pass.** A claim with no row is
+   pasted output (or, for a by-hand check, the named human's recorded observation). **An empty
+   Evidence cell means Unverified, never Pass.** A claim with no row is
    a missing row, not a free pass.
-4. **Run this repo's check set** (the reconciliation gate in the propagation matrix):
+4. **Run this repo's check set** (the reconciliation gate):
    - every relative link resolves; every `[[KEY]]` resolves to an anchor in
      `docs/research/sources.md`;
    - the banned-token greps, tier-scoped per the matrix;

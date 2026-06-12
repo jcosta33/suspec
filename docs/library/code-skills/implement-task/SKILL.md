@@ -44,7 +44,9 @@ not soften a constraint under pressure to get to done.
    summary lines, fenced and unmodified. A claim without output counts as unverified. No
    predictions ("should pass"), no paraphrase ("all green"), no pre-edit runs. Confident prose
    comes out whether or not the claim is true; pasted output is the only part of your report a
-   reviewer can re-check instead of trust.
+   reviewer can re-check instead of trust. If a command exists but cannot execute in your
+   environment (a sandboxed runner, a missing toolchain), produce a CI link or delegate the
+   run; otherwise record the item as Blocked — never paste predicted output.
 6. **Re-run after your last change.** Output pasted before a later edit is stale: it proves
    something about a tree that no longer exists. The discipline is mechanical — final edit, then
    the full Verify list, then the summary, in that order.
@@ -59,10 +61,10 @@ not soften a constraint under pressure to get to done.
    - Which AC would you challenge first if this were someone else's diff?
      Fix what you find and note what you fixed. The cheapest review round is the one you run on
      yourself — but it yields fixes and notes, never a result (rule 10).
-9. **Leave a summary**: changed files, commands run with their output, anything that could not be
-   met as written, out-of-scope edits if any, and anything durable worth saving as a finding (drop
-   candidates in the packet's `## Findings` section — a lesson that lives only in the session is
-   lost when the session ends).
+9. **Fill the packet's `## Run summary` section**: changed files, one line per Verify command
+   citing its pasted output, anything that could not be met as written, out-of-scope edits if
+   any, blocked questions — and drop durable discoveries in the packet's `## Findings` section
+   (a lesson that lives only in the session is lost when the session ends).
 10. **Never write a review result on your own work.** Self-review yields fixes and a recorded
     critique — never a Pass. The review packet is filled by someone who did not write the diff.
     Authors favor their own output; independence is the point of the review step, and a

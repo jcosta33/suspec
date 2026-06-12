@@ -38,7 +38,9 @@ enforces them at edit time.
 5. **Run every Verify item and paste the real output** — the command, its exit
    status, and the summary lines. A claim without output counts as unverified.
    No predictions ("should pass"), no paraphrase ("all green"), no pre-edit
-   runs. _Why: confident prose comes out whether or not the claim is true;
+   runs. If a command exists but cannot execute in your environment, produce
+   a CI link or delegate the run; otherwise record the item as Blocked —
+   never paste predicted output. _Why: confident prose comes out whether or not the claim is true;
    pasted output is what a reviewer can re-check._
 6. **Re-run after your last change.** Output pasted before a later edit is
    stale and no longer covers the claim.
@@ -47,10 +49,10 @@ enforces them at edit time.
    concurrency)? What changed that the spec did not ask for? Which callers of
    a changed surface did you not look at? Fix what you find and note what you
    fixed. _Why: the cheapest review round is the one you run on yourself._
-8. **Leave a summary**: changed files, commands run with their output,
-   anything that could not be met as written, out-of-scope edits if any, and
-   anything durable worth saving as a finding (drop candidates in the packet's
-   `## Findings` section).
+8. **Fill the packet's `## Run summary` section**: changed files, one line
+   per Verify command citing its pasted output, anything that could not be
+   met as written, out-of-scope edits if any, blocked questions — and drop
+   durable discoveries in the packet's `## Findings` section.
 9. **Never write a review result on your own work.** Self-review yields fixes
    and notes — never a Pass. The review packet is filled by someone who did
    not write the diff. _Why: authors favor their own output; independence is

@@ -33,8 +33,10 @@ you or your agent fills the template.)
    it passes now._
 3. **Fill the requirement coverage table** — one row per AC in the task's
    scope; result is one of Pass · Fail · Unverified · Blocked. A Pass needs
-   pasted output or a CI link. **An empty Evidence cell means Unverified,
-   never Pass.** A scoped AC with no row is a missing row, not a free pass.
+   pasted output, a CI link, or, for a manual Verify method, a named human's
+   recorded observation (who judged, what they saw). **An empty Evidence cell
+   means Unverified, never Pass.** Read the task packet's `## Run summary`
+   first — it indexes the Verify pastes the cells cite. A scoped AC with no row is a missing row, not a free pass.
 4. **Spot-check at least one green row.** Open its evidence and read it: does
    the output actually exercise that AC, and does it say what the row claims?
    _Why: a fully green table invites rubber-stamping; one real probe breaks
@@ -54,7 +56,9 @@ you or your agent fills the template.)
    suggested action. "No exceptions" is a valid — and reportable — outcome.
 8. **The suggested decision follows the table, not the summary's confidence.**
    "Merge" only when every scoped row is Pass and no exception is open;
-   otherwise "Block until …", naming the specific rows or exceptions.
+   "Merge with waiver" only with the record — who waived · which rows · why ·
+   expiry — and the packet status `waived`; otherwise "Block until …", naming
+   the specific rows or exceptions.
 9. **Save finding candidates.** Anything durable the task surfaced — a fact, a
    decision, a pattern, a gotcha — becomes a file in `findings/` via
    `templates/finding.md`, linked from the packet. _Why: lessons that live
@@ -63,6 +67,9 @@ you or your agent fills the template.)
     `blocked` or `needs-human` otherwise; `draft` while you are still working.
     Never soften a Fail to avoid blocking, and never inflate a nit into a
     blocker.
+10. **Close the board row.** When the decision lands, flip the task's row on
+    `status.md` — review-ready → closed (or blocked) — and put the packet
+    link in the row. The sessions maintain the board; the human reads it.
 
 ## Refuses
 

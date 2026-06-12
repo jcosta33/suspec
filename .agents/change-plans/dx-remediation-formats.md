@@ -249,3 +249,17 @@ wave starts. No shims: markdown formats forward old → new by re-edit, not by b
 | TASK-dx-fmt-w3 | 3 | implement AC-002 (docs), 003 (docs sweep), 012 (reference restatements), 014 (docs/08 + step-bars V4) · preserve PG-001, PG-004, PG-008 |
 | TASK-dx-fmt-w4 | 4 | implement AC-002 (examples + kit example), AC-033 · batch AC-050 · preserve PG-008 |
 | TASK-dx-fmt-w5 | 5 | implement AC-002 (guides), AC-012 (split-work), AC-044 (guide half) · preserve PG-005, PG-008 |
+
+> **Landed (2026-06-12):** waves 1–5 complete, each one commit on `main` (ADR-0072 → formats +
+> contract → docs → examples → guides + dev subset). Cutover battery pasted in the landing
+> session: all 24 plan-scoped AC gates PASS; PG-001 verified at the parsed level (rule text
+> byte-identical), PG-002/003/005/006/008 green, PG-004 trivially held (no registered count
+> changed), PG-007 diff mapped 1:1 onto deltas (a)–(e) at wave 2. Adversarial self-review:
+> no stale-wording remnants ("Leave a summary", "left in the PR description" — zero hits),
+> kit AGENTS.md at 70 lines (~100 budget), no reference-tier lifecycle vocabulary on user-tier
+> pages, links/anchors clean. The swarm-cli resync (separately owned) retargets checks.yaml
+> v0.4.0. The non-format spec ACs (the wave-batched doc tasks) all verified green in waves
+> 3–5; SPEC-dx-remediation's full gate set is satisfied except AC-043's manual side-by-side
+> check, recorded here: kit review-output rule 2–4 and docs/08's rules now state one bar
+> (amended Pass sentence, re-run what you can, spot-check one green row) — judged by the
+> landing session's author, so a fresh-session reviewer should re-judge it at the next review.

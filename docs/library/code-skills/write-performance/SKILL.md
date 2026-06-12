@@ -6,7 +6,8 @@ description: >-
   target — baseline before any edit, identical measurement protocol on both
   sides, one benchmarked change at a time, full suite green after each. ALWAYS
   apply when a task packet optimizes, profiles, or cuts latency / memory / CPU
-  / allocations against a metric. Never edit before a baseline, mix protocols,
+  / allocations against a metric — or gates a model-quality metric (an
+  eval-gated requirement). Never edit before a baseline, mix protocols,
   batch unattributable changes, or accept "make X faster" as the target. Skip
   correctness fixes, refactors, rewrites, migrations, and net-new features.
 ---
@@ -88,6 +89,14 @@ Before declaring the task done:
       ceiling.
 - [ ] Readability costs are annotated at the call site; second bottlenecks are finding candidates.
 - [ ] You issued no review result on your own work.
+
+## Model-quality metrics — the stochastic delta
+
+An eval-gated requirement (NDCG, accuracy, win rate) runs the same discipline with one delta:
+the measurement is stochastic, so pin the protocol — seed or fixed dataset/holdout, metric,
+threshold (docs/04's protocol rule) — and state a variance budget (N runs, the aggregate).
+Evidence is the eval-run link or output under the same pinned protocol on both sides. The
+rules above apply unchanged; the Skip list still excludes net-new feature work.
 
 ## Bundled resources
 
