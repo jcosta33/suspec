@@ -128,5 +128,7 @@ rules are conventions — nothing in this repo enforces them.
 
 ## Going deeper
 
-There is a more granular lifecycle for high-risk changes — see
+Every step has a bar — the predicates that say whether its output was faithfully produced,
+not just well-formatted: [reference/step-bars.md](reference/step-bars.md). And there is a more
+granular lifecycle for high-risk changes — see
 [reference/advanced-lifecycle.md](reference/advanced-lifecycle.md). The six steps are the default.

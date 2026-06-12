@@ -236,6 +236,8 @@ three-way reconcile live in [drift](drift.md).
   may opt into.
 - [Review stances](review-stances.md) — the optional reading postures that sharpen these steps,
   and the judge-independence rules.
+- [Step bars](step-bars.md) — the per-step quality bars, including the finer-step bars for
+  this lifecycle.
 - [Drift](drift.md) — staleness triggers and the three-way reconcile, in full.
 - [Future CLI](future-cli.md) — the reserved machine formats and commands a future tool would add
   to this lifecycle.

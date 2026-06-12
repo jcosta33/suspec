@@ -150,5 +150,6 @@ nine-step lifecycle — are names, not registry copies.)
 - [The basic workflow](../02-basic-workflow.md) — the loop, per-shape flows, skip rules.
 - [Checks](checks.md) — every check in full, with the honesty legend.
 - [Glossary](glossary.md) — every term on this page, defined.
+- [Step bars](step-bars.md) — what good output looks like, per step of the loop.
 - [Principles](principles.md) — the design rationale the rules on this page derive from.
 - [The advanced lifecycle](advanced-lifecycle.md) — the finer-grained step model under the loop.
