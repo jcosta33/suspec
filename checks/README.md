@@ -26,7 +26,7 @@ Checklist level — review is expected to inspect both; `swarm spec check`'s pac
 flag the mechanical parts:
 
 - **`non-empty-paste`** — a completion claim binds to pasted output or a CI link, never a
-  bare "tests passed" [[REFLEXION]](../docs/research/sources.md#REFLEXION). In a review
+  bare "tests passed" [[EVIBOUND]](../docs/research/sources.md#EVIBOUND). In a review
   packet, an empty Evidence cell means **Unverified**, never **Pass**.
 - **`no-open-critical`** — work is not closed with an open blocking question; a task or
   review whose status is terminal carries no unresolved blocking question anywhere in it.
@@ -98,7 +98,9 @@ Reconciliation duties this note carries:
 ## How a checker uses this directory
 
 1. Read the rules from [`checks.yaml`](./checks.yaml) (or implement
-   [the checks reference](../docs/reference/checks.md) directly — they must agree).
+   [the checks reference](../docs/reference/checks.md) directly — they must
+   agree over the core checks and packet schemas;
+   the SOL catalogue is prose-only and lives in the reference).
 2. Run over [`fixtures/conformant-task.md`](./fixtures/conformant-task.md): the expected
    report is empty.
 3. Run over each snippet in [`fixtures/violations.md`](./fixtures/violations.md): each

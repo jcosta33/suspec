@@ -269,3 +269,15 @@ kind: migration
 **Expected:** flagged — a migration, rewrite, or schema-change plan needs a non-empty
 waves section, each wave naming its verify step. A placeholder is not a wave; an
 unsequenced migration is the half-migrated codebase waiting to happen.
+
+---
+
+## V16 — run summary missing at `closed` (required section, hard error)
+
+A task packet with frontmatter `status: closed` whose sections end at
+`## Findings` — no `## Run summary` anywhere in the file.
+
+**Expected:** flagged — `Run summary` is a required section of the task packet
+(checks.yaml `required_sections`). A closed task with no handoff digest leaves
+the review packet nothing to read; the Verify pastes hold the evidence, the
+summary indexes it.

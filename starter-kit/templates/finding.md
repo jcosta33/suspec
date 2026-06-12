@@ -2,7 +2,7 @@
 type: finding
 id: FINDING-{{slug}}
 status: candidate
-from: {{TASK-or-REVIEW-id}}
+from: {{TASK- / REVIEW- / AUDIT- / INV- id}}
 date: {{YYYY-MM-DD}}
 related: [{{SPEC-x#AC-NNN}}]
 ---

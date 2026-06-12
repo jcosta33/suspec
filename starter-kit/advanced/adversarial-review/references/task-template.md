@@ -15,7 +15,7 @@ status: draft
 
 > **REVIEW SESSION** — Reviewing another agent's branch (or your own work in a fresh session). You may NOT modify code. Output: a findings list and a Suggested decision (Merge / Block until … / Abandon) that feeds the review packet (`templates/review.md`). Fixes happen in a downstream task.
 >
-> **AGENTS.md:** `{{cmdTest}}` / `{{cmdLint}}` / `{{cmdBuild}}` / `{{cmdTypecheck}}` resolve from `AGENTS.md > Commands`. Non-contract values (`{{cmdBenchmark}}`, `{{cmdValidateDeps}}`) — ask the user. If `AGENTS.md` is missing, ask before substituting.
+> **AGENTS.md:** `{{cmdTest}}` / `{{cmdLint}}` / `{{cmdBuild}}` / `{{cmdTypecheck}}` resolve from `AGENTS.md > Commands`. `{{cmdBenchmark}}` resolves the same way when the project defines it. Non-contract values (`{{project:validateDeps}}`) — ask the user. If `AGENTS.md` is missing, ask before substituting.
 
 ---
 

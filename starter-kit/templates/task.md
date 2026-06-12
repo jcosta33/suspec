@@ -44,9 +44,21 @@ Implement or preserve:
    counts as unverified.
 4. Before finishing, re-read your own diff as a skeptic: what would a
    reviewer flag?
-5. Leave a summary: changed files, commands run with output, and anything
-   learned worth saving as a finding.
+5. Fill `## Run summary` below — changed files, one line per Verify command
+   citing its pasted output above, out-of-scope edits, blocked questions —
+   and drop anything durable in `## Findings`.
 
 ## Findings
 
 <!-- Anything durable discovered during the task — moved to findings/ at Close. -->
+
+## Run summary
+
+<!-- Filled by the implementing agent at the end of the run — the handoff
+     digest the review packet reads. Cite the Verify pastes above; never
+     re-paste output here. -->
+
+- Changed files: {{paths}}
+- Verify results: {{one line per command, citing its Verify item above}}
+- Out-of-scope edits: {{none, or each listed with a reason}}
+- Blocked questions: {{none, or each stated}}

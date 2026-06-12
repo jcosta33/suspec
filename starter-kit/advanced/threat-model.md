@@ -15,7 +15,7 @@ sources:
      Stance: threat observation, not intent. This document names threats; it
      writes no requirements. A threat becomes binding only when the spec
      restates it as a requirement — usually a constraint (C-NNN) or invariant
-     (I-NNN) in SOL blocks — see sol-reference.md; see sol-reference.md — with its own Verify-with
+     (I-NNN) in SOL blocks — see sol-reference.md — with its own Verify-with
      line. Corroborate third-party threat claims before the spec commits to
      them. -->
 

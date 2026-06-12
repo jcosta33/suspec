@@ -24,7 +24,8 @@ This repository is our Swarm workspace:
 - Work flows through committed artifacts: `intake/`, `tasks/`, `reviews/`,
   `findings/`; `status.md` is the board.
 - Every agent task starts from a task packet; every result is judged through
-  a review packet — a Pass needs pasted output or a CI link.
+  a review packet — a Pass needs pasted output, a CI link, or, for a manual
+  check, a named human's recorded observation.
 - Decisions land here in `decisions/`, numbered and immutable.
 - Code repositories stay pristine: they hold code; this workspace holds
   intent and evidence.

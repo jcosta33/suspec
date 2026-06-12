@@ -3,7 +3,8 @@ type: review
 id: REVIEW-{{slug}}
 task: TASK-{{slug}}
 pr: {{pr-url — or "none yet" for a pre-PR or trunk-based review}}
-status: {{draft | pass | blocked | needs-human}}
+reviewer: {{who reviews — never the implementing session}}
+status: {{draft | pass | waived | blocked | needs-human}}
 ---
 
 # Review: {{title}}
@@ -24,9 +25,13 @@ status: {{draft | pass | blocked | needs-human}}
 | AC-002 | Unverified | no test output found | yes |
 
 <!-- Results: Pass · Fail · Unverified · Blocked.
-     A Pass needs pasted output or a CI link. An empty Evidence cell means
-     Unverified, never Pass. Spot-check at least one green row's evidence
-     yourself — do not rubber-stamp the table. -->
+     A Pass needs pasted output, a CI link, or, for a manual Verify method, a
+     named human's recorded observation (who judged, what they saw). An empty
+     Evidence cell means Unverified, never Pass. Suite/typecheck output stays
+     under the task's Verify items — the Run summary digests it; a failed or
+     missing suite routes below via the missing-test-output trigger. -->
+
+Spot-checked: {{which green row's evidence you re-ran yourself}}
 
 ## Change-plan coverage
 
@@ -42,10 +47,12 @@ status: {{draft | pass | blocked | needs-human}}
 <!-- Route the exceptions, not the diff: unverified or failed requirements ·
      out-of-scope changes · risky files · missing test output · changed public
      interfaces · DB migrations · security-sensitive changes · new finding
-     candidates · blocked questions. -->
+     candidates · blocked questions. A waived row records: who waived · which
+     rows · why · expiry — the packet status becomes `waived` at merge
+     (expiry semantics: the advanced lifecycle, in the Swarm repo). -->
 
 1. {{exception — why it matters — suggested action}}
 
 ## Suggested decision
 
-{{Merge / Block until …}}
+{{Merge / Merge with waiver (who · why · expiry) / Block until …}}

@@ -79,3 +79,11 @@ Implement or preserve:
 - The CLI arg parser lowercases flag names before dispatch, so any future flag
   must be registered in lowercase (`--json`, never `--JSON`) or it silently
   falls through to the default formatter. Worth saving to `findings/` at Close.
+
+## Run summary
+
+- Changed files: `src/auth/refresh.ts`, `test/auth/refresh-expiry.test.ts`
+- Verify results: both Verify items run after the final edit — output pasted
+  under each item above (AC-001 4 passed · AC-002 2 passed)
+- Out-of-scope edits: none
+- Blocked questions: none

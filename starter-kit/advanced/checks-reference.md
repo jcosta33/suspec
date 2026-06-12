@@ -36,7 +36,8 @@ seamless, appropriate, significant, as needed, where possible — a vague word i
 ## Review-packet checks
 
 - Every scoped requirement has a coverage row (hard error, checklist).
-- **A Pass row has pasted output or a CI link; an empty Evidence cell reads
+- **A Pass row has pasted output, a CI link, or, for a manual Verify method,
+  a named human's recorded observation; an empty Evidence cell reads
   Unverified, never Pass** (hard error, checklist).
 - No merge recommendation with an open critical item (hard error, checklist).
 - At least one green row spot-checked by the reviewer (convention).

@@ -12,8 +12,10 @@
    met as written, stop and say why instead of improvising.
 4. Run every item under the task's `## Verify` and paste the real output. A claim
    without output counts as unverified.
-5. Before finishing, re-read your own diff as a skeptic, then leave a summary:
-   changed files, commands run with output, and anything worth saving as a finding.
+5. Before finishing, re-read your own diff as a skeptic, fill the task's
+   `## Run summary` section (changed files, per-command results citing the
+   Verify pastes, out-of-scope edits, blocked questions), and flip the task's
+   board row in `status.md` to review-ready.
 
 ## Workspace
 
@@ -47,6 +49,14 @@
 
 An empty or missing slot means **ask** — never invent a command. A Verify item
 whose command cannot be resolved reads Unverified, not Pass.
+
+Monorepo with a root dispatcher (`turbo run test`, `make test`): keep single
+slots. Where contexts truly diverge (polyglot or multi-repo estates), repeat
+this table once per context under a sub-heading (`### Commands (web)`) — slot
+names stay the same; a task resolves against the sub-table its Affected areas
+name. More slots (registry: `checks/checks.yaml` in the Swarm repo):
+cmdInstall, cmdFormat, cmdValidate, cmdBenchmark, cmdSecurity — add a row when
+your estate has one.
 
 <!-- SOL-form `VERIFY BY <method>:<adapter>:<artifact>` lines resolve their adapter
      against these slot names (cmdTest, cmdLint, …). Keep the cmd prefix.

@@ -1,10 +1,13 @@
 # checks.yaml — the checks contract as data. Inert: nothing in this
 # repository runs it.
 #
-# This file is the machine-readable shadow of docs/reference/checks.md (the
-# prose reference is canonical; this file restates it as testable data) and of
-# the packet templates at starter-kit/templates/. The reference consumer is
-# swarm-cli's `swarm spec check`; a reviewer can apply every rule by hand.
+# This file is the machine-readable shadow of the core checks of
+# docs/reference/checks.md (the prose reference is canonical; this file
+# restates it as testable data) and of the packet templates at
+# starter-kit/templates/. It shadows only the core checks and packet schemas —
+# the SOL catalogue is prose-only and lives in the reference.
+# Frontmatter lists are minimum-required: extra keys are legal and ignored.
+# The reference consumer is swarm-cli's `swarm spec check`; a reviewer can apply every rule by hand.
 # The files under fixtures/ pin the expected results and guard this file and
 # the prose from drifting apart.
 #
@@ -13,7 +16,7 @@
 #   warning     a checker should flag it; teams may treat any warning as
 #               blocking by policy
 
-version: 0.3.0   # contract version of this file; bump on any rule change
+version: 0.4.0   # contract version of this file; bump on any rule change
 
 # --- Spec form selector -------------------------------------------------------
 # The default spec form is plain structured markdown. A spec opts into the
@@ -48,6 +51,7 @@ core_checks:
 # required H2 section and satisfies every content rule.
 task_file:
   frontmatter: [type, id, source, scope, status]
+  status_enum: [ready, running, review-ready, closed]
   required_sections:
     - Source
     - Scope
@@ -56,9 +60,11 @@ task_file:
     - Verify
     - Agent instructions
     - Findings
+    - Run summary              # the handoff digest — cites the Verify pastes, never re-pastes them
   content_rules:
     - id: non-empty-paste
       applies_to: Verify
+      # The Run summary section cites these pastes — never an alternative paste home.
       severity: hard-error
       rule: >-
         Every completion claim binds to pasted command output or a CI link — a
@@ -76,7 +82,7 @@ task_file:
 # Keyed to starter-kit/templates/review.md.
 review_file:
   frontmatter: [type, id, task, pr, status]
-  status_enum: [draft, pass, blocked, needs-human]
+  status_enum: [draft, pass, waived, blocked, needs-human]   # waived = merged with a recorded waiver (who · rows · why · expiry)
   required_sections:
     - Summary
     - Changed files
@@ -93,8 +99,10 @@ review_file:
       applies_to: Requirement coverage, Change-plan coverage
       severity: hard-error
       rule: >-
-        A Pass needs pasted output or a CI link in its Evidence cell. An empty
-        Evidence cell means Unverified, never Pass.
+        A Pass needs pasted output, a CI link, or, for a manual Verify
+        method, a named human's recorded observation (who judged, what they
+        saw) in its Evidence cell. An empty Evidence cell means Unverified,
+        never Pass.
     - id: no-open-critical
       applies_to: whole packet
       severity: hard-error

@@ -6,13 +6,17 @@ type: status
 
 | Item | Type | State | Link |
 |---|---|---|---|
-| SPEC-{{slug}} | spec | {{draft / ready / in-progress / blocked / done / stale}} | `specs/{{feature}}/spec.md` |
-| TASK-{{slug}} | task | {{ready / running / review-ready / closed}} | `tasks/{{slug}}.md` |
 
-<!-- in-progress / done / stale are board states; a spec's own frontmatter only
-     goes draft / ready. Replace the example rows above when you copy this.
-     One honest rule: a "verified" or "done" claim in this board links its
-     review packet. -->
+<!-- Row shape (copy, fill, repeat):
+     | SPEC-auth-refresh | spec | ready | `specs/auth-refresh/spec.md` |
+     | TASK-auth-refresh-1 | task | running | `tasks/auth-refresh-1.md` |
+     | REVIEW-auth-refresh-1 | review | draft | `reviews/auth-refresh-1.md` |
+     Board states: spec draft / ready / in-progress / blocked / done / stale ·
+     task ready / running / review-ready / blocked / closed · review
+     draft / pass / waived / blocked / needs-human. The sessions maintain the
+     board (the finishing agent flips its task's row; the reviewing session
+     closes it) — you read it. A "verified" or "done" claim links its review
+     packet. -->
 
 ## Human attention
 

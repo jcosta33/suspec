@@ -3,6 +3,7 @@ type: review
 id: REVIEW-CONTACT-FORM
 task: TASK-CONTACT-FORM
 pr: https://github.com/acme/site/pull/214
+reviewer: dana@acme (human; the implementing agent's session wrote the diff)
 status: pass
 ---
 
@@ -28,6 +29,8 @@ Unverified and earned its Pass only after a re-run — see Human attention.
 | AC-001 | Pass | `npm test -- contact-form.submit` → `2 passed, 0 failed` (output in PR #214) | no |
 | AC-002 | Pass | `npm test -- contact-form.validation` → `3 passed, 0 failed` (output in PR #214) | no |
 | AC-003 | Pass | re-run after Unverified draft: `npm test -- contact-form.no-body-in-logs` → `1 passed, 0 failed` | yes |
+
+Spot-checked: AC-002 — pasted output matches the PR's CI run
 
 ## Human attention
 
