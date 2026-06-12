@@ -24,6 +24,7 @@ contexts, the definition names it; the reverse map is at the bottom.
 | **honesty level**             | The tag every rule carries: convention · checklist · toolable · enforced. The legend lives in [checks](checks.md).                                                                              |
 | **intake**                    | The verbatim snapshot of an upstream ticket, issue, or page — preserved uninterpreted so the spec keeps its anchor.                                                                             |
 | **inventory**                 | An observation-only map of existing code (`INV-*`) made before brownfield work: modules, interfaces, observed behavior, tests, unknowns.                                                        |
+| **multi-repo workspace**     | A dedicated workspace repo governing several code repos: one spec store, one board, one decision ledger; each code repo carries only the three-line footprint (pointer, optional guide, gitignore lines). |
 | **non-goals**                 | What a spec deliberately does not change; the section that bounds scope.                                                                                                                        |
 | **open question**             | An unresolved item in a spec; a `[blocking]` one keeps the spec out of `status: ready` and holds Close.                                                                                         |
 | **owner**                     | The person or team named in spec frontmatter whose say-so changes the spec.                                                                                                                     |
@@ -72,6 +73,7 @@ Advanced pages and tooling contracts sometimes use the precise internal vocabula
 | trace                  | agent run summary              |
 | verdict                | review result                  |
 | Waived (annotation)    | merged with a recorded waiver (who · which rows · why · expiry) |
+| code-repo adapter      | the workspace pointer + gitignore lines a code repo carries — today, nothing else |
 
 
 ## Related

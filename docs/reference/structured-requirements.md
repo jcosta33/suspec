@@ -247,7 +247,9 @@ VERIFY BY <method>[:<scope>]:<adapter>:<artifact>[#<selector>]
   `security`, `manual`, `monitor`.
 - **scope** — only when the method is `test`: `unit`, `integration`, or `e2e` (`test:e2e:…`).
 - **adapter** — the runner, resolved through the workspace `AGENTS.md > Commands` table (the
-  `cmd*` slots): the binding names _how to run it_ without hard-coding a shell line.
+  `cmd*` slots): the binding names _how to run it_ without hard-coding a shell line. In a
+  workspace with per-context Commands sub-tables, the adapter resolves against the sub-table
+  the task's Affected areas name, falling back to the single table otherwise.
 - **artifact** — the file or target the adapter runs; the optional `#selector` narrows to a
   sub-target such as one test name.
 

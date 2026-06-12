@@ -85,16 +85,20 @@ a parallel task includes the files its siblings own), Affected areas, and a Veri
 requirement. A packet that needs the other packets explained to it isn't disjoint yet — and
 "the other agent will handle it" is not a sentence that belongs inside one.
 
-One platform carve-out: a spec shipping the same behavior on N platforms may scope the same
-requirement id to N platform tasks — write-disjoint by platform directory — when each task
-verifies it on its own platform. At spec level the requirement reads green only when every
-platform task's packet shows Pass; per-platform results never substitute for each other.
+One context carve-out (platform or repo): a spec shipping the same behavior on N platforms —
+or a requirement independently verifiable in each of N repos, the contract-test shape (an API
+honored on both sides) — may scope the same requirement id to N context tasks, write-disjoint
+by platform directory or repo. At spec level the requirement reads green only when every
+context task's packet shows Pass; per-context results never substitute for each other. The
+entry condition is strict: a behavior that only exists when both repos meet decomposes into
+per-repo requirements instead — the carve-out never covers a requirement no single task
+verifies.
 
 ## Before you finish
 
 - [ ] Every requirement (or guarantee/wave item) is in exactly one task's Scope — none
-      uncovered, none duplicated (platform carve-out: N platform tasks may share one id,
-      each verifying on its own platform).
+      uncovered, none duplicated (context carve-out — platform or repo: N context tasks may share one id, each
+      verifying it whole in its own context).
 - [ ] No new requirement was invented inside a packet; gaps went back to the spec.
 - [ ] No task was cut from a requirement with an open blocking question.
 - [ ] Every parallel pair passed all four conditions in the box — including the file-overlap

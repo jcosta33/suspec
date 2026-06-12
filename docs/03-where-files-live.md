@@ -57,10 +57,15 @@ Both are first-class:
 
 - **Co-located** — a single-repo team keeps the same tree inside its code repo, optionally under a
   visible `swarm/` directory at the root. Same layout, one less repo.
-- **External** — a standalone workspace repo: useful when one set of specs governs several code
-  repos, or when the people shaping specs are not the people merging code. Think of it as a
-  Git-native, agent-readable form of the requirements store larger organizations already keep
-  outside their code.
+- **Dedicated workspace repo** — the same kit installed in a repo of its own. When it governs
+  several code repos, that is the **multi-repo workspace**: one spec store, one board, one set
+  of decisions for the whole family. Think of it as a Git-native, agent-readable form of the
+  requirements store larger organizations already keep outside their code.
+
+The decision rule: stay co-located while features live in one repo and the same people shape
+specs and merge code; use the multi-repo workspace when features routinely span repos — a spec
+inside repo A is invisible to repo B's developers and drifts unowned — or when the people
+shaping specs are not the people merging code.
 
 Separation has a known cost — specs can drift from the code they describe. The review packet is
 where that surfaces; see the drift note below.
@@ -77,7 +82,9 @@ you are given`;
   (see [integrations](10-integrations.md)).
 
 Task packets reach the agent by paste or by path. The PR remains the merge mechanism; it links the
-review packet in the workspace, and the packet is the record. Committed Swarm content in code
+review packet in the workspace, and the packet is the record. In a multi-repo workspace the same
+flow repeats per repo: one spec cuts repo-scoped tasks (each naming its repo's Commands
+sub-table), and each code repo's PR links its own review packet back in the workspace. Committed Swarm content in code
 repos — specs, reviews, findings — stays out of bounds. That is a convention — nothing in this
 repo enforces it — but it is what keeps adoption from dirtying a single product repo.
 

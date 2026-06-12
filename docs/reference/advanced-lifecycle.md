@@ -88,9 +88,11 @@ swarm-cli could compute the first; nothing enforces either).
   exactly what strands a coding agent mid-run
   [[HILBENCH]](../research/sources.md#HILBENCH).
 - **Coverage before running** (between `decompose` and `implement`). Every in-scope requirement is
-  assigned to exactly one task — none unassigned, none assigned twice, with one platform
-  carve-out: the same requirement may scope to N platform tasks when each verifies it on its
-  own platform, and it reads green at spec level only when every platform task shows Pass —
+  assigned to exactly one task — none unassigned, none assigned twice, with one context
+  carve-out (platform or repo, the latter only when the requirement is independently
+  verifiable in each repo): the same requirement may scope to N context tasks when each
+  verifies it whole in its own context, and it reads green at spec level only when every
+  context task shows Pass —
   and everything a task
   points at (a requirement ID, a verification method) resolves to something that exists. The first
   half forbids stranding a requirement; the second forbids a task built on a phantom.

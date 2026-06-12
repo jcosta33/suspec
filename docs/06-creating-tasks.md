@@ -76,6 +76,12 @@ conflict rules, dependency ordering, when "different file names" still
 collide — lives in [the advanced lifecycle](reference/advanced-lifecycle.md);
 you don't need it for a handful of tasks.
 
+In a multi-repo workspace, an Affected-areas entry may carry a **context prefix** — exactly a
+Commands sub-heading's context name (`### Commands (web)` → `web: src/checkout/…`) — binding
+the task to that sub-table for its Verify commands. A task names at most one context; entries
+that would span contexts are the signal to split. The prefix is task-body content owned by
+your workspace — not one of the placeholder namespaces in the checks contract.
+
 For change plans, split by **wave**: the plan's Task split table already names
 one or more tasks per wave, and each wave leaves the codebase green before the
 next begins. Don't pull tasks forward across waves — the ordering is the plan's

@@ -233,6 +233,11 @@ agents:
   available: [claude, codex, opencode]
 ```
 
+Several code repos may each point `knowledge.path` at the same workspace — one workspace that
+governs several code repos (the multi-repo workspace) composes from these per-repo contracts
+as written. Orchestration *across* governed repos from the workspace side is outside the
+command contracts on this page; it waits for its own decision record.
+
 ## Agent adapters
 
 The CLI coordinates existing coding agents; it ships none. An **adapter** is a three-field

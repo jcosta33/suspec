@@ -60,6 +60,9 @@
 <a id="HUMANEVALCOMM"></a>
 **[HUMANEVALCOMM] HumanEvalComm: Benchmarking the Communication Competence of Code Generation for LLMs and LLM Agents.** Wu, Fard. **ACM TOSEM 2025**, arXiv:2406.00215. *Verified (June 2026, direct fetch + adversarial re-verification, 2/2 votes; Table-4 figures confirmed).* Injecting ambiguity/incompleteness into HumanEval drops Pass@1 **35–52%** (ChatGPT 65.58%→33.77% ambiguity, →27.95% incompleteness); **>60%** of model responses code anyway instead of asking. Boundary finding: a clarification-forcing agent on ALREADY-CLEAR tasks scored 27.45% vs 65.58% — indiscriminate process on clear tasks measurably hurts. Grounds: requirement clarity is load-bearing; indiscriminate *clarification-forcing* on clear tasks measurably hurts — the extension to documents/process generally is design rationale, not a measured result.
 
+<a id="CATALDI-AI-REVIEW"></a>
+**[CATALDI-AI-REVIEW] Perceptions and challenges of AI-driven code reviews: A qualitative exploration of developer experiences.** Cataldi. **Issues in Information Systems 26(2):346–360, 2025**, DOI 10.48009/2_iis_127. *Verified (June 2026, direct fetch).* Semi-structured interviews with 10 developers, technical leads, and architects; thematic analysis found trust, reliability, and lack of context understanding as dominant concerns, with participants advocating for transparent, context-aware AI tools that augment rather than replace human reviewers. Grounds: the need for structured human oversight and explainable review artifacts in AI-assisted workflows.
+
 ## Verified — reused from the kernel bibliography
 
 These were already verified by the framework's bibliography elsewhere; the entries below restate them so this layer is self-contained.
@@ -102,6 +105,20 @@ These were already verified by the framework's bibliography elsewhere; the entri
 <a id="DIATAXIS"></a>
 **[DIATAXIS] Diátaxis — a systematic framework for technical documentation.** Procida. *Verified (June 2026, diataxis.fr).* Organizes documentation by user need into four distinct modes — tutorials, how-to guides, reference, explanation — kept separate because each serves a different purpose. <https://diataxis.fr/> — *reference framework.* Grounds: doc-organization-by-purpose (informs the skills / reference split; a full re-org of `docs/` was considered and declined as high-churn, low-payoff).
 
+<a id="GARTNER-AGENTS"></a>
+**[GARTNER-AGENTS] Gartner agentic AI adoption projection.** Gartner, cited in CSA/Token Security/Speakeasy industry analyses, 2025–2026. *Verified (June 2026, multiple independent citations).* Projects **40% of enterprise applications will embed task-specific AI agents by end of 2026**, up from under 5% in 2025. Grounds: agentic AI is moving into production faster than governance standards can keep pace.
+
+<a id="AI-INDEX-2026"></a>
+**[AI-INDEX-2026] Stanford HAI AI Index Report 2026.** Stanford Institute for Human-Centered AI, 2026. *Verified (June 2026, cited in Speakeasy/Elementum industry analyses).* Identifies **security and risk as the primary barrier to scaling agentic AI**, cited by **62% of organizations**. Grounds: governance, not model capability, is the current enterprise bottleneck.
+
+<a id="CSA-AI-CYBER-2026"></a>
+**[CSA-AI-CYBER-2026] State of AI Cybersecurity 2026.** Cloud Security Alliance / Token Security, April 2026. *Verified (June 2026, direct fetch of CSA research note).* Survey of 1,500+ security leaders: **65% of enterprises with deployed AI agents experienced a confirmed security incident**, **63% cannot enforce purpose limitations**, and **60% cannot terminate a misbehaving agent once running**. Grounds: operational controls for agentic AI lag behind adoption.
+
+<a id="NIST-CAISI-RFI"></a>
+**[NIST-CAISI-RFI] Request for Information Regarding Security Considerations for Artificial Intelligence Agents.** NIST Center for AI Standards and Innovation (CAISI), docket NIST-2025-0035, Federal Register, 8 Jan 2026. *Verified (June 2026, direct fetch via CSA research note).* Formal U.S. government acknowledgment that conventional cybersecurity approaches do not translate cleanly to autonomous agent deployments; comment period closed 9 Mar 2026. Grounds: agent-specific security controls are an active standards gap.
+
+<a id="NIST-AI-AGENT-STANDARDS"></a>
+**[NIST-AI-AGENT-STANDARDS] NIST AI Agent Standards Initiative.** NIST, announced 17 Feb 2026. *Verified (June 2026, direct fetch via CSA research note).* Multi-year standards effort organized around industry-led facilitation, open-source interoperability (MCP/A2A), and research on agent authentication/identity; first substantive deliverables not expected before late 2026. Grounds: enforceable, agent-specific security standards are not available today.
 
 ## Verified — peer-reviewed, no measured outcomes (vision/position; design rationale only)
 
@@ -182,6 +199,58 @@ A web-verified arXiv preprint is stronger than a blog post but is **not peer-rev
 
 <a id="HILBENCH"></a>
 **[HILBENCH] HiL-Bench: Do Agents Know When to Ask for Help?** **arXiv:2604.09408** (preprint; not yet peer-reviewed). *Verified (June 2026).* Frontier agents solve up to ~89% of SWE/SQL tasks with full info, but on messy/ambiguous specs the best model drops to **~24% even when given a tool to ask for help**. Grounds: agents don't reliably self-clarify → clarify-before-lower (the CLARIFY-gate rationale).
+
+### Industry reports and vendor analyses — web-verified (June 2026)
+
+These sources are **not peer-reviewed**; they ground market-gap observations and should be cited only as preliminary/contextual evidence, never as a `MUST`.
+
+<a id="PRACTICALLOGIX-PARADOX"></a>
+**[PRACTICALLOGIX-PARADOX] The AI Code Quality Paradox.** Practical Logix, 3 May 2026. *Verified (June 2026, direct fetch).* Synthesizes Stack Overflow 2025 (n=49,000+), DORA 2025 (n≈5,000), CodeRabbit Feb 2026 (470 PRs), and Cortex 2026: **84%** daily AI-tool adoption, **29%** trust in AI-generated code accuracy, AI-generated PRs averaged **1.7×** as many issues as human PRs. Grounds: trust gap and quality-tax are observable market conditions.
+
+<a id="VIBECODER-AUDIT"></a>
+**[VIBECODER-AUDIT] Audit Trails for AI Generated Code Compliance Guide.** Vibecoder blog, 29 Apr 2026. *Verified (June 2026, direct fetch).* A 2025 compliance survey of 400 regulated-industry organizations found **73% require AI-generation audit trails for production code**, up from 18% in 2024. Identifies four components: prompt history, generation provenance, review documentation, version-control linkage. Grounds: audit-ready provenance is becoming a market-access requirement.
+
+<a id="AUGMENT-SDD-BROWNFIELD"></a>
+**[AUGMENT-SDD-BROWNFIELD] Spec-Driven Development for Brownfield Enterprise Codebases.** Augment Code, 19 Mar 2026. *Verified (June 2026, direct fetch).* Recommends **change-level specs** scoped to a single modification as the practical answer to comprehensive specs being impossible at enterprise scale; defines four elements: current behavior, target behavior, invariants, scope boundary. Grounds: brownfield SDD needs narrow, incremental specs.
+
+<a id="QIAO-BROWNFIELD"></a>
+**[QIAO-BROWNFIELD] Comprehension–Performance Gap in GenAI-Assisted Brownfield Programming: A Replication and Extension.** Qiao et al. **arXiv:2511.02922** (preprint), 4 Nov 2025. *Verified (June 2026, direct fetch).* Students showed no significant comprehension improvement with Copilot in brownfield tasks (mean 55% vs 61% without, p=0.42); qualitative responses indicated Copilot was treated as a code generator and its explanations too localized to build system-level understanding. Grounds: AI tools accelerate brownfield output without improving understanding → governance layer must enforce comprehension artifacts.
+
+<a id="INNOBU-LOCKIN"></a>
+**[INNOBU-LOCKIN] AI Agent Platforms 2026: Vendor Lock-in and the Right Enterprise Strategy.** Innobu, 9 Apr 2026. *Verified (June 2026, direct fetch).* Cites **57%** of IT leaders spent >$1M on platform migrations, typical migration cost **2×** initial investment, **78%** use two or more LLM families, **46%** struggle with integration into existing systems. Grounds: enterprises need portable, multi-model governance.
+
+<a id="SOLOBUSINESSHUB-SKILLS"></a>
+**[SOLOBUSINESSHUB-SKILLS] The AI Agent Skills Boom – Reshaping Development in 2026.** Solo Business Hub, 22 Jan 2026. *Verified (June 2026, direct fetch).* Reports 100,000+ skill installs and 70–90% time savings claims; frames Agent Skills as modular SKILL.md folders. Grounds: skill ecosystem is growing rapidly and needs governance conventions.
+
+<a id="SERENITIESAI-SKILLS"></a>
+**[SERENITIESAI-SKILLS] AI Agent Skills Guide 2026: Build Skills for 16+ AI Tools.** Serenities AI, 5 Mar 2026. *Verified (June 2026, direct fetch).* Reports security researchers identified **341 malicious skills** by Feb 2026 with risks including data exfiltration, credential theft, and prompt injection; recommends auditing skills like npm packages. Grounds: skill supply-chain governance is an emerging requirement.
+
+<a id="AGENTMELT-LOCKIN"></a>
+**[AGENTMELT-LOCKIN] AI Agent Vendor Lock-In: 7 Ways to Avoid It.** AgentMelt, 10 Apr 2026. *Verified (June 2026, direct fetch).* Lists lock-in vectors: model dependency, proprietary orchestration, data/conversation history, integration layer, pricing structure; recommends open standards (MCP, OpenAPI), own eval sets, and exportable workflows. Grounds: portability is a design requirement, not an afterthought.
+
+<a id="AQUILAX-VIBE"></a>
+**[AQUILAX-VIBE] Why People Are Not Using Vibe Coding for Everything.** Aquilax AI, 13 Mar 2026. *Verified (June 2026, direct fetch).* Argues regulated industries cannot adopt "vibe coding" because AI-generated code lacks provenance, design rationale, and review trail; notes SOC 2 Type II, ISO 27001, and FedRAMP auditors are increasingly asking about AI tooling controls. Grounds: regulated adoption requires documented human oversight.
+
+<a id="FORGEPROOF-2026"></a>
+**[FORGEPROOF-2026] ForgeProof — Code Provenance for the AI Era.** Flying Cloud Technology, 2026. *Verified (June 2026, direct fetch).* Vendor framing for CMMC, EU AI Act Article 12, EU Cyber Resilience Act, NIST AI 100-4; positions code provenance as mandatory for defense contractors, government procurement, regulated industries, and open-source maintainers. Grounds: regulatory pressure for AI code traceability is increasing.
+
+<a id="ONA-MIGRATIONS"></a>
+**[ONA-MIGRATIONS] The evolution of code migrations from rules-based tools to agents.** Ona, 20 Oct 2025. *Verified (June 2026, direct fetch).* Enterprise migrations were historically rule-based (OpenRewrite) and confined to large tech companies with Java codebases; agents present an opportunity to democratize migration but brownfield orchestration remains hard. Grounds: brownfield transformation is an underserved, high-value niche.
+
+<a id="NASHTECH-LEGACY"></a>
+**[NASHTECH-LEGACY] Modernising legacy systems without breaking the business.** NashTech, 19 Jun 2025. *Verified (June 2026, direct fetch).* Reports GenAI productivity gains for greenfield development but "less benefits in brownfield or legacy modernisation projects." Grounds: brownfield is the harder problem and current tools under-serve it.
+
+<a id="EMERGENTMIND-BROWNFIELD"></a>
+**[EMERGENTMIND-BROWNFIELD] Brownfield Programming Tasks: Legacy & AI.** Emergent Mind topic summary, 9 Nov 2025. *Verified (June 2026, direct fetch).* Synthesizes Qiao et al. and Shihab et al.: GenAI enables rapid progress but developers do not exhibit improved legacy-system understanding; workflows shift to "prompt–response–implement" with acceptance often occurring without critical evaluation. Grounds: process discipline must compensate for comprehension gaps introduced by AI assistance.
+
+<a id="RJNTI-AI-QUALITY"></a>
+**[RJNTI-AI-QUALITY] Evaluating the Reliability, Security, and Quality of AI-Generated Code.** RJPN / IJNTI, 5 May 2026. *Verified (June 2026, direct fetch of PDF).* Synthesis of 20+ empirical studies; reports Stack Overflow 2025 found **33%** fully trust AI outputs yet **60%** accept suggestions without thorough validation, and documents "false sense of security" and junior-developer over-reliance effects. Grounds: trust behavior and stated trust diverge; governance must enforce verification.
+
+<a id="YAITEC-NOCODE"></a>
+**[YAITEC-NOCODE] No-code tools for building AI agents: best platforms compared.** YAITEC, 31 May 2026. *Verified (June 2026, direct fetch).* Reports the no-code AI workflow market expanding at 31–38% CAGR and projected to reach **$25 billion by 2030**, with 84% of organizations using low-code/no-code tools. Grounds: low-code/no-code AI platforms are proliferating, increasing demand for lightweight governance that does not add platform lock-in.
+
+<a id="CODERABBIT"></a>
+**[CODERABBIT] CodeRabbit State of AI vs Human Code Generation.** CodeRabbit, Feb 2026. *Verified (June 2026, via Practical Logix synthesis).* Analysis of 470 open-source GitHub pull requests (320 AI-co-authored, 150 human-only); AI-generated PRs averaged **10.83 issues** vs **6.45** for human-written PRs, a **1.7×** multiplier. Grounds: AI-generated code carries a measurable quality tax.
 
 > *The six entries below were sourced from an LLM-generated brief whose footnote **numbering** was scrambled (the wrong footnote pointed at each id). Each id was re-fetched and resolves to the **named** paper with a matching venue + finding — so the ids below are the corrected mapping, not the brief's.*
 

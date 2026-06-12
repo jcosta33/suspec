@@ -112,6 +112,9 @@ review_file:
         `needs-human`.
     - id: trigger-coverage
       applies_to: Human attention
+      # Affected-areas entries may carry a workspace-owned context prefix
+      # (`web: src/…`) naming a Commands sub-table; matchers compare the path
+      # part. A body convention — not a placeholder namespace.
       severity: warning
       rule: >-
         The Human attention section routes every applicable exception trigger

@@ -198,9 +198,10 @@ reference-tier names — the [glossary](glossary.md) maps them back.
   dependency serializes them; the partition respects dependency order, no cycles; every
   in-scope requirement is assigned to exactly one task; each task carries its requirements as
   stated, not paraphrased. When several agents run at once, any coordination record's owned
-  paths are pairwise disjoint across workers, confirmed before anyone spawns. One platform
-  carve-out: the same requirement may scope to N platform tasks when each verifies it on its
-  own platform — it reads green at spec level only when every platform task shows Pass.
+  paths are pairwise disjoint across workers, confirmed before anyone spawns. One context
+  carve-out (platform or repo): the same requirement may scope to N context tasks when each
+  verifies it whole in its own context (for repos: only the independently-verifiable,
+  contract-test shape) — it reads green at spec level only when every context task shows Pass.
 - **`implement`** — scored by the Run bar, sharpened by one scope predicate: the diff stays
   inside the task's affected areas, and the recorded changed-file set is never narrower than
   the diff.
