@@ -57,5 +57,5 @@ inspects them; nothing enforces them:
 
 ## Related
 
-- The starter kit's core guides: `starter-kit/agent/{write-spec,implement-task,review-output}/`.
+- The starter kit's core guides: `starter-kit/.agents/skills/{write-spec,implement-task,review-output}/`.
 - The kit's templates (task packet, review packet, finding): `starter-kit/templates/`.

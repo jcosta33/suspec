@@ -1,29 +1,40 @@
-# Swarm starter kit
+# Swarm starter kit — a complete workspace
 
-Everything an adopting workspace copies. Five-minute tour:
+This folder **is** a Swarm workspace. Copy it whole — as a new repo, or as a folder inside an
+existing project — fill in `AGENTS.md`, and run the loop.
 
-```
-templates/    the eight core artifact templates — spec, task, review, finding,
-              status, intake, inventory, change-plan
-agent/        the bootloader (AGENTS.md + CLAUDE.md/GEMINI.md symlinks) and three
-              agent guides: write-spec, implement-task, review-output
-examples/     one compact worked feature: ticket → spec → task → review → finding
-decisions/    the seed ADR ledger for your workspace
-advanced/     optional: audit/bug/research/adr/rfc/prd/threat-model templates,
-              focused guides for the optional work, and the SOL + checks
-              reference cards
-.gitignore.additions   lines for code repos (the workspace commits its artifacts)
+```sh
+cp -r starter-kit my-workspace        # a dedicated workspace repo (git init it)
+cp -r starter-kit your-repo/workspace # or co-located inside your project
 ```
 
-**Copy checklist** (the whole core is 12 files):
+What you copied:
 
-1. `templates/` → your workspace.
-2. The three guide folders in `agent/` → the directory your agent CLI scans for
-   skills; `AGENTS.md` and its two symlinks → your repo root; fill the placeholders.
-3. `decisions/` → your workspace; append `.gitignore.additions` where relevant.
-4. Start with one feature: `specs/<feature>/spec.md`.
+```
+AGENTS.md            the bootloader (CLAUDE.md / GEMINI.md are symlinks to it)
+.agents/skills/      the three core guides: write-spec, implement-task, review-output
+.claude/skills       symlink -> .agents/skills — Claude Code discovers the guides natively
+templates/           the eight core artifact templates — spec, task, review, finding,
+                     status, intake, inventory, change-plan
+specs/ intake/ tasks/ reviews/ findings/ inventory/ change-plans/
+                     the flow folders, each with a one-line README saying what lands there
+decisions/           your ADR ledger, seeded with 0001-adopt-swarm
+status.md            the hand-edited workboard
+examples/            one worked chain (ticket → spec → task → review → finding) —
+                     read it, then delete it
+advanced/            optional templates, guides, and reference cards — copy pieces into
+                     .agents/skills/ (guides) or use in place (templates) when needed
+.gitignore.additions lines for your CODE repos (this workspace commits its artifacts)
+```
 
-`advanced/` is optional — copy pieces when the work needs them. The audit template
-is the recommended first taste for brownfield codebases.
+After copying:
 
-Full instructions: `docs/ADOPTING.md`. Worked examples: `docs/examples/`.
+1. Fill the `{{placeholders}}` in `AGENTS.md` — the Commands table and project facts.
+2. If your agent is not Claude Code, point it at `.agents/skills/` — a symlink like the
+   shipped `.claude/skills` one, or a copy into wherever your tool scans.
+3. Write one spec for your next non-trivial change: `specs/<feature>/spec.md`. Run the loop.
+
+`advanced/` is optional — copy pieces when the work needs them. The audit template is the
+recommended first taste for brownfield codebases.
+
+Full instructions: `docs/ADOPTING.md` in the Swarm repo. Worked examples: `docs/examples/`.

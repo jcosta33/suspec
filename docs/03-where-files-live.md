@@ -27,7 +27,8 @@ your-workspace/
   decisions/             # project decisions, numbered (0001-, 0002-, …)
   templates/             # the kit templates you copied in
   status.md              # the hand-edited workboard
-  .agents/               # agent tooling only — never project content
+  .agents/               # agent tooling — guides live in .agents/skills/
+  .claude/skills         # symlink -> .agents/skills (tool adapter; never content)
 ```
 
 Two kinds of folder:
@@ -88,4 +89,4 @@ Unverified — and a spec known to lag reality is marked `stale` on the
 
 - [Basic workflow](02-basic-workflow.md) — the loop these folders serve.
 - [Writing specs](04-writing-specs.md) — what goes in `specs/<feature>/spec.md`.
-- [Adopting Swarm](ADOPTING.md) — the copy checklist that sets this tree up.
+- [Adopting Swarm](ADOPTING.md) — one copy of the kit sets this tree up.

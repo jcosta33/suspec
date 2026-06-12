@@ -2,7 +2,7 @@
 
 `.agents/skills/` is **not** the shipped catalogue. It is the curated set of guides for working
 **on this repo** — itself a docs/spec workspace, not a typical adopter. The shipped surfaces are
-the kit's core guides (`starter-kit/agent/`), the optional tier (`starter-kit/advanced/`), and the
+the kit's core guides (`starter-kit/.agents/skills/`), the optional tier (`starter-kit/advanced/`), and the
 reference pages under `docs/reference/`.
 
 ## Single-sourcing
@@ -17,7 +17,7 @@ competing authority. Derivation order and per-ADR status:
 | Guide                                              | Counterpart                                                                                                   | Why it is here                                                                                                                                                             |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `adversarial-review`                               | `starter-kit/advanced/adversarial-review/`                                                                     | Deep hostile re-review of a branch (six adversarial questions, run-it-yourself). Keep the pair in sync (propagation matrix).                                               |
-| `review-output`                                    | `starter-kit/agent/review-output/`                                                                            | This repo's own merge discipline: judging a change set against its stated intent with pasted evidence. Carries the dev specifics (grep gates, link audits, no test suite). |
+| `review-output`                                    | `starter-kit/.agents/skills/review-output/`                                                                            | This repo's own merge discipline: judging a change set against its stated intent with pasted evidence. Carries the dev specifics (grep gates, link audits, no test suite). |
 | `save-findings`                                    | the kit finding convention (`starter-kit/templates/finding.md`); advanced model at `docs/reference/memory.md` | The Close-step rule — route durable discoveries before closing. Dev routing targets: `docs/` + ADR, `.agents/audits/`, the glossary, the sources bibliography.             |
 | `empirical-proof`                                  | folded into the kit's three core guides                                                                       | The evidence rules in standalone form: a completion claim binds to pasted output; without it the result is Unverified, never Pass.                                         |
 | `write-audit` (+ `references/task-template.md`)    | `starter-kit/advanced/write-audit/`                                                                           | Dev audits under `.agents/audits/` are this repo's main self-assessment instrument.                                                                                        |

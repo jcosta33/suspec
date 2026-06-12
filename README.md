@@ -106,9 +106,9 @@ honesty rule: anything not enforced by a tool says so.
 
 ## Get started
 
-1. Copy `starter-kit/templates/` into your workspace (8 files).
-2. Copy the `starter-kit/agent/` guides next to your agent's skills; its `AGENTS.md` goes to your repo root.
-3. Fill `AGENTS.md` with your commands and facts.
+1. Copy the kit whole — it is a ready workspace: `cp -r starter-kit my-workspace` (a new repo, or a folder in your project).
+2. Fill its `AGENTS.md` with your commands and facts.
+3. Claude Code finds the guides via the shipped `.claude/skills` symlink; point any other tool at `.agents/skills/`.
 4. Write one spec for your next non-trivial change. Run the loop once.
 
 Or hand your agent [docs/ADOPTING.md](docs/ADOPTING.md) and let it do the copying.

@@ -6,7 +6,7 @@ The guides are short procedural documents an agent CLI loads on demand (each shi
 `SKILL.md`, auto-discoverable by agent tools and plainly readable by humans). They carry
 procedure; the templates carry shape; this page is the index.
 
-## Core (ship in `starter-kit/agent/`, copied beside your own skills)
+## Core (ship in the kit at `.agents/skills/`; tools discover them via symlinks like `.claude/skills`)
 
 | Guide | Use when |
 |---|---|

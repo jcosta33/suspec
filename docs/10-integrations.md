@@ -14,10 +14,10 @@ header, so agent CLIs can auto-discover it and humans can just read it. Where to
 
 | Agent CLI                          | Where the guides go                                                                      |
 | ---------------------------------- | ---------------------------------------------------------------------------------------- |
-| Claude Code                        | `.claude/skills/` — copy each guide folder in; `SKILL.md` is auto-discovered             |
+| Claude Code                        | nothing to do — the kit ships `.claude/skills` as a symlink to `.agents/skills/`         |
 | Codex                              | `.codex/`, or reference the guides from `AGENTS.md` (Codex reads it natively)            |
 | Cursor                             | `.cursor/rules/` — add each guide's content as a rule file                               |
-| Anything else (or no skill system) | keep them as plain docs — e.g. `docs/agent-guides/` — and point to them from `AGENTS.md` |
+| Anything else (or no skill system) | they already sit in `.agents/skills/` as plain docs — point to them from `AGENTS.md`     |
 
 One caution: this fails silently. If your CLI scans a fixed directory and the guides sit somewhere
 else, nothing errors — they simply never activate. Put them where your CLI actually looks, and

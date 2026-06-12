@@ -39,14 +39,14 @@ convention; nothing in this repo enforces it.
 Intent, not implementation. Prevents specs that smuggle in an algorithm where a requirement
 belongs. Demands that every requirement be verifiable as written, and a survey of what already
 exists before a new boundary is invented. Refuses a requirement no one could check, and a "how"
-dressed as a "what". Ships inside `starter-kit/agent/write-spec/`.
+dressed as a "what". Ships inside `starter-kit/.agents/skills/write-spec/`.
 
 ### Skeptic — folded into the `review-output` guide
 
 Refute by default: a completion claim is unproven until evidence forces the opposite conclusion.
 Prevents rubber-stamped reviews. Demands re-run checks and pasted output; refuses a worker's
 summary as proof, a green row with an empty evidence cell, and any softening of a finding to avoid
-blocking. Ships inside `starter-kit/agent/review-output/` — and, turned on one's own diff before
+blocking. Ships inside `starter-kit/.agents/skills/review-output/` — and, turned on one's own diff before
 handoff, it is the self-review posture the `implement-task` guide ends on (that yields fixes and a
 recorded critique, never a self-issued result).
 
@@ -110,5 +110,5 @@ risk is highest.
   review-result model, and contradiction handling.
 - [Reviewing output](../08-reviewing-output.md) — the review packet the Skeptic stance fills.
 - [Agent guides](agent-guides.md) — the guide model the folded stances live inside.
-- The kit guides themselves: `starter-kit/agent/{write-spec,implement-task,review-output}/` and
+- The kit guides themselves: `starter-kit/.agents/skills/{write-spec,implement-task,review-output}/` and
   `starter-kit/advanced/`.

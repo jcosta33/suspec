@@ -13,7 +13,7 @@ description: >-
 
 # Review output — dev guide for this repo
 
-The shipped guide for this discipline is `starter-kit/agent/review-output/SKILL.md`; the review
+The shipped guide for this discipline is `starter-kit/.agents/skills/review-output/SKILL.md`; the review
 packet format is `starter-kit/templates/review.md`. This copy carries the same rules plus the
 specifics of reviewing **this repo** — a markdown-only workspace whose checks are greps, link
 audits, and diff reads rather than a test suite. Everything below is a review checklist —
