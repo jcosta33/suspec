@@ -99,3 +99,5 @@ change. No follow-on migration.
 - Does NOT change: any closed set, the SOL grammar, the nine steps, the verdicts, or the artifact set.
 
 > **Ledger note (2026-06-11):** refined by ADR-0057; intake-directory deferral partially superseded by ADR-0061.
+>
+> **Ledger note (2026-06-12) — evidence and its limits:** the Context figures (HARNESSBENCH, AHE, HAL, TERMBENCH, METR) are preprint-tier corroboration, cited here as preliminary evidence, not settled results; METR's uplift figure in particular should not be cited as settled (see the caveats in `../research/sources.md`).

@@ -14,7 +14,7 @@ The product's wedge is review-by-exception: turning large agent output into requ
 evidence, and a human-attention list. Agent-authored summaries are not trustworthy on their own —
 evaluators favor their own generations [[SELFPREFER]](../research/sources.md#SELFPREFER), judges carry
 position/verbosity biases [[JUDGEBIAS]](../research/sources.md#JUDGEBIAS), and unsupported "done" claims
-are the canonical failure [[EVIBOUND]](../research/sources.md#EVIBOUND). The external survey found **no
+are a recurring failure (small-N, preliminary) [[EVIBOUND]](../research/sources.md#EVIBOUND). The external survey found **no
 tool ships a persisted, independent, exception-routing review packet** (the verified gap — never claim
 "nobody reviews agent output"); it also found every competing tool keeps specs in-repo, while external
 requirements stores exist at the RFC/requirements-repo granularity enterprises already run, with

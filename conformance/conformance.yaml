@@ -13,7 +13,7 @@
 #   warning     a checker should flag it; teams may treat any warning as
 #               blocking by policy
 
-version: 0.2.0   # contract version of this file; bump on any rule change
+version: 0.2.1   # contract version of this file; bump on any rule change
 
 # --- Spec form selector -------------------------------------------------------
 # The default spec form is plain structured markdown. A spec opts into the
@@ -25,10 +25,11 @@ spec_form:
   selector: "format: sol"                                  # frontmatter key, per file; absent = simple form
   frontmatter: [type, id, title, status, owner, sources]   # + the optional `format` key above
 
-# --- Core spec checks (either form) -------------------------------------------
-# Mirrors the "Core checks" table in docs/reference/checks.md. IDs are stable;
-# the prose reference defines each rule in full — this list pins id, name, and
-# severity so a checker and the fixtures can cite them.
+# --- Core checks ---------------------------------------------------------------
+# Mirrors the "Core checks" table in docs/reference/checks.md, row for row.
+# C001–C009 key on the spec (either form); C010–C011 key on the change plan.
+# IDs are stable; the prose reference defines each rule in full — this list
+# pins id, name, and severity so a checker and the fixtures can cite them.
 core_checks:
   - { id: C001, name: unique-ids,             severity: hard-error }
   - { id: C002, name: duplicate-id,           severity: hard-error }
@@ -39,9 +40,8 @@ core_checks:
   - { id: C007, name: no-tbd-at-ready,        severity: hard-error }   # open questions not marked non-blocking included
   - { id: C008, name: sources-named,          severity: warning    }
   - { id: C009, name: broken-source-link,     severity: hard-error }   # workspace refs only; bare tracker ids exempt
-  change_plan_checks:
-    - { id: C010, name: preserves-refs-resolve,  severity: hard-error }   # preserves: + guarantee-table ids resolve (PG-NNN = plan-local)
-    - { id: C011, name: waves-present,           severity: warning    }   # kind in {migration, rewrite, schema-change} => non-empty waves, each naming a verify step
+  - { id: C010, name: preserves-refs-resolve, severity: hard-error }   # change plan: preserves: + guarantee-table ids resolve (PG-NNN = plan-local)
+  - { id: C011, name: waves-present,          severity: warning    }   # change plan: kind in {migration, rewrite, schema-change} => non-empty waves, each naming a verify step
 
 # --- The task packet -----------------------------------------------------------
 # Keyed to starter-kit/templates/task.md: a well-formed task presents every

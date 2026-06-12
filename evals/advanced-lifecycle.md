@@ -35,8 +35,8 @@ Toolable: swarm-cli's `swarm spec check` is the reference implementation of thes
 - No edit changes what any requirement asks: actor, trigger, behavior, or strength. The only
   approval-free edits are textual repairs.
 - No requirement id, requirement, or `Verify with:` line is dropped or weakened across the diff.
-- Every edit is attributable to one of the ten improve operations
-  ([defined here](../docs/reference/advanced-lifecycle.md#the-ten-improve-operations)); an edit
+- Every edit is attributable to one of the improve operations
+  ([defined here](../docs/reference/advanced-lifecycle.md#the-improve-operations)); an edit
   no operation explains is an unreviewed authoring decision.
 - Every blocking check from `lint` is repaired or explicitly carried forward with a reason —
   never deleted from the report while the defect remains in the text.
@@ -125,7 +125,7 @@ unless a swarm-cli command is named beside it.
 
 ## Related
 
-- [The advanced lifecycle](../docs/reference/advanced-lifecycle.md) — the steps, the ten improve
+- [The advanced lifecycle](../docs/reference/advanced-lifecycle.md) — the steps, the improve
   operations, the full result model, and the merge gate these rubrics grade against.
 - [Step rubrics](README.md) — the six-step bars this page extends.
 - [Checks](../docs/reference/checks.md) — the catalogue `lint` reads and `improve` repairs.

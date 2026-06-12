@@ -65,8 +65,9 @@ can check. Supporting docs (audit, research, prd, rfc) sit in the same feature f
 convention spec-driven toolkits converge on
 [[SPECKIT]](../research/sources.md#SPECKIT) [[KIRO]](../research/sources.md#KIRO).
 
-- Frontmatter: `type: spec`, `id: SPEC-*`, `title`, `status` (draft / ready / in-progress /
-  blocked / done / stale), `owner`, `sources` — plus optional `format: sol`.
+- Frontmatter: `type: spec`, `id: SPEC-*`, `title`, `status` (draft / ready; the richer states —
+  in-progress, blocked, done, stale — live on the workboard, not here), `owner`, `sources` —
+  plus optional `format: sol`.
 - Sections: Intent · Non-goals · Requirements · Open questions · Affected areas · Dropped from
   sources (optional, recommended).
 - Each requirement is a `### AC-NNN — name` heading: one sentence of observable behavior
@@ -94,8 +95,8 @@ touch, and how to verify.
 - Every Verify item is a runnable command tied to a requirement id; the agent pastes real
   output — a claim without output counts as unverified.
 - The agent instructions tell the agent to stop and say why when a requirement can't be met as
-  written, rather than improvising — the planner→coder handoff is the dominant multi-agent
-  failure surface [[PLANCODER]](../research/sources.md#PLANCODER).
+  written, rather than improvising — preliminary evidence places the planner→coder handoff as
+  the dominant multi-agent failure surface [[PLANCODER]](../research/sources.md#PLANCODER).
 - The Findings section collects durable discoveries during the run; the Close step moves them
   to `findings/`.
 
@@ -129,7 +130,7 @@ The load-bearing rules:
   becomes a spec amendment or a finding — never a requirement written into the review.
 
 The extended result lifecycle (Waived, Stale, Contradicted) belongs to the
-[advanced lifecycle](advanced-lifecycle.md); the four results above are the working set.
+[advanced lifecycle](advanced-lifecycle.md); the results above are the working set.
 
 ### finding — what survives the session
 

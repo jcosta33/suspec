@@ -128,4 +128,4 @@ reconciling README / PRINCIPLES / `conformance.md` with this model.
 - Depends on: [0047](./0047-skills-are-self-contained.md) (self-contained skills make the in-place install safe).
 - Does NOT change: the obligation grammar, any closed set, or the intent/reality/observed reconciliation design.
 
-> **Ledger note (2026-06-11):** refined by ADR-0057, ADR-0062.
+> **Ledger note (2026-06-11):** naming clauses (§2) superseded by ADR-0057; refined by ADR-0062.

@@ -46,8 +46,8 @@ These are checklist-level rules: nothing in this repo enforces them — the revi
 them, and they are on the review checks in [`reference/checks.md`](reference/checks.md).
 
 1. **A Pass needs pasted output or a CI link.** A bare "tests passed" is a claim, not
-   evidence — unsupported done-claims are the canonical agent failure
-   [[EVIBOUND]](research/sources.md#EVIBOUND).
+   evidence — unsupported done-claims are the failure this rule exists to catch, illustrated
+   (small-N, preliminary) by [[EVIBOUND]](research/sources.md#EVIBOUND).
 2. **An empty Evidence cell means Unverified, never Pass.** If nobody can point at the
    output, the requirement was not verified, whatever the prose says.
 3. **Don't merge with an open critical item.** A failed or blocked requirement, or an

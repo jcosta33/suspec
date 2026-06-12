@@ -110,7 +110,7 @@ The full layout, both naming depths, and the code-repo boundary are in
 
 ## Checks — the quick list
 
-Common mistakes to check for in a spec. **Level: checklist today; toolable — swarm-cli's
+Common mistakes to check for in a spec — plus the two change-plan checks. **Level: checklist today; toolable — swarm-cli's
 `swarm spec check` implements this list.** Full descriptions, the honesty legend, and the SOL
 catalogue are in [checks](checks.md).
 
@@ -125,6 +125,8 @@ catalogue are in [checks](checks.md).
 | C007 | `no-tbd-at-ready` — no `TBD`/`TODO`/unresolved question at `status: ready` | hard error |
 | C008 | `sources-named` — frontmatter `sources:` names at least one origin         | warning    |
 | C009 | `broken-source-link` — every named source resolves                         | hard error |
+| C010 | `preserves-refs-resolve` — change plan only: every preserved id resolves   | hard error |
+| C011 | `waves-present` — change plan only: migration/rewrite/schema-change has waves | warning |
 
 Packet checks (checklist level): `non-empty-paste` — a completion claim binds to pasted output
 or a CI link; `no-open-critical` — nothing closes with an open blocking question;
@@ -146,4 +148,5 @@ and nowhere else; a change to any set updates both, and the fixtures, in one com
 - [The basic workflow](../02-basic-workflow.md) — the loop, per-shape flows, skip rules.
 - [Checks](checks.md) — every check in full, with the honesty legend.
 - [Glossary](glossary.md) — every term on this page, defined.
+- [Principles](principles.md) — the design rationale the rules on this page derive from.
 - [The advanced lifecycle](advanced-lifecycle.md) — the finer-grained step model under the loop.

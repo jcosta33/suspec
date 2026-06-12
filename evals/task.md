@@ -9,8 +9,8 @@
 
 Task bounds the agent's work. A packet that invents a requirement, omits its boundaries, or
 leaves a requirement uncheckable hands the agent exactly the ambiguity the spec existed to
-remove — and the handoff into the coding agent is the dominant multi-agent failure surface
-[[PLANCODER]](../docs/research/sources.md#PLANCODER).
+remove — and preliminary evidence places the handoff into the coding agent as the dominant
+multi-agent failure surface [[PLANCODER]](../docs/research/sources.md#PLANCODER).
 
 **Input artifact:** the source spec — and the change plan, when the task executes one.
 **Output artifact:** the task packet ([template](../starter-kit/templates/task.md)).

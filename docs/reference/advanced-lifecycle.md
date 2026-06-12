@@ -11,7 +11,7 @@ author → lint → improve → lower → decompose → implement → verify →
 ```
 
 This page defines those steps, maps them onto the six-step loop, and carries the machinery the
-happy-path pages deliberately leave out: the ten improve operations, the full review-result model,
+happy-path pages deliberately leave out: the improve operations, the full review-result model,
 the merge gate in plain words, the rules for running tasks in parallel, and drift. Nothing here is
 software — every step is performed today by a person or an agent following a guide.
 
@@ -32,7 +32,7 @@ concession. This is a convention — nothing in this repo enforces it.
 |---|---|---|
 | `author` | Write the source document — usually a spec; for brownfield or structural work, an inventory, change plan, or audit. | the `write-spec` guide (kit core); `write-inventory`, `write-change-plan`, `write-audit` (advanced) |
 | `lint` | Read the spec against the [common mistakes to check for](checks.md) without changing a word. Diagnose only. | the `spec-check` guide (advanced) |
-| `improve` | Repair what `lint` found — the ten operations below — without changing what the spec means. | the `spec-check` guide (advanced) |
+| `improve` | Repair what `lint` found — the operations below — without changing what the spec means. | the `spec-check` guide (advanced) |
 | `lower` | Restate each requirement as a structured item with a stable ID, its verification method, its dependencies, and the files it may touch. | the `split-work` guide (advanced) |
 | `decompose` | Split the structured requirements into bounded tasks whose written files do not overlap, and order them by dependency. | the `split-work` guide (advanced) |
 | `implement` | Do the work inside one task's scope; record what changed, the commands run, and their real output. | the `implement-task` guide (kit core) |
@@ -92,7 +92,7 @@ swarm-cli could compute the first; nothing enforces either).
   points at (a requirement ID, a verification method) resolves to something that exists. The first
   half forbids stranding a requirement; the second forbids a task built on a phantom.
 
-## The ten improve operations
+## The improve operations
 
 The rule first: **improve repairs the text, never the intent.** Any edit that adds, removes,
 weakens, or strengthens a requirement — a new actor, a changed trigger, a relaxed constraint — is
@@ -138,7 +138,7 @@ row each in the review packet ([reviewing output](../08-reviewing-output.md); fo
 annotate a core result rather than replace it. They appear when work spans time, exceptions, or
 disagreement. (The glossary's internal name for a recorded result is a *verdict*.)
 
-The four core results — exactly one per requirement per run:
+The core results — exactly one per requirement per run:
 
 | Result | Meaning |
 |---|---|
@@ -153,7 +153,7 @@ and more honest claim. And "tests passed" with no command, exit code, or output 
 anything [[EVIBOUND]](../research/sources.md#EVIBOUND) — an empty Evidence cell means Unverified,
 never Pass.
 
-The three lifecycle values — each with required fields, without which it cannot be audited:
+The lifecycle values — each with required fields, without which it cannot be audited:
 
 | Value | Annotates | Meaning | Required fields |
 |---|---|---|---|

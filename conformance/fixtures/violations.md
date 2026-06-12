@@ -94,7 +94,7 @@ report coverage by requirement ID; a duplicated ID makes both ambiguous.
 
 ---
 
-## V6 — open blocking question at `done` (`no-open-critical`, hard error)
+## V6 — open blocking question at `closed` (`no-open-critical`, hard error)
 
 A task packet with frontmatter `status: closed` whose Findings section contains:
 
@@ -105,7 +105,7 @@ A task packet with frontmatter `status: closed` whose Findings section contains:
   only the access token? Undecided — AC-002 implemented on a guess.
 ```
 
-**Expected:** flagged — `done` is terminal, and a blocking question is still open inside
+**Expected:** flagged — `closed` is terminal, and a blocking question is still open inside
 the packet. The status must stay non-terminal (or the review go to `needs-human`) until
 the question is resolved.
 

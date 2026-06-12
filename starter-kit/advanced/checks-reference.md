@@ -29,9 +29,9 @@ seamless, appropriate, significant, as needed, where possible — a vague word i
 
 ## Task checks
 
-- Scope ids all exist in the named spec/change plan (hard error, toolable).
+- Scope ids all exist in the named spec/change plan (hard error, checklist).
 - `Do not change` present (warning, checklist).
-- Every Verify item maps to a scope id (warning, toolable).
+- Every Verify item maps to a scope id (warning, checklist).
 
 ## Review-packet checks
 

@@ -340,4 +340,4 @@ to a human, and a finding that outlives everyone's memory of incident #2031.
 - [A feature from a Jira ticket](feature-from-jira.md) — the six-step happy path with every
   artifact shown in full.
 - [A large PR review](large-pr-review.md) — the main demo: a change-plan-driven refactor
-  and the packet that makes a 40-file agent PR reviewable.
+  and the packet that makes a 41-file agent PR reviewable.

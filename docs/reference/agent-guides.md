@@ -45,8 +45,9 @@ own:
   a Skip clause that names **task types**, never sibling guide names — "skip for reviewing
   output", not "use review-output instead", so the description survives a renamed or absent
   sibling. Agent tools load guides by matching the description against the task, and directive
-  phrasing is what gets a guide picked — observed in vendor-published trials, illustrative
-  rather than proven [[ACTIVATION-BLOG]](../research/sources.md#ACTIVATION-BLOG).
+  phrasing is what gets a guide picked — observed in a self-published practitioner
+  measurement, illustrative rather than proven
+  [[ACTIVATION-BLOG]](../research/sources.md#ACTIVATION-BLOG).
 - **Keep the body short; put depth one hop away.** A loaded guide is read whole — official
   guidance caps the useful body around 500 lines and moves detail into `references/` files
   loaded on demand [[SKILLBP]](../research/sources.md#SKILLBP).

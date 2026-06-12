@@ -2,7 +2,7 @@
 Checks fixture — positive. Expected: a checker applying ../conformance.yaml's
 task_file rules reports nothing. Every required section is present;
 every Verify item carries pasted output (non-empty-paste satisfied); the
-status is terminal (done) and no blocking open question remains anywhere
+status is terminal (closed) and no blocking open question remains anywhere
 (no-open-critical satisfied). Inert fixture data — nothing here runs.
 -->
 

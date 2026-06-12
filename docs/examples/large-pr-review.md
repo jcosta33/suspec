@@ -12,8 +12,8 @@ Inventory → Change Plan → Task → Run → Review → Close
 
 Every artifact below sits in the workspace in the shipped template shapes
 ([`starter-kit/templates/`](../../starter-kit/templates/)). The punchline up front: the
-reviewer read about twelve table rows and three exception items, spot-checked one green row
-by hand, and opened three files out of 41 — the three the packet pointed at.
+reviewer read eighteen table rows and three exception items across two packets, spot-checked
+one green row by hand, and opened three files out of 41 — the three the packet pointed at.
 
 ## The scenario
 
@@ -316,8 +316,8 @@ src/payments/retry.ts. Webhooks untouched. All requirements satisfied.
 ```
 
 Nobody reads 41 files line by line — and "all requirements satisfied" is exactly the kind of
-sentence the review step exists to interrogate: unsupported done-claims are the canonical
-agent failure [[EVIBOUND]](../research/sources.md#EVIBOUND).
+sentence the review step exists to interrogate: an unsupported done-claim, the failure
+pattern illustrated (small-N, preliminary) by [[EVIBOUND]](../research/sources.md#EVIBOUND).
 
 ## Step 5 — The review packet
 
@@ -340,9 +340,10 @@ status: blocked
 
 ## Summary
 
-New src/sessions/ module; checkout switched to it, old copy deleted. Six of
-nine rows verified with output. AC-004 regressed (expired sessions now return
-500), two guarantees carry no evidence, one edit is outside the task's scope.
+New src/sessions/ module; checkout switched to it, old copy deleted. Seven of
+nine rows verified with output (six pass; AC-004 fails). AC-004 regressed
+(expired sessions now return 500), two guarantees carry no evidence, one edit
+is outside the task's scope.
 
 ## Changed files
 
@@ -550,8 +551,8 @@ codebase green.
 ## What the reviewer actually read
 
 For a 41-file, ±3,000-line PR, the human review consumed: **nine coverage rows** plus **three
-exception items** in the first packet, the short all-green table in the second — about twelve
-rows end to end; **three files opened**, all on the packet's pointers (the `throw` site, the
+exception items** in the first packet, nine more rows in the second's all-green table —
+eighteen rows and three exceptions end to end; **three files opened**, all on the packet's pointers (the `throw` site, the
 409 mapping, the out-of-scope `retry.ts` diff); and **one green row re-run by hand**. The
 other 38 files were never read line by line — they were _accounted for_: every behavior that
 mattered had a named row, every row had evidence or was called Unverified to its face, and

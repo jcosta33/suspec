@@ -63,7 +63,7 @@ And the review packet that comes back after an agent run:
 
 That table is the point: instead of reading the whole diff, you read which
 requirements passed **with evidence**, which didn't, and where your eyes are needed.
-An empty evidence cell means *Unverified*, never *Pass*. The full demo — a 40-file
+An empty evidence cell means *Unverified*, never *Pass*. The full demo — a 41-file
 agent PR reviewed by exception — is
 [docs/examples/large-pr-review.md](docs/examples/large-pr-review.md).
 

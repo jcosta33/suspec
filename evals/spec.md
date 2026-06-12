@@ -22,7 +22,7 @@ Each predicate must hold. Any single failing predicate fails the step.
 |---|---|---|---|
 | S1 | **Requirement form** | Every requirement has an `AC-NNN` id and a `Verify with:` line (or the structured-requirements equivalent under `format: sol`). | A requirement has no id, or no verification method. |
 | S2 | **Stance preserved** | What a source asks for stays a requirement; what a source merely observes stays context. An observation becomes a requirement only by explicit restatement under its own AC id. | A source's stance is flipped — an observation silently acquires binding force, or an ask is demoted to background prose. |
-| S3 | **Uncertainty surfaced** | Every ambiguity in the sources lands under Open questions or as a recorded interpretation; a spec with open questions is not `status: ready`. | An ambiguity is resolved silently, or left buried in prose where no one will answer it. |
+| S3 | **Uncertainty surfaced** | Every ambiguity in the sources lands under Open questions or as a recorded interpretation; a spec with unresolved open questions not marked non-blocking is not `status: ready`. | An ambiguity is resolved silently, or left buried in prose where no one will answer it. |
 | S4 | **Nothing invented as sourced** | Every requirement traces to a named source or is visibly an authoring decision; deliberate omissions land under "Dropped from sources". | A requirement asserts behavior no source asked for, reading as if the ticket demanded it. |
 
 ## Why these predicates carry weight
@@ -33,8 +33,8 @@ Ambiguous or incomplete task input measurably degrades agent code correctness
 instead of asking [[HUMANEVALCOMM]](../docs/research/sources.md#HUMANEVALCOMM)
 [[HILBENCH]](../docs/research/sources.md#HILBENCH) — which is why S3 fails a spec for *burying*
 an ambiguity even when every requirement is otherwise well-formed. The `Verify with:` line S1
-demands is the highest-value line in the file: an executable acceptance criterion is the
-strongest task-input signal yet measured [[ORACLESWE]](../docs/research/sources.md#ORACLESWE).
+demands is the highest-value line in the file: a runnable check outperforms prose plans as task
+input (preliminary evidence) [[ORACLESWE]](../docs/research/sources.md#ORACLESWE).
 
 ## Notes for the scorer
 

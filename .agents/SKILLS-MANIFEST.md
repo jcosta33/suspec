@@ -16,6 +16,7 @@ competing authority. Derivation order and per-ADR status:
 
 | Guide                                              | Counterpart                                                                                                   | Why it is here                                                                                                                                                             |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `adversarial-review`                               | `starter-kit/advanced/adversarial-review/`                                                                     | Deep hostile re-review of a branch (six adversarial questions, run-it-yourself). Keep the pair in sync (propagation matrix).                                               |
 | `review-output`                                    | `starter-kit/agent/review-output/`                                                                            | This repo's own merge discipline: judging a change set against its stated intent with pasted evidence. Carries the dev specifics (grep gates, link audits, no test suite). |
 | `save-findings`                                    | the kit finding convention (`starter-kit/templates/finding.md`); advanced model at `docs/reference/memory.md` | The Close-step rule — route durable discoveries before closing. Dev routing targets: `docs/` + ADR, `.agents/audits/`, the glossary, the sources bibliography.             |
 | `empirical-proof`                                  | folded into the kit's three core guides                                                                       | The evidence rules in standalone form: a completion claim binds to pasted output; without it the result is Unverified, never Pass.                                         |
@@ -53,4 +54,3 @@ Two differences from the kit are by design — never to be "resynced":
 A diff against the kit showing only pointer-target or packaging differences is expected. The
 load-bearing rules track `docs/` and the kit.
 
-| `adversarial-review` | deep hostile re-review of a branch (six adversarial questions, run-it-yourself) | pairs with `starter-kit/advanced/adversarial-review/` — keep the pair in sync (propagation matrix) |

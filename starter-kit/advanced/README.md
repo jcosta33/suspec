@@ -23,8 +23,10 @@ the ADR, which lives in `decisions/`.
 This tier also carries focused agent guides — `write-audit`, `write-research`,
 `persona-surveyor`, `write-bug-report`, `write-prd`, `write-rfc`,
 `write-change-plan`, `write-inventory`, `spec-check`, `save-findings`,
-`split-work` — and two reference cards: `sol-reference.md` (structured
-requirements) and `checks-reference.md` (common mistakes to check for).
+`split-work`, and `adversarial-review` (a deep, hostile re-review of an agent
+branch — beyond the review packet: re-run validation yourself, six adversarial
+questions, caller search) — and two reference cards: `sol-reference.md`
+(structured requirements) and `checks-reference.md` (common mistakes to check
+for).
 
 Copy what you need; ignore the rest. Full instructions: `docs/ADOPTING.md`.
-| `adversarial-review` | a deep, hostile re-review of an agent branch — beyond the review packet: re-run validation yourself, six adversarial questions, caller search |

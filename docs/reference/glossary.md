@@ -27,6 +27,7 @@ contexts, the definition names it; the reverse map is at the bottom.
 | **non-goals**                 | What a spec deliberately does not change; the section that bounds scope.                                                                                                                        |
 | **open question**             | An unresolved item in a spec; a `[blocking]` one keeps the spec out of `status: ready` and holds Close.                                                                                         |
 | **owner**                     | The person or team named in spec frontmatter whose say-so changes the spec.                                                                                                                     |
+| **preservation guarantee**    | A change-plan row naming a behavior that must not change, with its verification — reuses the spec's requirement ids (plan-local: `PG-NNN`).                                                     |
 | **Pull**                      | The first step of the loop: capture the upstream ask verbatim into an intake file.                                                                                                              |
 | **requirement**               | One binding statement of intended behavior, with a `Verify with:` line (internally: obligation).                                                                                                |
 | **research**                  | A survey of the options and evidence behind one question; it commits to no decision. Advanced artifact.                                                                                         |
@@ -46,6 +47,9 @@ contexts, the definition names it; the reverse map is at the bottom.
 | **task packet**               | The bounded work order an agent runs (`TASK-*`): source, scope, do-not-change list, verify commands, agent instructions.                                                                        |
 | **verification method**       | The kind of evidence behind a requirement — test, static, contract, property, model, perf, security, manual, monitor (internally: proof type).                                                  |
 | **`Verify with:`**            | The line binding a requirement to a runnable check; the highest-value line in a spec.                                                                                                           |
+| **watchlist**                 | The advisory list of vague words a requirement line must pair with an observable criterion. The list is in [checks](checks.md).                                                                 |
+| **wave**                      | One stage of a change plan; each wave leaves the codebase green and names its verify step.                                                                                                      |
+| **workboard**                 | `status.md`, the hand-edited table of open specs, tasks, reviews, and findings — see **status board**.                                                                                          |
 | **workspace**                 | The small repo holding specs, tasks, reviews, findings, and the board (internally: spec repo). Code repos stay pristine.                                                                        |
 | **writing rules**             | The word-level spec hygiene — one strength word, no vague qualifiers without a pin on the same line (internally: APS). The watchlist is in [checks](checks.md).                                 |
 
@@ -67,10 +71,6 @@ Advanced pages and tooling contracts sometimes use the precise internal vocabula
 | trace                  | agent run summary              |
 | verdict                | review result                  |
 
-| **wave** | One stage of a change plan; each wave leaves the codebase green and names its verify step. |
-| **preservation guarantee** | A change-plan row naming a behavior that must not change, with its verification — reuses the spec's requirement ids (plan-local: `PG-NNN`). |
-| **workboard** | The hand-edited `status.md` table of open specs, tasks, reviews, and findings. |
-| **watchlist** | The advisory list of vague words a requirement line must pair with an observable criterion. |
 
 ## Related
 

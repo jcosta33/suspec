@@ -56,8 +56,8 @@ in code; neither overwrites the other without a recorded act.
 
 A well-formed artifact is not a verified one. A tidy coverage table, a green exit code, a
 confident "tests passed" — these are *shape*. Evidence is the pasted output or the CI link a
-reader can inspect; unsupported done-claims are the canonical agent failure
-[[EVIBOUND]](../research/sources.md#EVIBOUND).
+reader can inspect; unsupported done-claims are the failure this principle exists to catch,
+illustrated (small-N, preliminary) by [[EVIBOUND]](../research/sources.md#EVIBOUND).
 
 - **Consequence.** A Pass needs pasted output or a CI link; an empty Evidence cell means
   Unverified, never Pass; reviewers spot-check at least one green row. These are checklist-level

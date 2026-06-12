@@ -369,4 +369,4 @@ lesson that outlives the session.
 - [A bug fix](bug-fix.md) — the bug shape: spec check, a one-line amendment, and a
   regression test that runs red before the fix.
 - [A large PR review](large-pr-review.md) — the main demo: a change-plan-driven refactor
-  and the packet that makes a 40-file agent PR reviewable.
+  and the packet that makes a 41-file agent PR reviewable.

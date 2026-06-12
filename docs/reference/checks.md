@@ -239,8 +239,8 @@ what to fix first, not as anything blocking.
 
 | Severity   | Checks                                                                                                                                                 |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Hard error | C001, C002, C003, C007, C009 · all `SOL-S` codes · SOL-P001–P008 · all `SOL-M` codes · SOL-V001/V002 and V004–V010 · SOL-O001/O002/O003/O005/O007/O008 |
-| Warning    | C004, C005, C006, C008 · SOL-P050–P058 · SOL-V003, SOL-V011 · SOL-O004, SOL-O006                                                                       |
+| Hard error | C001, C002, C003, C007, C009, C010 · all `SOL-S` codes · SOL-P001–P008 · all `SOL-M` codes · SOL-V001/V002 and V004–V010 · SOL-O001/O002/O003/O005/O007/O008 |
+| Warning    | C004, C005, C006, C008, C011 · SOL-P050–P058 · SOL-V003, SOL-V011 · SOL-O004, SOL-O006                                                                       |
 
 One position-sensitive case: SOL-P056 (comparative, no baseline) is a hard error inside a
 requirement line and a warning in surrounding commentary — commentary may be loose; a requirement

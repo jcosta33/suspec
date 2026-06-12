@@ -25,6 +25,7 @@ your-workspace/
   inventory/             # appears when structural work needs it
   change-plans/          # appears when structural work needs it
   decisions/             # project decisions, numbered (0001-, 0002-, …)
+  templates/             # the kit templates you copied in
   status.md              # the hand-edited workboard
   .agents/               # agent tooling only — never project content
 ```

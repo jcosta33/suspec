@@ -66,8 +66,9 @@ _should_ happen instead?), and uncertainty buried in requirement prose ("probabl
 think") that belongs in Open questions.
 
 If the spec opts into structured requirements (`format: sol` in the frontmatter), also walk
-the SOL checks in [`../checks-reference.md`](../checks-reference.md) — same discipline, finer
-grain; the notation itself is in [`../sol-reference.md`](../sol-reference.md).
+the SOL check catalogue — same discipline, finer grain. It lives in the Swarm repo at
+`docs/reference/checks.md`; the kit does not carry it. The notation itself is in
+[`../sol-reference.md`](../sol-reference.md).
 
 ## The report
 
