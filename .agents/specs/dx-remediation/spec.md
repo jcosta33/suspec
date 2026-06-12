@@ -2,7 +2,7 @@
 type: spec
 id: SPEC-dx-remediation
 title: Close the convergent defects from the eleven-persona DX audit
-status: draft
+status: ready
 owner: José Costa
 sources:
   - .agents/audits/dx-audit-2026-06-12.md
@@ -471,23 +471,15 @@ Verify with: `grep -qiE 'fresh (agent )?session|second agent' docs/08-reviewing-
 
 ## Open questions
 
-All three carry recommended resolutions from the challenge round (surveyor · architect ·
-economist · coherence); ADR-0072 confirms or overrides.
+None blocking — Q1–Q3 closed by [ADR-0072](../../../docs/adrs/0072-run-summary-and-format-amendments.md)
+(2026-06-12), in the challenge round's recommended forms:
 
-- Q1 — Waive-and-merge form. **Recommended:** row results untouched (no fifth value, ever);
-  waiver recorded as who · which rows · why · expiry; **one additive terminal packet status**
-  for merged-with-waiver (the convention-only branch leaves Dex's verified defect standing —
-  a decided packet dangling at `needs-human`); expiry semantics stay reference-tier
-  (advanced-lifecycle, AC-009); glossary maps the tiers. Cost honestly named: widens PG-007 to
-  a second enumerated delta (review status_enum, additive).
-- Q2 — Blocked task state. **Recommended:** board-vocabulary only, riding the spec-row
-  precedent already in the template's comment; the task frontmatter enum and AC-038's contract
-  enum stay the four values. (All four lenses converged; no counter-argument survived.)
-- Q3 — Multi-context Commands. **Recommended:** root-dispatcher single slots documented first
-  (the prevailing monorepo answer); per-context sub-tables where contexts truly diverge —
-  contract-neutral, canonical slot names, context in the heading. Suffix-minted slot names
-  (`cmdTest:web`, `cmdTestIos`) rejected: colon collides with the SOL adapter grammar and the
-  namespace shapes, and any suffix grammar forces an unbudgeted contract change.
+- Q1 → waiver = record (who · which rows · why · expiry) + one additive terminal review
+  status `waived`; row results closed at four. (resolved)
+- Q2 → blocked is board-only vocabulary; task frontmatter and contract enums stay the four
+  values. (resolved)
+- Q3 → root-dispatcher single slots first; per-context Commands sub-tables where contexts
+  diverge; no new slot-name grammar. (resolved)
 
 Decisions already made (recorded, closed): the run summary lives **in the task packet** as a
 digest section (Verify keeps the evidence; the contract's prose notes the summary cites,

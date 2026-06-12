@@ -87,3 +87,8 @@ examples, evals.
 
 > **Ledger note (2026-06-12):** the workspace layout this ADR prescribes is shipped pre-built
 > by the starter kit per ADR-0069.
+
+> **Ledger note (2026-06-12, later):** the addendum's run-record clause ("the worker's run
+> record folds into the review packet") is superseded by ADR-0072 — the run summary lives in
+> the task packet as a digest; the task and review packet formats are amended additively by
+> the same ADR.
