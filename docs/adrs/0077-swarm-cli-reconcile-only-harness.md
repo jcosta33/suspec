@@ -86,6 +86,15 @@ into the loop. It never *performs* the coding loop. Each rule carries an honesty
    adapter selects), and **the review verdict** (agent fill is a draft; empty Evidence reads
    Unverified; the human owns Pass/Fail/Unverified/Blocked). Absorbing any of these would make
    swarm-cli a coding agent. *Level: convention (the hard line).*
+9. **Two co-equal surfaces — scriptable and interactive.** Every flow ships both a **direct**
+   command (the Unix contract of Decision 2 — `--json`, exit codes, scriptable) and a **beautiful
+   interactive TUI** flow (prompts, live progress, coloured per-finding feedback); `swarm` with no
+   command opens a dashboard that reaches every flow. The TUI is a frontend over the same core
+   library (Decision 1a) — it invokes only the reconcile-only engines and is emphatically **not**
+   the chat UI / model loop of the Decision 8 boundary. Interactivity is **gated on a TTY and the
+   absence of `--json`**, so a prompt can never break the Unix contract for pipes, scripts, or CI.
+   A standing principle: every flow in every milestone ships both forms. *Level: convention
+   (architecture); the flows are toolable.*
 
 ## Alternatives considered
 
