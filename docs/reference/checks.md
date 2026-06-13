@@ -225,7 +225,7 @@ the Swarm repo include simple/SOL equivalence pairs that pin this.
 The writing-rules watchlist corresponds to SOL-P005 (watchlist word, no same-line criterion),
 SOL-P056 (comparative, no baseline), and SOL-P004 (bundling connectives).
 
-## The severity split — the `swarm spec check` contract
+## The severity split: the `swarm spec check` contract
 
 Every check on this page maps to one of two severities. This is the contract the reference
 implementation builds against — until that tool is in front of you, read the split as advice on

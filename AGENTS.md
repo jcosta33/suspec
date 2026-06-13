@@ -17,7 +17,7 @@ anything described as checkable names its checker (the reference implementation 
   (see `.agents/SKILLS-MANIFEST.md`).
 - The starter kit ships as its own template repo, `../swarm-starter-kit` (ADR-0075): a
   complete workspace adopters copy whole — the core loop guides plus the workspace
-  authoring guides at `.agents/skills/`, `templates/` (8), `advanced/` (optional templates +
+  authoring guides at `.agents/skills/`, `templates/`, `advanced/` (optional templates +
   reference cards). Conditioning stances and code-depth guides live in `../swarm-skills`.
 
 ## Swarm workspace

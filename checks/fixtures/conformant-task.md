@@ -82,8 +82,9 @@ Implement or preserve:
 
 ## Run summary
 
-- Changed files: `src/auth/refresh.ts`, `test/auth/refresh-expiry.test.ts`
+- Changed files: `src/cli/export.ts`, `src/format/json.ts`
 - Verify results: both Verify items run after the final edit — output pasted
-  under each item above (AC-001 4 passed · AC-002 2 passed)
+  under each item above (`export-json.spec.ts` 2 passed covering AC-001 and
+  AC-002; `export-default.spec.ts` 1 passed guarding the Do-not-change snapshot)
 - Out-of-scope edits: none
 - Blocked questions: none
