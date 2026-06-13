@@ -334,7 +334,9 @@ integrations — both strictly *prepare*, never *perform*:
 - **A Swarm MCP server.** Instead of one adapter per agent, expose the task packet's scope, the
   parsed requirements, and the checks contract over MCP — so any MCP-capable agent (Claude, Codex,
   Gemini, Goose) natively queries "what are this task's requirements, scope, and checks." It is a
-  peer to the shell-out adapters (which cover agents without MCP), shipped after them (M3).
+  peer to the shell-out adapters (which cover agents without MCP), shipped after them (M3). This
+  *serves Swarm data over MCP* (prepare); it is **not** the agent's tool-calling MCP runtime, which
+  stays the agent's per the boundary below.
 - **Per-adapter hook generation.** Emit the agent CLI's own hook config (e.g. `hooks.json` /
   `settings.json`) wiring a task's declared write-set and `checks.yaml` into its PostToolUse/Stop
   hooks. This is the bridge from a `toolable`/`checklist` rule to **enforcement performed by the
