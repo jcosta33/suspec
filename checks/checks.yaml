@@ -36,7 +36,7 @@ spec_form:
 # pins id, name, and severity so a checker and the fixtures can cite them.
 core_checks:
   - { id: C001, name: unique-ids,             severity: hard-error }
-  - { id: C002, name: duplicate-id,           severity: hard-error }
+  - { id: C002, name: duplicate-id,           severity: hard-error }   # frontmatter id: uniqueness across files; requirement ids are spec-scoped (ADR-0080)
   - { id: C003, name: verify-with,            severity: hard-error }
   - { id: C004, name: one-strength-word,      severity: warning    }   # must / must not / should / should not / may
   - { id: C005, name: non-goals-present,      severity: warning    }
@@ -140,7 +140,8 @@ review_file:
         the source spec (a row naming an id absent from the source spec reads
         orphan). Scope-guarded to non-draft source specs — a review whose
         source spec is still `draft` is exempt (its requirement ids are
-        work-in-progress, mirroring C002's draft exemption). When `scope`
+        work-in-progress, the same draft-is-not-final principle as C007's
+        ready gate). When `scope`
         disagrees with the spec's id set, that divergence is itself surfaced as
         a fact, not silently resolved.
 

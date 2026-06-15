@@ -33,9 +33,11 @@ and every spec adds one spec-level record:
 `edges` holds relationships to other requirements (dependencies, affected ids). SOL writes
 them as metadata clauses; in plain form they live in prose, or are simply absent.
 
-**2. Shared ID namespace.** A plain `### AC-001` heading and a SOL `REQ AC-001:` header mint
-the _same_ id. Both address cross-file as `SPEC-x#AC-NNN`. Rewriting a spec from plain form
-to SOL (or back) keeps every id — references from tasks, reviews, and findings never break.
+**2. Spec-scoped ID namespace.** A plain `### AC-001` heading and a SOL `REQ AC-001:` header mint
+the _same_ id. Ids are unique **within a file** (C001) and **scoped to their spec** — a bare
+`AC-001` may recur in another spec; a reference that crosses a spec boundary qualifies as
+`SPEC-x#AC-NNN` ([ADR-0080](../adrs/0080-spec-scoped-requirement-ids.md)). Rewriting a spec from
+plain form to SOL (or back) keeps every id — references from tasks, reviews, and findings never break.
 
 **3. Shared strength words.** The strength scale is one enum across both surfaces. Plain form
 uses one lowercase binding word per requirement sentence (_must_, _must not_, _should_,

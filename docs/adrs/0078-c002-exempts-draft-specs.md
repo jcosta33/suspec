@@ -52,3 +52,9 @@ the prose semantics in `reference/checks.md` are clarified.
   C002 — and it does not resolve the deeper, separate question of whether requirement ids should be
   globally unique or spec-scoped for non-draft specs; that remains the contract's current choice
   (globally unique), left to a future decision if revisited.
+
+> **Update — superseded by [ADR-0080](./0080-spec-scoped-requirement-ids.md).** The deferred question
+> is now resolved: requirement ids are **spec-scoped**, not globally unique. C002's cross-spec
+> requirement-id clause is dropped (only the frontmatter-`id:` clause survives), so this ADR's draft
+> carve-out **for requirement ids** is subsumed and moot — two non-draft specs reusing `AC-001` no
+> longer fail C002. The frontmatter-`id:` clause and the draft-is-not-final principle are unchanged.
