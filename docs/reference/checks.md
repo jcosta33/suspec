@@ -28,7 +28,7 @@ Approved phrasings, used throughout Swarm's docs:
 
 > "This is a convention — nothing in this repository enforces it."
 >
-> "A future `swarm check` should flag this; until then, treat it as a review checklist item."
+> "A future check should flag this; until then, treat it as a review checklist item."
 
 A team may adopt any check as blocking _by policy_ — that is the team's gate, not Swarm's.
 

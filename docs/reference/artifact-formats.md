@@ -18,7 +18,7 @@ The type values:
 > `intake` · `spec` · `task` · `review` · `finding` · `status` · `inventory` · `change-plan` ·
 > `audit` · `bug-report` · `adr` · `research` · `prd` · `rfc` · `threat-model` · `release-note`
 
-This is a convention — nothing in this repo enforces it. swarm-cli's `swarm spec check` reads
+This is a convention — nothing in this repo enforces it. swarm-cli's `swarm check` reads
 `type:` to decide what to check; until you run a tool like that, treat a missing or wrong `type:`
 as a review checklist item.
 

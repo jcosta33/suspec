@@ -52,7 +52,7 @@ Three boundaries keep the steps honest:
 - **`verify` gathers; `review` judges.** A pasted test run is evidence; calling it a Pass is a
   judgment that belongs to review.
 
-Checking a spec is toolable — swarm-cli's `swarm spec check` is the reference implementation of the
+Checking a spec is toolable — swarm-cli's `swarm check` is the reference implementation of the
 checks `lint` reads; until you run it, treat `lint` as a review checklist. The output of `lower`
 and `decompose` is the **task files themselves** — there is no separate machine artifact; swarm-cli
 parses the markdown internally and may project `--json` for interop (no `ir.json`/`plan.json` file,
@@ -77,8 +77,10 @@ ticket never sees them.
 ## Two checkpoints between the steps
 
 Two checkpoints bracket the task-preparation steps. Neither writes anything — each is a question
-asked before advancing, and both are review checklist items today (a future `swarm spec check` in
-swarm-cli could compute the first; nothing enforces either).
+asked before advancing, and both are review checklist items today. swarm-cli's `swarm check`
+flags part of the first — an open blocking question, a leftover `TBD` at `status: ready`
+(toolable); the unresolved-contradiction and lingering-ambiguity calls stay review judgment, and
+nothing enforces either.
 
 - **Clarify before splitting** (between `improve` and `lower`). Work is not split while the spec
   carries an open blocking question, an unresolved contradiction between requirements, or an

@@ -16,7 +16,8 @@ Every description of tool behavior — a checker, a packet drafter, a drift reco
 reference implementation in progress.
 
 - **Consequence.** No page may claim a CLI is required or that automation already exists.
-  "Swarm checks X" is always wrong; "a future `swarm spec check` can flag X" is the honest form.
+  "Swarm checks X" is always wrong; for a capability that has not shipped, "a future
+  `swarm review` evidence-match can flag X" is the honest form.
 - **Tiebreaker.** Tempted to say Swarm *does* something? Ask whether this repository ships code
   that does it. It does not. Restate it as a contract a tool can build against.
 
@@ -27,8 +28,8 @@ lose an engineer's trust. So every rule in these docs carries one of four honest
 
 - **convention** — expected practice; nothing enforces it;
 - **checklist** — review is expected to inspect it;
-- **toolable** — a named future or optional tool can check it (e.g. swarm-cli's
-  `swarm spec check`);
+- **toolable** — a named optional tool can check it (e.g. swarm-cli's
+  `swarm check`);
 - **enforced** — a shipped tool actually enforces it. Today, nothing qualifies.
 
 - **Consequence.** Enforcement-sounding wording — that something is rejected, gated, or failed

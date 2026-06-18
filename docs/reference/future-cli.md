@@ -56,26 +56,27 @@ not belong in the set.
 
 ## The command set
 
-| Command | One line | Milestone |
+| Command | One line | Status |
 |---|---|---|
-| `swarm init` | scaffold a workspace from the starter kit | M1 |
-| `swarm pull <ticket>` | snapshot an external ticket into `intake/` | M1 |
-| `swarm spec new <slug>` | start a spec from the template | M1 |
-| `swarm spec check <file>` | check a spec against the checks catalogue | M1 |
-| `swarm inventory new <slug>` | start an inventory for brownfield work | M2 |
-| `swarm change new <slug>` | start a change plan | M2 |
-| `swarm task new --from <id>` | cut a task packet from a spec or change plan | M1 |
-| `swarm worktree create <task>` | create the task's worktree and branch | M2 |
-| `swarm run <task> --agent <name>` | launch an external coding agent on the task | M2 |
-| `swarm review <task>` | draft the review packet from the diff and the task | M1 |
-| `swarm status` | print the derived workboard | M1 |
-| `swarm close <task>` | findings prompt, board update, cleanup | M2 |
+| `swarm init` | scaffold a workspace from the starter kit | shipped |
+| `swarm check [file]` | check a spec against the checks catalogue, or render the workspace verdict | shipped |
+| `swarm new <task\|spec>` | scaffold a spec from the template, or cut a task packet from a spec | shipped |
+| `swarm worktree` | create / list / remove / prune the task's worktree and branch | shipped |
+| `swarm status` | print the derived workboard | shipped |
+| `swarm review <task>` | reconcile a finished run from the diff and the task | shipped |
+| `swarm pull <ticket>` | snapshot an external ticket into `intake/` | planned |
+| `swarm run <task> --agent <name>` | launch an external coding agent on the task | planned |
+| `swarm close <task>` | findings prompt, cleanup (the board-mutating close is a non-goal) | planned |
+| `swarm inventory new <slug>` | start an inventory for brownfield work | envisioned (no wave in the current program) |
+| `swarm change new <slug>` | start a change plan | envisioned (no wave in the current program) |
 
-**Milestone 1** needs no agent execution at all: `init`, `pull`, `spec new`, `spec check`,
-`task new`, `review`, `status`. It is pure file preparation and checking — useful on day one,
-testable without any model. **Milestone 2** adds the execution conveniences: `inventory new`,
-`change new`, `worktree create`, `run`, `close`. **Milestone 3** adds the supercharge layer (the
-MCP server, hook generation, deterministic coverage/drift, per-task cost attribution).
+The shipped set needs no agent execution at all — it is pure file preparation and checking, useful
+on day one and testable without any model. `swarm pull`, `swarm run`, and `swarm close` are
+**planned**: the execution conveniences and intake connector wait their turn. `swarm inventory new`
+and `swarm change new` are **envisioned** — the sketch shows the fuller brownfield surface, but no
+wave in the current program builds them. The supercharge layer (the MCP server, hook generation,
+the planned coverage/drift and Verify→evidence checks, per-task cost attribution) is **planned**
+too; see the matrix above for each item's status.
 
 ## Composable parts: standalone and Swarm-composed
 
@@ -92,16 +93,16 @@ maximally valuable together*:
   editors, CI, and the MCP server reuse it without shelling out.
 - **Standalone primitives** are useful without adopting Swarm at all: `swarm worktree` (a
   one-worktree-per-task manager with per-worktree runtime-isolation config — port range, scratch
-  DB, copied fixtures — that interops with `claude --worktree`), `swarm run --agent` (a uniform
-  headless wrapper that normalizes each agent CLI's flags and output), `swarm spec check` (a
+  DB, copied fixtures — that interops with `claude --worktree`), the planned `swarm run --agent` (a
+  uniform headless wrapper that normalizes each agent CLI's flags and output), `swarm check` (a
   spec linter that drops into pre-commit/CI on its exit code), and `swarm status` (a derived
   read-model). `cost` and `notify` ship as `swarm-*` plugins, not core.
 - **The workspace composes them** into the loop: one command's `--json` output is the next's input
-  (`spec check`'s diagnostics → `task new`'s scope → `run`'s launch envelope → `review`'s coverage
+  (`swarm check`'s diagnostics → `swarm new`'s scope → `run`'s launch envelope → `review`'s coverage
   rows → `close`'s gate). Each still runs alone.
 
 The two capabilities Swarm owns that the field leaves open — both depending on the task packet's
-**declared scope** — are **deterministic coverage / executable-criteria checking** (`spec check`)
+**declared scope** — are **deterministic coverage / executable-criteria checking** (`swarm check`)
 and **reconciling the agent's self-report against the actual diff** (`review`).
 
 ## Per-command contracts
@@ -116,9 +117,9 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
   `decisions/`, `examples/`, and `status.md`. Equivalent to copying the template repo whole.
 - **Runs an agent?** No.
 - **State change:** an empty directory becomes a workspace.
-- **Next:** `swarm pull` a ticket, or write a spec from the template.
+- **Next:** `swarm pull` a ticket (planned), or `swarm new spec` from the template.
 
-### `swarm pull <ticket>`
+### `swarm pull <ticket>` — planned
 
 - **Reads:** the external tracker (Jira, GitHub, Linear, …) through a configured connector.
 - **Writes:** one snapshot file, e.g. `intake/jira/JIRA-123.md` — the verbatim ticket text plus
@@ -126,18 +127,20 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
 - **Runs an agent?** No. And it **never auto-writes a spec** — normalizing a ticket into
   requirements is judgment work, not transcription.
 - **State change:** the upstream ticket has a stable, citable snapshot in the workspace.
-- **Next:** `swarm spec new --from` that snapshot.
+- **Next:** `swarm new spec --from` that snapshot.
 
-### `swarm spec new <slug> [--from <intake>] [--agent <name>]`
+### `swarm new spec <slug> [--from <intake>] [--agent <name>]`
+
+Spec and task creation are consolidated under one verb, `swarm new <task|spec>`; this is its spec form.
 
 - **Reads:** `templates/spec.md`; the intake snapshot when `--from` is given.
 - **Writes:** `specs/<slug>/spec.md` at `status: draft`, sources pre-filled.
 - **Runs an agent?** Only with `--agent`: an external agent CLI drafts the requirement text.
   The output is still a draft — a human owns the spec before it is `ready`.
 - **State change:** a spec exists and is linked to its source.
-- **Next:** fill in requirements and open questions, then `swarm spec check`.
+- **Next:** fill in requirements and open questions, then `swarm check`.
 
-### `swarm spec check <file>`
+### `swarm check [file]`
 
 - **Reads:** one spec — simple form or SOL form (`format: sol`).
 - **Writes:** nothing (optionally a report file with `--report`, or `--json` for a pipeline).
@@ -146,7 +149,7 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
   errors — so it drops into pre-commit/CI as a standalone linter.
 - **Runs an agent?** No.
 - **State change:** none — purely diagnostic. This is the credibility anchor of the whole
-  command set: the checks catalogue is the contract, `swarm spec check` is its implementation. It
+  command set: the checks catalogue is the contract, `swarm check` is its implementation. It
   parses the spec's markdown into an internal structure (no `ir.json` artifact, ADR-0077) and over
   that structure runs the **executable-criteria check** (every requirement names a runnable
   checker, not just prose) and, across the workspace, **deterministic coverage/drift**: a
@@ -154,9 +157,9 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
   computed mechanically, never by an LLM "interpreting". A workspace-level check also flags a
   leftover `{{placeholder}}` in a *live* `AGENTS.md` or board (the clause-(a) workspace-validity
   gate in [checks.md](checks.md)).
-- **Next:** fix the gaps; `swarm task new` once clean.
+- **Next:** fix the gaps; `swarm new task` once clean.
 
-### `swarm inventory new <slug> [--agent <name>]`
+### `swarm inventory new <slug> [--agent <name>]` — envisioned (no wave in the current program)
 
 - **Reads:** `templates/inventory.md`; with `--agent`, the code area being mapped.
 - **Writes:** `inventory/<slug>.md`. An agent may draft the module/interface/behavior tables;
@@ -165,15 +168,17 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
 - **State change:** the terrain for a structural change is mapped.
 - **Next:** `swarm change new`.
 
-### `swarm change new <slug>`
+### `swarm change new <slug>` — envisioned (no wave in the current program)
 
 - **Reads:** `templates/change-plan.md`; the inventory, audit, or spec it cites.
 - **Writes:** `change-plans/<slug>.md` with sources and preservation rows pre-linked.
 - **Runs an agent?** No.
 - **State change:** a planned transformation exists with preservation guarantees to review against.
-- **Next:** `swarm task new --from CHANGE-<slug>` per wave.
+- **Next:** `swarm new task --from CHANGE-<slug>` per wave.
 
-### `swarm task new --from <SPEC-id | CHANGE-id> [--scope AC-…]`
+### `swarm new task --from <SPEC-id | CHANGE-id> [--scope AC-…]`
+
+The task form of `swarm new <task|spec>`.
 
 - **Reads:** the named spec and/or change plan.
 - **Writes:** `tasks/<slug>.md` — a task packet whose Scope section is copied from the named
@@ -182,16 +187,19 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
 - **State change:** a bounded packet exists that an agent can be pointed at.
 - **Next:** `swarm worktree create`, or hand the packet to your agent directly.
 
-### `swarm worktree create <task>`
+### `swarm worktree <create|list|remove|prune> [slug]`
+
+`worktree` takes `create` / `list` / `remove` / `prune`; the contract below is the `create` form
+(`list` shows worktrees, `remove` tears one down, `prune` clears stale ones).
 
 - **Reads:** the task packet and `.swarm/config.yaml` (where the code repo is).
 - **Writes:** a git worktree and branch (`swarm/<spec-slug>/<task-slug>`) in the code repo; a record under
   `.swarm/work/tasks/` so later commands find it.
 - **Runs an agent?** No.
 - **State change:** the task has an isolated place to run — one worktree per task.
-- **Next:** `swarm run`.
+- **Next:** `swarm run` (planned), or hand the worktree to your agent directly.
 
-### `swarm run <task> --agent <name>`
+### `swarm run <task> --agent <name>` — planned
 
 - **Reads:** the task packet, the agent adapter from `.swarm/config.yaml`.
 - **Writes:** a run record under `.swarm/work/`. The code changes are the **agent's** writes,
@@ -223,7 +231,7 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
   the review result (Pass / Fail / Unverified / Blocked) is a human decision, and an empty
   Evidence cell still reads Unverified, never Pass. The CLI routes exceptions; it never adjudicates.
 - **State change:** the diff has a review packet a human can inspect by exception.
-- **Next:** a human works the Human attention list; then `swarm close`.
+- **Next:** a human works the Human attention list; then `swarm close` (planned).
 
 ### `swarm status`
 
@@ -235,12 +243,14 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
 - **State change:** none.
 - **Next:** whatever the board shows red.
 
-### `swarm close <task>`
+### `swarm close <task>` — planned (the board-mutating close is a non-goal)
 
 - **Reads:** the task and its review packet.
 - **Writes:** prompts for findings (the Close rule: record anything durable before closing —
-  see [memory.md](memory.md) for what "resolved" means); updates the board; removes the
-  worktree and the `.swarm/work/` record; optionally appends a ledger entry (below).
+  see [memory.md](memory.md) for what "resolved" means); removes the worktree and the
+  `.swarm/work/` record; optionally appends a ledger entry (below). The findings scaffold and
+  cleanup are the planned part; the board stays hand-edited — a `status.md`-mutating close is the
+  parked non-goal (per the matrix), since writing the board would adjudicate the human-owned verdict.
 - **Runs an agent?** No.
 - **State change:** the task is closed, its lessons saved, its scratch gone.
 - **Next:** done — or the follow-up task the review demanded.
@@ -254,19 +264,24 @@ These are deliberately not in the set. Each has a reason, not just a backlog pos
 | `compile` | Swarm is not a compiler; nothing is generated from a spec. |
 | `lower` / `decompose` | splitting a spec into tasks is judgment work; the discipline lives in [advanced-lifecycle.md](advanced-lifecycle.md), not a command |
 | `graph` | dependency/coverage visualization — a luxury after the basics work |
-| `checks` | a fixture-running checker beyond `spec check`; the fixtures already serve as swarm-cli's test data |
+| `checks` | a fixture-running checker beyond `swarm check`; the fixtures already serve as swarm-cli's test data |
 | `promote` | finding routing stays a prompt inside `close`, not its own engine |
 | `trace validate` | checking an agent's run summary against the actual diff folds into `review` drafting first |
 
 ## Example sequences
 
+These show the full envisioned loop. Shipped steps use their shipped names; `swarm pull`,
+`swarm run`, and `swarm close` are planned and `swarm inventory new` / `swarm change new` are
+envisioned (no wave in the current program) — see the matrix and contracts above for each step's
+status.
+
 ```text
 # Feature                                     # Bug
 swarm pull JIRA-123                           swarm pull GH-456
-swarm spec new checkout-discounts \           swarm spec check specs/payments/spec.md
-  --from intake/jira/JIRA-123.md              swarm task new --from SPEC-payments --scope AC-007
-swarm spec check specs/checkout-discounts/…   swarm worktree create TASK-payment-5xx
-swarm task new --from SPEC-checkout-discounts swarm run TASK-payment-5xx --agent opencode
+swarm new spec checkout-discounts \           swarm check specs/payments/spec.md
+  --from intake/jira/JIRA-123.md              swarm new task --from SPEC-payments --scope AC-007
+swarm check specs/checkout-discounts/…        swarm worktree create TASK-payment-5xx
+swarm new task --from SPEC-checkout-discounts swarm run TASK-payment-5xx --agent opencode
 swarm worktree create TASK-checkout-discounts swarm review TASK-payment-5xx
 swarm run TASK-checkout-discounts \           swarm close TASK-payment-5xx
   --agent claude
@@ -278,9 +293,9 @@ swarm close TASK-checkout-discounts
 # Refactor (structural, behavior-preserving)  # Brownfield rewrite
 swarm inventory new billing-module            swarm inventory new legacy-auth
 swarm change new billing-split                # audit written by hand or agent
-swarm task new --from CHANGE-billing-split    swarm spec new auth-v2
+swarm new task --from CHANGE-billing-split    swarm new spec auth-v2
 swarm worktree create TASK-billing-wave-1     swarm change new auth-cutover
-swarm run TASK-billing-wave-1 --agent codex   swarm task new --from CHANGE-auth-cutover   # per wave
+swarm run TASK-billing-wave-1 --agent codex   swarm new task --from CHANGE-auth-cutover   # per wave
 swarm review TASK-billing-wave-1              # …then worktree / run / review / close per task
 swarm close TASK-billing-wave-1
 ```
@@ -436,7 +451,7 @@ specs — only a surface explicitly marked `generated` is emitted, and only from
 
 ## Related
 
-- [checks.md](checks.md) — the catalogue `swarm spec check` implements, with the hard-error/warning split.
+- [checks.md](checks.md) — the catalogue `swarm check` implements, with the hard-error/warning split.
 - [structured-requirements.md](structured-requirements.md) — the requirement record swarm-cli parses a spec into (tool-internal; optional `--json`).
 - [advanced-lifecycle.md](advanced-lifecycle.md) — the full lifecycle behind the deferred `lower`/`decompose` verbs.
 - [memory.md](memory.md) — findings, promotion, and the ledger entry `swarm close` may append.

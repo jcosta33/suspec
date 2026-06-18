@@ -72,7 +72,7 @@ task input (preliminary evidence) [[ORACLESWE]](../research/sources.md#ORACLESWE
 
 Not graded here: whether the requirements are *satisfiable*, and whether the eventual change
 meets them — those surface at the Run and Review bars. The form half of S1 is toolable —
-swarm-cli's `swarm spec check` flags a requirement with no
+swarm-cli's `swarm check` flags a requirement with no
 id or verification method; the fidelity half (S2–S4) needs the sources open beside the spec.
 The conditional steps produce authored documents too: score an inventory or change plan with
 these same predicates against its own template, reading "sources" as the codebase observed
@@ -185,7 +185,7 @@ reference-tier names — the [glossary](glossary.md) maps them back.
 - **`lint`** — every defect from the [checks catalogue](checks.md) present in the document is
   reported with its code and severity; every **blocking** defect is caught (partial recall on
   advisory checks is tolerable, a missed blocker is not); not one character of the document
-  changes. Toolable: `swarm spec check`.
+  changes. Toolable: `swarm check`.
 - **`improve`** — no edit changes what any requirement asks (actor, trigger, behavior,
   strength); no id, requirement, or `Verify with:` line is dropped or weakened; every edit is
   attributable to one of the [improve operations](advanced-lifecycle.md#the-improve-operations);

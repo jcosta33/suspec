@@ -25,7 +25,7 @@ None of this carries binding force; each piece survives somewhere, linked rather
 ## What must survive
 
 Dropping or weakening any of these at any crossing is a distillation error — checklist level
-(review inspects it); toolable for the structural cases — swarm-cli's `swarm spec check` can
+(review inspects it); toolable for the structural cases — swarm-cli's `swarm check` can
 flag a task packet missing a requirement ID its source spec declares.
 
 | Must survive | Why |

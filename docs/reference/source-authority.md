@@ -8,7 +8,7 @@ only sanctioned alternative to letting whichever file was written last quietly w
 settles the adjacent question of who may approve a change to a requirement.
 
 This whole page is **convention level** — a procedure people follow, not something any tool
-resolves. swarm-cli's `swarm spec check` can *flag* a contradiction it finds (toolable); no tool
+resolves. swarm-cli's `swarm check` can *flag* a contradiction it finds (toolable); no tool
 ever picks the winner.
 
 ## Two axes
@@ -110,5 +110,5 @@ Some work must not reach a merge decision on agent self-assessment alone (conven
 
 - [Drift](drift.md) — the three-way reconcile a code/intent divergence routes to.
 - [Distillation](distillation.md) — why an observation never silently becomes intent.
-- [Checks](checks.md) — the contradiction and authority checks a reviewer (or `swarm spec check`) can flag.
+- [Checks](checks.md) — the contradiction and authority checks a reviewer (or `swarm check`) can flag.
 - [Reviewing output](../08-reviewing-output.md) — where results and waivers are recorded.

@@ -111,7 +111,7 @@ The full layout, both naming depths, and the code-repo boundary are in
 ## Checks — the quick list
 
 Common mistakes to check for in a spec — plus the two change-plan checks. **Level: checklist today; toolable — swarm-cli's
-`swarm spec check` implements this list.** Full descriptions, the honesty legend, and the SOL
+`swarm check` implements this list.** Full descriptions, the honesty legend, and the SOL
 catalogue are in [checks](checks.md).
 
 | ID   | Name                                                                       | Severity   |

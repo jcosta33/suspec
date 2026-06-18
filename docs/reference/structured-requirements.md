@@ -65,7 +65,7 @@ invented; a plain spec that needs those distinctions switches the file to `forma
 verification note per requirement, one binding strength word, no `TBD` in `status: ready`)
 apply to the record and therefore to both forms; the SOL-only checks add shape rules this
 page defines. The catalogue lives in [Checks](checks.md) — reference implementation:
-`swarm spec check` in swarm-cli. The checks fixtures (`checks/` in the Swarm repo) ship surface-equivalence pairs (one
+`swarm check` in swarm-cli. The checks fixtures (`checks/` in the Swarm repo) ship surface-equivalence pairs (one
 plain, one SOL, identical record sets) to keep the two surfaces from forking.
 
 ## Selecting SOL
@@ -119,7 +119,7 @@ Each block type has a fixed id prefix:
 | `QUESTION`   | `Q-`      | `Q-001`  |
 
 Ids are unique within a file. A wrong prefix or a duplicate id is a check in
-[Checks](checks.md); swarm-cli's `swarm spec check` flags both (toolable).
+[Checks](checks.md); swarm-cli's `swarm check` flags both (toolable).
 
 ## Block shapes
 
@@ -152,10 +152,10 @@ RISK medium
   sharing the conditions and the verification binding. Long chains read better as blocks.
 - `BECAUSE` (rationale) and `EXCEPT` (exception) are optional — except that a `SHOULD` /
   `SHOULD NOT` consequence needs one of them in the same block (checklist item; toolable via
-  `swarm spec check`).
+  `swarm check`).
 - `VERIFY BY` is expected on every `REQ` — the highest-value line in the block
   [[ORACLESWE]](../research/sources.md#ORACLESWE). A missing one is a review checklist item
-  today; `swarm spec check` flags it (toolable).
+  today; `swarm check` flags it (toolable).
 
 ### CONSTRAINT — restriction on the solution space
 
@@ -207,7 +207,7 @@ VERIFY BY contract:cmdContract:refresh-session-contract
 
 `ACCEPTS:` and `ERRORS:` introduce contiguous bullet lines (a blank line would close the
 block). An interface verifies with a `contract:` method — a check that the declared shape
-matches reality (checklist item; toolable via swarm-cli's `swarm spec check`).
+matches reality (checklist item; toolable via swarm-cli's `swarm check`).
 
 ### QUESTION — marked ambiguity
 
