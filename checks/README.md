@@ -5,7 +5,7 @@
 Test data for [the checks reference](../docs/reference/checks.md), consumed by swarm-cli.
 Every check in that reference is a claim about what a correct checker reports on a given
 file; this directory pins those reports as fixtures, per the two-way severity split
-(hard error / warning). swarm-cli's `swarm spec check` is the reference consumer — its
+(hard error / warning). swarm-cli's `swarm check` is the reference consumer — its
 test suite runs against these files — and a reviewer working by hand can use them the
 same way: apply the checks, compare against the pinned expectation.
 
@@ -18,11 +18,11 @@ The whole bar, in one breath: a workspace is valid when **(a)** it has a populat
 `AGENTS.md` (aim for ~100 lines — guidance, not a cap), **(b)** the core templates are
 present, and **(c)** at least one spec satisfies the core checks of
 [the checks reference](../docs/reference/checks.md). Nothing else is required. This is a
-convention — nothing in this repository enforces it; `swarm spec check` can verify clause (c).
+convention — nothing in this repository enforces it; `swarm check` can verify clause (c).
 
 ## The two evidence rules
 
-Checklist level — review is expected to inspect both; `swarm spec check`'s packet mode can
+Checklist level — review is expected to inspect both; `swarm check`'s packet mode can
 flag the mechanical parts:
 
 - **`non-empty-paste`** — a completion claim binds to pasted output or a CI link, never a

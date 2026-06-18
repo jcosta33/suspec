@@ -5,7 +5,7 @@
 Checks fixture for [the check catalogue](../../../docs/reference/checks.md): cart submission
 and checkout, with two seeded defects — a bundled requirement, and two requirements sharing
 one write area. The results below are known by hand and pin what swarm-cli's
-`swarm spec check` must report (toolable). Until that tool runs, nothing here is enforced —
+`swarm check` must report (toolable). Until that tool runs, nothing here is enforced —
 reviewers use the same tables as a checklist.
 
 **Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally

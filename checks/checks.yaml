@@ -7,7 +7,7 @@
 # the kit's templates/ (the swarm-starter-kit repo). It shadows only the core checks and packet schemas —
 # the SOL catalogue is prose-only and lives in the reference.
 # Frontmatter lists are minimum-required: extra keys are legal and ignored.
-# The reference consumer is swarm-cli's `swarm spec check`; a reviewer can apply every rule by hand.
+# The reference consumer is swarm-cli's `swarm check`; a reviewer can apply every rule by hand.
 # The files under fixtures/ pin the expected results and guard this file and
 # the prose from drifting apart.
 #

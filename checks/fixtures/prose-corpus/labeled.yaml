@@ -4,7 +4,7 @@
 # label is either `clean` (nothing should fire) or the single `SOL-Pxxx` code from the
 # checks catalogue (docs/reference/checks.md) that should fire, with the reason. Nothing
 # here runs: this is the gold set a writing-rules detector — swarm-cli's
-# `swarm spec check`, or a human reviewer — is scored against to compute the
+# `swarm check`, or a human reviewer — is scored against to compute the
 # precision/recall baseline in ./README.md.
 #
 # Field meaning:
