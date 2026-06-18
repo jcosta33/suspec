@@ -38,7 +38,7 @@ enforcing."
 | C001 unique-ids · C003 verify-with · C004 one-strength-word · C005 non-goals · C006 open-questions · C007 no-tbd-at-ready · C008 sources-named · C009 broken-source-link | shipped | toolable |
 | C002 duplicate-id · C012 coverage | shipped | toolable |
 | review-packet evidence rules — a Pass needs evidence, an empty cell reads Unverified, no open-critical at terminal, out-of-scope edits route to human attention (`swarm review`) | shipped | toolable |
-| C010 preserves-refs-resolve · C011 waves-present (change plan) | planned | toolable |
+| C010 preserves-refs-resolve · C011 waves-present (change plan) | shipped | toolable |
 | `format: sol` routing | partial — the plain two-tier form is parsed and checked; a `format: sol` spec is read as plain today, and the strict SOL parser is a follow-up | toolable |
 | prose writing-rules watchlist | advisory — flagged for review, never blocking (bounded precision) | checklist |
 | architecture enforcement (a dependency / module-boundary linter) | non-goal | — (a team binds its own tool via a `CONSTRAINT` + the `static` verify method) |
