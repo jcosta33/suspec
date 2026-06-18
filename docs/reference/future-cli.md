@@ -21,7 +21,8 @@ enforcing."
 | `swarm status` | shipped | toolable | print the workspace board — specs, tasks, reviews, gaps; writes nothing |
 | `swarm review <task>` | shipped | toolable | reconcile a finished run (diff ↔ self-report ↔ spec); surfaces facts, never a verdict |
 | `swarm` (no command) | shipped | toolable | open an interactive dashboard that reaches every flow; every flow also has a scriptable direct form |
-| `swarm pull <ticket>` | planned | toolable | snapshot an external ticket into `intake/` |
+| `swarm pull <ticket>` | shipped | toolable | snapshot an external ticket into `intake/` (verbatim via `gh` where available, else a paste placeholder); never a spec |
+| `swarm promote <task>` | shipped | toolable | scaffold a candidate finding from a finished task (`from:` pre-filled); asserts no learning, writes no board |
 | `swarm review` — Verify→evidence match | planned | toolable | tie each scoped requirement to its named `Verify with:` command and surface whether it ran and passed |
 | `swarm review <task> --write` — draft review packet | shipped | toolable | write the draft review packet from the diff and task (every row Unverified, `status: draft`, never a Pass or a verdict; no-clobber); the read-only reconcile stays the default |
 | finding scaffold | planned | toolable | scaffold a durable finding from a closing task, without touching the board |
@@ -29,7 +30,7 @@ enforcing."
 | per-adapter hook generation | planned | toolable | emit the agent CLI's own hook config wiring the task's write-set and `checks.yaml` into its hooks — enforcement is the agent CLI's, not Swarm's |
 | `swarm run <task> --agent` | planned | toolable | launch an external coding agent on the task; the agent performs the loop |
 | run record | planned | toolable | the machine form of a run summary `swarm run` writes and `swarm review` reads; markdown stays the only adopter-facing artifact |
-| `swarm close <task>` | planned | toolable | findings scaffold + cleanup ship; the board-mutating close is the parked non-goal below |
+| `swarm close <task>` (board-mutating) | non-goal | — | parked (the open DECIDE #1.2 / ADR-0084) — the board stays hand-edited; the finding scaffold ships as `swarm promote` above |
 | `compile` · `lower` / `decompose` | non-goal | — | Swarm generates no code from a spec, and splitting a spec into tasks is judgment work |
 | a board-mutating close (a `status.md`-mutating close) | non-goal | — | the board stays hand-edited; a CLI that writes the board would adjudicate the human-owned verdict (ADR-0077) |
 
@@ -64,17 +65,20 @@ not belong in the set.
 | `swarm worktree` | create / list / remove / prune the task's worktree and branch | shipped |
 | `swarm status` | print the derived workboard | shipped |
 | `swarm review <task>` | reconcile a finished run from the diff and the task | shipped |
-| `swarm pull <ticket>` | snapshot an external ticket into `intake/` | planned |
+| `swarm pull <ticket>` | snapshot an external ticket into `intake/` (verbatim where fetchable, never a spec) | shipped |
+| `swarm promote <task>` | scaffold a candidate finding from a finished task (`from:` pre-filled, no learning, no board) | shipped |
 | `swarm run <task> --agent <name>` | launch an external coding agent on the task | planned |
-| `swarm close <task>` | findings prompt, cleanup (the board-mutating close is a non-goal) | planned |
+| `swarm close <task>` (board-mutating) | the finding scaffold ships as `swarm promote`; the board-mutating close is parked | non-goal |
 | `swarm inventory new <slug>` | start an inventory for brownfield work | envisioned (no wave in the current program) |
 | `swarm change new <slug>` | start a change plan | envisioned (no wave in the current program) |
 
-The shipped set needs no agent execution at all — it is pure file preparation and checking, useful
-on day one and testable without any model. `swarm pull`, `swarm run`, and `swarm close` are
-**planned**: the execution conveniences and intake connector wait their turn. `swarm inventory new`
-and `swarm change new` are **envisioned** — the sketch shows the fuller brownfield surface, but no
-wave in the current program builds them. The supercharge layer (the MCP server, hook generation,
+The shipped set needs no agent execution at all — pure file preparation and checking, useful on day
+one and testable without any model — and now includes the two boundary-safe prepare verbs `swarm pull`
+(intake snapshot) and `swarm promote` (a finding scaffold). `swarm run --agent` is **planned** (the
+execution convenience + agent adapters); the board-mutating `swarm close` is a **non-goal** — parked
+behind the open DECIDE #1.2 (ADR-0084), the board stays hand-edited. `swarm inventory new` and
+`swarm change new` are **envisioned** — the sketch shows the fuller brownfield surface, but no wave in
+the current program builds them. The supercharge layer (the MCP server, hook generation,
 the planned coverage/drift and Verify→evidence checks, per-task cost attribution) is **planned**
 too; see the matrix above for each item's status.
 
@@ -117,7 +121,7 @@ and **reconciling the agent's self-report against the actual diff** (`review`).
   `decisions/`, `examples/`, and `status.md`. Equivalent to copying the template repo whole.
 - **Runs an agent?** No.
 - **State change:** an empty directory becomes a workspace.
-- **Next:** `swarm pull` a ticket (planned), or `swarm new spec` from the template.
+- **Next:** `swarm pull` a ticket, or `swarm new spec` from the template.
 
 ### `swarm pull <ticket>` — planned
 
