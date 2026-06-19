@@ -119,10 +119,13 @@ Jira/Linear replacement · a code generator · a replacement for PRs and CI · a
 portal · a complete SDLC platform · a guarantee that agent output is correct.
 
 How it differs from its neighbors: spec-first scaffolds generate plans; trackers
-hold tickets; AI reviewers hunt bugs; an `AGENTS.md` alone carries standing facts, not
-per-change contracts. Swarm's distinct piece is the **persisted, independent,
-exception-routing review packet** tied to requirement IDs — plus a workspace and one
-honesty rule: anything not enforced by a tool says so.
+hold tickets; AI reviewers hunt bugs and check a diff against a linked ticket's
+acceptance criteria; an `AGENTS.md` alone carries standing facts, not per-change
+contracts. Swarm's distinct piece is the **persisted, independent, exception-routing
+review packet** tied to requirement IDs — deterministic (no model in the loop), keyed to
+a spec/task packet that lives in your git history, and verdict-free (it routes facts; a
+human owns Pass/Fail) — plus a workspace and one honesty rule: anything not enforced by a
+tool says so.
 
 ## Get started
 

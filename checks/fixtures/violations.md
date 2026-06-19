@@ -281,3 +281,31 @@ A task packet with frontmatter `status: closed` whose sections end at
 (checks.yaml `required_sections`). A closed task with no handoff digest leaves
 the review packet nothing to read; the Verify pastes hold the evidence, the
 summary indexes it.
+
+---
+
+## V17 — a changed file touches a Do-not-change entry (C014 `do-not-change-touched`, warning)
+
+A task whose `## Do not change` lists `src/auth/token-family.ts` (and whose
+`## Affected areas` lists `src/auth/`), reviewed by a packet whose `## Changed files`
+includes that protected file:
+
+```markdown
+## Do not change
+- `src/auth/token-family.ts` — the refresh-token family table; rotation logic is frozen.
+
+## Affected areas
+- `src/auth/`
+```
+
+```markdown
+## Changed files
+- `src/auth/refresh.ts`
+- `src/auth/token-family.ts`
+```
+
+**Expected:** flagged — `src/auth/token-family.ts` is named in the task's Do-not-change
+list and the review packet reports it changed, so it must be routed to Human attention.
+Distinct from V7 (out-of-scope drift): this file lies **inside** the declared Affected
+areas (`src/auth/`), so `outsideScope` does not catch it — touching an explicitly
+protected path is its own exception. Surfaces a fact, never a verdict.
