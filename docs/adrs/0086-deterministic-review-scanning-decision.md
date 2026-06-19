@@ -67,9 +67,9 @@ Six points. Each carries its honesty level (ADR-0063).
    not built by this ADR. *Level: convention.*
 
 4. **DEFER behind a measure-first gate** (each earns a build only once the benchmark shows the review gate
-   catches real failures at ≤10% effective false positives): SARIF 2.1.0 / JUnit XML import-and-correlate
-   (the formats are ratified de-facto standards [[SARIF]](../research/sources.md#SARIF), so the future shape
-   is *route-and-correlate-against-scope*, never re-implement an analyzer); a mechanical risky-path matcher
+   catches real failures at ≤10% effective false positives): SARIF 2.1.0 (a ratified OASIS standard
+   [[SARIF]](../research/sources.md#SARIF)) / JUnit XML (a de-facto test-results format) import-and-correlate
+   (the future shape is *route-and-correlate-against-scope*, never re-implement an analyzer); a mechanical risky-path matcher
    (the trigger taxonomy already ships as the `trigger-coverage` human-attention checklist — mechanizing it
    moves a rule from checklist to toolable, exactly the precision-minefield the gate must clear first); and
    project-policy config (which, if built, reuses the existing `.swarm/config.yaml` home, not a parallel
