@@ -309,3 +309,39 @@ list and the review packet reports it changed, so it must be routed to Human att
 Distinct from V7 (out-of-scope drift): this file lies **inside** the declared Affected
 areas (`src/auth/`), so `outsideScope` does not catch it — touching an explicitly
 protected path is its own exception. Surfaces a fact, never a verdict.
+
+---
+
+## V18 — coverage gaps against a non-draft spec (C012 `coverage`, warning)
+
+A non-draft spec `SPEC-x` (`status: ready`) defining `AC-001`, `AC-002`, `AC-003`; a task whose
+`scope` is `[AC-001, AC-002, AC-003]`; reviewed by a packet whose coverage table omits `AC-003`
+and adds a row for `AC-009` (an id the source spec does not define):
+
+```markdown
+## Requirement coverage
+| ID | Result | Evidence | Human attention |
+|---|---|---|---|
+| AC-001 | Pass | pasted | no |
+| AC-002 | Pass | pasted | no |
+| AC-009 | Pass | pasted | no |
+```
+
+**Expected:** flagged — `AC-003` is in scope but has no coverage row (**uncovered**), and `AC-009`
+names an id absent from the source spec (**orphan**). Scope-guarded to non-draft source specs (a
+draft's ids are work-in-progress, mirroring C007's ready gate). Surfaces facts, never a verdict.
+
+---
+
+## V19 — a verify block's cmd disagrees with the named command (C013 `verify-evidence-binding`, warning)
+
+A non-draft spec whose `AC-001` carries `` Verify with: `npm test -- auth-refresh.spec.ts` ``, reviewed
+by a packet whose `AC-001` Pass row carries a structured `verify` block (a fenced sibling, info-string
+`id=AC-001 cmd="npm test -- other.spec.ts" result=pass`) recording a **different** command.
+
+**Expected:** flagged `cmd-mismatch` — the block's recorded `cmd` does not match the requirement's named
+Verify command. The comparison normalizes away surrounding backticks, a trailing `(parenthetical)` note,
+and whitespace, so the canon's own backtick-wrapped Verify-with form does **not** false-fire (swarm-hq
+#16); only a genuine disagreement trips it. A block whose `cmd` matches and reads `result=pass` is
+consistent → no finding; a Pass row with only the free-form Evidence cell stays a warning, never
+machine-rejected. A consistency fact, never a verdict.

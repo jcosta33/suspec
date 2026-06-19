@@ -38,10 +38,19 @@ flag the mechanical parts:
 | [`checks.yaml`](./checks.yaml) | The checks contract as data: spec-form selector, core check list with severities, task and review packet schemas, the evidence rules, advisory command slots, placeholder namespaces. |
 | [`fixtures/conformant-task.md`](./fixtures/conformant-task.md) | A task packet that passes every task check — the positive oracle. |
 | [`fixtures/violations.md`](./fixtures/violations.md) | One minimal negative fixture per violation class, each with the check it trips and the expected report. |
-| `fixtures/auth-refresh/` · `fixtures/payment-5xx/` · `fixtures/checkout/` | Three end-to-end domains: the spec in both forms (the equivalence pair), a task packet, a review packet, a finding, and an `EXPECTED.md` pinning what a checker must report at each artifact. |
+| `fixtures/auth-refresh/` · `fixtures/payment-5xx/` · `fixtures/checkout/` | Three end-to-end domains: the spec in both forms (the equivalence pair), a task packet, a review packet, a finding, and an `EXPECTED.md` pinning what a checker must report for the spec, change-plan, and review-checklist checks (C001–C011 + the content rules) at each artifact. |
 | [`fixtures/prose-corpus/`](./fixtures/prose-corpus/README.md) | The labeled writing-rules corpus: prose spans with ground-truth labels for the advisory watchlist, plus the precision/recall baseline any detector is scored against. |
 | `fixtures/intake/` | One valid intake snapshot; the expectation is pinned in the file's trailing note. |
 | `fixtures/transformation/` | A valid inventory + change-plan pair; its `EXPECTED.md` pins `C010 preserves-refs-resolve` and `C011 waves-present`. |
+
+The review-packet **reconcile** checks — `C012 coverage`, `C013 verify-evidence-binding`,
+`C014 do-not-change-touched` — are pinned as negative fixtures in
+[`fixtures/violations.md`](./fixtures/violations.md) (V18 / V19 / V17). Their positive domain oracle
+(a clean coverage table, a consistent verify block, a clean diff) lands coordinated with the swarm-cli
+implementation per [ADR-0079](../docs/adrs/0079-c012-coverage-check.md) /
+[ADR-0083](../docs/adrs/0083-verify-evidence-reconcile.md) /
+[ADR-0086](../docs/adrs/0086-deterministic-review-scanning-decision.md), not in the domain `EXPECTED.md`
+files (which key on the spec/change-plan side).
 
 ## The three domains and the examples they mirror
 

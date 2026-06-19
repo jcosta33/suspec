@@ -20,11 +20,12 @@ enforcing."
 | `swarm worktree` | shipped | toolable | create / list / remove / prune isolated task worktrees |
 | `swarm status` | shipped | toolable | print the workspace board — specs, tasks, reviews, gaps; writes nothing |
 | `swarm review <task>` | shipped | toolable | reconcile a finished run (diff ↔ self-report ↔ spec); surfaces facts, never a verdict |
+| `swarm show <task\|spec\|review\|checks>` | shipped | toolable | project a parsed artifact as JSON — task, spec, review packet, or the checks contract; read-only, renders no verdict (feeds swarm-mcp) |
 | `swarm` (no command) | shipped | toolable | open an interactive dashboard that reaches every flow; every flow also has a scriptable direct form |
 | `swarm pull <ticket>` | shipped | toolable | snapshot an external ticket into `intake/` (verbatim via `gh` where available, else a paste placeholder); never a spec |
 | `swarm promote <task>` | shipped | toolable | scaffold a candidate finding from a finished task (`from:` pre-filled); asserts no learning, writes no board |
 | `swarm review <task> --write` — draft review packet | shipped | toolable | write the draft review packet from the diff and task (every row Unverified, `status: draft`, never a Pass or a verdict; no-clobber); the read-only reconcile stays the default |
-| Swarm MCP server | planned | toolable | serve a task's scope, requirements, and checks over MCP to any MCP-capable agent |
+| Swarm MCP server (`swarm-mcp`) | shipped | toolable | an MCP stdio server (swarm-mcp v0.1.0) exposing a task's scope, requirements, and checks (read + reconcile facts) to any MCP-capable agent; shells out to the CLI `--json` contract ([ADR-0085](../adrs/0085-swarm-mcp-adapts-the-json-contract.md)) |
 | per-adapter hook generation | planned | toolable | emit the agent CLI's own hook config wiring the task's write-set and `checks.yaml` into its hooks — enforcement is the agent CLI's, not Swarm's |
 | `swarm run <task> --agent` | shipped | toolable | launch a prepared task on a configured agent in its worktree, record the launch envelope; the agent performs the loop |
 | run record | partial | toolable | `swarm run` writes the launch envelope under `.swarm/work/` today; the full run-summary form (changed-files / commands) and `swarm review` reading it are deferred; markdown stays the only adopter-facing artifact |
@@ -63,6 +64,7 @@ not belong in the set.
 | `swarm worktree` | create / list / remove / prune the task's worktree and branch | shipped |
 | `swarm status` | print the derived workboard | shipped |
 | `swarm review <task>` | reconcile a finished run from the diff and the task | shipped |
+| `swarm show <task\|spec\|review\|checks>` | project a parsed artifact as JSON (read-only; feeds swarm-mcp) | shipped |
 | `swarm pull <ticket>` | snapshot an external ticket into `intake/` (verbatim where fetchable, never a spec) | shipped |
 | `swarm promote <task>` | scaffold a candidate finding from a finished task (`from:` pre-filled, no learning, no board) | shipped |
 | `swarm run <task> --agent <name>` | launch a prepared task on a configured agent in its worktree, record the launch | shipped |
@@ -77,8 +79,8 @@ one and testable without any model — and now includes the two boundary-safe pr
 agent-stream normalization is a follow-up). The board-mutating `swarm close` is a **non-goal** — parked
 behind the open DECIDE #1.2 (ADR-0084), the board stays hand-edited. `swarm inventory new` and
 `swarm change new` are **envisioned** — the sketch shows the fuller brownfield surface, but no wave in
-the current program builds them. The supercharge layer (the MCP server, hook generation,
-per-task cost attribution) is **planned** too; see the matrix above for each item's status.
+the current program builds them. Hook generation and per-task cost attribution are **planned** too (the
+MCP server already **shipped** as `swarm-mcp`, [ADR-0085](../adrs/0085-swarm-mcp-adapts-the-json-contract.md)); see the matrix above for each item's status.
 
 ## Composable parts: standalone and Swarm-composed
 
@@ -391,7 +393,7 @@ integrations — both strictly *prepare*, never *perform*:
 - **A Swarm MCP server.** Instead of one adapter per agent, expose the task packet's scope, the
   parsed requirements, and the checks contract over MCP — so any MCP-capable agent (Claude, Codex,
   Gemini, Goose) natively queries "what are this task's requirements, scope, and checks." It is a
-  peer to the shell-out adapters (which cover agents without MCP), shipped after them (M3). This
+  peer to the shell-out adapters (which cover agents without MCP); it **shipped** as `swarm-mcp` (v0.1.0, ADR-0085), shelling out to the CLI `--json` contract. This
   *serves Swarm data over MCP* (prepare); it is **not** the agent's tool-calling MCP runtime, which
   stays the agent's per the boundary below.
 - **Per-adapter hook generation.** Emit the agent CLI's own hook config (e.g. `hooks.json` /
