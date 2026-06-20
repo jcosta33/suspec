@@ -118,6 +118,11 @@ a workspace convention that keeps all of it out of your code repos.
 Jira/Linear replacement · a code generator · a replacement for PRs and CI · a docs
 portal · a complete SDLC platform · a guarantee that agent output is correct.
 
+**Take what you want.** Each part above stands on its own — adopt just the review packet,
+or just the spec format, and add the rest only when the work calls for it. The formats are
+plain markdown you own outright: no runtime, no lock-in, no walled garden. Together they
+compound; apart, each still earns its place.
+
 How it differs from its neighbors: spec-first scaffolds generate plans; trackers
 hold tickets; AI reviewers hunt bugs and check a diff against a linked ticket's
 acceptance criteria; an `AGENTS.md` alone carries standing facts, not per-change

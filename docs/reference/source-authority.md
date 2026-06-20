@@ -25,6 +25,9 @@ first and reach for the rest only when two reviewed artifacts genuinely conflict
 - **Findings inform future work but are not requirements** until promoted into a spec.
 
 The rest of this page is the tie-breaker for the rarer case where two durable artifacts disagree.
+**Working solo?** You are every owner, and conflicts you resolve in your own head — the five rules
+above are all you need; skip the ladder entirely until a second person (or a second team) makes
+"who governs?" a real question.
 
 ## Two axes
 
