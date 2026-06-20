@@ -116,7 +116,8 @@ packet is reviewing the change.
   `status: draft | pass | waived | blocked | needs-human` (`waived` = merged with a recorded
   waiver: who · which rows · why · expiry).
 - Sections: Summary · Changed files · Requirement coverage · Change-plan coverage (only when
-  the task executes a change plan) · Human attention · Task status (confirm the board row and the
+  the task executes a change plan) · Human attention · Open decisions (optional; only when the work
+  closes with a decision the human must make — ADR-0089) · Task status (confirm the board row and the
   task packet's own `status:` are updated together at closeout) · Suggested decision.
 - Coverage rows are `ID | Result | Evidence | Human attention`, results
   **Pass · Fail · Unverified · Blocked**.
@@ -134,6 +135,15 @@ The load-bearing rules:
   out-of-scope changes · risky files · missing test output · changed public interfaces · DB
   migrations · security-sensitive changes · new finding candidates · blocked questions · missing
   or unconvincing worker-boot provenance for a delegated task.
+- **Open decisions frames a fork, not a finding** (convention; ADR-0089): include it only when the
+  work closes with a decision the human must make — the orchestrator is deep in another agent's
+  context and the agent that did the work is the one still holding this one's. Each open decision
+  carries: the decision · 2–4 comparable options (the case _for and against_) · a recommendation +
+  a brief why · the context/impact the human may not hold · what it blocks. The section **routes**
+  the decision — it presents and recommends, the human decides (a fact, never a verdict
+  [[OVERTRUST-CFF]](../research/sources.md#OVERTRUST-CFF) [[EVALAI]](../research/sources.md#EVALAI)).
+  Keep the "why" short and verification-oriented (how sure · what would change it · what it blocks),
+  not a persuasion essay; list options, never tally them; skip the whole section when nothing is open.
 - A review judges; it does not author. A gap it uncovers in what _should_ have been required
   becomes a spec amendment or a finding — never a requirement written into the review.
 
