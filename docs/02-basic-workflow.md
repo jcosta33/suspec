@@ -13,6 +13,9 @@ Pull → (Inventory) → Spec → (Change Plan) → Task → Run → Review → 
 Every artifact below is a markdown file in your workspace — where each one lives is
 [03-where-files-live.md](03-where-files-live.md).
 
+New to the loop? **[Walk it once, hands-on](tutorial/README.md)** — a guided build that produces
+each of these artifacts on one small change.
+
 ## 1 · Pull — capture what was asked
 
 Work usually originates in a tracker. Copy the ticket, issue, or page **verbatim** into an
