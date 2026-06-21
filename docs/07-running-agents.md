@@ -98,7 +98,10 @@ recorded as Unverified, not Pass.
 
 If the summary is missing or thin, ask for it before tearing anything down —
 the worktree still exists and re-running a command costs seconds. Later, it's
-archaeology. When the agent cannot write the workspace — a dedicated workspace
+archaeology. Keep the worktree until the **review packet is finalized**, too:
+`swarm review` reconciles the live worktree diff, so removing the worktree (the
+Close step) before the review is done means you can no longer re-run the
+reconcile against that branch — review first, tear down after. When the agent cannot write the workspace — a dedicated workspace
 repo, a sandboxed runner — it emits the summary at the end of its run and the
 runner or human relays it into the task packet at handoff. For per-kind depth
 (a fix, a refactor, a migration, performance work), install the matching guide

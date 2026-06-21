@@ -69,15 +69,27 @@ One semantic note on C003: a `Verify with:` line whose target does not exist yet
 defect — it is an unresolved note, and the requirement reviews as **Unverified** until the target
 exists and its output is pasted. The check asks that the line _be there_, not that it already pass.
 
+One note on C009: a **relative** path named in `sources:` or a requirement resolves **relative to the
+spec file's own directory**, not the workspace root. A spec at `specs/checkout/spec.md` that names its
+ticket reaches a root-level `intake/` file as `../../intake/CHK-1.md` (or co-locates the ticket in the
+spec folder as `ticket.md`); a bare workspace-root path like `intake/CHK-1.md` resolves from
+`specs/checkout/` and will not be found. Co-location is why the kit's worked example keeps its
+`ticket.md` beside the spec.
+
 ### When is a workspace valid?
 
 The whole bar, nothing more: a workspace is valid when **(a)** it has a populated `AGENTS.md`
 (aim for ~100 lines — Swarm's own convention, not a cap), **(b)** the core templates are present,
 and **(c)** at least one spec satisfies the core checks above. "Populated" means filled: an
-unfilled `{{placeholder}}` left in a *live* `AGENTS.md` or board is a clause-(a) checklist failure,
-not a valid workspace (the templates keep their placeholders; the live files must not). This is a
-convention — nothing in this repository enforces it; `swarm check` can verify clause (c), and
-a future `swarm init`/`swarm check` should flag a leftover placeholder (toolable, not shipped).
+unfilled `{{placeholder}}` left in a *live* `AGENTS.md` or board is a clause-(a) finding,
+not a valid workspace (the templates keep their placeholders; the live files must not).
+
+`swarm check` ships clauses (a) and (b): a missing core templates tree (clause b) is **blocking**, while
+an unfilled `{{placeholder}}` in a live `AGENTS.md`/board (clause a) is a **warning** (exit 1, not a
+blocking exit 2) — a "finish setup" nudge, since a freshly `swarm init`'d workspace ships the kit's
+boilerplate placeholders and must not greet a day-one user with a failed gate. Clause (c) is verified
+by the per-spec core checks above. _(Level: toolable — `swarm check` implements exactly this; the
+~100-line aim in clause (a) stays a convention, not a checked threshold.)_
 
 ## Task and review packet checks
 
