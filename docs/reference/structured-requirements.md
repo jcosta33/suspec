@@ -118,8 +118,17 @@ Each block type has a fixed id prefix:
 | `INTERFACE`  | `IF-`     | `IF-001` |
 | `QUESTION`   | `Q-`      | `Q-001`  |
 
-Ids are unique within a file. A wrong prefix or a duplicate id is a check in
-[Checks](checks.md); swarm-cli's `swarm check` flags both (toolable).
+Ids are unique within a file. A duplicate id is flagged today — `swarm check` runs the **core**
+checks (C001 unique-ids, C003 verify-present, C004 one-strength-word, C007 no-TBD) on a `format: sol`
+spec, the same as on a plain spec. A **wrong prefix** is a SOL-specific structural check
+(`SOL-S005` in [Checks](checks.md)) that is **planned, not yet shipped** in swarm-cli 1.0.0.
+
+> **What `swarm check` validates on a SOL spec today (1.0.0):** the core checks above — so a duplicate
+> id or a missing `VERIFY BY` is caught. The SOL-_specific_ structural codes (the `SOL-S` / `SOL-P` /
+> `SOL-M` / `SOL-V` families: wrong prefix, strength-without-rationale, mention resolution, binding
+> shape) are the documented contract but are **not yet implemented** — treat them as the writing
+> convention until they ship, not as mechanically enforced. (Honesty level per
+> [ADR-0063](../adrs/0063-honesty-framework.md): _toolable, planned_ — not _enforced_.)
 
 ## Block shapes
 
@@ -151,11 +160,11 @@ RISK medium
 - `AND THE …` chaining is permitted; each consequence is a separate requirement record
   sharing the conditions and the verification binding. Long chains read better as blocks.
 - `BECAUSE` (rationale) and `EXCEPT` (exception) are optional — except that a `SHOULD` /
-  `SHOULD NOT` consequence needs one of them in the same block (checklist item; toolable via
-  `swarm check`).
+  `SHOULD NOT` consequence needs one of them in the same block (checklist item; the mechanical
+  `SOL-P` check for this is _planned, not yet shipped_ — see the caveat under Ids above).
 - `VERIFY BY` is expected on every `REQ` — the highest-value line in the block
-  [[ORACLESWE]](../research/sources.md#ORACLESWE). A missing one is a review checklist item
-  today; `swarm check` flags it (toolable).
+  [[ORACLESWE]](../research/sources.md#ORACLESWE). A missing one IS flagged today: `swarm check`
+  runs the core C003 verify-present check on a `format: sol` spec (toolable, shipped).
 
 ### CONSTRAINT — restriction on the solution space
 
