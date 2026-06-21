@@ -65,6 +65,8 @@ are given. Accepted framework decisions still land here, in `docs/adrs/`.
 - Workspace (specs, audits, plans, board): `../swarm-hq`
 - The starter kit: `../swarm-starter-kit` (github.com/jcosta33/swarm-starter-kit)
 - Optional guide catalog: `../swarm-skills` (github.com/jcosta33/swarm-skills)
+- Claude Code agent catalog: `../swarm-agents` (github.com/jcosta33/swarm-agents — ADR-0092;
+  Claude-Code-first worker definitions + the delegation hook; honest scope: toolable/partial)
 - Dev skills (the small subset for working on this repo): `.agents/skills/` — see
   `.agents/SKILLS-MANIFEST.md`
 - Evidence: `docs/research/sources.md` (verified / caveated / rejected — never cite rejected)
@@ -84,3 +86,9 @@ Commit messages end: `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
 ## Compatibility
 
 `CLAUDE.md` and `GEMINI.md` are symlinks to this file — one bootloader, many agent tools.
+
+<!-- swarm:start -->
+This repository is adopted into a Swarm workflow. The spec / task / review
+workspace and templates come from the Swarm starter kit
+(github.com/jcosta33/swarm-starter-kit). Run `swarm --help` for the commands.
+<!-- swarm:end -->
