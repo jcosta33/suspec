@@ -128,7 +128,7 @@ maintainability/design layer tests cannot see, so that lens earns a dedicated re
 ([reviewing output](../08-reviewing-output.md), ADR-0095). The default is two independent,
 distinct-lens reviewers; add a third for a high-risk or high-diffusion change. The stances above are
 the lenses — assign the Skeptic to correctness, an Auditor-eyed reviewer to maintainability, and so
-on; this is the convention, nothing enforces the count or the assignment.
+on; this is checklist-level — nothing enforces the count or the assignment.
 
 ## Related
 
