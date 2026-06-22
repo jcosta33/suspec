@@ -27,7 +27,7 @@ hallucinated-completion hole the rule exists to close.
 
 ---
 
-## V2 — Pass with an empty Evidence cell (`pass-needs-evidence`, hard error)
+## V2 — Pass with an empty Evidence cell (`pass-needs-evidence` / C016, hard error)
 
 A review packet's coverage table:
 
@@ -38,7 +38,9 @@ A review packet's coverage table:
 ```
 
 **Expected:** flagged — an empty Evidence cell means **Unverified**, never **Pass**.
-The row's correct content is `Unverified` plus a Human attention entry.
+The row's correct content is `Unverified` plus a Human attention entry. Implemented as **C016**
+(ADR-0097): the **gate** path (`swarm check <review>`) blocks on it (hard error); the advisory
+**reconcile** path (`swarm review`) surfaces the same row id without blocking (ADR-0077 D8).
 
 ---
 
@@ -378,3 +380,26 @@ verified entry whose anchor exists. Skip-guarded — a spec that names no resolv
 cites nothing, is never flagged; the dangle fires only when a `sources.md` is resolvable **and** a
 `[[KEY]]` has no matching anchor (v0 = dangling-anchor only). A `[[KEY]]` that resolves (e.g.
 `[[GOOGLESA]]` above) is consistent → no finding. Surfaces a fact, never a verdict.
+
+---
+
+## V21 — an orphaned bundled reference (C017 `orphaned-reference`, warning)
+
+A skill guide with a bundled `references/` directory whose `SKILL.md` names one reference and
+forgets the other:
+
+```markdown
+<!-- .agents/skills/write-spec/SKILL.md -->
+# write-spec
+Load `references/checklist.md` before you start.
+```
+
+…in a skill dir that also holds `references/orphan.md` — a file the `SKILL.md` text names nowhere.
+
+**Expected:** flagged — `references/orphan.md` is bundled but pointed at by no `SKILL.md` line, so
+it is dead weight no reader is sent to (the reference-load field test measured that a bundled
+resource helps only when the guide loads it). **Orphan direction only**: the named `checklist.md` is
+*not* flagged, and the inverse case (a guide naming a reference that does not exist) is out of scope.
+Matching is lenient — the bare filename anywhere in the body counts as named — so a guide that does
+point at its references never false-fires (measured 0-orphan across the real skills corpus). A
+workspace-scope warning; surfaces a fact, never a verdict.

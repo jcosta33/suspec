@@ -82,3 +82,12 @@ tiers) settled the principle — and **reframed the discriminator** from new-vs-
 (risk-weighted review + Hindle caveat), the kit `split-work` guide (the small/untangled lever),
 `docs/research/sources.md` (the nine entries above). The `swarm-cli` oversized-packet check is the
 toolable follow-up (tracked in swarm-hq #61 §B), not shipped by this ADR.
+
+## Update (2026-06-22) — the oversized-packet band measured, deferred ([ADR-0097](./0097-mint-c016-c017-defer-oversized.md))
+
+The named oversized-packet toolable was built and **measured**: a raw changed-LOC/files band cannot be
+both useful and low-false-positive for code task diffs (≈15% FP at 600 LOC — feature-with-tests shares
+the 600–1200 LOC range; a 0-FP band of ≥1500 never fires on the population it targets). So the
+band-based check is **specified-not-shipped** (id `C018` reserved for a future decomposition-predictive
+signal), and `swarm review` surfaces the diff size as **neutral info** instead — the "size as a signal"
+intent in the only honest form the data supports. Full measurement in ADR-0097.

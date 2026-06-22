@@ -131,6 +131,8 @@ catalogue are in [checks](checks.md).
 | C013 | `verify-evidence-binding` — review packet only: a structured `verify` block's cmd matches the requirement's named command + `result=pass` (non-draft spec) | warning |
 | C014 | `do-not-change-touched` — review packet only: a changed file matches a task's `## Do not change` entry (distinct from out-of-scope drift) | warning |
 | C015 | `citation-resolves` — spec only: an inline `[[KEY]]` citation resolves to a matching `<a id="KEY">` anchor in the named `sources.md` (skips when no `sources.md` is resolvable) | warning |
+| C016 | `pass-needs-evidence` — review packet (gate path): a Pass coverage row with an empty Evidence cell blocks (the reconcile path surfaces it advisorily) | hard error |
+| C017 | `orphaned-reference` — workspace: a bundled `.agents/skills/<name>/references/<file>` named nowhere in its `SKILL.md` (orphan direction only) | warning |
 
 Packet checks (checklist level): `non-empty-paste` — a completion claim binds to pasted output
 or a CI link; `no-open-critical` — nothing closes with an open blocking question;
