@@ -45,6 +45,31 @@ A task never adds requirements of its own. If the work turns out to need
 something no listed requirement covers, the agent's instruction is to stop and
 say why — the fix is a spec amendment, not mid-task improvisation.
 
+## Keep the task small, single-concern, and untangled
+
+The best-replicated result in code review is that **small changes get reviewed well and large ones
+do not**: defect-detection effectiveness is best on a ~200–400 LOC change and falls off sharply past
+it [[SMARTBEAR]](research/sources.md#SMARTBEAR), the proportion of useful review comments drops as a
+change touches more files [[BOSU15]](research/sources.md#BOSU15), and modern review has converged on
+changes of a few tens of lines [[RIGBY13]](research/sources.md#RIGBY13). So shape each task to one
+concern:
+
+- **One concern per task.** A task carries a single requirement-cluster, not a grab-bag — if you
+  can't name its scope in one line, split it into more than one task.
+- **Separate the refactor from the behavior change.** A rename or a move lands in its own task and
+  commit, ahead of the feature or fix it enables [[GOOGLESMALLCL]](research/sources.md#GOOGLESMALLCL);
+  mixing them is what makes a diff unreviewable. A trivial cleanup (a local rename) may ride along.
+- **Split out the connective tissue.** When new code must be wired into existing code, make the
+  wiring — the high-diffusion edits touching many existing files — its own task, so the new logic and
+  its integration are reviewed separately, not as one tangled blob.
+
+Splitting buys *cleaner* reviews — fewer false positives at the same defect yield
+[[DIBIASE19]](research/sources.md#DIBIASE19) — **not** more bugs caught; that is reason enough. A
+task whose changed-LOC and files-touched run well past the band above is a candidate to split;
+`swarm check` is the natural home for an **advisory** oversized-packet flag (a heuristic with
+provenance, never an enforced limit). These are conventions the review packet inspects — nothing
+enforces them at edit time ([ADR-0094](adrs/0094-decomposition-and-risk-weighted-review.md)).
+
 Fill Verify with real commands, not intentions. Executable acceptance criteria
 are the part an agent benefits from most — a runnable check outperforms prose plans as task input (preliminary evidence)
 [[ORACLESWE]](research/sources.md#ORACLESWE): a requirement whose check the

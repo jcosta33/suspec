@@ -115,6 +115,28 @@ there, and bind the ones that must hold as preservation guarantees or spec requi
 runnable check (the runtime-proof evidence rule in [Reviewing output](08-reviewing-output.md), per
 [ADR-0076](adrs/0076-worker-provenance-and-adoption-conventions.md)'s runtime-isolation caution).
 
+## Weight review by risk — not by "greenfield vs brownfield"
+
+It is tempting to review net-new code lightly and changes to existing code heavily. The evidence
+says the discriminator is not new-vs-old but **diffusion, churn, and change-type**:
+
+- **Change-type.** Fault-fixes are disproportionately fault-inducing — roughly 40% of fault-fix
+  changes introduce a new defect, against under ~4% for a one-line change
+  [[PURUSHOTHAMAN05]](research/sources.md#PURUSHOTHAMAN05). A modification to working code earns more
+  scrutiny than the same volume of isolated new code.
+- **Diffusion.** The probability a change induces a failure rises with the number of files, modules,
+  and subsystems it touches [[MOCKUS00]](research/sources.md#MOCKUS00) — so the **connective tissue**
+  wiring new code into the existing system is the part to concentrate on, not the new leaf code.
+- **Churn.** Faults cluster where code changes often; change-count predicts faults better than size
+  [[GRAVES00]](research/sources.md#GRAVES00). A high-churn locus is a standing risk.
+
+A lighter review lane for net-new code is reasonable **only when it is also small and low-diffusion**,
+and it still demands genuine engagement on the risky seams — never a rubber stamp. The caveat that
+keeps this honest: once size and total changes are controlled, "new feature vs modification" has no
+significant effect on later defects [[HINDLE11]](research/sources.md#HINDLE11) — so **"it's
+greenfield" never justifies skipping review on a large or high-diffusion change.** A checklist
+convention; nothing enforces it ([ADR-0094](adrs/0094-decomposition-and-risk-weighted-review.md)).
+
 ## Next
 
 - [Creating tasks](06-creating-tasks.md) — a task may implement a spec, execute a change-plan

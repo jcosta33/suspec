@@ -84,6 +84,27 @@
 <a id="KONG-ROLEPLAY"></a>
 **[KONG-ROLEPLAY] Better Zero-Shot Reasoning with Role-Play Prompting.** Kong, Zhang, Wang, et al. **NAACL 2024**, arXiv:2308.07702. *Verified (June 2026, deep-research direct fetch + 3-vote).* Role-play prompting beat standard zero-shot across most of **twelve** reasoning benchmarks (e.g. Last-Letter **23.8%→84.2%**, AQuA **53.5%→63.8%**); the authors frame the gain as an implicit chain-of-thought trigger. Grounds: role *framing* helps via the task-relevant procedure it evokes — which can live in the work guide — not via the identity (ADR-0093).
 
+<a id="DIBIASE19"></a>
+**[DIBIASE19] The effects of change decomposition on code review — a controlled experiment.** di Biase, Bruntink, van Deursen, Bacchelli. **PeerJ Computer Science 5:e193, 2019**, DOI 10.7717/peerj-cs.193. *Verified (June 2026, web — PeerJ + PMC mirror).* A controlled experiment (n=28): decomposing a tangled change into coherent parts leads reviewers to report **fewer wrongly reported issues (false positives)** and to seek more context, while the **number of defects found is unchanged**. Grounds: untangling buys *cleaner* reviews, not *more* bugs caught — the honest reason to split work (ADR-0094).
+
+<a id="MOCKUS00"></a>
+**[MOCKUS00] Predicting risk of software changes.** Mockus & Weiss. **Bell Labs Technical Journal 5(2):169–180, 2000**, DOI 10.1002/bltj.2229. *Verified (June 2026, web — DOI + author bib; OA mirror mockus.org/papers/bltj13.pdf).* Models the probability a change induces a failure as a function of change **size**, **diffusion** (files / modules / subsystems touched), developer experience, and **change type** (fault-fix vs new code); diffusion and experience are essential predictors (directional, no point thresholds). Grounds: weight review scrutiny by diffusion and change-type, not by greenfield-vs-brownfield (ADR-0094).
+
+<a id="PURUSHOTHAMAN05"></a>
+**[PURUSHOTHAMAN05] Toward Understanding the Rhetoric of Small Source Code Changes.** Purushothaman & Perry. **IEEE TSE 31(6):511–526, 2005**, DOI 10.1109/TSE.2005.74. *Verified (June 2026, web — author PDF + DBLP).* A one-line change has **under ~4% probability** of introducing an error, but **~40% of fault-fix changes introduce one or more new defects**. Grounds: fault-fixes are disproportionately fault-inducing → concentrate scrutiny on modification/fix changes (ADR-0094).
+
+<a id="GRAVES00"></a>
+**[GRAVES00] Predicting fault incidence using software change history.** Graves, Karr, Marron, Siy. **IEEE TSE 26(7):653–661, 2000**, DOI 10.1109/32.859533. *Verified (June 2026, web — CrossRef + NISS TR; finding is qualitative).* Process measures from the change history predict faults better than product metrics of the code: the **number of times code has been changed (churn) predicts faults better than its size (LOC)**. Grounds: churn, not length, marks the risky loci a reviewer should weight (ADR-0094).
+
+<a id="HINDLE11"></a>
+**[HINDLE11] Got Issues? Do New Features and Code Improvements Affect Defects?** Posnett, Hindle & Devanbu. **WCRE 2011, pp. 211–215**, DOI 10.1109/WCRE.2011.33. *Verified (June 2026, web — author PDF + DBLP).* **Counter-evidence:** neither new features nor improvements have a significant effect on later defect counts **once size and total number of changes are controlled** — size/churn dominates, not new-vs-modified (scope: 4 Apache Java projects; the authors partly attribute the null to careful review of new features). Grounds: the Hindle caveat — never let "greenfield/net-new" justify skipping review on a large or high-diffusion change (ADR-0094).
+
+<a id="BOSU15"></a>
+**[BOSU15] Characteristics of Useful Code Reviews: An Empirical Study at Microsoft.** Bosu, Greiler, Bird. **MSR 2015, pp. 146–156**, DOI 10.1109/MSR.2015.21. *Verified (June 2026, web — MSR PDF + abstract).* The **more files in a change, the lower the proportion of review comments that are useful** to the author (direction only, no point estimate). Grounds: files-touched is a first-class size signal for the oversized-packet heuristic — a sprawling change degrades review quality (ADR-0094).
+
+<a id="RIGBY13"></a>
+**[RIGBY13] Convergent Contemporary Software Peer Review Practices.** Rigby & Bird. **ESEC/FSE 2013, pp. 202–212**, DOI 10.1145/2491411.2491444. *Verified (June 2026, web — MSR author PDF, text-extracted).* Across drastically different projects, modern review **converged on small changes** — median *change* sizes of tens of lines (e.g. Android/AMD 44, Chrome 78; vs the prior-OSS Apache 25 / Linux 32 contrast and traditional inspection's 263). Grounds: small, self-contained units are the field-convergent norm a task should target (ADR-0094).
+
 ## Verified — reused from the kernel bibliography
 
 These were already verified by the framework's bibliography elsewhere; the entries below restate them so this layer is self-contained.
@@ -155,6 +176,9 @@ These were already verified by the framework's bibliography elsewhere; the entri
 
 <a id="OVERRELIANCE-REVIEW"></a>
 **[OVERRELIANCE-REVIEW] Overreliance on AI: Literature Review.** Passi, Vorvoreanu, et al. **Microsoft Research / Aether (AI, Ethics, and Effects in Engineering and Research), June 2022.** *Verified (June 2026, web search — direct fetch of the Aether review PDF).* A Microsoft research **literature review** — a secondary synthesis of empirical studies, not itself a controlled study: the **presence of explanations can increase over-reliance** on AI, and **more detailed explanations can make it worse** — explanations often persuade rather than help a person evaluate, so they do not reliably improve human-AI team performance. <https://www.microsoft.com/en-us/research/publication/overreliance-on-ai-literature-review/> — *authoritative vendor research synthesis; cite as guidance, not a single measured study (it is a review, not primary research).* Grounds: favor short, verification-oriented justification over long persuasive prose; the goal of a recommendation's "why" is to make checking cheap, not to convince.
+
+<a id="GOOGLESMALLCL"></a>
+**[GOOGLESMALLCL] Small CLs.** Google Engineering Practices — Code Review Developer Guide (living document, accessed June 2026). The right size for a change is **one self-contained change**; ~100 lines is usually reasonable and ~1000 usually too large (rules of thumb, the reviewer's judgment; a change spread across many files counts as larger). **Separate a refactor from a feature or bug-fix** into its own change (small cleanups like renaming a local variable MAY ride along). <https://google.github.io/eng-practices/review/developer/small-cls.html> — *official guidance, not a measured study.* Grounds: separate-refactor-from-behavior and small/self-contained units (ADR-0094).
 
 ## Verified — peer-reviewed, no measured outcomes (vision/position; design rationale only)
 
@@ -316,6 +340,9 @@ These sources are **not peer-reviewed**; they ground market-gap observations and
 
 <a id="METR"></a>
 **[METR] Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity.** Becker, Rush, Barnes, Rein (METR). **arXiv:2507.09089** (preprint). *Verified (June 2026, direct fetch).* RCT, 16 experienced OSS devs, 246 tasks: allowing early-2025 AI **increased completion time ~19%**, even though devs expected a 24% speedup and *believed afterward* they were 20% faster (experts predicted 38–39% faster). Grounds: **perceived ≠ measured** — a self-reported "done"/"faster" is not evidence; a machine-checkable verdict is. (Scope: experienced devs on mature repos, n=16. A 2026 follow-up reportedly did not replicate the slowdown — claim surfaced in the external validation survey, **unverified here**; do not cite the 19% figure as settled.)
+
+<a id="SMARTBEAR"></a>
+**[SMARTBEAR] Code Review at Cisco Systems** (in *Best Kept Secrets of Peer Code Review*). Cohen, Smart Bear Software, 2006. *Verified (June 2026, web — the canonical case-study PDF).* The largest lightweight-review case study of its time (2,500 reviews, 3.2M LOC, 50 developers, 10 months): defect-detection effectiveness is best on **small changes — LOC under review under 200, not to exceed ~400** — and falls past **~60–90 minutes** of review or at inspection **rates above ~400–500 LOC/hour** (the rate metric is distinct from the absolute size ceiling). <https://static0.smartbear.co/support/media/resources/cc/book/code-review-cisco-case-study.pdf> — **industry-dataset, not peer-reviewed; a single vendor-derived 2006 in-situ dataset — cite the 200–400 LOC band as a heuristic, never as law.** Grounds: the size anchor for the oversized-packet heuristic (ADR-0094).
 
 ## Rejected — DO NOT CITE (fabricated / misattributed / unconfirmed)
 
