@@ -234,6 +234,10 @@ The load-bearing rules:
   `ID | Behavior | Verify with` — "no behavior change" is not a guarantee; a list of behaviors
   with checks is. Guarantee rows reuse the spec's own requirement ids via `preserves`; a
   guarantee with no spec id gets `PG-NNN` and usually signals a spec amendment is owed.
+- **Affected surfaces count callers, not just edit sites.** When the surface is a shared
+  signature or interface, the surfaces that change include its callers — enumerate them from the
+  inventory's `Current interfaces (callers)` column, not only the files you touch (convention; see
+  [Brownfield & change plans](../05-brownfield-and-change-plans.md)).
 - **Each wave leaves the codebase green** and names its verify step; use a bridge release where
   external consumers exist.
 - A task executing a wave names the plan in its `source` and reads its Scope as "implement or
