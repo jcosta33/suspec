@@ -3,7 +3,7 @@ type: adr
 id: adr-0091
 status: accepted
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-06-22
 ---
 
 # ADR-0091 — `swarm update`: a reconcile-only kit refresh — ship `--check`, defer the merge
@@ -66,3 +66,19 @@ to edit the generated files (AGENTS.md, the guides).
 preserved (the verb reads + reports; it never writes or issues a verdict). The merge is a **recorded
 deferral with a gate** (demand + drift), not a silent omission. The honest manual upgrade path is
 unchanged for the once-copied adopter. swarm-cli spec + tasks live in swarm-hq (`specs/swarm-update/`).
+
+## Update (2026-06-22) — the apply ships, but **not** as the 3-way merge
+
+`swarm update --write` now ships (swarm-cli `4536fc7`). Decision 3's deferral was specifically of the
+**interactive 3-way merge** — the half the field abandons on first conflict (Dumont 2025) and that this
+kit's edit-the-generated-files onboarding makes the common case. The shipped `--write` deliberately is
+**not** that merge. It reuses the conflict-safe copy engine (`init_workspace`), **scoped to the
+kit-owned guidance only** (`templates/`, `.agents/skills/`, `advanced/`, `hooks/`), with a
+**`backup`** default: a customized kit file is preserved as `<file>.swarm-bak` and the kit's version
+lands — never a line-level merge, so the "no common ancestor" failure mode never arises. The adopter's
+own artifacts (board, specs, decisions, README, `AGENTS.md`) are out of scope by construction, which is
+why this honors — rather than reverses — ADOPTING.md's "the kit never touches them" promise. `skip`
+leaves the pin behind (a partial apply is honestly still "behind"); `overwrite` is the no-backup
+escape hatch. The ADR's core rationale stands: Swarm still does not build the merge teams abandon. The
+deferral gate (demand + drift) was met by the goal-run backlog clearance; honesty level stays
+**toolable** (the checker/applier is `swarm update`; nothing is enforced).

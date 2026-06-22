@@ -122,11 +122,15 @@ under [semantic versioning](https://semver.org), so you can see whether a bump i
 If you use the optional CLI, `swarm update --check` reads the `.agents/.swarm-version` stamp
 written at `swarm init` and tells you whether your copy is behind the kit, with the changelog
 delta — a read-only staleness signal that decides nothing and pulls nothing. Re-copy on your own
-terms.
+terms, or let `--write` do it.
 
 Re-copy `templates/`, `.agents/skills/`, and `hooks/` from a newer kit checkout. Your specs,
 tasks, reviews, findings, decisions, board, and `AGENTS.md` are yours — the kit never touches
 them, so re-copying the kit-owned files is safe unless you have customized one (the CHANGELOG
-flags those). The same model holds for the [swarm-skills
+flags those). `swarm update --write` does exactly this re-copy for you: it refreshes only the
+kit-owned guidance (`templates/`, `.agents/skills/`, `advanced/`, `hooks/`) and leaves every
+artifact in that "yours" list untouched. A guide you customized is backed up to `<file>.swarm-bak`
+(default) so the kit's version can land without losing your edits — reconcile and delete the
+backup. The same pin-and-re-pull model holds for the [swarm-skills
 catalog](https://github.com/jcosta33/swarm-skills) (`npx skills`) and
 [swarm-cli](https://github.com/jcosta33/swarm-cli): pin to a release, re-pull when you choose.
