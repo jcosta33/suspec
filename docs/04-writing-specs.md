@@ -63,7 +63,7 @@ Each requirement:
 - has a `Verify with:` line
 - avoids hidden uncertainty
 
-Move uncertainty to **Open questions**.
+Move uncertainty to **Open questions** — framed as a decision (options and a recommendation), not a bare question.
 
 ## Non-goals
 
