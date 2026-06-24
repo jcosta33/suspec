@@ -60,6 +60,12 @@ enforces them at edit time.
    not write the diff. _Why: authors favor their own output; independence is
    the point of the review step._
 
+**Spec-external mode (single-root).** When the workspace and code live in separate
+repos, the task and its pinned spec snapshot sit in the code repo's gitignored `.corpus/`.
+Read the snapshot; write only in the code repo (your code + `.corpus/` scratch) — never the
+canonical workspace. Your commands and edits resolve against one root, and the review lead
+merges your evidence back. (Grounding: [Corpus ADR-0100](https://github.com/jcosta33/corpus/blob/main/docs/adrs/0100-spec-external-ops-local-mode.md).)
+
 ## Refuses
 
 | Temptation                                   | Do instead                                                                              |
