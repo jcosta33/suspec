@@ -86,6 +86,7 @@ Keep for the life of the project:
 
 Let transitory output age out once the durable record has what matters:
 
+- closed task packets
 - review packets
 - `corpus check` output
 - run logs
@@ -95,7 +96,7 @@ Use git history or `archive/`.
 
 A 30-90 day window matches common CI artifact retention
 [[GHRETENTION]](research/sources.md#GHRETENTION) [[GLRETENTION]](research/sources.md#GLRETENTION).
-Closed board rows can link to retained review packets or archived review packet paths.
+A task or review packet is live while open, kept for reference once closed, then moved to `archive/` or left to git history; the closed board row keeps the link. Promote a closed task's durable lesson to its home before the scratch ages out.
 
 ## Drift rule
 
