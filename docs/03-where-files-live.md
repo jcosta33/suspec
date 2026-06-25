@@ -25,8 +25,6 @@ your-workspace/
   change-plans/
   decisions/
   templates/
-  advanced/
-  examples/
   status.md
 ```
 

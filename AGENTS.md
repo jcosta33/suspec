@@ -17,8 +17,8 @@ anything described as checkable names its checker (the reference implementation 
   (see `.agents/SKILLS-MANIFEST.md`).
 - The starter kit ships as its own template repo, `../corpus-starter-kit` (ADR-0075): a
   complete workspace adopters copy whole — the core loop guides plus the workspace
-  authoring guides at `.agents/skills/`, `templates/`, `advanced/` (optional templates +
-  reference cards). Conditioning stances and code-depth guides live in `../corpus-skills`.
+  authoring guides at `.agents/skills/` and `templates/`. Conditioning stances and
+  code-depth guides live in `../corpus-skills`.
 
 ## Corpus workspace
 
