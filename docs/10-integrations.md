@@ -44,6 +44,10 @@ Use the review packet to connect CI output to requirements:
 - CI runs commands.
 - Review packet records which requirement each result supports.
 
+`corpus-cli` emits **gate facts + an exit code** (a clean reconcile vs. open items); the team wires CI
+to block on that exit code if it wants a hard gate. The gate is the team's — Corpus reports, it never
+owns merge authority.
+
 ## Code repos
 
 Code repos stay clean.

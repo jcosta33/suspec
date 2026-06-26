@@ -56,6 +56,9 @@ It does not write code or decide whether work is correct.
 
 See [the CLI reference](reference/future-cli.md).
 
+Corpus keeps the *functions* of heavyweight engineering (explicit intent, verification, review,
+traceability, change control) while dropping the document stack — see [lineage](reference/lineage.md).
+
 ## Start here
 
 1. Read [the basic workflow](02-basic-workflow.md).

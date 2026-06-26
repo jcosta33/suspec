@@ -42,7 +42,9 @@ A spec is a living organism: amend the original rather than write a new one (ADR
   an AC superseded in place when it is retired; mint a new spec (and set the old one's
   `superseded_by`) only when a whole feature is replaced.
 - **Status.** A spec moves `ready → active` once it is in use and being amended; `superseded` only on
-  whole-feature replacement.
+  whole-feature replacement. This is the spec's **lifecycle maturity** (`draft → ready → active →
+  superseded`), not its workflow position (in-progress / in-review / done) — that lives on the board and
+  the task, never in the spec's status.
 
 ## Evidence path
 

@@ -73,4 +73,6 @@ Rejected sources are not cited.
 - [Source authority](source-authority.md)
 - [Drift](drift.md)
 - [Checks](checks.md)
+- [Output economy](output-economy.md)
+- [Lineage](lineage.md)
 - [ADRs](../adrs/README.md)
