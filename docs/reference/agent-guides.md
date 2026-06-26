@@ -30,17 +30,17 @@ Common workspace guides:
 | `spec-check` | spec review |
 | `split-work` | task decomposition |
 | `save-findings` | close and promotion |
-| `adversarial-review` | self-check before handoff |
 
 Install only what the workspace uses.
 
 ## Cross-cutting stances
 
-Some stances can be loaded alone:
+Some stances can be loaded alone (from the corpus-skills catalog):
 
 - `persona-skeptic`
 - `persona-challenger`
 - `persona-surveyor`
+- `adversarial-review` — review *style* (not a Corpus concept, so it lives in the catalog, ADR-0111)
 
 One-to-one authoring stances are folded into their guides. Do not maintain duplicate copies.
 
