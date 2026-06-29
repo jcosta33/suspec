@@ -92,7 +92,7 @@ Start small:
 2. Write one `status: ready` spec.
 3. Implement it on a branch or worktree, running each `Verify with:` command.
 4. Fill the spec's `## Execution` with the pasted output (split into tasks only if the work needs parallel slices).
-5. Review with evidence — an independent reviewer writes the packet.
+5. Review with evidence — a non-implementer judges it; a substantial change gets a review packet.
 6. Save one finding if there is a durable lesson.
 
 The tutorial walks this path in [tutorial/README.md](tutorial/README.md).

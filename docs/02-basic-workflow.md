@@ -97,15 +97,19 @@ Do:
 
 ## 7. Review
 
-Judge the result against the spec (and the task, when split).
+A non-implementer judges the result against the spec (and the task, when split) — never the
+implementer. For a trivial change you verified yourself, you are that judge.
 
-Do:
+The formal review — a `reviews/` packet, a review lead running independent lenses — is the
+form for a substantial or high-diffusion change. It is optional for a trivial, low-diffusion
+one. The independent judgment is not.
+
+Do, when you write the packet:
 
 - create one coverage row per scoped requirement
 - mark empty evidence as `Unverified`, never `Pass`
 - route exceptions to human attention
 - spot-check at least one green row
-- use a reviewer who did not implement the change
 
 See [reviewing output](08-reviewing-output.md).
 
@@ -137,7 +141,7 @@ See [saving findings](09-saving-findings.md).
 For code-changing work, keep:
 
 - verification output
-- independent review
+- independent review — a non-implementer judges it; the formal packet scales with risk
 - evidence for every `Pass`
 - a visible record of blocked or unverified work
 

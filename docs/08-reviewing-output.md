@@ -17,7 +17,9 @@ The implementer does not render the review result. The reviewer is not the imple
 
 Use a fresh session, another agent, or a human reviewer.
 
-For code-changing work, a **review lead** orchestrates the review: it reads the task, cited spec, run summary, and diff, then sends **at least three independent lens reviewers** — requirement correctness, verification/evidence, and maintainability/design by default; security, migration, performance, and others as the change warrants. Each lens returns findings and evidence only. The lead reconciles them, deduplicates, and writes the one packet; a lens reviewer never renders the status or suggested decision.
+The independent judgment is the invariant; the formal packet scales with risk. A substantial or high-diffusion change gets the full packet below; a trivial change the owner verified needs the judgment, not the paperwork.
+
+When the change warrants the formal packet, a **review lead** orchestrates it: it reads the task, cited spec, run summary, and diff, then sends **at least three independent lens reviewers** — requirement correctness, verification/evidence, and maintainability/design by default; security, migration, performance, and others as the change warrants. Each lens returns findings and evidence only. The lead reconciles them, deduplicates, and writes the one packet; a lens reviewer never renders the status or suggested decision.
 
 ## Review packet
 
