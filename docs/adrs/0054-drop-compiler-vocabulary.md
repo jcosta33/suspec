@@ -32,7 +32,7 @@ keep theirs as history):
   for the same NO-RUNTIME reason.)
 - **Structured-form provenance fields: `compiler_version` → `tool_version`, `compiled_at` → `emitted_at`.**
   This is a **schema contract change**. It is safe because the structured form ships **no emitter or
-  consumer** (Invariant 1): the schema, the three golden-corpus fixtures, and the worked examples are renamed
+  consumer** (Invariant 1): the schema, the three golden-fixture-set fixtures, and the worked examples are renamed
   together in this change, and no deployed tool reads the old names.
 - **Conformance tier: "Suspec-compilable" → "lowerable".** The `lower` step name is kept; the tier means an
   approved spec can be lowered into tasks deterministically.

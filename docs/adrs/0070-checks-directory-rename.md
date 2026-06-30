@@ -10,7 +10,7 @@ updated: 2026-06-12
 
 ## Context
 
-ADR-0066 renamed the corpus framing to "checks fixtures" and ADR-0054 purged the
+ADR-0066 renamed the fixture set framing to "checks fixtures" and ADR-0054 purged the
 compiler-register vocabulary from reader-facing content — but the directory stayed
 `conformance/` and its data file `conformance.yaml`. The result is a vocabulary fork the owner
 review (2026-06-12) called out: every prose surface says _checks_; the tree says

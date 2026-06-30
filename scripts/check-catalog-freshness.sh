@@ -37,20 +37,31 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 FAMILY_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../.." && pwd)
 
 repo_dir() {
-    new=$1
-    old=$2
-    if [ -d "$FAMILY_ROOT/$new" ]; then
-        printf '%s\n' "$FAMILY_ROOT/$new"
-    elif [ -d "$FAMILY_ROOT/$old" ]; then
-        printf '%s\n' "$FAMILY_ROOT/$old"
+    name=$1
+    if [ -d "$FAMILY_ROOT/$name" ]; then
+        printf '%s\n' "$FAMILY_ROOT/$name"
+        return
+    fi
+    for candidate in "$FAMILY_ROOT"/*; do
+        [ -d "$candidate" ] || continue
+        url=$(git -C "$candidate" remote get-url origin 2>/dev/null || true)
+        case "$url" in
+            */"$name"|*/"$name".git)
+                printf '%s\n' "$candidate"
+                return
+                ;;
+        esac
+    done
+    if [ -d "$FAMILY_ROOT/$name" ]; then
+        printf '%s\n' "$FAMILY_ROOT/$name"
     else
-        printf '%s\n' "$FAMILY_ROOT/$new"
+        printf '%s\n' "$FAMILY_ROOT/$name"
     fi
 }
 
-WORKS_SKILLS=${WORKS_SKILLS:-"$(repo_dir suspec-works corpus-works)/.agents/skills"}
-CATALOG_SKILLS=${CATALOG_SKILLS:-"$(repo_dir suspec-skills corpus-skills)/skills"}
-KIT_SKILLS=${KIT_SKILLS:-"$(repo_dir suspec-starter-kit corpus-starter-kit)/.agents/skills"}
+WORKS_SKILLS=${WORKS_SKILLS:-"$(repo_dir suspec-works)/.agents/skills"}
+CATALOG_SKILLS=${CATALOG_SKILLS:-"$(repo_dir suspec-skills)/skills"}
+KIT_SKILLS=${KIT_SKILLS:-"$(repo_dir suspec-starter-kit)/.agents/skills"}
 STRICT_KIT=${STRICT_KIT:-1}
 
 if [ ! -d "$WORKS_SKILLS" ]; then

@@ -47,15 +47,27 @@ else
     SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
     SUSPEC_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
     PARENT=$(CDPATH= cd -- "$SUSPEC_ROOT/.." && pwd)
-    roots="$SUSPEC_ROOT"
-    for pair in "suspec-agents:corpus-agents" "suspec-works:corpus-works" "suspec-starter-kit:corpus-starter-kit"; do
-        new=${pair%%:*}
-        old=${pair#*:}
-        if [ -d "$PARENT/$new" ]; then
-            roots="$roots $PARENT/$new"
-        elif [ -d "$PARENT/$old" ]; then
-            roots="$roots $PARENT/$old"
+    repo_dir() {
+        name=$1
+        if [ -d "$PARENT/$name" ]; then
+            printf '%s\n' "$PARENT/$name"
+            return
         fi
+        for candidate in "$PARENT"/*; do
+            [ -d "$candidate" ] || continue
+            url=$(git -C "$candidate" remote get-url origin 2>/dev/null || true)
+            case "$url" in
+                */"$name"|*/"$name".git)
+                    printf '%s\n' "$candidate"
+                    return
+                    ;;
+            esac
+        done
+    }
+    roots="$SUSPEC_ROOT"
+    for name in suspec-agents suspec-works suspec-starter-kit; do
+        dir=$(repo_dir "$name")
+        [ -n "$dir" ] && roots="$roots $dir"
     done
     ROOTS="$roots"
 fi

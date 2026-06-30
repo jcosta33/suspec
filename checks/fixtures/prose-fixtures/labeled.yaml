@@ -1,4 +1,4 @@
-# labeled.yaml — the labeled writing-rules suspec (inert fixture data)
+# labeled.yaml — the labeled writing-rules fixture set (inert fixture data)
 #
 # Each item is one short requirement-prose span paired with its ground-truth label. The
 # label is either `clean` (nothing should fire) or the single `SOL-Pxxx` code from the
@@ -14,7 +14,7 @@
 #            is binding inside a requirement/constraint/invariant, commentary elsewhere.
 #   label    clean | <SOL-Pxxx>. The expected outcome.
 #   expect   the exact code a correct detector fires (none on a clean span).
-#   severity blocking | advisory | none — this corpus's recording of the catalogue's
+#   severity blocking | advisory | none — this fixture set's recording of the catalogue's
 #            hard-error | warning split for the code.
 #   reason   why this label is correct — hand-checkable, written to a Cohen's k >= 0.6
 #            inter-annotator floor (a second reviewer should assign the same label from

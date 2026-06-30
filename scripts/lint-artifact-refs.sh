@@ -37,9 +37,26 @@ if [ ! -f "$REGISTRY" ]; then
     exit 2
 fi
 
-# The repos whose product/reference docs are in scope. Each pair is the public Suspec repo name
-# followed by the unchanged local checkout folder accepted during the rename.
-REPOS="suspec:corpus suspec-agents:corpus-agents suspec-skills:corpus-skills suspec-mcp:corpus-mcp suspec-cli:corpus-cli suspec-starter-kit:corpus-starter-kit suspec-bench:corpus-bench"
+# The repos whose product/reference docs are in scope.
+REPOS="suspec suspec-agents suspec-skills suspec-mcp suspec-cli suspec-starter-kit suspec-bench"
+
+repo_dir() {
+    name=$1
+    if [ -d "$FAMILY_ROOT/$name" ]; then
+        printf '%s\n' "$FAMILY_ROOT/$name"
+        return
+    fi
+    for candidate in "$FAMILY_ROOT"/*; do
+        [ -d "$candidate" ] || continue
+        url=$(git -C "$candidate" remote get-url origin 2>/dev/null || true)
+        case "$url" in
+            */"$name"|*/"$name".git)
+                printf '%s\n' "$candidate"
+                return
+                ;;
+        esac
+    done
+}
 
 # Retirement/redirect vocabulary: a line carrying any of these is a legitimate redirect note, so a
 # non-active name appearing on it is allowed (not a stale active-reference).
@@ -80,14 +97,8 @@ fi
 # 2. Build the in-scope doc list: each repo's root README.md + docs/**/*.md, minus the exclusions.
 # ---------------------------------------------------------------------------------------------------
 DOCS=$(
-    for pair in $REPOS; do
-        new=${pair%%:*}
-        old=${pair#*:}
-        if [ -d "$FAMILY_ROOT/$new" ]; then
-            base="$FAMILY_ROOT/$new"
-        else
-            base="$FAMILY_ROOT/$old"
-        fi
+    for repo in $REPOS; do
+        base=$(repo_dir "$repo")
         [ -d "$base" ] || continue
         [ -f "$base/README.md" ] && printf '%s\n' "$base/README.md"
         [ -d "$base/docs" ] && find "$base/docs" -type f -name '*.md' 2>/dev/null

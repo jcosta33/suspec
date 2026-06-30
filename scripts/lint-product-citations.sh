@@ -56,21 +56,28 @@ FORBIDDEN_README='ADR-[0-9]|AUDIT-|doi\.org'
 # Built into a newline-delimited list so paths with unusual characters survive; the find
 # expressions encode the scope exactly (markdown only; the named subtrees only).
 repo_dir() {
-    new=$1
-    old=$2
-    if [ -d "$DEV_DIR/$new" ]; then
-        printf '%s\n' "$DEV_DIR/$new"
-    elif [ -d "$DEV_DIR/$old" ]; then
-        printf '%s\n' "$DEV_DIR/$old"
-    else
-        printf '%s\n' "$DEV_DIR/$new"
+    name=$1
+    if [ -d "$DEV_DIR/$name" ]; then
+        printf '%s\n' "$DEV_DIR/$name"
+        return
     fi
+    for candidate in "$DEV_DIR"/*; do
+        [ -d "$candidate" ] || continue
+        url=$(git -C "$candidate" remote get-url origin 2>/dev/null || true)
+        case "$url" in
+            */"$name"|*/"$name".git)
+                printf '%s\n' "$candidate"
+                return
+                ;;
+        esac
+    done
+    printf '%s\n' "$DEV_DIR/$name"
 }
 
-SUSPEC_SKILLS_DIR=$(repo_dir suspec-skills corpus-skills)
-SUSPEC_AGENTS_DIR=$(repo_dir suspec-agents corpus-agents)
-SUSPEC_KIT_DIR=$(repo_dir suspec-starter-kit corpus-starter-kit)
-SUSPEC_MCP_DIR=$(repo_dir suspec-mcp corpus-mcp)
+SUSPEC_SKILLS_DIR=$(repo_dir suspec-skills)
+SUSPEC_AGENTS_DIR=$(repo_dir suspec-agents)
+SUSPEC_KIT_DIR=$(repo_dir suspec-starter-kit)
+SUSPEC_MCP_DIR=$(repo_dir suspec-mcp)
 
 files=$(
     # suspec-skills: each skill's SKILL.md + that skill's references/*.md

@@ -19,7 +19,7 @@ superseded_by: 0049-minimal-install-no-mount-no-imposed-workspace
 
 ADR-0040/0044 defined the installable payload as `starter-kit/.agents/` and shipped it **wholesale** into an
 adopter's `.suspec/kernel/` — `skills/`, `templates/`, `language/` (the full SOL/APS/errors/versioning
-manuals), `passes/` (the nine pass reference docs with rationale), `conformance/` (the golden corpus),
+manuals), `passes/` (the nine pass reference docs with rationale), `conformance/` (the golden fixture set),
 and `memory/`. The justification was offline self-containment.
 
 Adopting `suspec-cli` made the cost visible: ~1.2 MB of framework documentation copied into the repo, of
@@ -27,7 +27,7 @@ which an agent **loads almost none** at runtime. Per the load-what-the-task-name
 loads the _skill_ the task names; it never opens the full `passes/`/`language/` manuals or the
 conformance suspec. With skills now self-contained ([0047](./0047-skills-are-self-contained.md)), the
 only thing that made the kernel ship `passes/` + `language/` — keeping skill citations from dangling —
-is gone. The corpus (`conformance/`) is test data for a _checker_, never used by an adopting project.
+is gone. The fixture set (`conformance/`) is test data for a _checker_, never used by an adopting project.
 
 ## Decision
 
@@ -59,7 +59,7 @@ the deep reference stays upstream. (The twin-maintenance burden 0044 introduced 
 - **Negative:** an agent cannot read the full pass rationale offline. Acceptable: the skills carry the
   operational rules ([0047](./0047-skills-are-self-contained.md)); rationale is a human concern, upstream.
 - **Neutral:** `starter-kit/.agents/{passes,language,conformance}` remain in the `suspec` repo (the reference +
-  the corpus a future `suspec-core` checker tests against); they are simply outside the installed subset.
+  the fixture set a future `suspec-core` checker tests against); they are simply outside the installed subset.
 
 ## Update (2026-06-06): the compact reference is shipped after all
 

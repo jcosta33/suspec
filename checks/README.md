@@ -39,7 +39,7 @@ flag the mechanical parts:
 | [`fixtures/conformant-task.md`](./fixtures/conformant-task.md)            | A task packet that passes every task check — the positive oracle.                                                                                                                                                                                                                    |
 | [`fixtures/violations.md`](./fixtures/violations.md)                      | One minimal negative fixture per violation class, each with the check it trips and the expected report.                                                                                                                                                                              |
 | `fixtures/auth-refresh/` · `fixtures/payment-5xx/` · `fixtures/checkout/` | Three end-to-end domains: the spec in both forms (the equivalence pair), a task packet, a review packet, a finding, and an `EXPECTED.md` pinning what a checker must report for the spec, change-plan, and review-checklist checks (C001–C011 + the content rules) at each artifact. |
-| [`fixtures/prose-corpus/`](./fixtures/prose-corpus/README.md)             | The labeled writing-rules suspec: prose spans with ground-truth labels for the advisory watchlist, plus the precision/recall baseline any detector is scored against.                                                                                                                |
+| [`fixtures/prose-fixtures/`](./fixtures/prose-fixtures/README.md)             | The labeled writing-rules fixture set: prose spans with ground-truth labels for the advisory watchlist, plus the precision/recall baseline any detector is scored against.                                                                                                                |
 | `fixtures/intake/`                                                        | One valid intake snapshot; the expectation is pinned in the file's trailing note.                                                                                                                                                                                                    |
 | `fixtures/transformation/`                                                | A valid inventory + change-plan pair; its `EXPECTED.md` pins `C010 preserves-refs-resolve` and `C011 waves-present`.                                                                                                                                                                 |
 
@@ -117,5 +117,5 @@ Reconciliation duties this note carries:
 4. Run over each domain's artifacts and compare against its `EXPECTED.md` — including
    the equivalence pair, where both spec forms must yield the same record set.
 5. Score any writing-rules detector against
-   [`fixtures/prose-corpus/labeled.yaml`](./fixtures/prose-corpus/labeled.yaml) and check
-   it against the baseline in [its README](./fixtures/prose-corpus/README.md).
+   [`fixtures/prose-fixtures/labeled.yaml`](./fixtures/prose-fixtures/labeled.yaml) and check
+   it against the baseline in [its README](./fixtures/prose-fixtures/README.md).

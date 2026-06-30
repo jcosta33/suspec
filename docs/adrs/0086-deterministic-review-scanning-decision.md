@@ -61,7 +61,7 @@ change` entry is surfaced as a protected-path fact routed to Human attention. Th
    precedent). _Level: toolable._ Detailed in Propagation.
 
 3. **ACCEPT the measurement track as the gating next investment.** A review-gate benchmark — precision _and_
-   recall on a seeded corpus of scope-drift, do-not-change-touch, and claim-vs-diff cases — is the next
+   recall on a seeded fixture set of scope-drift, do-not-change-touch, and claim-vs-diff cases — is the next
    investment, and it doubles as the real-world test of the `suspec review --json` surface the MCP adapter
    consumes (ADR-0085). It is recorded here as committed-next; it is a program, cut as its own suspec-works spec,
    not built by this ADR. _Level: convention._

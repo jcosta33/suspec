@@ -12,7 +12,7 @@ updated: 2026-06-11
 
 A conformance regime sized for a language ecosystem (document-copy clauses, count acceptance checks,
 maturity ladders) reads as gatekeeping to adopters (O-004, O-012 §3) — while the underlying test data
-(fixtures with pinned expectations, a labeled prose corpus) is genuinely valuable to the tooling that
+(fixtures with pinned expectations, a labeled prose fixture set) is genuinely valuable to the tooling that
 checks specs.
 
 ## Decision
@@ -28,7 +28,7 @@ checks specs.
 3. **Reference values are producer-internal.** The closed-set cardinalities and their reconciliation
    checks live only in `conformance/README.md` (producer note) and the cheatsheet appendix. Adopter-facing
    pages list values, never counts.
-4. **The corpus is "checks fixtures":** test data for `docs/reference/checks.md`, consumed by suspec-cli.
+4. **The fixture set is "checks fixtures":** test data for `docs/reference/checks.md`, consumed by suspec-cli.
    Fixtures pin expected results per the two-way severity split (hard error / warning); each spec-format
    fixture domain ships a simple/SOL **equivalence pair** asserting both surfaces encode the identical
    requirement record (the anti-fork proof), plus intake, change-plan, and inventory fixtures.

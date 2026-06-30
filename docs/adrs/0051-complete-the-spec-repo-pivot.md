@@ -16,7 +16,7 @@ superseded_by:
 the `starter-kit/` still carried the old shape:
 
 - ~448 KB of **not-installed** content lived inside the kit — the `language/` (88 KB) and `passes/` (196 KB)
-  **derived twins** and the `conformance/` golden corpus (164 KB). A thing you hand an adopter should contain
+  **derived twins** and the `conformance/` golden fixture set (164 KB). A thing you hand an adopter should contain
   only what the adopter uses.
 - The kit's skills mixed **authoring** (`write-spec`, `pass-lint-spec`, `persona-architect`…) with
   **code-implementation** (`write-feature`, `fix-flaky-test`, `persona-bug-hunter`, `persona-builder`…). A
@@ -43,7 +43,7 @@ This completes the pivot to the owner's restated principles — **no bloat, stra
 4. **The kit ships no `language/`, `passes/`, or `conformance/`.** The `language/`+`passes/` **twins are
    deleted**: `docs/language/` and `docs/passes/` become the **sole canonical home**, which **retires the
    twin-maintenance discipline of [ADR-0044](./0044-kernel-is-derived-and-self-contained.md)** — a
-   simplification (no more eyeball-diffing two copies). The conformance golden corpus moves to a producer-side
+   simplification (no more eyeball-diffing two copies). The conformance golden fixture set moves to a producer-side
    top-level **`conformance/`** (test data for a future checker, never part of the kit).
 
 This **refines** [0050](./0050-suspec-is-a-spec-repo-discipline.md) (specs top-level),
@@ -67,7 +67,7 @@ the nine passes, or the reconciliation design.
 - **Positive:** the starter kit shrinks to exactly what a spec repo uses (≈20 skills + reference + templates +
   bootloader); specs read as the product (top-level); the docs↔kernel twin-diff chore is gone; a code repo's
   footprint is a self-legible spec + at most one optional skill.
-- **Negative:** a broad doc sweep (ADOPTING, workspace, README, PRINCIPLES, conformance, golden-corpus,
+- **Negative:** a broad doc sweep (ADOPTING, workspace, README, PRINCIPLES, conformance, golden-fixture-set,
   library/pass-guides + heuristic-profiles, the bootloaders) to the new structure, plus the physical moves.
   Done as part of this change.
 - **Neutral:** every closed set (13 personas, 9 passes, 7 blocks…), the SOL grammar, and the reconciliation

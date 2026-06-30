@@ -218,4 +218,4 @@ fixtures:
   domains: [fixtures/auth-refresh, fixtures/payment-5xx, fixtures/checkout]
   intake: fixtures/intake/intake-jira-123.md # valid intake; expectation pinned in its trailing note
   transformation: fixtures/transformation # inventory + change plan; EXPECTED.md pins C010/C011
-  prose: fixtures/prose-corpus/labeled.yaml
+  prose: fixtures/prose-fixtures/labeled.yaml

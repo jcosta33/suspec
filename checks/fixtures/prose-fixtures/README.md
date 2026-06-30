@@ -6,10 +6,10 @@ The labeled fixture set for the writing-rules watchlist in
 [the checks reference](../../../docs/reference/checks.md): short requirement-prose spans,
 each paired with its ground-truth label — `clean`, or the specific `SOL-P` code from the
 checks catalogue that should fire, with the reason. **Inert fixture data — nothing here
-runs.** Suspec ships no detector; this corpus is what a detector — suspec-cli's
+runs.** Suspec ships no detector; this fixture set is what a detector — suspec-cli's
 `suspec check`, or a human reviewer — is scored _against_.
 
-## Why this corpus exists
+## Why this fixture set exists
 
 Structural checks are deterministic — a requirement either has a `Verify with:` line or
 it does not. The writing rules are different: they judge prose for vague quality words,
@@ -25,10 +25,10 @@ detector, so precision and recall can be computed by hand or by a harness.
 
 Design targets for this curated set — chosen acceptance bars, not a measurement claimed
 of any deployed detector. They sit deliberately above the field-measured ceiling
-[[SMELLS]](../../../docs/research/sources.md#SMELLS), because a curated gold corpus is a
+[[SMELLS]](../../../docs/research/sources.md#SMELLS), because a curated gold fixture set is a
 far more controlled setting than production prose.
 
-| Metric    | Target | Meaning on this corpus                                                          |
+| Metric    | Target | Meaning on this fixture set                                                          |
 | --------- | ------ | ------------------------------------------------------------------------------- |
 | precision | ≥ 0.90 | of the spans a rule flags, at least 90% are true problems (few false positives) |
 | recall    | ≥ 0.85 | of the true problems present here, at least 85% are flagged (few misses)        |
@@ -67,7 +67,7 @@ heuristic writing rules do.
 4. Tally true and false positives and the misses across the set; compute precision and
    recall; check them against the baseline above.
 
-Because the label is recorded in data — not computed by the checker — the corpus catches
+Because the label is recorded in data — not computed by the checker — the fixture set catches
 a detector that flags everything (precision collapses on the `clean` items) and one that
 flags nothing (recall collapses on the problem items) as readily as one with a subtle
 per-code bug.
@@ -76,10 +76,10 @@ per-code bug.
 
 | File                             | Holds                                                                    |
 | -------------------------------- | ------------------------------------------------------------------------ |
-| `README.md`                      | this contract — what the corpus is, the baseline, how it is used         |
+| `README.md`                      | this contract — what the fixture set is, the baseline, how it is used         |
 | [`labeled.yaml`](./labeled.yaml) | the labeled items: span, context, label, expected code, severity, reason |
 
-The corpus is self-contained: every label is decidable from the item's own `text`,
+The fixture set is self-contained: every label is decidable from the item's own `text`,
 `context`, and `reason`. The word families and the same-line rule the labels invoke are
 the writing rules of [the checks reference](../../../docs/reference/checks.md); this
 suspec pins expected outcomes, not rule mechanics.
