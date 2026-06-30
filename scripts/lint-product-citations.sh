@@ -5,28 +5,32 @@
 # provenance markers. Those markers are how the Suspec repo records WHY a decision was made
 # (ADR-NNNN), what audit surfaced a fact (AUDIT-...), and where a primary source lives
 # (github / doi.org URLs). They belong in the docs/specs/ADRs of the Suspec workspace, NOT in
-# the shipped skill guides, agent definitions, and product READMEs — a user reading a SKILL.md
-# should see the rule, not the citation trail behind it.
+# the shipped skill guides, agent definitions, templates, hooks, or generated runner files — a
+# user reading product prose should see the rule, not the citation trail behind it.
 #
-# This gate greps the PRODUCT MARKDOWN files for those forbidden markers and fails on any hit.
+# Top-level product READMEs are the one narrower class: they may link to repos/install instructions,
+# but still must not carry ADR/AUDIT/DOI provenance citations.
+#
+# This gate greps the PRODUCT FILES for those forbidden markers and fails on any hit.
 # It is a RECORD/CHECK, not an executor (ADR-0077): it reads and reports, it edits nothing.
 #
-# SCOPE — deliberately MARKDOWN-ONLY, to stay low false-positive (ADR-0063: a noisy gate gets
-# muted). In a .md product file a citation is unambiguously a citation. In a code file (e.g.
-# suspec-mcp/src/tools.ts) grep cannot tell a forbidden citation in prose from the same string
-# inside a code comment or a test fixture, so code files are OUT OF SCOPE here — they are
-# reviewed by a human, not linted by this gate.
+# SCOPE — deliberately file-surface based, to stay low false-positive (ADR-0063: a noisy gate gets
+# muted). Markdown/TOML/hook/workflow templates are shipped prose or shipped instructions. In a code
+# file (e.g. suspec-mcp/src/tools.ts) grep cannot tell a forbidden citation in emitted prose from
+# the same string inside a code comment or a test fixture, so code files are OUT OF SCOPE here —
+# they are reviewed by a human, not linted by this gate.
 #
 # The linted set, per repo (sibling repos under /Users/josecosta/dev by default):
 #   suspec-skills/skills/<name>/SKILL.md          + that skill's references/*.md
 #   suspec-agents/agents/*.md                     (top-level agent definitions)
-#   suspec-starter-kit/.agents/skills/<name>/SKILL.md
-#   suspec-skills/README.md , suspec-mcp/README.md   (the two product READMEs)
+#   suspec-agents/.codex/agents/*.toml            (generated Codex agent definitions)
+#   suspec-starter-kit/AGENTS.md, templates/*.md, hooks/*, .agents/skills/<name>/SKILL.md
+#   top-level product READMEs in the family        (README carve-out: repo/install links allowed)
 #
 # Forbidden patterns (extended regex):
 #   ADR-[0-9]            an Architecture Decision Record reference
 #   AUDIT-               an audit reference
-#   https?://github      a GitHub source URL  (http or https)
+#   https?://github      a GitHub source URL  (http or https; body/template files only)
 #   doi.org              a DOI source URL
 #
 # Usage:
@@ -49,10 +53,10 @@ fi
 # Forbidden-citation patterns (extended regex). A skill/agent BODY carries no sourcing at all —
 # including source URLs. A product README legitimately links to the repo and install instructions, so
 # a README forbids only the provenance CITATIONS (ADR-/AUDIT-/doi), never github repo/install URLs.
-FORBIDDEN_BODY='ADR-[0-9]|AUDIT-|https?://github|doi\.org'
-FORBIDDEN_README='ADR-[0-9]|AUDIT-|doi\.org'
+FORBIDDEN_BODY='ADR-[0-9]|AUDIT-[A-Za-z0-9]|https?://github|doi\.org'
+FORBIDDEN_README='ADR-[0-9]|AUDIT-[A-Za-z0-9]|doi\.org'
 
-# --- Collect the in-scope product markdown files ------------------------------
+# --- Collect the in-scope product files ---------------------------------------
 # Built into a newline-delimited list so paths with unusual characters survive; the find
 # expressions encode the scope exactly (markdown only; the named subtrees only).
 repo_dir() {
@@ -74,12 +78,15 @@ repo_dir() {
     printf '%s\n' "$DEV_DIR/$name"
 }
 
+SUSPEC_MAIN_DIR=$(repo_dir suspec)
 SUSPEC_SKILLS_DIR=$(repo_dir suspec-skills)
 SUSPEC_AGENTS_DIR=$(repo_dir suspec-agents)
 SUSPEC_KIT_DIR=$(repo_dir suspec-starter-kit)
 SUSPEC_MCP_DIR=$(repo_dir suspec-mcp)
+SUSPEC_CLI_DIR=$(repo_dir suspec-cli)
+SUSPEC_BENCH_DIR=$(repo_dir suspec-bench)
 
-files=$(
+body_files=$(
     # suspec-skills: each skill's SKILL.md + that skill's references/*.md
     if [ -d "$SUSPEC_SKILLS_DIR/skills" ]; then
         find "$SUSPEC_SKILLS_DIR/skills" -type f \
@@ -89,23 +96,49 @@ files=$(
     if [ -d "$SUSPEC_AGENTS_DIR/agents" ]; then
         find "$SUSPEC_AGENTS_DIR/agents" -maxdepth 1 -type f -name '*.md'
     fi
-    # suspec-starter-kit: bundled skill guides (.claude/skills is a symlink to this)
+    # suspec-agents: generated Codex agent definitions are product output, too.
+    if [ -d "$SUSPEC_AGENTS_DIR/.codex/agents" ]; then
+        find "$SUSPEC_AGENTS_DIR/.codex/agents" -maxdepth 1 -type f -name '*.toml'
+    fi
+    # suspec-starter-kit: standing instructions, templates, hooks, and bundled skill guides
+    if [ -f "$SUSPEC_KIT_DIR/AGENTS.md" ]; then
+        printf '%s\n' "$SUSPEC_KIT_DIR/AGENTS.md"
+    fi
+    if [ -d "$SUSPEC_KIT_DIR/templates" ]; then
+        find "$SUSPEC_KIT_DIR/templates" -maxdepth 1 -type f -name '*.md'
+    fi
+    if [ -d "$SUSPEC_KIT_DIR/hooks" ]; then
+        find "$SUSPEC_KIT_DIR/hooks" -maxdepth 1 -type f \
+            \( -name '*.md' -o -name 'pre-commit' -o -name '*.yml' -o -name '*.yaml' \)
+    fi
     if [ -d "$SUSPEC_KIT_DIR/.agents/skills" ]; then
         find "$SUSPEC_KIT_DIR/.agents/skills" -type f -name 'SKILL.md'
     fi
-    # The two product READMEs (named explicitly; print only if present).
-    # NB: the final command in this $(...) must succeed, or `set -e` would fail the
-    # whole assignment — so the `[ -f ]` test is guarded with `|| :` (true) and the
-    # loop closes cleanly even when a README is absent (e.g. a partial seed tree).
-    for r in "$SUSPEC_SKILLS_DIR/README.md" "$SUSPEC_MCP_DIR/README.md"; do
+    :
+)
+
+readme_files=$(
+    # Top-level product READMEs. These may carry repo/install links, but not provenance citations.
+    # NB: the final command in this $(...) must succeed, or `set -e` would fail the whole assignment.
+    for r in \
+        "$SUSPEC_MAIN_DIR/README.md" \
+        "$SUSPEC_SKILLS_DIR/README.md" \
+        "$SUSPEC_AGENTS_DIR/README.md" \
+        "$SUSPEC_KIT_DIR/README.md" \
+        "$SUSPEC_MCP_DIR/README.md" \
+        "$SUSPEC_CLI_DIR/README.md" \
+        "$SUSPEC_BENCH_DIR/README.md"
+    do
         if [ -f "$r" ]; then printf '%s\n' "$r"; fi
     done
     :
 )
 
+files=$(printf '%s\n%s\n' "$body_files" "$readme_files" | grep . || true)
+
 # A scope that matched nothing means the parent dir is wrong — fail loudly, don't pass vacuously.
 if [ -z "$files" ]; then
-    echo "lint-product-citations: no in-scope product markdown files found under $DEV_DIR" >&2
+    echo "lint-product-citations: no in-scope product files found under $DEV_DIR" >&2
     echo "  Expected sibling repos like $DEV_DIR/suspec-skills, $DEV_DIR/suspec-agents." >&2
     echo "  Check the REPO_PARENT_DIR argument." >&2
     exit 2
@@ -115,26 +148,28 @@ fi
 # grep -H prints file:line:match; we keep the file:line and the matched text for the report.
 # `set +e` around the grep so a clean file (grep exit 1) does not trip `set -e`.
 hits=$(
-    printf '%s\n' "$files" | while IFS= read -r f; do
+    printf '%s\n' "$body_files" | while IFS= read -r f; do
         [ -n "$f" ] || continue
-        case "$f" in
-            (*/README.md) pat="$FORBIDDEN_README" ;;
-            (*)           pat="$FORBIDDEN_BODY" ;;
-        esac
-        grep -HnE "$pat" "$f" 2>/dev/null || true
+        grep -HnE "$FORBIDDEN_BODY" "$f" 2>/dev/null || true
+    done
+    printf '%s\n' "$readme_files" | while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        grep -HnE "$FORBIDDEN_README" "$f" 2>/dev/null || true
     done
 )
 
 count=$(printf '%s\n' "$files" | grep -c . || true)
 
 if [ -n "$hits" ]; then
-    echo "lint-product-citations: FAIL — forbidden citations in product markdown:" >&2
+    echo "lint-product-citations: FAIL — forbidden citations in product files:" >&2
     printf '%s\n' "$hits" >&2
     echo "" >&2
-    echo "  Product surfaces must not carry workspace provenance markers" >&2
-    echo "  (ADR-NNNN, AUDIT-…, github/doi.org URLs). Move the citation to the" >&2
-    echo "  suspec workspace docs and state only the rule in the product file." >&2
+    echo "  Product bodies/templates must not carry workspace provenance markers" >&2
+    echo "  (ADR-NNNN, AUDIT-…, github/doi.org URLs). Top-level product READMEs may" >&2
+    echo "  link to repos/install instructions, but not to ADR/AUDIT/DOI citations." >&2
+    echo "  Move the citation to the suspec workspace docs and state only the rule in" >&2
+    echo "  the product file." >&2
     exit 1
 fi
 
-echo "lint-product-citations: OK — $count product markdown file(s) clean (no ADR/AUDIT/source-URL citations)."
+echo "lint-product-citations: OK — $count product file(s) clean (README repo/install links allowed)."

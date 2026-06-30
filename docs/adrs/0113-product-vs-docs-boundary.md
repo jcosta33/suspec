@@ -3,7 +3,7 @@ type: adr
 id: adr-0113
 status: accepted
 created: 2026-06-27
-updated: 2026-06-27
+updated: 2026-06-30
 ---
 
 # ADR-0113 — Citations live in docs, not in products (the product-vs-docs boundary)
@@ -30,53 +30,60 @@ ADR writes it down.
 
 ## Decision
 
-**Product-facing files carry zero sourcing; sourcing lives only under `docs/`.**
+**Product-facing bodies carry zero sourcing; top-level product READMEs carry only install/discovery
+links. Sourcing lives under `docs/`.**
 
-1. **The product surface — zero citations, zero source URLs.** These files MUST carry no
+1. **The product body/template surface — zero citations, zero source URLs.** These files MUST carry no
    `ADR-####` / `AUDIT-####` citation and no repo / GitHub / DOI URL:
    - agent definition **bodies** (suspec-agents),
+   - generated runner projections such as Codex `.toml` files,
    - **`SKILL.md` bodies** (the catalog and the kit),
+   - starter-kit standing instructions, templates, hooks, and bundled skill guides,
    - MCP tool **`title` / `description` / `inputSchema` `.describe()` strings** (suspec-mcp),
-   - product **READMEs**.
+   - any other shipped prose or emitted product string.
 
-2. **The docs surface cites freely.** Everything under `docs/` — and the science / sources pages
+2. **Top-level product READMEs may link for installation/discovery, not provenance.** A family README
+   may link to the framework repo, sibling repos, release pages, install docs, and local `docs/` pages
+   because that is how a user finds and installs the product. It MUST NOT carry `ADR-####` /
+   `AUDIT-####` / DOI provenance citations or explain a behavior by pointing at an internal decision
+   record. The README states the product fact; the docs cite why.
+
+3. **The docs surface cites freely.** Everything under `docs/` — and the science / sources pages
    — sources normally; citing the evidence is *their job*. The boundary is between **what ships
    as product behavior** and **what documents it**.
 
-3. **Two reasons it is a boundary, not a style choice:**
+4. **Two reasons it is a boundary, not a style choice:**
    (a) **Self-containment** — a cross-folder citation link 404s the moment the skill or agent is
    installed standalone, away from the `docs/` it pointed at;
    (b) **Separation of concerns** — sourcing is a documentation concern, not product behavior; a
    tool description's job is to tell an agent what the tool does, not to footnote why.
 
-4. **Code comments are out of scope.** A comment is maintainer rationale, not a shipped product
+5. **Code comments are out of scope.** A comment is maintainer rationale, not a shipped product
    string; it may carry an ADR reference. The rule governs strings the *product emits or
    displays*, not the source that explains them to a maintainer.
 
-_Level: convention (in force now, by discipline + review)._ The policy is **in force today**:
-this program stripped suspec-skills, suspec-agents, suspec-mcp, and the kit, and codified the
-rule in suspec-skills `docs/self-containment.md` Rule 3 and suspec-agents `docs/sources.md`.
-What holds it today is **discipline and review**, not a tool.
+_Level: method gate plus review._ The policy is **in force today**: this program stripped
+suspec-skills, suspec-agents, suspec-mcp, the starter kit, the CLI README, and bench README product
+surfaces, then codified the body/README split in `scripts/lint-product-citations.sh`.
 
-The **enforcement path** is a per-repo CI regex-lint scanning the designated product paths for
-`ADR-####` / `AUDIT-####` tokens and source URLs. That lint is the **toolable** path and is
-**NOT YET SHIPPED** — it is not enforced, does not block, and is not guaranteed; the recurrence
-the sweep found is exactly what an unbuilt gate fails to prevent. Per the honesty framework
-([ADR-0063](./0063-honesty-framework-and-tooling-boundary.md)), do not describe this rule as
-enforced until that lint ships in each repo.
+The **enforcement path** is the family regex-lint scanning designated product paths for `ADR-####` /
+`AUDIT-####` tokens and source URLs. It scans product body/template files with the strict rule and
+top-level product READMEs with the narrower provenance-citation rule. Code comments and emitted
+strings buried inside code still require human review because a grep-only code pass would be noisy;
+do not claim those are mechanically enforced.
 
 ## Consequences
 
-- **Cost — the rule lives on humans until the lint ships.** A convention held by review is
-  exactly the regime where the sweep already caught one recurrence. Until the regex-lint lands
-  per repo, a new citation can leak into a product string between reviews; this ADR makes the
-  leak a named, greppable violation, not a silent one.
+- **Cost — code-emitted product strings still need review.** The shipped lint covers the low-noise
+  file surfaces. Tool strings or diagnostics embedded in code remain a human-review obligation until a
+  parser-aware check can distinguish emitted prose from comments and fixtures.
 - **A reader of a tool description or a `SKILL.md` loses the inline "why."** The sourcing is one
   hop away under `docs/` instead of in front of them. This is the deliberate trade: the product
   string stays installable and self-contained, and the evidence stays where it can be maintained.
+- **A top-level README may still help users find the product.** Repo/install links are product
+  navigation, not provenance. ADR/AUDIT/DOI citations remain documentation-only.
 - **The boundary is mechanical and auditable.** "Does this file ship as product, or document it?"
-  decides every case, and the violation is a regex — which is what makes the future CI lint cheap
-  to build.
+  decides every case, and the low-noise violation classes are regex-checkable.
 - **Comments are explicitly spared**, so maintainer rationale near code is not collateral damage;
   the rule does not push ADR references out of the codebase, only out of emitted strings.
 
