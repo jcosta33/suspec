@@ -1,6 +1,6 @@
 # Checks fixtures
 
-_Advanced design note — internal rationale; not needed to use Suspec._
+_Advanced design note — maintainer rationale; not needed to use Suspec._
 
 Test data for [the checks reference](../docs/reference/checks.md), consumed by suspec-cli.
 Every check in that reference is a claim about what a correct checker reports on a given
@@ -77,23 +77,21 @@ different check behavior, these pairs are the fixtures that catch it.
 
 ## Reference values (reconciliation) — producer note
 
-This section is for maintainers of Suspec and of tools that consume it. The closed sets
-below have exact sizes, and those sizes are registered in exactly two places: **here** and
-the appendix of [the cheatsheet](../docs/reference/cheatsheet.md). Adopter-facing pages list
-values rather than counting them (a numeral-bearing model name — the six-step loop, the
-nine-step lifecycle — is a name, not a registry copy). A change to any set updates both
-places — and the fixtures that exercise it — in the same commit.
+This section is for maintainers of Suspec and of tools that consume it. It lists the
+closed-set values the fixtures exercise, without keeping a separate count registry.
+Adopter-facing pages list values only when the values help the reader. A change to any set
+updates this producer note and the fixtures that exercise it in the same commit.
 
-| Closed set                 | Count                    | Values                                                                                                            |
-| -------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| Block types (SOL form)     | 5                        | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`                                                         |
-| Strength words             | 5                        | must, must not, should, should not, may (SOL form: the same words uppercase)                                      |
-| Review results             | 7 (4 core + 3 lifecycle) | core: Pass, Fail, Unverified, Blocked · lifecycle: Waived, Stale, Contradicted                                    |
-| Verification methods       | 9                        | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`                        |
-| Loop steps                 | 6 (+ 2 conditional)      | Pull, Spec, Task, Run, Review, Close (+ Inventory, Change Plan for structural work)                               |
-| Lifecycle steps (advanced) | 9                        | author, lint, improve, lower, decompose, implement, verify, review, promote                                       |
-| Improve operations         | 10                       | NORMALIZE, ATOMIZE, CONCRETIZE, QUANTIFY, BIND, SCOPE, CLARIFY, DECONFLICT, COMPRESS, PROMOTE                     |
-| Check layers               | 5                        | S (structure), P (prose), M (cross-references), V (verification), O (splitting work) — code form `SOL-<LAYER>NNN` |
+| Closed set                 | Values                                                                                                            |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Block types (SOL form)     | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`                                                         |
+| Strength words             | must, must not, should, should not, may (SOL form: the same words uppercase)                                      |
+| Review results             | core: Pass, Fail, Unverified, Blocked · lifecycle: Waived, Stale, Contradicted                                    |
+| Verification methods       | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`                        |
+| Loop steps                 | Pull, Spec, Task, Run, Review, Close; Inventory and Change Plan for structural work                               |
+| Lifecycle steps (advanced) | author, lint, improve, lower, decompose, implement, verify, review, promote                                       |
+| Improve operations         | NORMALIZE, ATOMIZE, CONCRETIZE, QUANTIFY, BIND, SCOPE, CLARIFY, DECONFLICT, COMPRESS, PROMOTE                     |
+| Check layers               | S (structure), P (prose), M (cross-references), V (verification), O (splitting work) — code form `SOL-<LAYER>NNN` |
 
 Reconciliation duties this note carries:
 

@@ -7,7 +7,7 @@ Suspec uses markdown. Any tool that can read files can use it.
 Give the agent:
 
 - `AGENTS.md`
-- the task packet
+- the spec, or the task packet when work is split
 - the repo checkout or worktree
 
 Common setup:
@@ -15,12 +15,12 @@ Common setup:
 | Tool | Integration |
 | --- | --- |
 | Claude Code | reads `AGENTS.md`; optional `CLAUDE.md` symlink |
-| Codex | reads `AGENTS.md` and task files |
-| Cursor | read task packet in chat or attach file |
-| GitHub Copilot | paste or link the task packet |
-| Aider / other CLIs | point the command at the task file |
+| Codex | reads `AGENTS.md` and spec/task files |
+| Cursor | read the spec or task packet in chat, or attach the file |
+| GitHub Copilot | paste or link the spec or task packet |
+| Aider / other CLIs | point the command at the spec or task file |
 
-The task packet is the contract. The agent UI is replaceable.
+The spec is the contract; a task packet narrows it when work is split. The agent UI is replaceable.
 
 ## Issue trackers
 

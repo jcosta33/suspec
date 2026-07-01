@@ -3,8 +3,8 @@
 The loop:
 
 ```text
-Pull -> (Inventory) -> Spec -> (Change Plan) -> Task -> Run -> Review -> Close
-        optional       optional
+Pull -> (Inventory) -> Spec -> (Change Plan) -> (Task) -> Run -> Review -> Close
+        optional       optional           split-only
 ```
 
 Every artifact is markdown in the workspace. See [where files live](03-where-files-live.md).
@@ -131,9 +131,9 @@ See [saving findings](09-saving-findings.md).
 
 | Work | Path |
 | --- | --- |
-| Small feature | Pull -> Spec -> Task -> Run -> Review -> Close |
-| Bug fix | Pull -> amend spec -> Task -> Run -> Review -> Close |
-| Brownfield change | Pull -> Inventory -> Spec -> Task -> Run -> Review -> Close |
+| Small feature | Pull -> Spec -> Run -> Review -> Close |
+| Bug fix | Pull -> amend spec -> Run -> Review -> Close |
+| Brownfield change | Pull -> Inventory -> Spec -> Run -> Review -> Close |
 | Migration or rewrite | Pull -> Inventory -> Spec -> Change Plan -> wave Tasks -> Reviews -> Close |
 | PR that already exists | Intake the PR -> write the acceptance bar -> Review |
 

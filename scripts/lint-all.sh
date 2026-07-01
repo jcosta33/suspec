@@ -1,13 +1,12 @@
 #!/bin/sh
 # lint-all.sh — run every shipped method-gate (ADRs 0113-0118) over the Suspec family.
 #
-# A single entry point for the four scriptable gates. Each is a RECORD/CHECK, not an executor
+# A single entry point for the scriptable gates. Each is a RECORD/CHECK, not an executor
 # (ADR-0077): it reads and reports, edits nothing. Aggregates: exits 0 only if every gate is clean,
 # else non-zero (the first failing gate's findings are printed above).
 #
 #   0113  lint-product-citations.sh   no ADR/AUDIT/source-URL citations in product bodies (READMEs may link)
 #   0117  lint-count-ranges.sh        no hardcoded count-bearing ADR ranges in bootstrap/reference prose
-#   0114  lint-artifact-refs.sh       no product/reference doc names a retired/relocated artifact as active
 #   0115  check-catalog-freshness.sh  a synced workspace catalog copy must match its source (no orphaned copy)
 #
 # The suspec-cli spec-side check (0116, active spec → `## Execution`) ships in `suspec check`, not here.
@@ -20,7 +19,7 @@ HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DEV_DIR="${1:-/Users/josecosta/dev}"
 
 rc=0
-for gate in lint-product-citations lint-count-ranges lint-artifact-refs check-catalog-freshness; do
+for gate in lint-product-citations lint-count-ranges check-catalog-freshness; do
     echo "--- $gate ---"
     if ! sh "$HERE/$gate.sh" "$DEV_DIR"; then
         rc=1

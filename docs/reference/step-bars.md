@@ -52,7 +52,7 @@ Output: task packet.
 
 ## Run
 
-Input: task packet and diff.
+Input: spec or task packet and diff.
 
 Output: run summary.
 
@@ -65,7 +65,7 @@ Output: run summary.
 
 ## Review
 
-Input: spec, task, run summary, diff.
+Input: spec, optional task, run summary, diff.
 
 Output: review packet.
 

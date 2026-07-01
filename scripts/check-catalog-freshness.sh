@@ -3,16 +3,16 @@
 #
 # ADR-0115 ("Synced workspace catalogs must be links or freshness-gated — no orphaned copies"):
 # the governed skills catalog (suspec-skills) is the single source for the universal, framework-free
-# skills, but the workspace keeps a hand-synced copy at suspec-works/.agents/skills that the live
-# .claude/skills symlinks into. A copy that can drift will drift (the Phase-3 sweep found it 2+ days
-# stale — missing skills the catalog had added, still hosting one it had retired). This is the option-2
+# skills, but the private family workspace keeps a hand-synced copy at .agents/skills that the live
+# .claude/skills symlinks into. A copy that can drift will drift (the Phase-3 sweep found stale
+# workspace copies and missing catalog additions). This is the option-2
 # freshness CHECK named in ADR-0115: it diffs the copy against its source and FAILS on any divergence,
 # so a stale catalog copy is caught at CI / pre-commit time instead of by a human sweep.
 #
 # It is a RECORD/CHECK, not an executor (ADR-0077): it diffs trees and edits nothing.
 #
 # What it gates (the hard, fail-on-divergence check — the no-orphaned-copy guard):
-#   For every skill dir present in BOTH suspec-works/.agents/skills AND suspec-skills/skills, the
+#   For every skill dir present in BOTH the workspace .agents/skills copy AND suspec-skills/skills, the
 #   workspace copy must be byte-identical to the governed source — SKILL.md and every reference file.
 #   Any content mismatch, or a reference file present in one but not the other, fails the gate.
 #
@@ -59,14 +59,16 @@ repo_dir() {
     fi
 }
 
-WORKS_SKILLS=${WORKS_SKILLS:-"$(repo_dir suspec-works)/.agents/skills"}
+if [ -z "${WORKS_SKILLS:-}" ]; then
+    WORKS_SKILLS="$(repo_dir suspec-works)/.agents/skills"
+fi
 CATALOG_SKILLS=${CATALOG_SKILLS:-"$(repo_dir suspec-skills)/skills"}
 KIT_SKILLS=${KIT_SKILLS:-"$(repo_dir suspec-starter-kit)/.agents/skills"}
 STRICT_KIT=${STRICT_KIT:-1}
 
 if [ ! -d "$WORKS_SKILLS" ]; then
     echo "check-catalog-freshness: cannot find the workspace skills copy at: $WORKS_SKILLS" >&2
-    echo "  Set WORKS_SKILLS to the suspec-works/.agents/skills directory." >&2
+    echo "  Set WORKS_SKILLS to the private workspace's .agents/skills directory." >&2
     exit 2
 fi
 if [ ! -d "$CATALOG_SKILLS" ]; then

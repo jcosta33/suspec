@@ -3,7 +3,7 @@
 ## Loop
 
 ```text
-Pull -> (Inventory) -> Spec -> (Change Plan) -> Task -> Run -> Review -> Close
+Pull -> (Inventory) -> Spec -> (Change Plan) -> (Task) -> Run -> Review -> Close
 ```
 
 ## Files
@@ -123,7 +123,7 @@ Dedicated workspace repo:
 Code repo pointer:
 
 ```text
-Suspec workspace: ../<project>-works. Read the task packet before coding.
+Suspec workspace: ../<project>-works. Read the spec or task packet before coding.
 ```
 
 ## CLI

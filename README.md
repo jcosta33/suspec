@@ -2,7 +2,7 @@
 
 **A lightweight spec and review workflow for teams using coding agents.**
 
-Tickets become specs. Specs become agent-ready tasks. Agent output becomes evidence you
+Tickets become specs. Specs become bounded agent work. Agent output becomes evidence you
 can review. Plain markdown, any agent, no runtime.
 
 ## The problem
@@ -19,21 +19,22 @@ the code. Suspec structures the work around it, and spends where the bottleneck 
 ## The loop
 
 ```
-Pull ──▶ Spec ──▶ Task ──▶ Run ──▶ Review ──▶ Close
- │        │        │        │        │          │
-intake   spec     task    branch   review     finding
-snapshot                  + code   packet     + status
+Pull ──▶ Spec ──▶ (Task) ──▶ Run ──▶ Review ──▶ Close
+ │        │         │        │        │          │
+intake   spec   split task branch   review     finding
+snapshot optional when     + code   packet     + status
+         work fans out
 ```
 
 1. **Pull** — point the spec's `sources` at the origin (a ticket URL, an issue, or `self`), or snapshot the ticket into `intake/` when you want the raw request kept. Intake is optional.
 2. **Spec** — a one-page contract: requirements with IDs and `Verify with:` lines.
-3. **Task** — a bounded packet an agent finishes in one sitting.
+3. **Task** — optional: a bounded packet when one spec splits into parallel slices.
 4. **Run** — your agent, in its own git worktree (a parallel checkout: own folder, own branch).
 5. **Review** — coverage, evidence, a human-attention list. Not a 3,000-line diff.
 6. **Close** — save what you learned as a finding; update the board.
 
 Structural or brownfield work adds two optional steps: an **inventory** (map what exists)
-and a **change plan** (how the code changes safely). Small cleanups skip to Task. Full
+and a **change plan** (how the code changes safely). Small cleanups usually run straight from the spec. Full
 guide: [docs/02-basic-workflow.md](docs/02-basic-workflow.md).
 
 ## Sixty seconds
@@ -65,7 +66,7 @@ The review packet that comes back after an agent run:
 
 The table is the point. You read which requirements passed **with evidence** and which
 didn't. You read where your eyes are needed. You skip the whole diff. An empty evidence cell
-means _Unverified_, never _Pass_. Full demo — a 41-file agent PR reviewed by exception:
+means _Unverified_, never _Pass_. Full demo — a large agent PR reviewed by exception:
 [docs/examples/large-pr-review.md](docs/examples/large-pr-review.md).
 
 ## Where files live
@@ -82,14 +83,14 @@ means _Unverified_, never _Pass_. Full demo — a 41-file agent PR reviewed by e
 | **understand the method** — formats, the checks contract, the decision ledger | **this repo** — `docs/` (the numbered happy path), `docs/reference/`, `docs/adrs/`                                   |
 | **run the checks / wire the gate** — `suspec check` as a command              | [suspec-cli](https://github.com/jcosta33/suspec-cli) — the reference CLI (optional)                                  |
 | **add optional skills** — review stances, code-lifecycle + authoring guides    | [suspec-skills](https://github.com/jcosta33/suspec-skills) — `npx skills add jcosta33/suspec-skills`                 |
-| **delegate to subagents** — review / audit / spec-author worker definitions    | [suspec-agents](https://github.com/jcosta33/suspec-agents) — copy into `.claude/agents/` (Claude Code) / `.codex/agents/` (Codex) |
+| **delegate to subagents** — review / audit / spec-author worker definitions    | [suspec-agents](https://github.com/jcosta33/suspec-agents) — copy Claude Code agents, or generate Codex TOML with `suspec agents emit --codex` |
 | **use Suspec over MCP** — read + reconcile facts from a non-terminal client    | [suspec-mcp](https://github.com/jcosta33/suspec-mcp) — an MCP server for Claude Desktop / Cursor (no shell needed)   |
 
 Most people start at the kit and never read this repo cover to cover.
 
 ## Works today, comes later
 
-**Today** (markdown + your agent, nothing to install): the templates, specs, task packets,
+**Today** (markdown + your agent, nothing to install): the templates, specs, optional task packets,
 review packets, findings, the worked examples. Suspec itself needs no runtime.
 
 **Toolable** (optional — the reference CLI, [suspec-cli](https://github.com/jcosta33/suspec-cli)):
@@ -101,12 +102,12 @@ and pull-request gates — teeth for the review side. Nothing here is a runtime 
 review` reconciles a finished run against its spec and diff — surfacing facts (omitted edits,
 out-of-scope changes, unbacked claims), never a result.
 
-**Planned** (the rest of `suspec-cli`): `suspec close`. What ships when:
-[docs/reference/future-cli.md](docs/reference/future-cli.md).
+CLI boundary and command surface:
+[CLI reference](docs/reference/cli.md).
 
 Suspec does **not** promise deterministic generation, automatic correctness, formal
 verification, software compiled from specs, or the end of PR review. It promises better
-inputs, bounded tasks, reviewable evidence, and kept context.
+inputs, bounded work, reviewable evidence, and kept context.
 
 ## Is / is not
 

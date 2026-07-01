@@ -1,8 +1,8 @@
 # Running agents
 
-Suspec does not run agents. It gives them task packets.
+Suspec does not run agents. It gives them a spec by default, or a task packet when work is split.
 
-Any worker can use a task packet:
+Any worker can use a Suspec packet:
 
 - Claude Code
 - Codex
@@ -13,13 +13,16 @@ Any worker can use a task packet:
 
 ## Handoff
 
-Point the worker at the task file:
+Point the worker at the spec, or at the task file when one exists:
 
 ```text
+Read specs/checkout/spec.md and implement AC-001.
+
 Read tasks/checkout-expiry.md and do what it says.
 ```
 
-The task file contains the source, scope, `Do not change`, affected areas, verify commands, and standing instructions.
+The spec contains requirements and `Verify with:` lines. A task file adds the split scope, `Do not change`,
+affected areas, verify commands, and standing instructions for one slice.
 
 ## Worker types
 
@@ -32,19 +35,19 @@ Do not merge scout output as implementation work.
 
 Run authoring, implementation, and review as different sessions:
 
-- **Spec/task author** — writes the spec, change plan, and task packet.
-- **Implementer** — executes one task; reads the task and cited spec; the task is the scope boundary; does not change requirements.
+- **Spec/task author** — writes the spec, change plan, and split task packets when needed.
+- **Implementer** — executes one spec or task slice; reads the spec and any task; the scoped requirements are the boundary; does not change requirements.
 - **Lens reviewer** — reviews one lens (correctness, evidence, design risk, …) and returns findings only.
 - **Review lead** — orchestrates at least three lens reviewers, reconciles, and writes the packet.
 - **Human/owner** — owns the verdict.
 
 The reviewer is not the implementer. The spec or task author may review the implementation, as long as they did not implement it.
 
-Escalate to a stronger model or session on unclear scope, repeated Verify failures, risky files, or a requirement that needs reinterpretation. A cheaper implementer fits a clear, bounded task — but measure the saving by pass rate, rework rate, and review outcome; never assume it.
+Escalate to a stronger model or session on unclear scope, repeated Verify failures, risky files, or a requirement that needs reinterpretation. A cheaper implementer fits clear, bounded work — but measure the saving by pass rate, rework rate, and review outcome; never assume it.
 
 ## Worktree rule
 
-Use one branch or worktree per task.
+Use one branch or worktree per spec, or per task when the spec is split.
 
 Branch pattern:
 
@@ -52,7 +55,7 @@ Branch pattern:
 suspec/<spec-slug>/<task-slug>
 ```
 
-For a single-task spec:
+For a single-implementer spec:
 
 ```text
 suspec/<task-slug>
@@ -62,7 +65,7 @@ Worktrees isolate file state. They do not isolate shared services, ports, databa
 
 ## Provenance
 
-For delegated or worker-run tasks, record:
+For delegated or worker-run specs/tasks, record:
 
 - sources read
 - guide loaded
@@ -73,7 +76,7 @@ This is evidence for review. It is not a trust token.
 
 ## What the worker must return
 
-The returned task packet contains:
+The returned spec `## Execution` entry, or task packet when split, contains:
 
 - every verify item checked or marked blocked
 - real output pasted under each command

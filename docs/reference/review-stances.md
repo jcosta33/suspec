@@ -49,20 +49,21 @@ Refuses:
 - implementer judging own work
 - softened findings to avoid blocking
 
-### Surveyor
+### Market Research
 
-Use for breadth research.
+Use for market, customer, competitor, or UX-pattern research.
 
 Focus:
 
-- patterns across many examples
-- named instances
-- observation separate from claim
+- traceable evidence synthesis
+- observation, claim, inference, and recommendation separated
+- confidence graded by source quality, recency, and fit
 
 Refuses:
 
 - pattern claims from one example
-- recommendations without a decision step
+- synthetic respondents presented as customer evidence
+- market-size claims without formulas, units, dates, and sensitivity
 
 ### Challenger
 

@@ -29,12 +29,15 @@ The command set includes:
 - `new`
 - `worktree`
 - `status`
+- `clean`
+- `stamp`
 - `review`
 - `pull`
 - `promote`
 - `run --agent`
 - `show`
 - `agents emit --codex`
+- `help`
 
 `suspec-mcp` exposes CLI data over MCP. It shells out to the CLI `--json` contract.
 
@@ -79,7 +82,7 @@ Captures an external ticket into `intake/`.
 
 It does not write a spec.
 
-### `suspec new spec <slug> [--from <intake>]`
+### `suspec new spec <slug> [--title <t>] [--owner <o>]`
 
 Creates `specs/<slug>/spec.md` from the template.
 
@@ -97,11 +100,17 @@ Exit codes:
 
 It reports facts. It does not issue a merge verdict.
 
-### `suspec new task --from <SPEC-id | CHANGE-id> [--scope AC-...]`
+### `suspec new task --from <SPEC-id> [--scope AC-...]`
 
 Creates a task packet from declared scope.
 
 It does not invent requirements.
+
+### `suspec new change-plan <slug> [--title <t>] [--owner <o>]`
+
+Creates a draft change plan.
+
+Use it for migrations, rewrites, or structural changes that need waves.
 
 ### `suspec worktree <create|list|remove|prune>`
 
@@ -109,13 +118,25 @@ Creates and tracks task worktrees.
 
 One task gets one branch or worktree.
 
+### `suspec clean [--apply]`
+
+Reports spent ephemeral task and review artifacts.
+
+With `--apply`, it prunes the spent artifacts that are safe to remove.
+
+### `suspec stamp <ref>`
+
+Writes staleness provenance for a spec snapshot or review evidence hash.
+
+It makes later drift checks compare against an explicit recorded revision.
+
 ### `suspec run <task> --agent <name>`
 
 Launches a configured agent in the task worktree.
 
 Records the launch envelope. The agent does the work.
 
-### `suspec review <task> [--agent <name>]`
+### `suspec review <task>`
 
 Drafts a review packet from the task, diff, spec, and change plan.
 
@@ -126,6 +147,22 @@ It routes mismatches and exceptions to human attention. It does not decide the r
 Prints a derived board from workspace files.
 
 Committed `status.md` stays hand-edited.
+
+### `suspec show <task|spec|review|checks> [ref]`
+
+Projects a parsed artifact or the checks contract as JSON.
+
+It reads only and renders no verdict.
+
+### `suspec agents emit --codex [--from <dir>]`
+
+Generates Codex TOML from Claude Code agent definitions.
+
+Tool scoping and hooks remain Claude-Code-only; the emitter carries prose discipline.
+
+### `suspec help`
+
+Prints the command reference.
 
 ## Local state
 

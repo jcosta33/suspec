@@ -57,6 +57,6 @@ If a script cannot run, it returns `Unverified` or `Blocked`. It does not guess 
 ## Related
 
 - [Checks](checks.md)
-- [Future CLI](future-cli.md)
+- [CLI reference](cli.md)
 - [Source authority](source-authority.md)
 - [Reviewing output](../08-reviewing-output.md)

@@ -66,7 +66,7 @@ The CLI is optional. Copying the kit by hand is valid.
 In each governed code repo, add only what is needed:
 
 ```text
-Suspec workspace: ../<project>-works. Read the task packet before coding.
+Suspec workspace: ../<project>-works. Read the spec before coding; if a task packet exists, use that bounded slice.
 ```
 
 Add `.gitignore` lines for local Suspec state if you use the CLI.

@@ -1,6 +1,6 @@
 # Checks fixtures — violations
 
-_Advanced design note — internal rationale; not needed to use Suspec._
+_Advanced design note — maintainer rationale; not needed to use Suspec._
 
 One minimal negative fixture per violation class. Each snippet must be flagged by a
 checker applying [`../checks.yaml`](../checks.yaml) — or by a reviewer applying
@@ -350,8 +350,8 @@ by a packet whose `AC-001` Pass row carries a structured `verify` block (a fence
 
 **Expected:** flagged `cmd-mismatch` — the block's recorded `cmd` does not match the requirement's named
 Verify command. The comparison normalizes away surrounding backticks, a trailing `(parenthetical)` note,
-and whitespace, so the canon's own backtick-wrapped Verify-with form does **not** false-fire (suspec-works
-#16); only a genuine disagreement trips it. A block whose `cmd` matches and reads `result=pass` is
+and whitespace, so the canon's own backtick-wrapped Verify-with form does **not** false-fire;
+only a genuine disagreement trips it. A block whose `cmd` matches and reads `result=pass` is
 consistent → no finding; a Pass row with only the free-form Evidence cell stays a warning, never
 machine-rejected. A consistency fact, never a verdict.
 

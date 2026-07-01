@@ -1,15 +1,15 @@
 name: method-gates
 
-# The method-critique gates (ADRs 0113-0118) run over the whole suspec family. The lint scripts live in
-# this repo (scripts/) and check the sibling repos, so the family CI home is here: check out each member
-# next to suspec, build suspec-cli, then run the scriptable gates + `suspec check`. Per ADR-0077 a gate is
-# a RECORD/CHECK — this fails the build on a violation; adopters wire their own CI as they see fit.
+# The public method-critique gates run over the public Suspec family. The private workspace gates
+# (`check-catalog-freshness` against suspec-works and `suspec check` over that workspace) run in the
+# private producer workspace, not in public CI, so forks and external PRs can reproduce this workflow.
+# Per ADR-0077 a gate is a RECORD/CHECK — this fails the build on a public-surface violation; adopters
+# wire their own CI as they see fit.
 
 on:
   push:
     paths:
       - 'scripts/**'
-      - 'docs/artifact-registry.md'
       - '.github/workflows/method-gates.yml'
   pull_request:
   workflow_dispatch:
@@ -18,29 +18,26 @@ jobs:
   method-gates:
     runs-on: ubuntu-latest
     steps:
-      # The family, all checked out under $GITHUB_WORKSPACE/family so the scripts' REPO_PARENT_DIR resolves.
+      # The public family, all checked out under $GITHUB_WORKSPACE/family so the scripts' REPO_PARENT_DIR resolves.
       - { name: suspec,              uses: actions/checkout@v4, with: { repository: jcosta33/suspec,              path: family/suspec } }
       - { name: suspec-skills,       uses: actions/checkout@v4, with: { repository: jcosta33/suspec-skills,       path: family/suspec-skills } }
       - { name: suspec-agents,       uses: actions/checkout@v4, with: { repository: jcosta33/suspec-agents,       path: family/suspec-agents } }
       - { name: suspec-mcp,          uses: actions/checkout@v4, with: { repository: jcosta33/suspec-mcp,          path: family/suspec-mcp } }
       - { name: suspec-starter-kit,  uses: actions/checkout@v4, with: { repository: jcosta33/suspec-starter-kit,  path: family/suspec-starter-kit } }
-      - { name: suspec-works,        uses: actions/checkout@v4, with: { repository: jcosta33/suspec-works,        path: family/suspec-works } }
       - { name: suspec-cli,          uses: actions/checkout@v4, with: { repository: jcosta33/suspec-cli,          path: family/suspec-cli } }
+      - { name: suspec-bench,        uses: actions/checkout@v4, with: { repository: jcosta33/suspec-bench,        path: family/suspec-bench } }
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - name: Method-gate — public product citation hygiene
+        run: sh family/suspec/scripts/lint-product-citations.sh "$GITHUB_WORKSPACE/family"
 
-      - name: Build suspec-cli (provides `suspec check`)
-        working-directory: family/suspec-cli
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
-          pnpm build
-
-      - name: Method-gates — product-vs-docs, count-ranges, artifact-refs, catalog-freshness
-        run: sh family/suspec/scripts/lint-all.sh "$GITHUB_WORKSPACE/family"
-
-      - name: suspec check — workspace (incl. the ADR-0116 spec-Execution invariant)
-        working-directory: family/suspec-works
-        run: node "$GITHUB_WORKSPACE/family/suspec-cli/bin/suspec.js" check
+      - name: Method-gate — public bootstrap count ranges
+        env:
+          SUSPEC_FAMILY_ROOTS: >-
+            ${{ github.workspace }}/family/suspec
+            ${{ github.workspace }}/family/suspec-agents
+            ${{ github.workspace }}/family/suspec-bench
+            ${{ github.workspace }}/family/suspec-cli
+            ${{ github.workspace }}/family/suspec-mcp
+            ${{ github.workspace }}/family/suspec-skills
+            ${{ github.workspace }}/family/suspec-starter-kit
+        run: sh family/suspec/scripts/lint-count-ranges.sh

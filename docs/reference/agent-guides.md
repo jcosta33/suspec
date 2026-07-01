@@ -2,7 +2,7 @@
 
 Agent guides are optional instruction packs.
 
-The task packet is still the contract.
+The spec is the contract; a task packet narrows it when work is split.
 
 ## Kit core
 
@@ -11,7 +11,7 @@ The starter kit's always-core loop guides:
 | Guide | Use |
 | --- | --- |
 | `write-spec` | write or amend specs |
-| `implement-task` | run task packets |
+| `implement-task` | run a spec or split task packet |
 | `review-output` | review worker output |
 
 ## Kit authoring guides
@@ -33,7 +33,7 @@ Also kit-shipped (Suspec-coupled → the kit, [ADR-0112](../adrs/0112-two-tier-s
 
 ## Implementation depth (opt-in)
 
-Kit skills that implement a task packet of a given kind — Suspec-coupled, summoned as the work needs them (ADR-0112):
+Kit skills that implement Suspec work of a given kind — Suspec-coupled, summoned as the work needs them:
 
 | Guide | Use |
 | --- | --- |
@@ -50,10 +50,10 @@ Kit skills that implement a task packet of a given kind — Suspec-coupled, summ
 
 Framework-free skills, installable in any repo with no Suspec knowledge ([ADR-0112](../adrs/0112-two-tier-skills.md)) — load alongside the work:
 
-- Stances: `persona-challenger`, `persona-surveyor`
-- Disciplines: `adversarial-review` (the review *style* — also carries the former `persona-skeptic` stance), `codebase-exploration`, `debugging`, `security-review`, `git-pr`, `planning-spec`, `empirical-proof`, `concise-output`, `fix-flaky-test`
+- Market/review methods: `market-research`, `persona-challenger`
+- Disciplines: `adversarial-review`, `codebase-exploration`, `debugging`, `security-review`, `git-pr`, `planning-spec`, `empirical-proof`, `concise-output`, `fix-flaky-test`
 
-One-to-one authoring stances are folded into their kit guides. Do not maintain duplicate copies.
+Authoring disciplines live in their kit guides. Do not maintain duplicate copies.
 
 ## Guide rules
 

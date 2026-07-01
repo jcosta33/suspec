@@ -9,7 +9,7 @@ anything described as checkable names its checker (the reference implementation 
 `suspec-cli`, a sibling repo); everything else is convention or review checklist, and says so.
 
 - `docs/` — the product: a numbered happy path (`01`–`10`), `reference/` (the deep layer:
-  structured requirements, checks, step bars, artifact formats, advanced lifecycle, future CLI,
+  structured requirements, checks, step bars, artifact formats, advanced lifecycle, CLI reference,
   memory), `examples/` (three flagship walkthroughs; `large-pr-review.md` is the demo),
   `ADOPTING.md`, `adrs/` (the decision ledger), `research/sources.md` (the evidence bibliography).
 - `checks/` — the checks contract as data (`checks.yaml`) + fixtures (test data for
@@ -22,9 +22,9 @@ anything described as checkable names its checker (the reference implementation 
 
 ## Suspec workspace
 
-Suspec workspace: `../suspec-works` (the family's multi-repo workspace). Specs, tasks, reviews,
-findings, audits, and the board for changes to this repo live there — read the task packet you
-are given. Accepted framework decisions still land here, in `docs/adrs/`.
+Specs, tasks, reviews, findings, audits, and the board for changes to this repo live in the
+private family workspace — read the task packet you are given. Accepted framework decisions still
+land here, in `docs/adrs/`.
 
 ## Startup
 
@@ -36,8 +36,8 @@ are given. Accepted framework decisions still land here, in `docs/adrs/`.
 
 ## Universal rules
 
-- **Fresh-product voice.** No migration framing ("previously/renamed/now") anywhere except
-  `docs/adrs/`. The framework is presented as originally designed.
+- **Fresh-product voice.** No migration framing anywhere except `docs/adrs/`.
+  The framework is presented as originally designed.
 - **Honesty framework (ADR-0063).** Rules carry a level: convention · checklist · toolable
   (names suspec-cli's command) · enforced (only with a shipped tool — today, nothing). Never
   write enforcement-sounding claims without a level.
@@ -46,9 +46,9 @@ are given. Accepted framework decisions still land here, in `docs/adrs/`.
   checks · structured requirements · writing rules · workspace · save a finding. Reference tier
   may also use the precise internal terms (pass, obligation, proof, verdict, SOL codes);
   `docs/reference/glossary.md` maps both directions.
-- **No counts ceremony.** Closed-set cardinalities live in exactly two places:
-  `checks/README.md` (producer reconciliation note) and the cheatsheet appendix.
-  Everywhere else lists values, never counts.
+- **No counts ceremony.** Do not hardcode closed-set cardinalities in public/current prose.
+  List values when they help the reader; keep maintainer reconciliation in the source
+  contract instead of duplicate count registries.
 - **Citations are contextual.** Every load-bearing empirical claim cites a verified entry
   inline — the `[[KEY]]` form linking the matching anchor in `docs/research/sources.md` — and the citation moves with the claim.
   Non-verified sources never carry a MUST-level claim; fact-shaped statements without a
@@ -56,13 +56,13 @@ are given. Accepted framework decisions still land here, in `docs/adrs/`.
 - **Single-sourcing.** Formats are frozen in ADRs 0058/0060/0061/0067/0068 and shipped at
   the kit repo's `templates/` (`../suspec-starter-kit`) — everything else links, never
   restates. A rule lands in `docs/` first; the kit repo, the suspec-skills catalog, and the
-  dev skills derive from it (a format change is a two-repo change, cut and reviewed from
-  suspec-works).
+  dev skills derive from it (a format change is a two-repo change, cut and reviewed from the
+  private family workspace).
 
 ## Pointers
 
 - Decisions: `docs/adrs/README.md` — the complete immutable ledger
-- Workspace (specs, audits, plans, board): `../suspec-works`
+- Workspace (specs, audits, plans, board): the private family workspace
 - The starter kit: `../suspec-starter-kit` (github.com/jcosta33/suspec-starter-kit)
 - Optional guide catalog: `../suspec-skills` (github.com/jcosta33/suspec-skills)
 - Claude Code agent catalog: `../suspec-agents` (github.com/jcosta33/suspec-agents — ADR-0092;
@@ -75,13 +75,12 @@ are given. Accepted framework decisions still land here, in `docs/adrs/`.
 
 | Slot | Command | Resolves                                                                                                |
 | ---- | ------- | ------------------------------------------------------------------------------------------------------- |
-| —    | (none)  | markdown-only repo; coherence is checked by review (the suspec-works workspace cuts and reviews the tasks) |
+| —    | (none)  | markdown-only repo; coherence is checked by review from the private family workspace |
 
 ## Workflow
 
 Work from `main`: commit and push directly to `main` (producer convention only — adopters
 follow their own branching; tasks run in worktrees per `docs/07-running-agents.md`).
-Commit messages end: `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
 
 ## Compatibility
 

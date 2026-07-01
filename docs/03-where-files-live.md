@@ -32,7 +32,7 @@ Core homes:
 
 - `intake/`: upstream asks captured verbatim.
 - `specs/<feature>/`: intended behavior and related support docs.
-- `tasks/`: one bounded work packet per task.
+- `tasks/`: bounded split packets when one spec becomes parallel work.
 - `reviews/`: review packets kept while they are active records.
 - `findings/`: durable lessons saved at Close.
 - `inventory/`: present-state maps for brownfield work.
@@ -66,7 +66,7 @@ Allowed footprint:
 - a short `AGENTS.md` pointer:
 
   ```text
-  Suspec workspace: ../<project>-works. Read the task packet before coding.
+  Suspec workspace: ../<project>-works. Read the spec or task packet before coding.
   ```
 
 - `.gitignore` lines for local Suspec state
@@ -84,7 +84,7 @@ Keep for the life of the project:
 
 Let transitory output age out once the durable record has what matters:
 
-- closed task packets
+- closed split task packets
 - review packets
 - `suspec check` output
 - run logs

@@ -105,5 +105,5 @@ It adds no new evidence. It summarizes existing artifacts.
 ## Related
 
 - [Saving findings](../09-saving-findings.md)
-- [Future CLI](future-cli.md)
+- [CLI reference](cli.md)
 - [Drift](drift.md)

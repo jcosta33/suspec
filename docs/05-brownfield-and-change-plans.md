@@ -5,7 +5,7 @@ Use extra structure only when the work needs it.
 The expanded loop:
 
 ```text
-Pull -> Inventory -> Spec -> Change Plan -> Task -> Run -> Review -> Close
+Pull -> Inventory -> Spec -> Change Plan -> (Task) -> Run -> Review -> Close
 ```
 
 ## Inventory
@@ -18,7 +18,7 @@ Use it when:
 - behavior is undocumented
 - tests are missing or misleading
 - changes cross modules or repos
-- the task touches risky code
+- the work touches risky code
 
 Include:
 

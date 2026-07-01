@@ -1,6 +1,6 @@
 # Writing-rules suspec
 
-_Advanced design note — internal rationale; not needed to use Suspec._
+_Advanced design note — maintainer rationale; not needed to use Suspec._
 
 The labeled fixture set for the writing-rules watchlist in
 [the checks reference](../../../docs/reference/checks.md): short requirement-prose spans,

@@ -4,7 +4,7 @@
 | --- | --- |
 | acceptance criterion | One verifiable requirement, usually `AC-NNN`. |
 | ADR | Decision record. Kept and superseded, not rewritten. |
-| agent run summary | Worker record in the task packet: changed files, results, output links, blocked questions. |
+| agent run summary | Worker record in the spec `## Execution` entry or task packet: changed files, results, output links, blocked questions. |
 | AGENTS.md | Always-loaded agent context and command table. |
 | audit | Present-state report. Observes, does not prescribe. |
 | bug report | Diagnosis of one defect. |
@@ -31,24 +31,24 @@
 | review by exception | Read coverage, failures, and exceptions before the diff. |
 | review packet | Per-task review record. |
 | review result | Pass, Fail, Unverified, or Blocked. |
-| review stance | Optional reading posture, such as skeptic or auditor. |
+| review stance | Optional reading posture, such as adversarial reviewer or auditor. |
 | risk-weighted review | More review for higher-risk change shape, diffusion, churn, or impact. |
 | Run | Worker implements and records evidence. |
 | scout | Read-only delegated helper. |
-| six-step loop | Pull, Spec, Task, Run, Review, Close. |
+| loop | Pull, Spec, Run, Review, Close; add Task when work splits. |
 | SOL | Optional structured requirement notation selected by `format: sol`. |
 | source authority | Rule for which artifact governs when intent conflicts. |
 | spec | Intended behavior and verification. |
 | split work | Turn spec or change plan into task packets. |
 | status board | `status.md`. Hand-edited board and index. |
 | structured requirements | Plain `AC-NNN` requirements or SOL blocks over the same record. |
-| task packet | Bounded work order for an agent or person. |
+| task packet | Bounded split work order for an agent or person. |
 | transitory output | Short-lived output such as run logs and check output. |
 | verification method | Type of evidence: test, static, contract, manual, etc. |
 | `Verify with:` | Spec line naming how to check a requirement. |
 | watchlist | Vague terms that need same-line criteria. |
 | wave | One verified stage of a change plan. |
-| worker | Implementer that owns a task and returns a run summary. |
+| worker | Implementer that owns a spec or task slice and returns a run summary. |
 | workspace | Repo or folder holding Suspec artifacts. |
 | worktree | Separate checkout for one task. |
 | writing rules | Requirement hygiene rules. |

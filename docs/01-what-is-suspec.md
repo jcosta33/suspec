@@ -5,7 +5,7 @@ Suspec is a markdown workflow for agent-assisted code changes.
 It gives you:
 
 - specs with acceptance criteria
-- task packets for agents or people
+- optional task packets when one spec splits into parallel work
 - review packets with evidence per requirement
 - findings for lessons worth keeping
 - a workspace layout for those files
@@ -20,20 +20,21 @@ Agent output is easy to generate and hard to review. Suspec puts a small record 
 | --- | --- |
 | Vague ticket | `intake/` snapshot plus a spec |
 | Repeated prompt context | workspace files the agent can read |
-| Scope drift | task packet with scope and `Do not change` |
+| Scope drift | spec or task scope with explicit non-goals and `Do not change` |
 | Large PR | review packet with coverage and exceptions |
 | Lost lesson | finding saved at Close |
 
 ## The loop
 
 ```text
-Pull -> Spec -> Task -> Run -> Review -> Close
+Pull -> Spec -> (Task) -> Run -> Review -> Close
 ```
 
-Two steps are conditional:
+Three steps are conditional:
 
 - **Inventory**: map existing code before brownfield work.
 - **Change Plan**: plan migrations, rewrites, schema changes, or high-risk refactors.
+- **Task**: split one spec into bounded packets only when the work needs parallel slices.
 
 See [the basic workflow](02-basic-workflow.md).
 
@@ -41,7 +42,7 @@ See [the basic workflow](02-basic-workflow.md).
 
 - **Intake** captures the upstream ask without interpretation.
 - **Spec** states intended behavior, non-goals, open questions, and `Verify with:` lines.
-- **Task** gives one bounded unit of work to an agent or person.
+- **Task** gives one bounded split unit of work to an agent or person.
 - **Run summary** records changed files, commands run, output, blocked questions, and findings.
 - **Review** records requirement results and what needs human attention.
 - **Finding** saves durable knowledge for future work.
@@ -54,7 +55,7 @@ The markdown workflow works without tooling.
 `suspec-cli` is optional. It scaffolds, checks, launches, and reconciles files.
 It does not write code or decide whether work is correct.
 
-See [the CLI reference](reference/future-cli.md).
+See [the CLI reference](reference/cli.md).
 
 Suspec keeps the *functions* of heavyweight engineering (explicit intent, verification, review,
 traceability, change control) while dropping the document stack — see [lineage](reference/lineage.md).

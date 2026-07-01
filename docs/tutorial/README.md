@@ -3,7 +3,7 @@
 Walk one small change through Suspec:
 
 ```text
-Pull -> Spec -> Task -> Run -> Review -> Close
+Pull -> Spec -> (Task) -> Run -> Review -> Close
 ```
 
 You will create:
@@ -15,6 +15,10 @@ You will create:
 - `reviews/checkout-expiry.md`
 - `findings/session-expiry-is-409.md`
 - an updated `status.md`
+
+This tutorial includes a task packet so you can see the split-work artifact. For
+small 1:1 work, you can run directly from the spec and record `## Execution`
+there.
 
 ## Scenario
 

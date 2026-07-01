@@ -24,7 +24,7 @@ The table maps each legacy function to where it lives now.
 | Build / test / CI output | raw execution record | run output is transitory ([[GHRETENTION]] / [[GLRETENTION]]); its durable residue is the spec's `## Execution` |
 | Literate programming | explain intent close to the executable form | the spec is the human-readable anchor of the change |
 
-Two disciplines carry the weight that the dropped paperwork used to:
+Two disciplines carry the weight that separate paperwork used to:
 
 - **Review is participation, not a sign-off.** Coverage and substantive engagement predict quality;
   a rubber-stamp does not ([[MCINTOSH14]]).

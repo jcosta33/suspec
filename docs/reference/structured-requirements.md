@@ -192,4 +192,4 @@ SOL is unversioned. `format: sol` is the parser hook.
 - [Checks](checks.md)
 - [Artifact formats](artifact-formats.md)
 - [Reviewing output](../08-reviewing-output.md)
-- [Future CLI](future-cli.md)
+- [CLI reference](cli.md)
