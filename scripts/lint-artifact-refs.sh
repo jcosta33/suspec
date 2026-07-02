@@ -44,17 +44,18 @@ if [ -z "$names" ]; then
 fi
 
 # Resolve a family repo dir by remote-or-folder name (folders may be corpus-*, remotes suspec-*).
+# A missing sibling is warned, never silently skipped — a shrinking scan surface must be visible.
 repo_dir() {
     for cand in "$DEV_DIR/$1" "$DEV_DIR/$(printf '%s' "$1" | sed 's/^suspec/corpus/')"; do
         [ -d "$cand" ] && { printf '%s\n' "$cand"; return 0; }
     done
+    echo "lint-artifact-refs: warning — sibling repo not found under $DEV_DIR: $1 (skipped)" >&2
     return 1
 }
 
 # Collect the in-scope files (markdown only), newline-delimited.
 collect() {
-    repo="$1"; shift
-    dir=$(repo_dir "$repo") || return 0
+    dir="$1"; shift
     for sub in "$@"; do
         target="$dir/$sub"
         if [ -f "$target" ]; then
@@ -65,16 +66,30 @@ collect() {
     done
 }
 
+collect_sibling() {
+    repo="$1"; shift
+    dir=$(repo_dir "$repo") || return 0
+    collect "$dir" "$@"
+}
+
+# The canon scope always comes from the repo this script lives in — never from the argument.
 files=$(
     {
-        collect suspec README.md docs | grep -v '/docs/adrs/' | grep -v 'artifact-registry\.md'
-        collect suspec-skills README.md docs skills
-        collect suspec-starter-kit README.md AGENTS.md templates .agents/skills hooks
-        collect suspec-agents README.md AGENTS.md docs agents hooks
-        collect suspec-cli README.md docs
-        collect suspec-mcp README.md docs
+        collect "$CANON_ROOT" README.md docs | { grep -v '/docs/adrs/' || true; } \
+            | { grep -v 'artifact-registry\.md' || true; }
+        collect_sibling suspec-skills README.md docs skills
+        collect_sibling suspec-starter-kit README.md AGENTS.md templates .agents/skills hooks
+        collect_sibling suspec-agents README.md AGENTS.md docs agents hooks
+        collect_sibling suspec-cli README.md docs
+        collect_sibling suspec-mcp README.md docs
     } | sort -u
 )
+
+# An empty scan list is a setup error, not a pass — the exit-2 contract above.
+if [ -z "$files" ]; then
+    echo "lint-artifact-refs: no in-scope files found (DEV_DIR=$DEV_DIR) — refusing a vacuous pass." >&2
+    exit 2
+fi
 
 rc=0
 count=0

@@ -3,7 +3,7 @@ type: adr
 id: adr-0114
 status: accepted
 created: 2026-06-27
-updated: 2026-06-27
+updated: 2026-07-02
 ---
 
 # ADR-0114 — A retired/relocated-artifact registry + cross-repo reference linter
@@ -66,10 +66,11 @@ once in the registry, and product/reference docs link there instead of re-restat
    **convention + review** ([ADR-0063](./0063-honesty-framework-and-tooling-boundary.md)) until the gate
    ships.
 
-_Level: shipped (2026-07-02) — the **registry** (`docs/artifact-registry.md`, the live source docs
-cite) and the **linter** (`scripts/lint-artifact-refs.sh`, run by `lint-all.sh` and the method-gates
-workflow: retired registry names grepped out of live product/reference prose, with the
-ADR-mandated allowlist for history and redirect stubs)._
+_Level: shipped locally, toolable in CI (2026-07-02) — the **registry** (`docs/artifact-registry.md`,
+the live source docs cite) and the **linter** (`scripts/lint-artifact-refs.sh`, run by `lint-all.sh`:
+retired registry names grepped out of live product/reference prose, with the ADR-mandated allowlist
+for history and redirect stubs). No CI workflow invokes it yet — Decision 3's "in force" bar (the
+linter in CI) is still open._
 
 > **Correction note (2026-07-02):** an earlier in-place edit claimed the linter had "since shipped
 > (SPEC-method-gates)" while no such script existed — that claim was retracted by an integrity
@@ -114,3 +115,11 @@ ADR-mandated allowlist for history and redirect stubs)._
 > (`docs/artifact-registry.md`) and, later the same day, the linter
 > (`scripts/lint-artifact-refs.sh`, wired into `lint-all.sh` + the method-gates workflow). The
 > `accepted` frontmatter is now fully earned.
+
+> **Correction note (2026-07-02, second):** the ledger note above and the same-day level line
+> overclaimed the CI half — `lint-artifact-refs.sh` is wired into `lint-all.sh` (local) only; the
+> method-gates workflow does not invoke it. Caught by a same-day panel review (DP-8 in the family
+> workspace). The level line now says so; this note corrects the ledger note by appending, because
+> the first correction note was itself edited in place earlier that day — a discipline breach this
+> note records rather than repeats. Also recorded there: the shipped linter checks `retired` rows
+> only, a subset of Decision 2's any-non-`active` mandate — the relocated-row half is open work.

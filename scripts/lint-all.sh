@@ -8,6 +8,7 @@
 #   0113  lint-product-citations.sh   no ADR/AUDIT/source-URL citations in product bodies (READMEs may link)
 #   0117  lint-count-ranges.sh        no hardcoded count-bearing ADR ranges in bootstrap/reference prose
 #   0115  check-catalog-freshness.sh  a synced workspace catalog copy must match its source (no orphaned copy)
+#   0114  lint-artifact-refs.sh        no retired registry name survives in live product/reference prose
 #
 # The suspec-cli spec-side check (0116, active spec → `## Execution`) ships in `suspec check`, not here.
 # Per ADR-0077, wiring these into a given repo's CI is that repo's call; this script is what CI would run.
