@@ -88,22 +88,18 @@ means _Unverified_, never _Pass_. Full demo — a large agent PR reviewed by exc
 
 Most people start at the kit and never read this repo cover to cover.
 
-## Works today, comes later
+## Works today
 
 **Today** (markdown + your agent, nothing to install): the templates, specs, optional task packets,
 review packets, findings, the worked examples. Suspec itself needs no runtime.
 
 **Toolable** (optional — the reference CLI, [suspec-cli](https://github.com/jcosta33/suspec-cli)):
-`suspec check` runs the [checks contract](docs/reference/checks.md) over your specs and reviews. The
-kit's [hooks](https://github.com/jcosta33/suspec-starter-kit/tree/main/hooks) wire it into your commit
-and pull-request gates — teeth for the review side. Nothing here is a runtime you need to _use_ Suspec.
-`suspec init`, `new`, `worktree`, `pull`, `promote`, and `status` scaffold the loop's mechanics.
-`suspec run` launches a prepared task on your agent in its worktree and records the launch. `suspec
-review` reconciles a finished run against its spec and diff — surfacing facts (omitted edits,
-out-of-scope changes, unbacked claims), never a result.
-
-CLI boundary and command surface:
-[CLI reference](docs/reference/cli.md).
+`suspec check` runs the [checks contract](docs/reference/checks.md) over your specs and reviews, and
+the kit's [hooks](https://github.com/jcosta33/suspec-starter-kit/tree/main/hooks) wire it into your
+commit and PR gates — teeth for the review side. The rest scaffolds the loop's mechanics (`init`,
+`new`, `worktree`, `pull`, `promote`, `status`), launches a prepared task (`run`), or reconciles a
+finished run against its spec and diff (`review` — surfacing facts like omitted edits and unbacked
+claims, never a result). None of it is required to run Suspec: [CLI reference](docs/reference/cli.md).
 
 Suspec does **not** promise deterministic generation, automatic correctness, formal
 verification, software compiled from specs, or the end of PR review. It promises better

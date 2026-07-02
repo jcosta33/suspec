@@ -90,27 +90,9 @@ Route to Human attention:
 
 ## Core checks
 
-| ID | Name |
-| --- | --- |
-| C001 | `unique-ids` |
-| C002 | `duplicate-id` |
-| C003 | `verify-with` |
-| C004 | `one-strength-word` |
-| C005 | `non-goals-present` |
-| C006 | `open-questions-present` |
-| C007 | `no-tbd-at-ready` |
-| C008 | `sources-named` |
-| C009 | `broken-source-link` |
-| C010 | `preserves-refs-resolve` |
-| C011 | `waves-present` |
-| C012 | `coverage` |
-| C013 | `verify-evidence-binding` |
-| C014 | `do-not-change-touched` |
-| C015 | `citation-resolves` |
-| C016 | `pass-needs-evidence` |
-| C017 | `orphaned-reference` |
-
-See [checks](checks.md).
+The checks contract covers id uniqueness, verify lines, binding words, non-goals,
+sources, coverage, evidence binding, scope walls, and citations. One table, one home:
+[checks](checks.md).
 
 ## Workspace names
 

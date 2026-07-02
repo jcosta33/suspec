@@ -21,6 +21,7 @@
 | honesty level | convention, checklist, toolable, enforced. |
 | intake | Verbatim source snapshot. |
 | inventory | Present-state map before brownfield work. |
+| loop | Pull, Spec, Run, Review, Close; add Task when work splits. |
 | multi-repo workspace | One workspace governing several code repos. |
 | non-goal | Explicit out-of-scope behavior. |
 | open question | Unresolved spec question. Blocking questions keep specs draft. |
@@ -35,7 +36,6 @@
 | risk-weighted review | More review for higher-risk change shape, diffusion, churn, or impact. |
 | Run | Worker implements and records evidence. |
 | scout | Read-only delegated helper. |
-| loop | Pull, Spec, Run, Review, Close; add Task when work splits. |
 | SOL | Optional structured requirement notation selected by `format: sol`. |
 | source authority | Rule for which artifact governs when intent conflicts. |
 | spec | Intended behavior and verification. |
