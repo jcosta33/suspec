@@ -1,7 +1,9 @@
 # Artifact index
 
 The current Suspec agents, skills, and MCP tools live across the repo family. This index lists the
-active public surfaces and points to their source homes.
+public surfaces with their source homes and status (ADR-0114: `active` · `retired` · `relocated` —
+a name whose status is not `active` names its replacement below). Every entry in the tables is
+`active`; the non-active names live in the Retired and relocated section at the end.
 
 ## Agents
 
@@ -36,6 +38,8 @@ Source: [`../suspec-skills/skills/`](https://github.com/jcosta33/suspec-skills).
 | `persona-challenger`   | suspec-skills  | Pressure-testing a live idea before it is built. |
 | `planning-spec`        | suspec-skills  | Planning a non-trivial change before fan-out.    |
 | `security-review`      | suspec-skills  | Reviewing trust-boundary and data-flow risks.    |
+| `bulletproof`          | suspec-skills  | Hardening a claim, decision, spec, or plan — evidence-gated critique with kill criteria. |
+| `revolver-review`      | suspec-skills  | Orchestrating a bounded multi-lens review — blind lenses, lead reconciles, human verdict. |
 
 ## Kit Guides
 
@@ -83,3 +87,14 @@ Source: [`../suspec-mcp/src/tools.ts`](https://github.com/jcosta33/suspec-mcp).
 | `suspec_scaffold_spec`    | suspec-mcp  | Scaffolding a spec.                 |
 | `suspec_split_task`       | suspec-mcp  | Scaffolding split task packets.     |
 | `suspec_scaffold_finding` | suspec-mcp  | Scaffolding a finding candidate.    |
+
+## Retired and relocated
+
+Names an author might still meet in older text. Do not cite them as current; use the replacement.
+
+| Name                | Status    | Replacement                                                        |
+|---------------------|-----------|--------------------------------------------------------------------|
+| `persona-skeptic`   | retired   | Merged into `adversarial-review` (the refute-by-default stance).   |
+| `suspec-explorer`   | retired   | The runner's built-in exploration agent + the `codebase-exploration` skill. |
+| `write-documentation` (catalog) | relocated | Ships in the kit (`suspec-starter-kit/.agents/skills/`), not the catalog. |
+| `implement-task` (catalog)      | relocated | Ships in the kit; the suspec repo keeps a byte-identical dev mirror. |

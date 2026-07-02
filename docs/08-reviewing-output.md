@@ -32,7 +32,7 @@ Required sections:
 - Requirement coverage
 - Change-plan coverage, when relevant
 - Human attention
-- Task status
+- Task status (recommended; optional in the checks contract)
 - Suggested decision
 
 ## Coverage table

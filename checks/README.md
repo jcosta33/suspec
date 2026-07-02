@@ -97,8 +97,10 @@ Reconciliation duties this note carries:
 
 - The core check IDs and severities in [`checks.yaml`](./checks.yaml) match
   [the checks reference](../docs/reference/checks.md) row for row.
-- The task and review section lists in [`checks.yaml`](./checks.yaml) match
-  the kit's `templates/` (the suspec-starter-kit repo) heading for heading.
+- The task and review section lists in [`checks.yaml`](./checks.yaml) are the
+  minimum-required subset of the kit's `templates/` (the suspec-starter-kit repo) — a kit template
+  may carry additional, uncontracted headings (e.g. the optional multi-lens candidate-findings
+  capture); the contract lists only what the checks read.
 - Every fixture's pinned expectation agrees with both; a fixture that disagrees means
   the contract, the prose, or the fixture is wrong — find out which before shipping.
 

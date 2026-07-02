@@ -6,13 +6,16 @@ name: method-gates
 # Per ADR-0077 a gate is a RECORD/CHECK — this fails the build on a public-surface violation; adopters
 # wire their own CI as they see fit.
 
+# No paths filter on push: the gates lint README/AGENTS and product surfaces, and this repo's
+# workflow is commit-direct-to-main — a filtered push would skip the gate exactly when it matters.
 on:
   push:
-    paths:
-      - 'scripts/**'
-      - '.github/workflows/method-gates.yml'
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   method-gates:

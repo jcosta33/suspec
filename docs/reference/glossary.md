@@ -59,7 +59,7 @@
 | --- | --- |
 | APS | writing rules |
 | obligation | requirement |
-| pass | step |
+| pass (lowercase — a loop step) | step |
 | profile | review stance |
 | promote | save a finding |
 | proof | evidence |

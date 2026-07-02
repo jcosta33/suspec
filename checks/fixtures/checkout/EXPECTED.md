@@ -71,8 +71,8 @@ two files is wrong (the anti-fork rule).
 
 | Check              | Where                      | Expected result                                                          |
 | ------------------ | -------------------------- | ------------------------------------------------------------------------ |
-| `non-empty-paste`  | review rows AC-001, AC-002 | pass — output pasted or linked                                           |
-| `non-empty-paste`  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Pass |
+| `pass-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                           |
+| `pass-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Pass |
 | `no-open-critical` | task and review            | pass — the open question is non-blocking                                 |
 | `trigger-coverage` | review Human attention     | pass — names the unverified row and the DB write surface                 |
 

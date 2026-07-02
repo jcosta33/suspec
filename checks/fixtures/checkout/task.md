@@ -55,3 +55,8 @@ parallel tasks on one write area conflict.
 ## Findings
 
 - Candidate: the order record and inventory ledger share one write area — see `finding.md`.
+
+## Run summary
+
+- (unfilled at this packet's `review-ready` stage — the closing digest lands here; a missing
+  section at `closed` is the V16 hard error)

@@ -65,3 +65,7 @@ traceability, change control) while dropping the document stack — see [lineage
 1. Read [the basic workflow](02-basic-workflow.md).
 2. Check [where files live](03-where-files-live.md).
 3. Walk [the tutorial](tutorial/README.md).
+
+## Related
+
+Next: [The basic workflow](02-basic-workflow.md)

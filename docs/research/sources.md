@@ -1,8 +1,8 @@
 # Sources — the framework's evidence bibliography
 
-> This is the single bibliography the framework's **inline `[[KEY]]` citations resolve to**. Research is referenced *contextually* — each `[[KEY]]` sits in the doc whose claim it grounds (the happy-path pages, reference pages, examples, and ADRs) and links to its entry here; there is no separate "research layer" of standalone essays, only this ledger. It is held to the **§0.7 discipline** ("real science, not astrology"): every load-bearing empirical claim cites a **verified** entry below, with the recorded caveats. Entries marked **caveated** (non-peer-reviewed) MUST NOT carry a `MUST`-level claim. Entries in **Rejected** MUST NOT be cited — they are recorded so a fabricated citation is never silently re-introduced.
+> This is the single bibliography the framework's **inline `[[KEY]]` citations resolve to**. Research is referenced *contextually* — each `[[KEY]]` sits in the doc whose claim it grounds (the happy-path pages, reference pages, examples, and ADRs) and links to its entry here; there is no separate "research layer" of standalone essays, only this ledger. It is held to one discipline ("real science, not astrology" — [principles](../reference/principles.md), *Claims need sources*): every load-bearing empirical claim cites a **verified** entry below, with the recorded caveats. Entries marked **caveated** (non-peer-reviewed) MUST NOT carry a `MUST`-level claim. Entries in **Rejected** MUST NOT be cited — they are recorded so a fabricated citation is never silently re-introduced.
 >
-> Entries are retained even while uncited — the ledger records what was verified (and what was rejected) so future claims can bind to it without re-verification; an uncited entry is inventory, not error. This bibliography was assembled **after web-verification** (June 2026). Several headline figures that circulate in the skill-authoring literature rested on **fabricated/misattributed arXiv ids** and were rejected (see below). A few entries were already verified by the framework's own bibliography elsewhere; this ledger **reuses that key** rather than re-deriving it.
+> Entries are retained even while uncited — the ledger records what was verified (and what was rejected) so future claims can bind to it without re-verification; an uncited entry is inventory, not error. This bibliography was assembled **after web-verification** (June 2026). Several headline figures that circulate in the skill-authoring literature rested on **fabricated/misattributed arXiv ids** and were rejected (see below). A few entries were already verified by the predecessor design document's bibliography; this ledger **reuses that key** rather than re-deriving it. `suspec-works #NN` references in Grounds lines are maintainer-private workspace traceability (the public decisions live in the ADRs); a reader cannot resolve them and does not need to.
 
 ---
 
@@ -147,18 +147,21 @@
 <a id="CTXLENHURTS"></a>
 **[CTXLENHURTS] Context Length Alone Hurts LLM Performance Despite Perfect Retrieval.** Du, Tian, Ronanki, Rongali, Bodapati, Galstyan, Wells, Schwartz, Huerta, Peng. **Findings of EMNLP 2025**, ACL Anthology 2025.findings-emnlp.1264. *Verified (July 2026, direct fetch — venue + figure).* Task accuracy degrades **13.9%–85%** as input length grows **even with 100% exact retrieval** and only minimal-distraction (whitespace/masked) padding — length alone, not retrieval failure; the effect is model-dependent (closed frontier models far more robust). Grounds: long-context degradation is a real, quantified phenomenon (the strong half of the context-rot motivation, suspec-works #83) — distinct from stale-*content* hygiene, which is a different, unmeasured mechanism.
 
-## Verified — reused from the kernel bibliography
+## Verified — reused from the predecessor bibliography
+
+(The framework's predecessor design document carried its own verified bibliography; these entries
+reuse that verification rather than re-deriving it.)
 
 These were already verified by the framework's bibliography elsewhere; the entries below restate them so this layer is self-contained.
 
 <a id="LOSTMID"></a>
-**[LOSTMID] Lost in the Middle: How Language Models Use Long Contexts.** Liu et al., **TACL 2024**. The U-shaped attention curve — accuracy degrades for information in the middle of long contexts. (Per the kernel entry: "context rot" is a *later popular term*, not coined here; do not attribute it to this paper.) Grounds: the AGENTS.md density cap and the "minimize always-on context" discipline.
+**[LOSTMID] Lost in the Middle: How Language Models Use Long Contexts.** Liu et al., **TACL 2024**. The U-shaped attention curve — accuracy degrades for information in the middle of long contexts. (Per the predecessor bibliography's entry: "context rot" is a *later popular term*, not coined here; do not attribute it to this paper.) Grounds: the AGENTS.md density cap and the "minimize always-on context" discipline.
 
 <a id="SCOT"></a>
-**[SCOT] Structured Chain-of-Thought Prompting for Code Generation.** Li, Li, Li, Jin. **ACM TOSEM 34(2), Art. 37, 2025** (DOI 10.1145/3690635; preprint arXiv:2305.06599). *Verified (peer-reviewed; reused from the kernel bibliography.)* A *structured* intermediate (program-structured reasoning) beats free-form CoT for code generation (the paper reports +13.79% Pass@1). Grounds: a structured intermediate measurably beats free prose for downstream code work (the `lower` / IR rationale).
+**[SCOT] Structured Chain-of-Thought Prompting for Code Generation.** Li, Li, Li, Jin. **ACM TOSEM 34(2), Art. 37, 2025** (DOI 10.1145/3690635; preprint arXiv:2305.06599). *Verified (peer-reviewed; reused from the predecessor bibliography.)* A *structured* intermediate (program-structured reasoning) beats free-form CoT for code generation (the paper reports +13.79% Pass@1). Grounds: a structured intermediate measurably beats free prose for downstream code work (the `lower` / IR rationale).
 
 <a id="SMELLS"></a>
-**[SMELLS] Rapid Quality Assurance with Requirements Smells.** Femmer, Méndez Fernández, Wagner, Eder. **Journal of Systems and Software 123 (2017): 190–213** (DOI 10.1016/j.jss.2016.02.047). *Verified (peer-reviewed; reused from the kernel bibliography.)* Lightweight lexical detection of requirements "smells" (vague terms, comparatives, …) is feasible but **precision is bounded** (the study reports roughly 48–59% precision at ~82–87% recall). Grounds: prose-smell checks are **advisory, never blocking** — only a defined grammar (the SOL layer) reaches blocking precision.
+**[SMELLS] Rapid Quality Assurance with Requirements Smells.** Femmer, Méndez Fernández, Wagner, Eder. **Journal of Systems and Software 123 (2017): 190–213** (DOI 10.1016/j.jss.2016.02.047). *Verified (peer-reviewed; reused from the predecessor bibliography.)* Lightweight lexical detection of requirements "smells" (vague terms, comparatives, …) is feasible but **precision is bounded** (the study reports roughly 48–59% precision at ~82–87% recall). Grounds: prose-smell checks are **advisory, never blocking** — only a defined grammar (the SOL layer) reaches blocking precision.
 
 ## Verified — official guidance (authoritative vendor/spec docs, not empirical claims)
 
@@ -262,13 +265,13 @@ These were already verified by the framework's bibliography elsewhere; the entri
 
 ## Caveated — non-peer-reviewed (cite ONLY as preliminary; never load-bearing)
 
-Treated as the kernel treats its own non-peer-reviewed sources: usable to *illustrate* a direction, never to ground a `MUST`. Their headline statistics are single-author/blog measurements, not controlled peer-reviewed studies.
+Treated as the predecessor bibliography treats its own non-peer-reviewed sources: usable to *illustrate* a direction, never to ground a `MUST`. Their headline statistics are single-author/blog measurements, not controlled peer-reviewed studies.
 
 <a id="WIEGERS95"></a>
 **[WIEGERS95] Improving Quality Through Software Inspections.** Wiegers. **Software Development magazine, April 1995** (author reprint, processimpact.com). *Verified (June 2026, web — author PDF).* The desk-checking principle: the author is a poor sole reviewer of their own work — "if the author was aware of defects, he probably would have corrected them already"; flags "a sense of unease when the author is the only person who has viewed a completed product." <https://www.processimpact.com/articles/inspects.pdf> — *practitioner / trade article, not peer-reviewed; cite as **design rationale only**, never as measured evidence.* Grounds: the cognitive rationale for reviewer ≠ author (reinforces ADR-0056), at design-rationale level (ADR-0095).
 
 <a id="ACTIVATION-BLOG"></a>
-**[ACTIVATION-BLOG] Why Claude Code Skills Don't Activate — And How to Fix It.** Seleznov, Medium, 2026. A self-published 650-trial measurement reporting directive descriptions activating far more reliably than passive ones (the "OR ≈ 20.6 / 100% activation" figures). **Non-peer-reviewed; the specific numbers are NOT load-bearing.** The *direction* (directive, exclusion-bearing descriptions help) is used only as illustration; the kernel's primary mechanism is "load what the task names" (§26.4), with description-match as the fallback.
+**[ACTIVATION-BLOG] Why Claude Code Skills Don't Activate — And How to Fix It.** Seleznov, Medium, 2026. A self-published 650-trial measurement reporting directive descriptions activating far more reliably than passive ones (the "OR ≈ 20.6 / 100% activation" figures). **Non-peer-reviewed; the specific numbers are NOT load-bearing.** The *direction* (directive, exclusion-bearing descriptions help) is used only as illustration; the framework's primary mechanism is "load what the task names" ([ADR-0037](../adrs/0037-load-what-the-task-names.md)), with description-match as the fallback.
 
 <a id="DORA2025"></a>
 **[DORA2025] DORA 2025 — State of AI-assisted Software Development.** Google Cloud / DevOps Research and Assessment, 2025. *Venue + framing web-verified (June 2026, dora.dev/research/2025); the percentages are the report's own self-reported figures (the public landing pages don't expose them for re-fetch — figures corroborated via the report body in earlier multi-source verification).* **~90%** of technology professionals use AI at work and **>80%** report it improved their productivity (self-reported, not measured); the report's thesis is that **AI is an "amplifier"** of an organization's existing strengths and weaknesses — higher adoption is associated with **both increased delivery throughput and increased instability** absent strong control / internal-platform systems. **Tier: vendor/industry report, correlational, self-reported — never a `MUST`.** Grounds (illustrative): agent adoption raises instability *unless* a verification/control layer exists — the gap Suspec's merge gate fills; pairs with [METR]'s perception-vs-reality gap.
@@ -451,7 +454,7 @@ These sources are **not peer-reviewed**; they ground market-gap observations and
 
 ## Rejected — DO NOT CITE (fabricated / misattributed / unconfirmed)
 
-The skill-authoring literature attributes load-bearing figures to these arXiv ids. **Direct fetch (June 2026) found each id resolves to an unrelated paper.** They are recorded here so the fabrication is never re-introduced (per the kernel's reject discipline).
+The skill-authoring literature attributes load-bearing figures to these arXiv ids. **Direct fetch (June 2026) found each id resolves to an unrelated paper.** They are recorded here so the fabrication is never re-introduced (per this ledger's reject discipline).
 
 > **Invariant (ADR-0090):** a Rejected entry MUST NOT carry an `<a id="…">` anchor. Because rejected entries are anchor-less by construction, any spec `[[KEY]]` citing one **dangles** and the C015 `citation-resolves` check ([ADR-0087](../adrs/0087-citation-anchor-check.md)) surfaces it — the high-precision safeguard that makes a separate "cited a Rejected source" tier check unnecessary (ADR-0090). Do not add an anchor to a rejected entry; doing so would silently make a forbidden citation resolve clean.
 
@@ -470,4 +473,4 @@ The skill-authoring literature attributes load-bearing figures to these arXiv id
 
 ---
 
-*Discipline: a claim in `docs/research/` cites a Verified entry, or carries an explicit "preliminary / non-peer-reviewed" caveat naming a Caveated entry, or it is not made. New sources are web-verified before they are added. This follows the framework's §0.7 evidence discipline.*
+*Discipline: a claim in `docs/research/` cites a Verified entry, or carries an explicit "preliminary / non-peer-reviewed" caveat naming a Caveated entry, or it is not made. New sources are web-verified before they are added. This follows the framework's evidence discipline ([principles](../reference/principles.md), *Claims need sources*).*

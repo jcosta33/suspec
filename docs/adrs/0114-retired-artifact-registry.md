@@ -64,10 +64,17 @@ once in the registry, and product/reference docs link there instead of re-restat
 3. **Honesty level.** **proposed — not in force.** No registry file and no linter are created by this
    ADR. Until the registry exists and the linter ships in CI, the cross-repo facts remain held by
    **convention + review** ([ADR-0063](./0063-honesty-framework-and-tooling-boundary.md)) until the gate
-   ships. The registry (`docs/artifact-registry.md`) and the linter (`scripts/lint-artifact-refs.sh`) have
-   since shipped (SPEC-method-gates), so the registry is now the live source docs cite.
+   ships.
 
-_Level: toolable — **shipped**. `scripts/lint-artifact-refs.sh` runs the cross-repo check; wiring it into a given repo's CI is per-repo (ADR-0077)._
+_Level: split — the **registry shipped** (`docs/artifact-registry.md` is the live source docs cite);
+the **linter did not**: no `scripts/lint-artifact-refs.sh` exists in any family repo, so the
+cross-repo reference check remains **toolable — not shipped**, held by convention + review._
+
+> **Correction note (2026-07-02):** an earlier in-place edit claimed the linter had "since shipped
+> (SPEC-method-gates)". An integrity audit found no such script anywhere in the family — the shipped
+> method-gate scripts are `lint-product-citations.sh`, `lint-count-ranges.sh`, and
+> `check-catalog-freshness.sh`, none of which perform the registry-name check this ADR designs. The
+> claim is retracted above; the registry half stands as shipped.
 
 ## Consequences
 
@@ -102,3 +109,8 @@ _Level: toolable — **shipped**. `scripts/lint-artifact-refs.sh` runs the cross
 - **Builds nothing.** No registry file, no linter, no CI change ships with this ADR — design intent only,
   like [ADR-0043](./0043-checkable-documents.md). Promote to `accepted` only if and when the registry and
   the linter land.
+
+> **Ledger note (2026-07-02):** current disposition — the registry half landed
+> (`docs/artifact-registry.md`), which is why the frontmatter reads `accepted`; the linter half has
+> NOT landed (see the correction note under Decision 3), so the cross-repo check stays toolable,
+> unshipped. Half-accepted is the honest state of this record.

@@ -49,7 +49,7 @@ measure-first gate ADR-0086 Decision 3 committed to, and the C014/ADR-0086 mint 
    run it over the real suspec-works specs (all citations valid after the #29 remediation) — it must produce
    **zero** C015 warnings (0% effective-FP on real clean specs) — and over a seeded fixture with a
    dangling `[[KEY]]` — it must fire (recall). This is the v0 measurement; folding citation cases into
-   the `suspec-bench` suspec is the richer follow-up.
+   the `suspec-bench` corpus is the richer follow-up.
 
 6. **Single-sourced like every contract change (the two-repo rule).** `checks.yaml` gains the C015 row +
    a `version` bump (0.7.0 → 0.8.0); `checksContract.ts` mirrors it (CONTRACT_VERSION + CheckId +

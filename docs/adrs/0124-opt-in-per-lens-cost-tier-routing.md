@@ -11,7 +11,7 @@ updated: 2026-07-01
 ## Context
 
 Revolver Review ([ADR-0122](./0122-revolver-review-bounded-panel-strategy.md)) routes review lenses
-through an opt-in per-lens cost-tier map, and `corpus-agents/docs/runners.md` already ships **no model
+through an opt-in per-lens cost-tier map, and `suspec-agents/docs/runners.md` already ships **no model
 defaults on purpose** ([ADR-0099](./0099-review-orchestration-and-role-routing.md) also makes a cheaper
 implementer viable only when the saving is *measured*). The suspec-works roadmap (#74/#75/#76) proposes a
 model-routing preflight built around an `economy`/`balanced`/`maximum-scrutiny` ladder keyed to model
@@ -82,7 +82,7 @@ ladder, and corrects the matrix and the metrics.
 
 - **No runtime router, no shipped defaults, size ≠ quality.** The map is a convention; its resolution is
   the runner's; the concrete alias table is adapter-owned.
-- **`corpus-agents/docs/runners.md` names the capability-profile axis** and notes that per-lens routing is
+- **`suspec-agents/docs/runners.md` names the capability-profile axis** and notes that per-lens routing is
   an opt-in adopter knob (no defaults); concrete per-runner alias tables stay adapter-owned.
 - **Metrics are review-record fields**, not a service; the headline is marginal unique-accepted value.
   Validating cost/yield **extends the review-gate benchmark** (a v1 reopen — its frozen v0 measures
@@ -99,5 +99,5 @@ map Revolver references) and [ADR-0099](./0099-review-orchestration-and-role-rou
 routing/escalation + the measured-cost rule). **Honors**
 [ADR-0063](./0063-honesty-framework-and-tooling-boundary.md) (levels) and
 [ADR-0117](./0117-no-count-bearing-prose.md) (no count-bearing prose). **Relates** the
-`corpus-agents/docs/runners.md` no-model-defaults posture and
+`suspec-agents/docs/runners.md` no-model-defaults posture and
 [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md).

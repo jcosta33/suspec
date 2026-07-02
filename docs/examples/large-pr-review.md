@@ -71,6 +71,7 @@ preserves:
 type: review
 id: REVIEW-checkout-session-refactor
 task: TASK-checkout-session-refactor
+pr: none yet
 status: needs-human
 ---
 
@@ -83,10 +84,10 @@ status: needs-human
 
 | ID | Result | Evidence | Human attention |
 | --- | --- | --- | --- |
-| AC-001 | Pass | `active-session` -> passed | no |
+| AC-001 | Pass | `active-session` -> `1 passed` | no |
 | AC-002 | Fail | `expired-session` -> expected 409, got 500 | yes |
-| AC-003 | Pass | `missing-session` -> passed | no |
-| AC-004 | Pass | `provider-failure` -> passed | no |
+| AC-003 | Pass | `missing-session` -> `1 passed` | no |
+| AC-004 | Pass | `provider-failure` -> `1 passed` | no |
 
 ## Human attention
 

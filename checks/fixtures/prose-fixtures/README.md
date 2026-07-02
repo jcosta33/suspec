@@ -1,4 +1,4 @@
-# Writing-rules suspec
+# Writing-rules corpus
 
 _Advanced design note — maintainer rationale; not needed to use Suspec._
 
@@ -18,7 +18,7 @@ clean prose (a false positive) or miss a real problem (a false negative). Field 
 put lightweight requirement-smell detection well below perfect precision
 [[SMELLS]](../../../docs/research/sources.md#SMELLS) — which is exactly why the watchlist
 is advisory, and why a detector's accuracy is only measurable against ground truth. This
-suspec is that ground truth: spans whose correct label is known independent of any
+corpus is that ground truth: spans whose correct label is known independent of any
 detector, so precision and recall can be computed by hand or by a harness.
 
 ## The accuracy baseline
@@ -82,4 +82,4 @@ per-code bug.
 The fixture set is self-contained: every label is decidable from the item's own `text`,
 `context`, and `reason`. The word families and the same-line rule the labels invoke are
 the writing rules of [the checks reference](../../../docs/reference/checks.md); this
-suspec pins expected outcomes, not rule mechanics.
+corpus pins expected outcomes, not rule mechanics.

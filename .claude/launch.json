@@ -4,7 +4,7 @@
     {
       "name": "suspec-website",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "/Users/josecosta/dev/corpus-website", "run", "dev", "--", "-p", "4321"],
+      "runtimeArgs": ["--prefix", "../corpus-website", "run", "dev", "--", "-p", "4321"],
       "port": 4321
     }
   ]

@@ -93,6 +93,6 @@ index-lists `suspec check` is the toolable follow-up (suspec-works #61 §B), not
 ADR-0097 cleared the deferred-checks backlog under measure-before-ship — minting C016 (pass-needs-evidence)
 and C017 (orphaned-reference). The `superseded_by`-resolves / index-lists check named here **stays
 specified-not-shipped**: only two real artifacts carry a filled `superseded_by` pointer today, and the
-scanned workspace tree does not yet include the ADR ledger where the lifecycle lives — too thin a suspec
+scanned workspace tree does not yet include the ADR ledger where the lifecycle lives — too thin a corpus
 to validate a "the pointer resolves + the board lists it" invariant against. It mints when the
-`superseded_by` suspec and a scanned index are real. Recorded in ADR-0097.
+`superseded_by` corpus and a scanned index are real. Recorded in ADR-0097.

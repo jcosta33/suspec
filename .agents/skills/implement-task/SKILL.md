@@ -51,10 +51,11 @@ enforces them at edit time.
    concurrency)? What changed that the spec did not ask for? Which callers of
    a changed surface did you not look at? Fix what you find and note what you
    fixed. _Why: the cheapest review round is the one you run on yourself._
-8. **Fill the packet's `## Run summary` section**: changed files, one line
-   per Verify command citing its pasted output, anything that could not be
-   met as written, out-of-scope edits if any, blocked questions — and drop
-   durable discoveries in the packet's `## Findings` section.
+8. **Record the run** — for 1:1 work (no task) fill the spec's `## Execution`
+   section; for a split task fill the task's `## Run summary`. Either way:
+   changed files, one line per Verify command citing its pasted output, anything
+   that could not be met as written, out-of-scope edits if any, blocked questions
+   — and drop durable discoveries in `## Findings`.
 9. **Never write a review result on your own work.** Self-review yields fixes
    and notes — never a Pass. The review packet is filled by someone who did
    not write the diff. _Why: authors favor their own output; independence is
@@ -64,7 +65,7 @@ enforces them at edit time.
 repos, the task and its pinned spec snapshot sit in the code repo's gitignored `.suspec/`.
 Read the snapshot; write only in the code repo (your code + `.suspec/` scratch) — never the
 canonical workspace. Your commands and edits resolve against one root, and the review lead
-merges your evidence back. (Grounding: [Suspec ADR-0100](https://github.com/jcosta33/suspec/blob/main/docs/adrs/0100-spec-external-ops-local-mode.md).)
+merges your evidence back.
 
 ## Refuses
 
@@ -77,6 +78,20 @@ merges your evidence back. (Grounding: [Suspec ADR-0100](https://github.com/jcos
 | Marking your own work `pass`                 | Leave the result to the review packet                                                   |
 | Reusing output from before your last edit    | Re-run; paste the fresh output                                                          |
 | A Verify command missing from `AGENTS.md`    | Ask which command to run — a guessed run is a false signal; unresolvable = Unverified   |
+
+## Gotchas
+
+- **Filling `## Run summary` from memory instead of the pasted Verify output.** You
+  recall the suite was green and write "tests pass" — but the reviewer cites that cell,
+  not your recollection. A summary line that does not point at real pasted output is
+  unverified the moment it is read.
+- **Editing a file outside the task's Affected areas because it was "right there."** A
+  neighbouring bug or ugly import is on your path and the fix is one line. That unlisted
+  change is an exception trigger at review and pollutes a diff that was meant to be
+  write-disjoint from parallel tasks.
+- **Pasting output captured before your last edit.** You ran Verify, then fixed one more
+  thing, then handed off — the pasted run no longer covers the code you shipped. Stale
+  evidence reads as fresh and hides the regression your final edit introduced.
 
 ## Self-review gate
 

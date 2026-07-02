@@ -9,7 +9,7 @@ superseded_by: 0049-minimal-install-no-mount-no-imposed-workspace
 ---
 
 > **Superseded by [ADR-0049](./0049-minimal-install-no-mount-no-imposed-workspace.md).** The "what to ship"
-> conclusion survives — skills + the compact `reference/` cards + templates, not the manuals or suspec (see
+> conclusion survives — skills + the compact `reference/` cards + templates, not the manuals or fixture corpus (see
 > this ADR's Update). What 0049 overturns is the _destination_: that payload no longer mounts at
 > `.suspec/kernel/`; it installs in place beside the project's own skills, with no symlink bridge.
 
@@ -25,7 +25,7 @@ and `memory/`. The justification was offline self-containment.
 Adopting `suspec-cli` made the cost visible: ~1.2 MB of framework documentation copied into the repo, of
 which an agent **loads almost none** at runtime. Per the load-what-the-task-names doctrine, an agent
 loads the _skill_ the task names; it never opens the full `passes/`/`language/` manuals or the
-conformance suspec. With skills now self-contained ([0047](./0047-skills-are-self-contained.md)), the
+conformance fixture corpus. With skills now self-contained ([0047](./0047-skills-are-self-contained.md)), the
 only thing that made the kernel ship `passes/` + `language/` — keeping skill citations from dangling —
 is gone. The fixture set (`conformance/`) is test data for a _checker_, never used by an adopting project.
 
@@ -36,7 +36,7 @@ is gone. The fixture set (`conformance/`) is test data for a _checker_, never us
    the `AGENTS.md` bootloader + `config.yaml` + `overlays/` + `.suspec-version`.
 2. **`passes/`, `language/`, and `conformance/` are NOT installed.** They are the framework's **human
    reference and test data**, and they live canonically in the `suspec` repo (`docs/passes/`,
-   `docs/language/`, and the conformance suspec). An adopter that wants the _rationale_ reads the `suspec` repo.
+   `docs/language/`, and the conformance fixture corpus). An adopter that wants the _rationale_ reads the `suspec` repo.
 3. The bootloader and skills **name** the deep manuals (provenance) but link nothing that isn't
    shipped, so the slim payload has no dangling refs.
 
@@ -55,7 +55,7 @@ the deep reference stays upstream. (The twin-maintenance burden 0044 introduced 
 ## Consequences
 
 - **Positive:** the adopter's `.suspec/kernel/` drops to the runtime surface (skills + templates); no
-  manuals, no suspec. Upgrades copy less; there is less to drift.
+  manuals, no fixture corpus. Upgrades copy less; there is less to drift.
 - **Negative:** an agent cannot read the full pass rationale offline. Acceptable: the skills carry the
   operational rules ([0047](./0047-skills-are-self-contained.md)); rationale is a human concern, upstream.
 - **Neutral:** `starter-kit/.agents/{passes,language,conformance}` remain in the `suspec` repo (the reference +
@@ -81,14 +81,14 @@ _rules_, ~12 KB total. The 0047 "the hop is unreliable" worry applied to _ration
 skips; an operative card the running pass needs is loaded _because_ it is operative, the same reason the
 skill is. Added `pass-improve-spec` and `pass-lower-spec` so all nine passes have a guide.
 
-Net payload is still far below the wholesale kernel (the manuals + suspec remain unshipped); the cards add
+Net payload is still far below the wholesale kernel (the manuals + fixture corpus remain unshipped); the cards add
 ~12 KB, not the ~1.2 MB this ADR removed.
 
 ## Status
 
 Accepted (v0.1), amended 2026-06-06 (see Update). `ADOPTING.md` copies the runtime subset
 `{skills, reference, templates, memory}` + `.suspec-version`; `suspec-cli`'s `.suspec/kernel/` carries the
-skills + the three reference cards (still far below the 1.2 MB wholesale kernel — manuals + suspec stay
+skills + the three reference cards (still far below the 1.2 MB wholesale kernel — manuals + fixture corpus stay
 upstream).
 
 ## Affected obligations / constraints

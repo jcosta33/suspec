@@ -15,7 +15,7 @@ in their ADRs: the **pass-needs-evidence** gate gap (the verified B2 defect — 
 never evaluated an empty-Evidence Pass cell, suspec-works #50), the **orphaned-reference** skill check
 (ADR-0096-adjacent, #45), and the **oversized-packet** heuristic (ADR-0094). The owner directed
 building the deferred backlog with **measure-before-ship** ([ADR-0086](./0086-deterministic-review-scanning-decision.md)/[ADR-0087](./0087-citation-anchor-check.md):
-0 false-positives on the real suspec + fires on a seeded fixture, ≤10% effective-FP per
+0 false-positives on the real corpus + fires on a seeded fixture, ≤10% effective-FP per
 [[GOOGLESA]](../research/sources.md#GOOGLESA)) deciding what mints.
 
 This ADR records the measured outcome: two checks clear the bar and ship; the third does not and is
@@ -50,7 +50,7 @@ A bundled `.agents/skills/<name>/references/<file>` whose filename is named **no
   (the bare filename anywhere in the body counts as named), so a guide that does point at its
   references is never flagged.
 - A workspace-scope warning (like C002), self-guarding (empty when there is no `.agents/skills/` dir).
-- **Measured:** **6 bundled reference files** across the real `.agents/skills/` suspec the check
+- **Measured:** **6 bundled reference files** across the real `.agents/skills/` corpus the check
   walks (suspec-works ×3, suspec-starter-kit ×2, suspec ×1; `task-template.md`, `research-methodology.md`,
   `evasions.md`) — **0 orphans**, under both the shipped lenient match and a stricter linked-context
   check. (An earlier sweep reported 88 by globbing `.worktrees/*/.claude/skills/` transient

@@ -156,8 +156,9 @@ id: SPEC-checkout
 ```
 
 **Expected:** flagged — two files claim `SPEC-checkout`, so every cross-reference to that
-id is ambiguous. The same check fires when a requirement ID (`AC-NNN`) is reused across
-specs.
+id is ambiguous. Requirement ids stay spec-scoped (ADR-0080): `AC-NNN` may recur freely in
+another spec (a cross-spec reference qualifies as `SPEC-x#AC-NNN`); a duplicated id inside one
+file is C001, not C002.
 
 ---
 
@@ -411,5 +412,5 @@ it is dead weight no reader is sent to (the reference-load field test measured t
 resource helps only when the guide loads it). **Orphan direction only**: the named `checklist.md` is
 _not_ flagged, and the inverse case (a guide naming a reference that does not exist) is out of scope.
 Matching is lenient — the bare filename anywhere in the body counts as named — so a guide that does
-point at its references never false-fires (measured 0-orphan across the real skills suspec). A
+point at its references never false-fires (measured 0-orphan across the real skills corpus). A
 workspace-scope warning; surfaces a fact, never a verdict.

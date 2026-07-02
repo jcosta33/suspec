@@ -43,7 +43,7 @@ The investigation found that neither deferred case has a clean, high-precision i
    safeguard with zero new code; the invariant is noted in `sources.md` so it stays true (a future
    editor who anchors a rejected entry would silently defeat the check).
 
-3. **The trigger to revisit the Caveated case.** Fold citation cases into the `suspec-bench` suspec and
+3. **The trigger to revisit the Caveated case.** Fold citation cases into the `suspec-bench` corpus and
    **measure** a candidate `MUST`-detector's effective-FP before minting anything. Only a _structural_,
    high-precision signal earns a check — e.g. a controlled RFC-2119 `MUST` marker adjacent to a
    `[[KEY]]` whose anchor sits under the Caveated tier — and only after the benchmark shows it clears

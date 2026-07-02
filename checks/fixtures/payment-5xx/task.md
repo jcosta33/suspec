@@ -53,3 +53,8 @@ Implement or preserve:
 ## Findings
 
 - Candidate: the provider is idempotent only after the key is persisted — see `finding.md`.
+
+## Run summary
+
+- (unfilled at this packet's `review-ready` stage — the closing digest lands here; a missing
+  section at `closed` is the V16 hard error)

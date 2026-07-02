@@ -12,11 +12,13 @@
 # The suspec-cli spec-side check (0116, active spec → `## Execution`) ships in `suspec check`, not here.
 # Per ADR-0077, wiring these into a given repo's CI is that repo's call; this script is what CI would run.
 #
-# Usage: scripts/lint-all.sh [REPO_PARENT_DIR]   (default /Users/josecosta/dev)
+# Usage: scripts/lint-all.sh [REPO_PARENT_DIR]   (default: this repo's parent directory)
+# REPO_PARENT_DIR feeds lint-product-citations; the other two gates resolve their roots from
+# their own script location / env vars and ignore the positional.
 set -eu
 
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-DEV_DIR="${1:-/Users/josecosta/dev}"
+DEV_DIR="${1:-$(CDPATH= cd -- "$HERE/../.." && pwd)}"
 
 rc=0
 for gate in lint-product-citations lint-count-ranges check-catalog-freshness; do

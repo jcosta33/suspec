@@ -8,9 +8,9 @@ a tool enforces.
 - **Evidence first.** Lead with the result/finding and its evidence; put prose after, if at all.
 - **Structure over prose.** Use a table or list when it carries the same signal in less space.
 - **Signal-dense.** No filler, no restating the prompt, no persuasion. Cut what a reader would skim.
-- **Reason free, emit lean.** Think in whatever form works; emit the structured artifact ([[FORMATFREE]]).
+- **Reason free, emit lean.** Think in whatever form works; emit the structured artifact ([[FORMATFREE]](../research/sources.md#FORMATFREE)).
 - **Justify to be checked, not to convince.** A "why" exists to make verification cheap — long
-  persuasive prose raises trust without raising scrutiny ([[OVERRELIANCE-REVIEW]]).
+  persuasive prose raises trust without raising scrutiny ([[OVERRELIANCE-REVIEW]](../research/sources.md#OVERRELIANCE-REVIEW)).
 
 ## Clarity outranks brevity
 

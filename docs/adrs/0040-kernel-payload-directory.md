@@ -23,7 +23,7 @@ The copyable framework payload — the unitary thing a consuming repository adop
 
 ## Decision
 
-v0.1 ships the copyable kernel payload under `starter-kit/` (renamed from the earlier `scaffold/`), pulling the rename forward from its v0.2 deferral. `starter-kit/.agents/` is the installable payload interior and `starter-kit/AGENTS.md` is the populated bootloader a consumer adopts; the framework-dev `starter-kit/` is the _shipping location_, distinct from the adopted-project workspace it installs into. The install relation is unchanged: a consumer copies the contents 1:1, and in a consuming repo the payload lands at `.suspec/kernel/`, under which `.suspec/` is the canonical workspace and `.agents/` is only an agent-tool compatibility mirror. The rename is cosmetic — it changes the payload's directory name only, never the `.agents/` interior, the artifact filenames, or the conformance definition. The full specification is §20.0 (the canonical layout note) and §20.5 (the adopted-project `.suspec/kernel/` install target); the wave-2 ordering is §34.0.
+v0.1 ships the copyable kernel payload under `kernel/` (renamed from the earlier `scaffold/`), pulling the rename forward from its v0.2 deferral. `starter-kit/.agents/` is the installable payload interior and `starter-kit/AGENTS.md` is the populated bootloader a consumer adopts; the framework-dev `kernel/` is the _shipping location_, distinct from the adopted-project workspace it installs into. The install relation is unchanged: a consumer copies the contents 1:1, and in a consuming repo the payload lands at `.suspec/kernel/`, under which `.suspec/` is the canonical workspace and `.agents/` is only an agent-tool compatibility mirror. The rename is cosmetic — it changes the payload's directory name only, never the `.agents/` interior, the artifact filenames, or the conformance definition. The full specification is §20.0 (the canonical layout note) and §20.5 (the adopted-project `.suspec/kernel/` install target); the wave-2 ordering is §34.0.
 
 ## Alternatives considered
 
@@ -37,7 +37,7 @@ v0.1 ships the copyable kernel payload under `starter-kit/` (renamed from the ea
 
 ### Positive
 
-- The shipping directory name now matches the spec's own term for the artifact ("the kernel"), removing the `scaffold/`↔`starter-kit/` divergence the §20.0 layout had already adopted.
+- The shipping directory name now matches the spec's own term for the artifact ("the kernel"), removing the `scaffold/`↔`kernel/` divergence the §20.0 layout had already adopted.
 - Wave 2 has a single, settled directory to lay the payload under (`starter-kit/.agents/`, `starter-kit/AGENTS.md`), with no second rename owed in v0.2.
 - The framework-dev shipping location and the adopted-project install target read consistently: `starter-kit/` ships, `.suspec/kernel/` receives.
 

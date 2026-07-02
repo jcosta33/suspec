@@ -57,7 +57,7 @@ Three lifecycle markers (decorate a prior result, never a core value — [advanc
 | Stale | a prior `Pass` no longer trusted after the text or evidence path changed |
 | Contradicted | evidence conflicts |
 
-Merge gate: every in-scope requirement is `Pass` or a live `Waived`, and none is `Stale`, `Contradicted`, `Fail`, `Blocked`, or `Unverified`. An empty scope does not pass.
+Merge gate: every in-scope requirement is `Pass` (not carrying a `Stale`/`Contradicted` marker) or a `Fail`/`Unverified` under a live `Waived`. An empty scope does not pass. (Canonical wording: [advanced-lifecycle](./advanced-lifecycle.md).)
 
 ## Evidence
 

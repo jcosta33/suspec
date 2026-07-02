@@ -29,7 +29,7 @@
 # Usage (run from anywhere; paths resolve from this script's location):
 #   sh suspec/scripts/check-catalog-freshness.sh        → exit 0 clean, 1 on catalog divergence.
 # Override discovered paths with WORKS_SKILLS / CATALOG_SKILLS / KIT_SKILLS if your checkout differs.
-# Set STRICT_KIT=1 to make kit-source divergence a hard failure too.
+# Kit-source divergence is a hard failure by default (STRICT_KIT=1); set STRICT_KIT=0 to demote it to report-only.
 set -eu
 
 # Resolve the family root from this script's location: suspec/scripts/ -> suspec/ -> dev/ (the family).
@@ -52,11 +52,7 @@ repo_dir() {
                 ;;
         esac
     done
-    if [ -d "$FAMILY_ROOT/$name" ]; then
-        printf '%s\n' "$FAMILY_ROOT/$name"
-    else
-        printf '%s\n' "$FAMILY_ROOT/$name"
-    fi
+    printf '%s\n' "$FAMILY_ROOT/$name"
 }
 
 if [ -z "${WORKS_SKILLS:-}" ]; then
@@ -80,7 +76,7 @@ fi
 echo "check-catalog-freshness: ADR-0115 freshness gate"
 echo "  workspace copy : $WORKS_SKILLS"
 echo "  catalog source : $CATALOG_SKILLS"
-[ -d "$KIT_SKILLS" ] && echo "  kit source     : $KIT_SKILLS (informational)"
+[ -d "$KIT_SKILLS" ] && echo "  kit source     : $KIT_SKILLS (hard-gated by default; STRICT_KIT=0 demotes)"
 echo ""
 
 # diff_skill_tree SRC_DIR DST_DIR — print one "  <relpath>" line per differing/orphan file under the

@@ -22,7 +22,7 @@ The other **5 mindsets do not ship as skills** — each is carried by the matchi
 
 **Lead Engineer ships** (`persona-lead-engineer`) precisely *because* it has no workflow skill — orchestration ships none — so the coordination mindset (disjoint-scope decomposition, the hand-off contract, liveness, verified merge) *is* the discipline and clears the bar. See [0025](./0025-orchestration-coordination-artifact.md).
 
-The `docs/personas/` catalogue still documents all 13 mindsets and marks which 7 ship as skills. Each shipped persona body uses the fixed shape from [0013](./0013-iron-law-red-flags-pattern.md): Role / Mindset / Hard constraints / Forbidden actions / Red flags / Persona discipline.
+The `docs/personas/` catalogue still documents all 13 mindsets and marks which 8 ship as skills. Each shipped persona body uses the fixed shape from [0013](./0013-iron-law-red-flags-pattern.md): Role / Mindset / Hard constraints / Forbidden actions / Red flags / Persona discipline.
 
 ## Consequences
 

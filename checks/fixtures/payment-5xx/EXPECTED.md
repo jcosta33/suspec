@@ -65,8 +65,10 @@ though only the SOL surface has a code that names it.
 
 | Check              | Where                      | Expected result                                                                                                                                                                                |
 | ------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `non-empty-paste`  | review rows AC-001, AC-002 | pass — output pasted or linked                                                                                                                                                                 |
-| `non-empty-paste`  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Pass                                                                                                                       |
+| `pass-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                                                                                                                                                 |
+| `pass-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Pass                                                                                                                       |
+| `coverage` (C012)  | review vs spec scope       | pass — every in-scope AC has a coverage row and no row is orphaned (the source spec is `status: ready`, so C012 is in scope for this domain — unlike the draft-spec domains) |
+| `verify-evidence-binding` (C013) | review evidence blocks | not exercised — this domain's packet records no structured `verify` blocks; the free-form Evidence cells stay a human-attention warning, never a C013 fact |
 | `no-open-critical` | review                     | **does not fire** — the open blocking question is correctly reflected as `status: blocked`; the rule guards terminal statuses. Counterfactual: the same packet at `status: pass` would fire it |
 | `trigger-coverage` | review Human attention     | pass — names the contradiction, the blocked question, the unverified row, and the security-sensitive path                                                                                      |
 

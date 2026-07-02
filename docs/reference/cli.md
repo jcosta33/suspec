@@ -154,7 +154,18 @@ Projects a parsed artifact or the checks contract as JSON.
 
 It reads only and renders no verdict.
 
-### `suspec agents emit --codex [--from <dir>]`
+### `suspec update [--check | --write]`
+
+The kit drift surface: `--check` (the default) reports where the local workspace guides/templates
+have drifted from the shipped kit; `--write` lands the kit content (leaving `*.suspec-bak` backups).
+It renders no verdict.
+
+### `suspec promote <task>`
+
+Scaffolds one `findings/<slug>.md` from a closing task's Findings section, pre-filling `from:`. It
+never mutates the board.
+
+### `suspec agents emit --codex [--from <dir>] [--force]`
 
 Generates Codex TOML from Claude Code agent definitions.
 

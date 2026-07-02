@@ -4,7 +4,7 @@ The loop:
 
 ```text
 Pull -> (Inventory) -> Spec -> (Change Plan) -> (Task) -> Run -> Review -> Close
-        optional       optional           split-only
+        optional               optional        split-only
 ```
 
 Every artifact is markdown in the workspace. See [where files live](03-where-files-live.md).

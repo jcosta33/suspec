@@ -71,7 +71,7 @@ that, nothing requires a separate mount, a bridge, or a pre-built workspace tree
    directory (this is what supersedes [0045](./0045-overlays-are-project-owned.md)).
 5. **"kernel" is retired everywhere** — adopter-facing _and_ in the producer repo. It is OS-runtime jargon
    for a folder of markdown in a NO-RUNTIME framework. The concept is "the install" / "the installed files"
-   / "Suspec ships X"; the producer directory `starter-kit/` is renamed `starter-kit/`. (The repo-wide text sweep is a
+   / "Suspec ships X"; the producer directory `kernel/` is renamed `starter-kit/`. (The repo-wide text sweep is a
    tracked follow-up wave; this ADR fixes the decision.)
 
 This **supersedes [0048](./0048-installed-payload-is-the-runtime-surface.md)** (the payload no longer mounts

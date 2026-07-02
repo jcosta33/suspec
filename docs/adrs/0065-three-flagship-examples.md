@@ -22,7 +22,7 @@ product's wedge is reviewing large agent output; the demo must show it.
    ~40-file agent PR → requirement _and_ change-plan coverage tables → Block on missing evidence →
    follow-up task → second packet → merge + finding.
 2. Each example shows every artifact in the pinned template shapes — no abridged chains.
-3. The checks fixture suspec (`conformance/`) remains separate producer test data; examples teach,
+3. The checks fixture corpus (`conformance/`) remains separate producer test data; examples teach,
    fixtures pin.
 
 ## Alternatives considered

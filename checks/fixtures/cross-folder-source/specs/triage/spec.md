@@ -52,4 +52,7 @@ Verify with: `pytest tests/test_triage.py::test_unknown_severity_400`
 
 ## Dropped from sources
 
+- The ticket's `POST /issues/<id>/close` endpoint — deliberately out of this fixture's
+  scope (the fixture exercises cross-folder source resolution, not full ticket fidelity).
+
 - The "sorted by severity" tie-break order within a severity is unspecified — left FIFO.

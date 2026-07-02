@@ -42,7 +42,8 @@
 set -eu
 
 # --- Resolve the parent directory that holds the sibling product repos ---------
-DEV_DIR="${1:-/Users/josecosta/dev}"
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+DEV_DIR="${1:-$(CDPATH= cd -- "$SCRIPT_DIR/../.." && pwd)}"
 if [ ! -d "$DEV_DIR" ]; then
     echo "lint-product-citations: not a directory: $DEV_DIR" >&2
     echo "  Pass the directory that holds the sibling repos (suspec-skills, suspec-agents, …)," >&2

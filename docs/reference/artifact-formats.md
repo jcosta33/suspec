@@ -107,6 +107,7 @@ Sections:
 - Agent instructions
 - Findings
 - Run summary
+- Self-review, when the packet carries one (kit addition)
 
 Every verify item names a requirement id.
 
@@ -133,6 +134,8 @@ status: draft
 Sections:
 
 - Summary
+- Review plan, for a lead-orchestrated review (kit addition)
+- Candidate findings, for a multi-lens review (optional kit addition)
 - Changed files
 - Requirement coverage
 - Change-plan coverage, when relevant

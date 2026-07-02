@@ -73,6 +73,12 @@ board is not a low-FP parse target); it remains a discipline-and-review obligati
   this is one more discipline-and-review obligation, which is precisely the failure mode the sweep
   showed discipline alone does not hold. The honest cost is the gap between this `proposed` record and a
   shipped checker — this ADR closes nothing on its own.
+
+> **Ledger note (2026-07-02):** the spec-side half has since shipped — `suspec check` carries
+> `active-spec-no-execution` + `nonactive-spec-with-execution` (suspec-cli `checkWorkspace`), which is
+> why the frontmatter reads `accepted` and the Decision names the shipped codes. The cost paragraph
+> above and the "checker is proposed, not shipped" clause below are the original pre-ship reasoning,
+> left standing per immutability; the board-signal half stays deferred.
 - **Coupling to the board reader.** The check needs to read the board's shipped signal as well as the
   spec; it inherits whatever the board representation is. If a spec is shipped without ever touching the
   board, the gate has no signal to fire on — it covers board-recorded shipped specs, not every closed

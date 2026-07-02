@@ -76,6 +76,9 @@ Specs, tasks, reviews, and findings belong in the workspace.
 
 ## Retention
 
+(The working set — `intake/`, `tasks/`, `reviews/` — is gitignored by default per the
+ephemeral-by-default decision; retention below concerns what is committed.)
+
 Keep for the life of the project:
 
 - accepted specs
