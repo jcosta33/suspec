@@ -25,7 +25,7 @@ This docs repo enforces nothing by itself.
 | C001 | `unique-ids` | Requirement IDs are unique within a file. | hard |
 | C002 | `duplicate-id` | No other workspace file uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard |
 | C003 | `verify-with` | Every requirement has `Verify with:` or `VERIFY BY`. | hard |
-| C004 | `one-strength-word` | Each requirement uses at least one binding word; more than one flags a split candidate (advice, ADR-0126). | warning |
+| C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate (advice, ADR-0126). SOL `INTERFACE` (IF-) is exempt — a signature declaration has no strength-word slot (ADR-0127). | warning |
 | C005 | `non-goals-present` | Non-goals section exists and is non-empty. | warning |
 | C006 | `open-questions-present` | Open questions section exists, even if it says `None`. | warning |
 | C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard |
