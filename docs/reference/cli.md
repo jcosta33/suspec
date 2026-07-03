@@ -146,6 +146,10 @@ It routes mismatches and exceptions to human attention. It does not decide the r
 
 Prints a derived board from workspace files — the state of record where the CLI is installed.
 
+`--needs-review` narrows the human-readable board to the specs with an actionable task (awaiting
+review or needing a human), so what needs attention is visible at a glance at volume; the summary
+lines always render, and `--json` stays the raw, unfiltered board a client slices itself.
+
 Committed `status.md` stays hand-edited as the Human-attention list and durable links, never a
 state cache.
 
