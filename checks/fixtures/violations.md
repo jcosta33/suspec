@@ -173,8 +173,9 @@ session id.
 Verify with: `npx jest sessions/expired`
 ```
 
-**Expected:** flagged — "must … and should …" in one requirement. Two strength words
-usually means two requirements; the report recommends a split, it does not perform one.
+**Expected:** flagged as a split-candidate advisory — "must … and should …" in one requirement.
+Two strength words usually means two requirements; the report recommends a split, it does not
+perform one, and it never demands "exactly one" (ADR-0126: the requirement is at least one).
 
 ---
 

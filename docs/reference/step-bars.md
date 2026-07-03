@@ -1,5 +1,9 @@
 # Step bars
 
+> **Reference appendix.** Step bars are a design reference — predicates a team MAY hold each loop
+> step to. They have seen no use in practice here; the working checks are the [checks
+> contract](checks.md) and review judgment. Kept for teams that want explicit per-step bars.
+
 A step bar is the pass/fail bar for one loop step.
 
 It checks the transformation from input artifact to output artifact.

@@ -16,7 +16,7 @@
 #   warning     a checker should flag it; teams may treat any warning as
 #               blocking by policy
 
-version: 0.11.0 # contract version of this file; bump on any rule change
+version: 0.12.0 # contract version of this file; bump on any rule change
 
 # --- Spec form selector -------------------------------------------------------
 # The default spec form is plain structured markdown. A spec opts into the
@@ -41,7 +41,7 @@ core_checks:
   - { id: C001, name: unique-ids, severity: hard-error }
   - { id: C002, name: duplicate-id, severity: hard-error } # frontmatter id: uniqueness across files; requirement ids are spec-scoped (ADR-0080)
   - { id: C003, name: verify-with, severity: hard-error }
-  - { id: C004, name: one-strength-word, severity: warning } # must / must not / should / should not / may
+  - { id: C004, name: one-strength-word, severity: warning } # spec: at least one binding word per requirement (must / must not / should / should not / may) — zero binds on nothing; more than one is a split-candidate advisory under the same id, advice-framed (ADR-0126)
   - { id: C005, name: non-goals-present, severity: warning }
   - { id: C006, name: open-questions-present, severity: warning }
   - { id: C007, name: no-tbd-at-ready, severity: hard-error } # open questions not marked non-blocking included

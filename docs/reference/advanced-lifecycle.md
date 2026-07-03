@@ -1,5 +1,10 @@
 # Advanced lifecycle
 
+> **Reference appendix.** This finer-grained lifecycle is a design reference, not a recommended
+> path: it has seen no use in this project's own workspace or in adoption testing. The basic loop
+> plus risk-scaled review covers the measured cases; read on only if your process needs named
+> stages.
+
 Use the basic loop by default:
 
 ```text

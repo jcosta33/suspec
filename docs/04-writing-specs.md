@@ -105,14 +105,14 @@ mapped to the evidence that closed it), and **Pins** (`reviewed-sha:` + `evidenc
 at close) — see [ADR-0110](adrs/0110-execution-change-record.md). This is the durable residue once
 the ephemeral review evaporates.
 
-## Optional SOL form
+## Optional SOL form (experimental)
 
-Plain markdown is the default.
-
-For high-risk specs, use `format: sol` and the structured requirement blocks in
-[structured requirements](reference/structured-requirements.md).
-
-Do not mix plain `AC-NNN` headings and SOL blocks in one spec.
+Plain markdown is the default — and in practice the only form this project's own workspace still
+writes. SOL, an EARS-like structured syntax for high-risk requirements, remains available behind
+`format: sol` as an **experimental annex**: the human-side evidence for controlled syntax is real,
+the LLM-side evidence is absent, and our own usage abandoned it. Details, honestly labeled:
+[structured requirements](reference/structured-requirements.md). Do not mix plain `AC-NNN`
+headings and SOL blocks in one spec.
 
 ## Checks
 
