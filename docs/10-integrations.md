@@ -46,7 +46,10 @@ Use the review packet to connect CI output to requirements:
 
 `suspec-cli` emits **gate facts + an exit code** (a clean reconcile vs. open items); the team wires CI
 to block on that exit code if it wants a hard gate. The gate is the team's — Suspec reports, it never
-owns merge authority.
+owns merge authority. Two honest bounds: the review checks fire only when the packet's task/spec
+reference resolves, and reconcile precision on free-form run summaries is still below its
+false-positive budget — the independent reviewer re-running the checks is the invariant, the exit
+code is the convenience.
 
 ## Code repos
 

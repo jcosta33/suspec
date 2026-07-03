@@ -121,6 +121,14 @@ spec format, and add the rest when the work calls for it. Plain markdown you own
 no runtime, no lock-in, no walled garden. Together they compound; apart, each still earns
 its place.
 
+**Who should not use Suspec.** If you work alone, in a codebase you know, on changes small
+enough to read whole — plan mode, an `AGENTS.md`, and your test suite already give you most of
+what this framework offers, at zero ceremony. Suspec starts paying when the diff is bigger than
+your attention, when more than one person or agent touches the work, or when someone else must
+later reconstruct what was intended and what was proven. Until one of those is true, don't adopt
+it — and if you only want the review discipline, install the
+[skills](https://github.com/jcosta33/suspec-skills) alone and skip the rest.
+
 Against its neighbors: spec-first scaffolds generate plans. Trackers hold tickets. AI
 reviewers hunt bugs and check a diff against a linked ticket's acceptance criteria. An
 `AGENTS.md` alone carries standing facts, not per-change contracts.

@@ -69,6 +69,12 @@ Invalid evidence:
 - a screenshot with no stated check
 - a claim that a command was run, without output or link
 
+The worker's paste is a claim, not proof: the reviewer re-runs the checks and pastes their own
+output. And know what the tooling does not catch — `suspec check`'s review checks fire only when
+the packet's `task:`/`spec:` reference resolves (a typo'd id gates clean), and the reconcile's
+precision on free-form run summaries is measured well below its target on disciplined packets.
+The teeth are real where they bite; the reviewer's own run is the part that always bites.
+
 ## Human attention
 
 Route anything a reviewer must inspect:

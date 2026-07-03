@@ -46,6 +46,11 @@ Notes:
 - `AC-NNN` IDs are unique within a spec, not across the workspace. Cross-spec references use `SPEC-id#AC-NNN`.
 - A `Verify with:` command that does not exist yet is not a spec defect. The requirement is `Unverified` until evidence exists.
 - The oversized-packet size band is specified-not-shipped. `suspec review` reports diff size as neutral information.
+- The review-packet checks (C012/C013/C014/C016) run only when the packet's `task:`/`spec:` reference
+  resolves — an unresolvable reference gates clean with a distinct condition, not a blocking error.
+  C014 needs the live diff (reconcile-time), not prose changed-files. Measured wild-tier reconcile
+  precision on free-form run summaries is not yet at the ≤10% effective-false-positive budget; the
+  reviewer's own re-run is the honest backstop.
 
 ## Workspace validity
 

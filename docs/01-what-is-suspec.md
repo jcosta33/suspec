@@ -24,6 +24,14 @@ Agent output is easy to generate and hard to review. Suspec puts a small record 
 | Large PR | review packet with coverage and exceptions |
 | Lost lesson | finding saved at Close |
 
+## Who should not use it
+
+If you work alone, in a codebase you know, on changes small enough to read whole — plan mode,
+an `AGENTS.md`, and your test suite already cover most of this, at zero ceremony. Suspec starts
+paying when the diff outgrows your attention, when more than one person or agent touches the
+work, or when someone must later reconstruct what was intended and what was proven. Until one of
+those is true, don't adopt it.
+
 ## The loop
 
 ```text
