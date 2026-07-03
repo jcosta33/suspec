@@ -67,7 +67,10 @@ Move uncertainty to **Open questions** — framed as a decision (options and a r
 
 ## Non-goals
 
-Use non-goals to stop scope creep.
+Use non-goals to stop scope creep. Write them in three parts: the prohibition, what to do
+instead, and the escape hatch — blocked by the boundary? stop and ask. A bare "do not" is
+measured weak; prohibition plus a stop option cuts violations by an order of magnitude
+([[IMPOSSIBLE]](research/sources.md#IMPOSSIBLE), [[OVEREAGER]](research/sources.md#OVEREAGER)).
 
 Good non-goals name likely misunderstandings:
 

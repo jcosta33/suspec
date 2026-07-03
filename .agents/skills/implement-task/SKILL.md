@@ -27,9 +27,12 @@ enforces them at edit time.
 2. **One worktree (or branch) per task.** Keep this task's changes isolated so
    parallel tasks stay write-disjoint and the reviewer sees one clean diff.
 3. **Stay in scope.** Implement the ACs the packet lists — no more. If a
-   requirement cannot be met as written, stop and say why instead of
-   improvising. _Why: an improvised interpretation is a decision nobody made,
-   landing where it is most expensive to find — in the code._
+   requirement cannot be met as written, or your change seems to need a
+   non-goal or Do-not-change area, stop and say what you need and why —
+   never improvise past the boundary or work around it. _Why: an improvised
+   interpretation is a decision nobody made, landing where it is most
+   expensive to find — in the code; and the stop-and-ask hatch is the
+   measured-effective half of a scope wall._
 4. **No out-of-scope edits.** "While I'm here" fixes belong in your summary as
    finding candidates, not in the diff. If an out-of-scope edit is truly
    unavoidable (a broken import on your path), keep it minimal and list every

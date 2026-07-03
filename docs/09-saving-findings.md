@@ -64,7 +64,9 @@ Expired checkout sessions return `409 SESSION_EXPIRED`, not a 5xx.
 
 After review:
 
-- update `status.md`
+- update `status.md` — the Human-attention list and links; live state is the derived
+  `suspec status` view where the CLI is installed (a stale state row misleads more than an
+  empty one)
 - link closed work to its review packet while retained
 - add pending findings to Human attention
 - carry forward blocked questions or follow-up work

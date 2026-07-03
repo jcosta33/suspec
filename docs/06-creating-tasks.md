@@ -79,6 +79,9 @@ Name tempting adjacent areas:
 - unrelated modules
 
 A changed `Do not change` path is a review exception, even if the change looks harmless.
+And give the wall its escape hatch: a worker blocked by a frozen path stops and asks — never
+edits past it. The wall-plus-hatch form is the one that holds
+([[IMPOSSIBLE]](research/sources.md#IMPOSSIBLE)).
 
 ## Verify
 

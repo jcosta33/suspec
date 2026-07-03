@@ -38,7 +38,9 @@ Core homes:
 - `inventory/`: present-state maps for brownfield work.
 - `change-plans/`: wave plans for structural work.
 - `decisions/`: project ADRs.
-- `status.md`: hand-edited board and index.
+- `status.md`: the hand-edited Human-attention list and closed-work links. Live spec/task/review
+  STATE is derived — `suspec status` is the canonical view where the CLI is installed; a stale
+  hand-written state row is worse than none ([[PLANCOMPLY]](research/sources.md#PLANCOMPLY)).
 
 ## Co-located or dedicated
 

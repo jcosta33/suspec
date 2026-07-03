@@ -111,3 +111,11 @@ bounds the panel). **Honors** [ADR-0077](./0077-suspec-cli-reconcile-only-harnes
 [ADR-0095](./0095-review-model-grounding.md), [ADR-0056](./0056-adversarial-self-review-completion-discipline.md),
 and [ADR-0119](./0119-independent-review-invariant.md). The per-lens **cost-tier convention is a separate
 decision** (the model-routing wave).
+
+> **Forward note (2026-07-03) — union-and-reconcile, never majority-filter.** The lead's
+> reconcile unions every lens finding and adjudicates each on evidence; agreement or vote-count
+> never selects which findings survive, and a vote applies only to a contested rejection,
+> refutation-first. Clarified after measured evidence that consensus-style aggregation dilutes a
+> team below its best member (up to 41.1%, integrative compromise —
+> [[EXPERTSBACK]](../research/sources.md#EXPERTSBACK)); recorded in SPEC-revolver-union (family
+> workspace). The body above is unchanged.
