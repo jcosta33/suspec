@@ -34,7 +34,7 @@ This docs repo enforces nothing by itself.
 | C010 | `preserves-refs-resolve` | Change-plan `preserves:` entries resolve to requirements or `PG-NNN`. | hard |
 | C011 | `waves-present` | Migration, rewrite, and schema-change plans have waves with verify steps. | warning |
 | C012 | `coverage` | Review coverage rows match the task scope and source spec. | warning |
-| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row result. | warning |
+| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row result — a **consistency** check (nothing re-runs the command). A cmd-mismatch **blocks** at the gate (`suspec check <review>`, ADR-0129); other faces and `suspec review` stay advisory. | warning (cmd-mismatch: hard-error at the gate) |
 | C014 | `do-not-change-touched` | Changed files are reconciled against `Do not change`. | warning |
 | C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`. | warning |
 | C016 | `pass-needs-evidence` | A `Pass` row with empty evidence is invalid. | hard |
