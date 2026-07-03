@@ -66,7 +66,7 @@ After review:
 
 - update `status.md` — the Human-attention list and links; live state is the derived
   `suspec status` view where the CLI is installed (a stale state row misleads more than an
-  empty one)
+  empty one — [[PLANCOMPLY]](reference/../research/sources.md#PLANCOMPLY))
 - link closed work to its review packet while retained
 - add pending findings to Human attention
 - carry forward blocked questions or follow-up work

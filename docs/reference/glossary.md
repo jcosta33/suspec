@@ -40,7 +40,7 @@
 | source authority | Rule for which artifact governs when intent conflicts. |
 | spec | Intended behavior and verification. |
 | split work | Turn spec or change plan into task packets. |
-| status board | `status.md`. Hand-edited board and index. |
+| status board | `status.md`. Hand-edited Human-attention list + durable links; live state is the derived `suspec status` view. |
 | structured requirements | Plain `AC-NNN` requirements or SOL blocks over the same record. |
 | task packet | Bounded split work order for an agent or person. |
 | transitory output | Short-lived output such as run logs and check output. |

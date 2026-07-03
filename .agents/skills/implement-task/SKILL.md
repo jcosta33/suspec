@@ -29,10 +29,10 @@ enforces them at edit time.
 3. **Stay in scope.** Implement the ACs the packet lists — no more. If a
    requirement cannot be met as written, or your change seems to need a
    non-goal or Do-not-change area, stop and say what you need and why —
-   never improvise past the boundary or work around it. _Why: an improvised
-   interpretation is a decision nobody made, landing where it is most
-   expensive to find — in the code; and the stop-and-ask hatch is the
-   measured-effective half of a scope wall._
+   never improvise past the boundary or work around it — stop and ask. _Why: an
+   improvised interpretation is a decision nobody made, landing where it is most
+   expensive to find — in the code; a bare prohibition is measured weak, and the
+   stop-and-ask hatch is the measured-effective half of a scope wall._
 4. **No out-of-scope edits.** "While I'm here" fixes belong in your summary as
    finding candidates, not in the diff. If an out-of-scope edit is truly
    unavoidable (a broken import on your path), keep it minimal and list every

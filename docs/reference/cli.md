@@ -144,9 +144,10 @@ It routes mismatches and exceptions to human attention. It does not decide the r
 
 ### `suspec status`
 
-Prints a derived board from workspace files.
+Prints a derived board from workspace files — the state of record where the CLI is installed.
 
-Committed `status.md` stays hand-edited.
+Committed `status.md` stays hand-edited as the Human-attention list and durable links, never a
+state cache.
 
 ### `suspec show <task|spec|review|checks> [ref]`
 

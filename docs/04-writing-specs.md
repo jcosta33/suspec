@@ -59,7 +59,7 @@ Each requirement:
 - has an `AC-NNN` id
 - states one behavior
 - names the actor or system
-- uses one binding word: `must`, `must not`, `should`, `should not`, or `may`
+- uses at least one binding word: `must`, `must not`, `should`, `should not`, or `may` (more than one flags a split candidate)
 - has a `Verify with:` line
 - avoids hidden uncertainty
 

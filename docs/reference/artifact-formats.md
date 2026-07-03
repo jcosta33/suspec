@@ -185,17 +185,14 @@ One finding, one durable claim.
 
 ## Status board
 
-`status.md` is hand-edited.
+`status.md` is hand-edited — it carries what only a human writes:
 
-It lists:
+- the human-attention list
+- pending findings awaiting adjudication
+- links from closed work to its review packet (while retained)
 
-- active specs
-- active tasks
-- review status
-- human attention
-- pending findings
-
-Closed or verified rows link to their review packet while retained.
+Live spec/task/review state is derived: `suspec status` is the state of record where the CLI is
+installed. A stale hand-written state row misleads more than an empty one.
 
 ## Inventory
 

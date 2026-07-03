@@ -32,7 +32,7 @@ Verify with: `command`
 Rules:
 
 - one behavior
-- one binding word
+- at least one binding word (more than one flags a split candidate)
 - one verify line
 - uncertainty goes to Open questions
 
