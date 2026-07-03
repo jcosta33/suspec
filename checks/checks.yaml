@@ -16,7 +16,7 @@
 #   warning     a checker should flag it; teams may treat any warning as
 #               blocking by policy
 
-version: 0.13.0 # contract version of this file; bump on any rule change
+version: 0.14.0 # contract version of this file; bump on any rule change
 
 # --- Spec form selector -------------------------------------------------------
 # The default spec form is plain structured markdown. A spec opts into the
@@ -57,6 +57,7 @@ core_checks:
   - { id: C017, name: orphaned-reference, severity: warning } # workspace: a bundled .agents/skills/<name>/references/<file> not named anywhere in its sibling SKILL.md (orphan direction only — a load-bearing reference the guide forgot to point at); ADR-0097 (#45), measured 0-orphan on the real .agents/skills/ corpus at mint time (ADR-0097)
   # C018 is RESERVED for the oversized-packet signal (ADR-0094/ADR-0097) — do not mint it for anything else.
   - { id: C019, name: malformed-requirement-heading, severity: warning } # spec: a ### heading shaped like a requirement id but with a lowercase split-suffix (AC-004a) — the parser reads it as prose, so the requirement silently vanishes from scope/coverage; the warning makes the disappearance visible (the id shape is `AC-NNN` — digits only, per the format frozen in ADR-0058; minted in ADR-0125)
+  - { id: C020, name: unresolvable-ref, severity: hard-error } # review packet (GATE path, suspec check <review>): the review's `task:` ref resolves to no local task packet (tasks/<id>.md absent), so C012/C013/C016 cannot run — without C020 the review gates CLEAN and a typo'd/renamed task id silently bypasses the honesty checks. Blocks at the gate (structural, like C016); the reconcile path (suspec review) stays advisory (ADR-0077 D8). Deliberately narrow: an unreachable source SPEC stays clean (cross-root, ADR-0100 — indistinguishable from a typo here). Minted in ADR-0128 (suspec-works #89)
   # NOTE: oversized-packet (ADR-0094) is specified-not-shipped — a raw LOC/files band cannot be both useful and low-FP for code task diffs (measured ~15% FP at 600 LOC; ADR-0097). The diff size is surfaced as NEUTRAL INFO in `suspec review` instead, no band asserted.
 
 # --- The task packet -----------------------------------------------------------

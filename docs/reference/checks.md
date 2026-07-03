@@ -40,6 +40,7 @@ This docs repo enforces nothing by itself.
 | C016 | `pass-needs-evidence` | A `Pass` row with empty evidence is invalid. | hard |
 | C017 | `orphaned-reference` | A bundled skill reference file is not named by its sibling `SKILL.md`. | warning |
 | C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. (C018 stays reserved for the oversized-packet signal.) | warning |
+| C020 | `unresolvable-ref` | A review packet's `task:` ref resolves to no local task packet, so coverage/evidence cannot be checked — without it the review gates clean and a typo'd task id bypasses the honesty checks. Blocks at the gate (`suspec check <review>`); advisory in `suspec review`. (An unreachable source spec stays clean — cross-root, ADR-0100.) | hard-error |
 
 Notes:
 
