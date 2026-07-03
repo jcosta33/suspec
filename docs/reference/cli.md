@@ -88,9 +88,12 @@ Creates `specs/<slug>/spec.md` from the template.
 
 The user fills requirements.
 
-### `suspec check [file]`
+### `suspec check [file...]`
 
-Reads specs or workspace files and reports diagnostics.
+Reads specs or workspace files and reports diagnostics. Accepts one or more files in a single
+invocation (the exit code is the max across them), so a batch — e.g. the pre-commit hook's staged
+set — is checked in one process rather than paying the startup cost per file. With no file, it
+renders the whole-workspace verdict.
 
 Exit codes:
 
