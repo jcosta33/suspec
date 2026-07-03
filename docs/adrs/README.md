@@ -183,3 +183,9 @@ The kernel spec required a conformant repo to carry these ADRs (or equivalents) 
 [0043](./0043-checkable-documents.md) is **proposed / parked** — it records a _direction_ (keep obligation-blocks spec-only; give other agent docs a subtractive, deterministic, advisory check surface) but builds no lint rule and changes nothing in the live lint pass. It is design intent, not an in-force decision; its backlog plan was retired with the practical-first repositioning (see git history).
 
 [0044](./0044-kernel-is-derived-and-self-contained.md) settles the shape of the installable payload: `docs/` is the **single canonical source** for the `language/` and `passes/` twins and the kernel is a **derived, checked, self-contained copy** that resolves offline (no `§N`/`Appendix-X` refs to unshipped documents, no links into docs-only trees). The kernel is derived by mechanical rewrites (strip citations/§-refs, rewrite links to resolve offline) and kept honest by an eyeball-diff on edit + a grep-based coherence gate — refining the kernel-payload decision ([0040](./0040-kernel-payload-directory.md)). The one-time reconciling merge it authorized (the K2 work) is done.
+
+> **Ledger note (2026-07-03) — link hygiene.** 29 links inside pre-pivot ADR bodies pointed at the
+> retired kernel layout (`passes/`, `language/`, `model/`, `library/`, `artifacts/`,
+> `reference/structured-form`) and 404'd for every reader. Each was mechanically unlinked to inline
+> code — wording untouched, decision content untouched — per FINDING-canon-link-rot (family
+> workspace). No decision was edited.

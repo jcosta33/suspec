@@ -18,7 +18,7 @@ superseded_by: 0049-minimal-install-no-mount-no-imposed-workspace
 ## Context
 
 Overlays are the project-local rule layer (architecture conventions, extra refusals, local command
-bindings) a repository adds on top of the kernel ([overlays reference](./library/overlays.md)). They are
+bindings) a repository adds on top of the kernel (`overlays reference`). They are
 **project-authored** content. Yet the kernel payload model placed them _inside_ the framework-owned tree:
 `docs/model/workspace.md` listed `overlays/` as a sub-directory of `.suspec/kernel/` (the installed payload)
 and the producer seed shipped at `starter-kit/.agents/overlays/` (which mirrors `.suspec/kernel/`).
@@ -44,7 +44,7 @@ _outside_ the replaceable payload — not at `.suspec/kernel/overlays/`.
 3. The ownership boundary is now **positional**: everything under `.suspec/kernel/**` is framework-owned and
    replaced on upgrade; `.suspec/overlays/` (with the root `AGENTS.md`, `.suspec/config.yaml`, and the data
    workspace) is project-owned and preserved. This is the same boundary the upgrade story relies on.
-4. The **overlay contract is unchanged** ([overlays reference](./library/overlays.md)): an overlay is
+4. The **overlay contract is unchanged** (`overlays reference`): an overlay is
    SOFT, additive, lazily-loaded-by-name guidance that MUST NOT override an approved obligation or redefine
    kernel semantics. Only its _location_ and _ownership tagging_ change.
 
@@ -58,7 +58,7 @@ precondition for a safe kernel upgrade and for the static adoption bundle.
 | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Keep overlays under `.suspec/kernel/overlays/`, preserve them on upgrade by a special stash/restore step | Makes the upgrade special-case a project-owned subdir of a framework-owned tree; ownership-by-exception is exactly the conflation that caused the footgun. Positional ownership (location = owner) is simpler and safe by construction.                |
 | Keep the producer seed at `starter-kit/.agents/overlays/`                                                | Breaks [0044](./0044-kernel-is-derived-and-self-contained.md)'s mirror invariant (`starter-kit/.agents/` ⇒ `.suspec/kernel/`): the coherence gate would expect it to install under `.suspec/kernel/overlays/`. The seed must leave the payload mirror. |
-| Put project rules in the root `AGENTS.md` instead of overlays                                            | `AGENTS.md` is always-loaded persistent facts; overlays are lazily-loaded, pass-scoped rule bundles — a different lifecycle ([overlays reference](./library/overlays.md) §"where does a rule belong"). They are not interchangeable.                   |
+| Put project rules in the root `AGENTS.md` instead of overlays                                            | `AGENTS.md` is always-loaded persistent facts; overlays are lazily-loaded, pass-scoped rule bundles — a different lifecycle (`overlays reference` §"where does a rule belong"). They are not interchangeable.                   |
 
 ## Consequences
 

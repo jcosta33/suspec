@@ -38,7 +38,7 @@ naming is present, an agent MAY fall back to matching a guide's self-activating 
 against the task, but this is a degraded mode, not the contract. ADR 0017's prohibition on
 always-loaded skills is kept verbatim — pass guides and profiles remain lazily loaded. The
 full specification, including the example `task.md` → guide binding, is detailed in the
-pass-guides reference ([`docs/library/pass-guides.md`](./library/pass-guides.md)). Loading remains **orthogonal** to the verification and
+pass-guides reference (``docs/library/pass-guides.md``). Loading remains **orthogonal** to the verification and
 self-review deliverable: which conditioning loads (routing) and what proof a task must carry
 once active (verification) are independent axes, exactly as ADR 0020 established.
 
