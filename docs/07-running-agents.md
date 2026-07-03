@@ -62,6 +62,9 @@ suspec/<task-slug>
 ```
 
 Worktrees isolate file state. They do not isolate shared services, ports, databases, or credentials. Configure those separately when needed.
+And exclude the worktree folder from your dev tools: vitest, eslint, cargo and friends do not read
+`.gitignore`, so worktree copies otherwise show up as duplicated tests or phantom lint errors
+(vitest `test.exclude`, eslint `ignores`, …).
 
 ## Provenance
 
