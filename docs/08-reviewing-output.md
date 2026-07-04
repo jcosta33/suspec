@@ -1,6 +1,6 @@
 # Reviewing output
 
-Review checks the worker's output against the task and spec.
+Review checks the worker's output against the **spec** — the task, when one exists, scopes which requirements and indexes the evidence, but the spec is what the code is judged against.
 
 Do not read a large diff from line 1. Start with:
 
@@ -19,7 +19,7 @@ Use a fresh session, another agent, or a human reviewer.
 
 The independent judgment is the invariant; the formal packet scales with risk. A substantial or high-diffusion change gets the full packet below; a trivial change the owner verified needs the judgment, not the paperwork.
 
-When the change warrants the formal packet, a **review lead** orchestrates it: it reads the task, cited spec, run summary, and diff, then sends **at least three independent lens reviewers** — requirement correctness, verification/evidence, and maintainability/design by default; security, migration, performance, and others as the change warrants. Each lens returns findings and evidence only. The lead reconciles them, deduplicates, and writes the one packet; a lens reviewer never renders the status or suggested decision.
+When the change warrants more than one pass, escalate to a **rotating (Revolver) review**: a lead cycles a pool of distinct stances — requirement correctness, verification/evidence, maintainability/design by default; security, migration, performance, and others as the change warrants — **one reviewer at a time on cheap models**, reading the cited spec (and the run summary as the evidence index), applying the legitimate fixes between rounds, and re-reviewing the revised change until a rotation surfaces nothing new. A lens reviewer returns findings and evidence only and never renders the status or suggested decision.
 
 ## Review packet
 

@@ -17,7 +17,7 @@ climb only for a reason you can name.
 | **L1** | Lean spec | Intent + acceptance criteria + a Verify line each | A small, clear, single-concern change. **The default for most work.** |
 | **L2** | Spec + task | A scoped, disposable task packet (write surface, scope) | The change wants an explicit hand-off — parallel work, a delegated worker, a scope worth pinning. |
 | **L3** | + independent review | A non-implementer judges the diff against the spec | Anything that ships behavior. **The default whenever code changes** — the review is independent, its *formal packet* scales with risk. |
-| **L4** | Revolver panel | A bounded, lead-reconciled multi-lens review | A MAJOR-hunt: high diffusion, security-sensitive, or a large diff where one reviewer's partition leaves gaps. Costs ~2× the tokens ([ADR-0122](../adrs/0122-revolver-review-bounded-panel-strategy.md)). |
+| **L4** | Revolver | A rotating pool of ≥6 distinct stances, one reviewer at a time, fixing between rounds until it converges | A MAJOR-hunt: high diffusion, security-sensitive, or a large change one reviewer's partition would leave gaps in; runs on cheap varied models ([ADR-0132](../adrs/0132-revolver-rotating-refine-loop.md)). |
 | **L5** | Orchestrated waves | Change plan, decomposed wave tasks, per-wave reviews | A migration, a rewrite, or a structural change across subsystems — the [advanced lifecycle](advanced-lifecycle.md). |
 
 **L1 or L3 is the default. The top rung is never the default.** L4 and L5 are for the change that earns

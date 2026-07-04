@@ -27,7 +27,6 @@ Source: [`../suspec-skills/skills/`](https://github.com/jcosta33/suspec-skills).
 
 | Name                   | Home           | Use it when                                      |
 |------------------------|----------------|--------------------------------------------------|
-| `adversarial-review`   | suspec-skills  | Reviewing a branch, PR, diff, audit, or bug with refute-by-default evidence checks. |
 | `codebase-exploration` | suspec-skills  | Mapping an unfamiliar codebase before changing it. |
 | `concise-output`       | suspec-skills  | Producing terse, evidence-first output.          |
 | `debugging`            | suspec-skills  | Finding a live defect's root cause from runtime evidence. |
@@ -39,7 +38,7 @@ Source: [`../suspec-skills/skills/`](https://github.com/jcosta33/suspec-skills).
 | `planning-spec`        | suspec-skills  | Planning a non-trivial change before fan-out.    |
 | `security-review`      | suspec-skills  | Reviewing trust-boundary and data-flow risks.    |
 | `bulletproof`          | suspec-skills  | Hardening a claim, decision, spec, or plan — evidence-gated critique with kill criteria. |
-| `revolver-review`      | suspec-skills  | Orchestrating a bounded multi-lens review — blind lenses, lead reconciles, human verdict. |
+| `revolver-review`      | suspec-skills  | Driving a substantial change to a clean state — a rotating pool of ≥6 distinct stances, one reviewer at a time, fixing between rounds until it converges. |
 
 ## Kit Guides
 
@@ -94,7 +93,8 @@ Names an author might still meet in older text. Do not cite them as current; use
 
 | Name                | Status    | Replacement                                                        |
 |---------------------|-----------|--------------------------------------------------------------------|
-| `persona-skeptic`   | retired   | Merged into `adversarial-review` (the refute-by-default stance).   |
+| `adversarial-review` | retired   | The refute-by-default review discipline now lives in `revolver-review`, which consumed it (ADR-0132). |
+| `persona-skeptic`   | retired   | The refute-by-default review discipline, now carried by `revolver-review`.   |
 | `suspec-explorer`   | retired   | The runner's built-in exploration agent + the `codebase-exploration` skill. |
 | `write-documentation` (catalog) | relocated | Ships in the kit (`suspec-starter-kit/.agents/skills/`), not the catalog. |
 | `implement-task` (catalog)      | relocated | Ships in the kit; the suspec repo keeps a byte-identical dev mirror. |
