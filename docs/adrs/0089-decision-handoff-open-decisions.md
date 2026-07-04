@@ -3,7 +3,7 @@ type: adr
 id: adr-0089
 status: accepted
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-07-04
 ---
 
 # ADR-0089 — The decision handoff: an `## Open decisions` section that frames an open decision for the human (convention, fact-not-verdict, evidence-grounded)
@@ -58,7 +58,14 @@ This ADR adds that home.
    that same list); the same convention applies to a task's
    `## Run summary` and to an agent's chat handoff. _Level: convention (ADR-0063) — nothing enforces it;
    review may inspect it._ It **routes a decision to the human — a fact, never a verdict** (ADR-0077
-   Decision 8): the section presents and recommends; the human decides.
+   Decision 8): the section presents and recommends; the human decides. **Standing agent norm
+   (2026-07-04):** the same shape is not only an artifact section — an agent surfaces a genuine
+   blocking fork as options + a recommendation **live, mid-work**, not just at closeout. The kit's
+   `AGENTS.md` carries it as an always-on interaction floor beside the output-economy convention
+   ([ADR-0109](./0109-output-economy-convention.md)), calibrated to fire on **genuine forks only** —
+   clarifying already-clear work measurably hurts
+   [[HUMANEVALCOMM]](../research/sources.md#HUMANEVALCOMM), so read first and don't ask what the code
+   or spec already answers. _Level: convention (ADR-0063); nothing enforces it._
 
 2. **The fields are fixed; the content is present only when a decision is open.** Each open decision
    carries: **the decision** (one line) · **2–4 comparable options**, each with its tradeoff (the case
@@ -135,4 +142,7 @@ guidance) · `docs/research/sources.md` (the eight evidence entries, tiered) ·
 `docs/adrs/README.md` (the index row) · the suspec-works trail (SPEC/TASK/REVIEW + the persisted research).
 Extends [0060](./0060-suspec-workspace.md); honors [0077](./0077-suspec-cli-reconcile-only-harness.md)
 Decision 8 and [0063](./0063-honesty-framework-and-tooling-boundary.md); convention-first like
-[0088](./0088-delegation-provenance.md). No contract change, no check.
+[0088](./0088-delegation-provenance.md). No contract change, no check. The standing-agent-norm
+extension (2026-07-04) derives to the kit's `../suspec-starter-kit/AGENTS.md` `Agent role` floor
+(beside the [0109](./0109-output-economy-convention.md) output-economy line) — a derivation of this
+convention to the always-on surface, not a new rule.
