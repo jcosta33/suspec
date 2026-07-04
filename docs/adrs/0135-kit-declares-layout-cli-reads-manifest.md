@@ -58,3 +58,15 @@ _toolable_ once the CLI lands it, not enforced today, per [ADR-0063](./0063-hone
 Resolves the CLI↔`templates/` coupling under [ADR-0134](./0134-self-contained-spine.md); refines the
 single-sourcing rule (kit declares layout, CLI discovers it). Honors
 [ADR-0117](./0117-no-count-bearing-prose.md).
+
+> **Correction (2026-07-05, code-verified).** The Context above overstated the coupling. Verified
+> against the CLI source, the hardcoded-`templates/` coupling is **only two points**: `applyUpdate`'s
+> `KIT_OWNED_PREFIXES = ['templates/', '.agents/skills/', 'advanced/', 'hooks/']` (what `suspec update`
+> refreshes) and `checkWorkspace`'s blocking `missing-template` finding (a workspace must have a
+> `templates/` dir). `initWorkspace` copies the **whole** kit, so it is not path-coupled.
+> `scaffoldSpec`/`scaffoldChangePlan` do **not** read `templates/<artifact>.md` — they **render the
+> skeleton inline** (`render_spec`) mirroring the frozen format, so `suspec new` is coupled to the
+> format (a separate duplication concern), not to the `templates/` path. The manifest decision stands;
+> its implementation targets those two points. This correction is itself the examine-don't-ruminate
+> rule ([ADR-0133](./0133-examine-dont-ruminate.md)) catching an unverified claim in this ADR's own
+> Context.
