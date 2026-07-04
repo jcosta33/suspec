@@ -180,6 +180,9 @@ These were already verified by the framework's bibliography elsewhere; the entri
 <a id="CTXENG"></a>
 **[CTXENG] Effective context engineering for AI agents.** Anthropic Engineering, 2025. Context as a finite resource; the **three-file note-taking pattern** (`task_plan` / `progress_log` / `decisions`). <https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents> — *official guidance.*
 
+<a id="BUILDAGENTS"></a>
+**[BUILDAGENTS] Building effective agents.** Anthropic Engineering, 2024. *Verified (July 2026, direct fetch).* Start-simple guidance: "find the simplest solution possible, and only increasing complexity when needed"; the most successful implementations used **simple, composable patterns**, not complex frameworks; frameworks "often create extra layers of abstraction that can obscure the underlying prompts and responses" and "make it tempting to add complexity when a simpler setup would suffice." <https://www.anthropic.com/engineering/building-effective-agents> — *official guidance, not a measured study; cite as design guidance.* Grounds: the minimum-useful-rigor default — add structure only where it earns its place (ADR-0131).
+
 <a id="SKILLSPEC"></a>
 **[SKILLSPEC] Open Agent Skills specification.** agentskills.io. The `SKILL.md` shape, the 1024-char `description` cap, the progressive-disclosure model. <https://agentskills.io/specification> — *open standard.*
 
@@ -406,6 +409,9 @@ A web-verified arXiv preprint is stronger than a blog post but is **not peer-rev
 
 <a id="PLANCOMPLY"></a>
 **[PLANCOMPLY] Evaluating Plan Compliance in Autonomous Programming Agents.** Liu, Dehghan, Ganhotra, Hirzel, Jabbarvand. **arXiv:2604.12147** (preprint). *Verified (July 2026, direct fetch).* 16,991 SWE-agent trajectories: providing a standard plan improves resolution, and **periodic plan reminders further improve compliance and success** — agents without guidance revert to overfitted training patterns. Grounds: a persistent, re-surfaced work-state artifact does measurable work — the board/plan visibility rationale (with the staleness boundary at [INSTRROT]/[CTXLENHURTS]).
+
+<a id="SELFPLAN"></a>
+**[SELFPLAN] Self-planning Code Generation with Large Language Models.** Jiang, Wang, Wang, Zhang, Lian, Li, Jin. **arXiv:2303.06689** (preprint; later TOSEM). *Verified (July 2026, direct fetch — abstract figure confirmed).* Eliciting a short plan before implementation gives a **relative +25.4% Pass@1** over direct code generation across benchmarks. Grounds (preliminary, the counterweight to the "ceremony is inert" read): a *targeted, execution-shaping* structure — a lean plan the coder then follows — measurably helps, distinct from generic process artifact ([[SWESKILLS]]/[[SKILLSBENCH26]] show the inert kind); pairs with [[PLANCOMPLY]] (plan + reminders improve compliance). The doctrine that structure earns its place by changing execution, not by existing (ADR-0131).
 
 <a id="SKILLSBENCH26"></a>
 **[SKILLSBENCH26] SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks.** Li et al. (77 authors). **arXiv:2602.12670** (preprint). *Verified (July 2026, direct fetch).* **Curated, task-matched skills raise average pass rate 33.9% → 50.5% (+16.6pp**; per-config +4.1 to +25.7pp); focused skills of **≤3 modules beat larger bundles**; skilled smaller models rival unskilled larger ones. Grounds (with [SWESKILLS]): the split is curation and task-fit, not skills-yes/no — generic skills mostly do nothing, task-matched ones pay; keep skill bodies small and matched.

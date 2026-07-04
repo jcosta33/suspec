@@ -137,6 +137,10 @@ See [saving findings](09-saving-findings.md).
 | Migration or rewrite | Pull -> Inventory -> Spec -> Change Plan -> wave Tasks -> Reviews -> Close |
 | PR that already exists | Intake the PR -> write the acceptance bar -> Review |
 
+Match the ceremony to the risk, not the reverse: most work sits at a lean spec plus independent review,
+and heavier forms are for the change that earns them. The [rigor ladder](reference/rigor-escalation.md)
+names the rungs and when to climb.
+
 ## What not to skip
 
 For code-changing work, keep:

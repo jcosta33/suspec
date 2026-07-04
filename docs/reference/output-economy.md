@@ -27,6 +27,24 @@ Want stronger economy? Install the optional concision skill from the
 [suspec-skills](https://github.com/jcosta33/suspec-skills) catalog. It is opt-in conditioning — not a
 Suspec requirement, and not a runtime hook.
 
+## The artifact leverage test
+
+The same economy applies to *artifacts*, not just an agent's chat output (ADR-0131, extending ADR-0109).
+Every artifact, section, and template earns its place by improving at least one of:
+
+- **clarity** — the intent is easier to understand
+- **scope** — what is in and out of bounds is pinned
+- **execution-context** — the implementer knows something they'd otherwise guess
+- **verification** — a claim becomes checkable
+- **reviewability** — a reviewer can judge it faster or better
+- **durable-memory** — a lesson survives past this task
+
+If a section serves none of these — no consumer reads it, nothing changes when it's gone — cut it. This
+is a **checklist** item (a spec-check / review question), not something a tool enforces. It is the
+artifact-level companion to [the rigor ladder](rigor-escalation.md): the ladder decides *how many*
+artifacts a change warrants; the leverage test decides whether *this* artifact (or section) is pulling
+weight.
+
 ## Related
 
-- [Principles](principles.md) · [Vocabulary tiers (glossary)](glossary.md) · [ADR-0109](../adrs/0109-output-economy-convention.md)
+- [Rigor ladder](rigor-escalation.md) · [Principles](principles.md) · [Vocabulary tiers (glossary)](glossary.md) · [ADR-0109](../adrs/0109-output-economy-convention.md) · [ADR-0131](../adrs/0131-minimum-useful-rigor.md)

@@ -79,3 +79,5 @@ traceability, change control) while dropping the document stack — see [lineage
 ## Related
 
 Next: [The basic workflow](02-basic-workflow.md)
+
+Scale the rigor to the work: [the rigor ladder](reference/rigor-escalation.md).

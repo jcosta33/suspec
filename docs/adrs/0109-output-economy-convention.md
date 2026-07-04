@@ -3,7 +3,7 @@ type: adr
 id: adr-0109
 status: accepted
 created: 2026-06-26
-updated: 2026-06-26
+updated: 2026-07-04
 ---
 
 # ADR-0109 — Output economy: a readable, economical agent-output convention (a floor, not a hook)
@@ -57,3 +57,7 @@ gentle floor, with the *dial* left optional.
   economy floor). **Grounded by:** [[FORMATFREE]], [[OVERRELIANCE-REVIEW]].
 - **Does NOT change:** the artifact formats, the verdict model, or the checks contract; introduces no
   enforcement (ADR-0063) and no provider-specific mechanism (provider-neutral, [principles](../reference/principles.md)).
+- **Extended by [ADR-0131](./0131-minimum-useful-rigor.md):** the same economy is generalized from agent
+  *output* to *every artifact, section, and template* as the **artifact leverage test** — each earns its
+  place by improving at least one of {clarity, scope, execution-context, verification, reviewability,
+  durable-memory}; if it has no consumer, cut it. _Level: checklist (a spec-check / review item)._

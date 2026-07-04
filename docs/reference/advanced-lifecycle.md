@@ -12,6 +12,7 @@ Pull -> Spec -> (Task) -> Run -> Review -> Close
 ```
 
 Use the advanced lifecycle for high-risk work, large transformations, or teams that need finer gates.
+It is the top rung (L5) of the [rigor ladder](rigor-escalation.md) — reach for it by risk, not by habit.
 
 ## Steps
 
@@ -162,6 +163,7 @@ If two workers need the same file, serialize.
 
 ## Related
 
+- [Rigor ladder](rigor-escalation.md) — this lifecycle is its top rung
 - [Basic workflow](../02-basic-workflow.md)
 - [Step bars](step-bars.md)
 - [Checks](checks.md)
