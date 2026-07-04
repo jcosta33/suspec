@@ -1,9 +1,9 @@
 ---
 type: adr
 id: adr-0122
-status: accepted
+status: superseded by adr-0132
 created: 2026-07-01
-updated: 2026-07-02
+updated: 2026-07-04
 ---
 
 # ADR-0122 — Revolver Review: a bounded, named form of the lead-orchestrated review panel
@@ -119,3 +119,10 @@ decision** (the model-routing wave).
 > team below its best member (up to 41.1%, integrative compromise —
 > [[EXPERTSBACK]](../research/sources.md#EXPERTSBACK)); recorded in SPEC-revolver-union (family
 > workspace). The body above is unchanged.
+
+> **Superseded (2026-07-04) by [ADR-0132](./0132-revolver-rotating-refine-loop.md).** The bounded
+> parallel-panel form recorded here is replaced by the rotating adversarial refine-loop — a 6–9 stance
+> pool fired 3 at a time, the orchestrator fixing between rounds and the next trio re-reviewing the
+> **revised** state, rotating one stance per round, up to 3 cycles. The union-not-vote reconcile and the
+> cheap-varied-model routing carry forward; the panel-over-a-frozen-diff mechanism does not. The body
+> above is unchanged, per the immutable-ledger rule.
