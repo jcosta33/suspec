@@ -38,7 +38,7 @@ Run authoring, implementation, and review as different sessions:
 - **Spec/task author** — writes the spec, change plan, and split task packets when needed.
 - **Implementer** — executes one spec or task slice; reads the spec and any task; the scoped requirements are the boundary; does not change requirements.
 - **Lens reviewer** — reviews one lens (correctness, evidence, design risk, …) and returns findings only.
-- **Review lead** — orchestrates at least three lens reviewers, reconciles, and writes the packet.
+- **Review lead** — for a formal review, cycles a pool of distinct lens stances one reviewer at a time on the revised change, applies fixes between rounds, and writes the packet.
 - **Human/owner** — owns the verdict.
 
 The reviewer is not the implementer. The spec or task author may review the implementation, as long as they did not implement it.

@@ -125,11 +125,13 @@ Frontmatter:
 ```yaml
 type: review
 id: REVIEW-checkout-expiry
-task: TASK-checkout-expiry
+task: TASK-checkout-expiry   # or `spec: SPEC-…` INSTEAD, for a 1:1 review with no task
 pr: https://...
 reviewer: name-or-session
 status: draft
 ```
+
+A review reconciles against the **spec** ([ADR-0134](../adrs/0134-self-contained-spine.md)): with `task:`, coverage keys on the spec's ACs the task scoped (reached via the task's `source:`); with `spec:` (1:1, no task), on the whole spec. A task, when present, only scopes and indexes evidence — it is never the review's target.
 
 Sections:
 

@@ -38,7 +38,7 @@ Read the risk off the change, not off "new vs old code." The discriminator is
   controlled, "it's just a new feature" does not lower the risk.
 
 Low on every axis → stay at L1/L3. High on diffusion or churn, or a security-sensitive surface → climb to
-L4/L5. A one-line, single-file fix does not earn a Revolver panel; a cross-subsystem migration does not
+L4/L5. A one-line, single-file fix does not earn a Revolver run; a cross-subsystem migration does not
 belong at L1.
 
 ## The floor that never moves
@@ -57,7 +57,7 @@ review or the evidence.
 
 ## Name the reason when you climb
 
-Escalating to a heavy mode — a Revolver panel, an orchestrated fan-out, a durable task brief on otherwise
+Escalating to a heavy mode — a Revolver run, an orchestrated fan-out, a durable task brief on otherwise
 1:1 work — should state the reason: the risk that warrants the cost. This is a one-line convention
 resolved by review, not a machine-readable field. "L4: security-sensitive auth path, high diffusion" is
 enough; the point is that the cost was a decision, not a default.
