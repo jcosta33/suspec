@@ -51,7 +51,7 @@ Kit skills that implement Suspec work of a given kind — Suspec-coupled, summon
 Framework-free skills, installable in any repo with no Suspec knowledge ([ADR-0112](../adrs/0112-two-tier-skills.md)) — load alongside the work:
 
 - Market/review methods: `market-research`, `persona-challenger`, `bulletproof`, `revolver-review`
-- Disciplines: `adversarial-review`, `codebase-exploration`, `debugging`, `security-review`, `git-pr`, `planning-spec`, `empirical-proof`, `concise-output`, `fix-flaky-test`
+- Disciplines: `revolver-review`, `codebase-exploration`, `debugging`, `security-review`, `git-pr`, `planning-spec`, `empirical-proof`, `concise-output`, `fix-flaky-test`
 
 Authoring disciplines live in their kit guides. Do not maintain duplicate copies.
 
