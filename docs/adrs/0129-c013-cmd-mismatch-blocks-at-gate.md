@@ -47,4 +47,4 @@ Contract version bumps **0.14.0 → 0.15.0**. C013's id and name are unchanged; 
 
 ## Status
 
-Accepted (2026-07-04). Amends [ADR-0083](./0083-mint-c013-verify-evidence-binding.md).
+Accepted (2026-07-04). Amends [ADR-0083](./0083-verify-evidence-reconcile.md).

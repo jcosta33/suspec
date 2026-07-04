@@ -43,4 +43,4 @@ C010's `spec_ref_resolves`); reconcile-only — no minted check, no contract ver
 
 ## Status
 
-Accepted (2026-07-04). Amends [ADR-0107](./0107-fast-track-review-staleness.md).
+Accepted (2026-07-04). Amends [ADR-0107](./0107-fast-track-staleness-detection.md).
