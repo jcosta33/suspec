@@ -53,8 +53,9 @@ land here, in `docs/adrs/`.
   inline — the `[[KEY]]` form linking the matching anchor in `docs/research/sources.md` — and the citation moves with the claim.
   Non-verified sources never carry a MUST-level claim; fact-shaped statements without a
   source are labeled design rationale. Web-verify before adding to `sources.md`.
-- **Single-sourcing.** Formats are frozen in ADRs 0058/0060/0061/0067/0068 and shipped at
-  the kit repo's `templates/` (`../suspec-starter-kit`) — everything else links, never
+- **Single-sourcing.** Formats are frozen in ADRs 0058/0060/0061/0067/0068; the kit ships them
+  at the location it **declares in its `suspec-kit.yaml` manifest** (today `../suspec-starter-kit/templates/`) —
+  the CLI discovers the layout, never assumes it (ADR-0135). Everything else links, never
   restates. A rule lands in `docs/` first; the kit repo, the suspec-skills catalog, and the
   dev skills derive from it (a format change is a two-repo change, cut and reviewed from the
   private family workspace).
