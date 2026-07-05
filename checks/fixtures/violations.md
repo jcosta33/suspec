@@ -433,3 +433,33 @@ Verify with: `npm test -- refresh`
 reads the heading as plain prose: the requirement silently vanishes from scope and coverage, and a
 checker would report "clean" while an AC is invisible. The warning makes the disappearance visible.
 The fix is a digits-only id — a split requirement gets its own number (`AC-007`), not a suffix.
+
+---
+
+## V23 — a review's `task:` names an absent task packet (C020 `unresolvable-ref`, hard-error)
+
+A review packet on the GATE path (`suspec check <review>`) whose frontmatter `task:` names a task id
+with no local `tasks/<id>.md`:
+
+```markdown
+---
+type: review
+id: REVIEW-checkout-expiry
+task: TASK-checkout-expiry-typo
+status: draft
+---
+
+## Requirement coverage
+
+| ID     | Result | Evidence | Human attention |
+| ------ | ------ | -------- | --------------- |
+| AC-001 | Pass   | pasted   | no              |
+```
+
+…in a workspace whose `tasks/` holds no `TASK-checkout-expiry-typo.md`.
+
+**Expected:** flagged `unresolvable-ref` (hard-error) — the review's `task:` resolves to no local task
+packet, so C012/C013/C016 cannot run; without it the review gates CLEAN and a typo'd/renamed task id
+silently bypasses the honesty checks. Blocks at the gate (structural, like C016); the reconcile path
+(`suspec review`) stays advisory (ADR-0077 D8). Deliberately narrow — an unreachable source SPEC
+(cross-root, ADR-0100) stays clean, being indistinguishable from a typo here. Minted in ADR-0128.

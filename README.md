@@ -19,7 +19,7 @@ the code. Suspec structures the work around it, and spends where the bottleneck 
 ## The loop
 
 ```
-Pull ──▶ Spec ──▶ (Task) ──▶ Run ──▶ Review ──▶ Close
+Pull ──▶ Spec ──▶ (Task) ──▶ Run ──▶ (Review) ──▶ Close
  │        │         │        │        │          │
 intake   spec   split task branch   review     finding
 snapshot optional when     + code   packet     + status
