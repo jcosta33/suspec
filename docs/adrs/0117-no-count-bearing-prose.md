@@ -78,3 +78,7 @@ prose may describe this rule as "enforced", "guaranteed", or "blocking".
   immutability).
 - **Does NOT change** any artifact format, the checks contract (`checks.yaml`), the two
   count-reconciliation points (`checks/README.md`, the cheatsheet appendix), or the kit/catalog split.
+
+> **Forward note (2026-07-05).** The toolable lint shipped since: `scripts/lint-count-ranges.sh` flags a
+> hardcoded ADR-range/count literal that disagrees with its ledger, wired into `scripts/lint-all.sh`. The
+> "not yet shipped" text above predates it — the rule is now toolable (still surfaced-not-enforced, ADR-0063).

@@ -20,3 +20,6 @@ Behaviour unchanged — naming only.
 
 - Positive: clearer intent for audit/compliance audiences.
 - Negative: glossary must clarify synonyms ([`reference/glossary.md`](../reference/glossary.md)).
+
+> **Forward note (2026-07-05).** The term settled on "delegation"; the glossary carries no
+> recursion↔delegation synonym entry, so this negative consequence is moot in practice.

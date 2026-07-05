@@ -90,3 +90,7 @@ _Level: convention now; the freshness diff is toolable (not yet shipped)._
   this ADR is held at).
 - **Does NOT change:** the catalog/kit partition, any skill format, or the artifact set. The freshness
   check is named here as the toolable enforcement path; it is **not yet built**.
+
+> **Forward note (2026-07-05).** The freshness check shipped since: `scripts/check-catalog-freshness.sh`
+> diffs the synced `.agents/skills` copy against the catalog + kit and fails on divergence, wired into
+> `scripts/lint-all.sh` as gate 0115. The "not yet built" text above predates it (toolable per ADR-0063).
