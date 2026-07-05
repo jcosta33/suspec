@@ -85,7 +85,11 @@ into the loop. It never _performs_ the coding loop. Each rule carries an honesty
    (adopt `@anthropic-ai/sandbox-runtime` / container-use / `claude --worktree` as substrates the
    adapter selects), and **the review verdict** (agent fill is a draft; empty Evidence reads
    Unverified; the human owns Pass/Fail/Unverified/Blocked). Absorbing any of these would make
-   suspec-cli a coding agent. _Level: convention (the hard line)._
+   suspec-cli a coding agent. _Level: convention (the hard line)._ **[Forward note, 2026-07-05 —
+   clarified by [ADR-0136](./0136-launcher-boundary-automate-not-agent.md): this line is "not the
+   agent," not "no automation." Deterministic QOL automation around the loop (create/reuse a worktree,
+   run project setup, generate a lean transient prompt, launch, record, reconcile) is in scope; the
+   banned items above are unchanged.]**
 9. **Two co-equal surfaces — scriptable and interactive.** Every flow ships both a **direct**
    command (the Unix contract of Decision 2 — `--json`, exit codes, scriptable) and a **beautiful
    interactive TUI** flow (prompts, live progress, coloured per-finding feedback); `suspec` with no
