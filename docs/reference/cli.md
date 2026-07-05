@@ -35,6 +35,7 @@ The command set includes:
 - `pull`
 - `promote`
 - `run --agent`
+- `work <SPEC>`
 - `show`
 - `agents emit --codex`
 - `help`
@@ -139,6 +140,16 @@ It makes later drift checks compare against an explicit recorded revision.
 Launches a configured agent in the task worktree.
 
 Records the launch envelope. The agent does the work.
+
+### `suspec work <SPEC>`
+
+Works a spec directly — the task is optional. Creates or reuses the spec's worktree, runs project-declared
+setup from `suspec.config.json` (advisory — a failed setup warns and launches anyway), generates a lean
+prompt pointing the agent at the spec, launches the configured adapter, and records the run.
+
+It renders no verdict and writes no board — its only writes are the run record and the transient prompt
+under `.suspec/work/`. The by-hand path (create the worktree, `cd` in, run your agent against the spec)
+needs no CLI (ADR-0134); `work` only accelerates it.
 
 ### `suspec review <task>`
 
