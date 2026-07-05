@@ -72,6 +72,11 @@ not deleted.
 Accepted. Refines ADR-0053, ADR-0054, ADR-0029; supersedes the naming clauses of ADR-0049 §2 and the
 `pass-*` upgrade-naming story in the adoption docs.
 
+> **Forward note (2026-07-05) — the loop is now the ADR-0134 triad.** The "six-step loop is the primary
+> workflow" framing above is refined by [ADR-0134](./0134-self-contained-spine.md): the mandatory loop is
+> the **spec → run → close** triad; intake, task, and review are optional steps layered on when the work
+> warrants them.
+
 ## Propagation
 
 All 13 surfaces (matrix: `.agents/audits/repositioning-propagation.md`).
