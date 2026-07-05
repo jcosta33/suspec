@@ -25,7 +25,7 @@ optima** — recorded honestly so no reader mistakes a tuned default for a measu
   the post-fix code catches them — a one-shot panel cannot. (Iterative-repair evidence; the regression
   hazard is the load-bearing point.)
 - **External feedback, not self-correction.** Intrinsic self-correction fails and can *degrade* output
-  ([[SELFCORRECT]], ICLR 2024); fresh, independent reviewers on the revised state are the external signal
+  ([[NOSELFCORRECT]]); fresh, independent reviewers on the revised state are the external signal
   ([[CCR]]) — so the party that applied a fix is never a reviewer of it.
 - **Blind within a round, adjudicated between rounds.** Reading peers' raw drafts induces sycophancy
   ([[CONSENSUSCOST]], [[FLIPFLOP]]); a later round receives the orchestrator's reconciled/fixed state,
@@ -85,7 +85,7 @@ optima** — recorded honestly so no reader mistakes a tuned default for a measu
 Accepted (2026-07-04). **Supersedes** [ADR-0122](./0122-revolver-review-bounded-panel-strategy.md) (the
 bounded-panel form → the rotating refine-loop). **Refines** [ADR-0124](./0124-opt-in-per-lens-cost-tier-routing.md)
 (cost-tiering defaults to cheap; strong is the opt-in). **Removes** the `adversarial-review` skill,
-consuming its discipline. **Honors** [ADR-0056](./0056-adversarial-self-review-completion-discipline.md)/[ADR-0119](./0119-independent-review-invariant.md)/[ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md)/[ADR-0063](./0063-honesty-framework-and-tooling-boundary.md)/[ADR-0117](./0117-no-count-bearing-prose.md). Grounded by [[SELFCORRECT]], [[CCR]], [[PBR]], [[ENSEMBLEDIV]], [[DIVSCALE]], [[CONSENSUS]], [[EXPERTSBACK]], [[BIGGERNOTBETTER]], [[SINGLEBEATSMAS]], [[REVBOTPR]], [[CONSENSUSCOST]], [[FLIPFLOP]], [[SELFREVIEW-MOD]].
+consuming its discipline. **Honors** [ADR-0056](./0056-adversarial-self-review-completion-discipline.md)/[ADR-0119](./0119-independent-review-invariant.md)/[ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md)/[ADR-0063](./0063-honesty-framework-and-tooling-boundary.md)/[ADR-0117](./0117-no-count-bearing-prose.md). Grounded by [[SELFCORRECT]], [[NOSELFCORRECT]], [[CCR]], [[PBR]], [[ENSEMBLEDIV]], [[DIVSCALE]], [[CONSENSUS]], [[EXPERTSBACK]], [[BIGGERNOTBETTER]], [[SINGLEBEATSMAS]], [[REVBOTPR]], [[CONSENSUSCOST]], [[FLIPFLOP]], [[SELFREVIEW-MOD]].
 
 > **Refined (2026-07-04) by [ADR-0133](./0133-examine-dont-ruminate.md).** The mechanism default is
 > updated from *fire 3 at a time over a 6–9 pool with one-in-one-out rotation* to **one reviewer at a

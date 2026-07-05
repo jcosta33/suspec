@@ -356,9 +356,6 @@ A web-verified arXiv preprint is stronger than a blog post but is **not peer-rev
 <a id="HILBENCH"></a>
 **[HILBENCH] HiL-Bench: Do Agents Know When to Ask for Help?** **arXiv:2604.09408** (preprint; not yet peer-reviewed). *Verified (June 2026).* Frontier agents solve up to ~89% of SWE/SQL tasks with full info, but on messy/ambiguous specs the best model drops to **~24% even when given a tool to ask for help**. Grounds: agents don't reliably self-clarify → clarify-before-lower (the CLARIFY-gate rationale).
 
-<a id="SELFCORRECT"></a>
-**[SELFCORRECT] Large Language Models Cannot Self-Correct Reasoning Yet.** Huang, Chen, Mishra, Zheng, Yu, Song, Zhou. **ICLR 2024**, arXiv:2310.01798. *Verified (July 2026, web search — id + abstract).* In the **intrinsic** setting (no external feedback) LLMs struggle to self-correct and performance can **degrade** after self-correction; reliable correction needs an external signal. Grounds: a review loop must supply **external** feedback — fresh, independent reviewers judging the revised state, the producer never grading its own fix (the fix-between-rounds + reviewer≠fixer design; with [[CCR]], [[SELFREVIEW-MOD]]).
-
 <a id="PBR"></a>
 **[PBR] Perspective-Based Reading.** Basili, Green, Laitenberger, Lanubile, Shull, Sørumgård, Zelkowitz. **Empirical Software Engineering 1(2), 1996** (with later replications). *Verified (July 2026, established SE technique).* Assigning reviewers **distinct perspectives** (e.g. tester / developer / user) gives better defect coverage than the same number of readers each reading the same way — coverage comes from perspective **diversity**, not reviewer count. Grounds: the review stance pool is a set of **distinct** perspectives, and cycling them is how coverage is bought without a large simultaneous panel (with [[DIVSCALE]]).
 
