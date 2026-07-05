@@ -60,9 +60,11 @@ ruminate.** _Level: convention (ADR-0063)._
 
 ## Consequences
 
-- The kit `AGENTS.md` **Agent role** floor gains the examine-don't-ruminate norm (an always-on
+- The **Agent role** floors every agent loads gain the examine-don't-ruminate norm (an always-on
   convention, beside output-economy and the options+recommendation decision-handoff — the always-on
-  norms belong in the context every agent loads, not an on-demand skill).
+  norms belong in the context every agent loads, not an on-demand skill): the kit `AGENTS.md` for
+  adopters and the family workspace's `AGENTS.md`. An always-on norm can't be deferred to an optional
+  or absent file, so each floor carries it directly rather than cross-linking to another repo.
 - `revolver-review` (suspec-skills) and ADR-0132's mechanism default are updated to one-at-a-time / min-6;
   ADR-0132 gains a forward note pointing here. No new `sources.md` entry is minted for the contested
   adjacent evidence **because it was not primary-verified** — recording it as a MUST would itself violate

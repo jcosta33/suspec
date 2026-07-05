@@ -41,23 +41,28 @@ CLI-coupling smell are the same problem.
 
 ## Consequences
 
-- **CLI change (contract-adjacent, ADR-gated):** `initWorkspace`/`applyUpdate`/`scaffoldSpec`/
-  `scaffoldChangePlan`/`checkWorkspace` resolve paths via the manifest. The CLI stays
+- **CLI change (contract-adjacent, ADR-gated):** the two real `templates/`-coupling points —
+  `applyUpdate`'s kit-owned prefix set and `checkWorkspace`'s required-path check — read the kit's
+  `suspec-kit.yaml` manifest (a manifest-less kit falls back to the built-in default). The CLI stays
   scaffold-additive/reconcile-only ([ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md)/0134) — it
-  discovers and materializes, never dictates.
+  discovers and materializes, never dictates. (The Correction below narrows this from the five use-cases
+  the Context named to these two — the other three are not `templates/`-path-coupled.)
 - **The kit is free to place templates per self-containment**; the CLI adapts. Resolves the ADR-0134
   inversion and the held #8 question.
-- **Implementation is a follow-up engineering effort** (a family-workspace spec + tasks): add the
-  manifest to the kit, refactor the CLI's five use-cases to read it, migrate the drift-guard to the
-  manifest, and update the single-sourcing wording in canon + the kit `AGENTS.md`.
+- **Implementation shipped (2026-07-05)** under SPEC-cli-kit-manifest: the kit gained `suspec-kit.yaml`
+  (corpus-starter-kit@f125523) and the CLI reads it at those two coupling points (corpus-cli@845697e),
+  keeping a built-in default for manifest-less kits; the single-sourcing wording in canon + the kit
+  `AGENTS.md` was updated to match.
 
 ## Status
 
-Accepted (2026-07-05) — the decision; **implementation pending** (not yet shipped, so the mechanism is
-_toolable_ once the CLI lands it, not enforced today, per [ADR-0063](./0063-honesty-framework-and-tooling-boundary.md)).
-Resolves the CLI↔`templates/` coupling under [ADR-0134](./0134-self-contained-spine.md); refines the
-single-sourcing rule (kit declares layout, CLI discovers it). Honors
-[ADR-0117](./0117-no-count-bearing-prose.md).
+Accepted (2026-07-05) — and **implemented the same day** (SPEC-cli-kit-manifest): the CLI reads the
+kit's manifest at its two `templates/`-coupling points, replacing the hardcoded `KIT_OWNED_PREFIXES`
+constant the Correction below quotes; per [ADR-0063](./0063-honesty-framework-and-tooling-boundary.md)
+the mechanism is now _toolable_ and shipped — the CLI applies it where a manifest is present, and a
+manifest-less kit keeps the built-in default. Resolves the CLI↔`templates/` coupling under
+[ADR-0134](./0134-self-contained-spine.md); refines the single-sourcing rule (kit declares layout, CLI
+discovers it). Honors [ADR-0117](./0117-no-count-bearing-prose.md).
 
 > **Correction (2026-07-05, code-verified).** The Context above overstated the coupling. Verified
 > against the CLI source, the hardcoded-`templates/` coupling is **only two points**: `applyUpdate`'s
