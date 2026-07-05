@@ -3,7 +3,7 @@
 ## Loop
 
 ```text
-Pull -> (Inventory) -> Spec -> (Change Plan) -> (Task) -> Run -> Review -> Close
+Pull -> (Inventory) -> Spec -> (Change Plan) -> (Task) -> Run -> (Review) -> Close
 ```
 
 ## Files

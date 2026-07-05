@@ -3,7 +3,7 @@
 Walk one small change through Suspec:
 
 ```text
-Pull -> Spec -> (Task) -> Run -> Review -> Close
+Pull -> Spec -> (Task) -> Run -> (Review) -> Close
 ```
 
 You will create:

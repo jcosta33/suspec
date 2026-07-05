@@ -8,7 +8,7 @@
 Use the basic loop by default:
 
 ```text
-Pull -> Spec -> (Task) -> Run -> Review -> Close
+Pull -> Spec -> (Task) -> Run -> (Review) -> Close
 ```
 
 Use the advanced lifecycle for high-risk work, large transformations, or teams that need finer gates.

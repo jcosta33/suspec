@@ -5,7 +5,7 @@ Use extra structure only when the work needs it.
 The expanded loop:
 
 ```text
-Pull -> Inventory -> Spec -> Change Plan -> (Task) -> Run -> Review -> Close
+Pull -> Inventory -> Spec -> Change Plan -> (Task) -> Run -> (Review) -> Close
 ```
 
 ## Inventory
