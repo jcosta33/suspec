@@ -93,7 +93,8 @@ The user fills requirements.
 Reads specs or workspace files and reports diagnostics. Accepts one or more files in a single
 invocation (the exit code is the max across them), so a batch — e.g. the pre-commit hook's staged
 set — is checked in one process rather than paying the startup cost per file. With no file, it
-renders the whole-workspace verdict.
+renders the whole-workspace verdict — including that the workspace has the paths the kit's
+`suspec-kit.yaml` declares as required (a manifest-less kit falls back to a built-in default).
 
 Exit codes:
 
@@ -166,7 +167,8 @@ It reads only and renders no verdict.
 
 The kit drift surface: `--check` (the default) reports where the local workspace guides/templates
 have drifted from the shipped kit; `--write` lands the kit content (leaving `*.suspec-bak` backups).
-It renders no verdict.
+It refreshes only the paths the kit declares as its own in `suspec-kit.yaml` — a manifest-less kit
+falls back to a built-in default — never an adopter's own artifacts. It renders no verdict.
 
 ### `suspec promote <task>`
 

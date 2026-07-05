@@ -6,13 +6,16 @@ The spec is the contract; a task packet narrows it when work is split.
 
 ## Kit core
 
-The starter kit's always-core loop guides:
+The starter kit's core loop guides. `write-spec` → `implement-task` → `save-findings` cover the
+mandatory **spec → run → close** triad; `review-output` is the review step, layered on whenever code
+ships ([ADR-0134](../adrs/0134-self-contained-spine.md)):
 
 | Guide | Use |
 | --- | --- |
-| `write-spec` | write or amend specs |
-| `implement-task` | run a spec or split task packet |
-| `review-output` | review worker output |
+| `write-spec` | write or amend specs (Spec) |
+| `implement-task` | run a spec or split task packet (Run) |
+| `review-output` | review worker output (Review — whenever code ships) |
+| `save-findings` | record findings, update the board (Close) |
 
 ## Kit authoring guides
 
@@ -29,7 +32,6 @@ Also kit-shipped (Suspec-coupled → the kit, [ADR-0112](../adrs/0112-two-tier-s
 | `write-rfc` | proposal |
 | `spec-check` | spec review |
 | `split-work` | task decomposition |
-| `save-findings` | close and promotion |
 
 ## Implementation depth (opt-in)
 

@@ -37,14 +37,15 @@ those is true, don't adopt it.
 ## The loop
 
 ```text
-Pull -> Spec -> (Task) -> Run -> Review -> Close
+Pull -> Spec -> (Task) -> Run -> (Review) -> Close
 ```
 
-Three steps are conditional:
+**Spec → Run → Close** is the mandatory spine. The rest layer on when the work needs them:
 
 - **Inventory**: map existing code before brownfield work.
 - **Change Plan**: plan migrations, rewrites, schema changes, or high-risk refactors.
 - **Task**: split one spec into bounded packets only when the work needs parallel slices.
+- **Review**: an independent check of the change — whenever code ships.
 
 See [the basic workflow](02-basic-workflow.md).
 
