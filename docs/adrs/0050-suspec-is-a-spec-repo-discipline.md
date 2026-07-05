@@ -67,6 +67,11 @@ record = observed satisfaction.** The intent/reality split _is_ the repo boundar
    travels in each spec's frontmatter (`suspec_language: SOL/0.1`). This refines the package axis of
    [ADR-0041](./0041-two-axis-versioning.md); the language axis is unchanged.
 
+> **Forward note (2026-07-05).** The `suspec_language: SOL/0.1` frontmatter example in §6 was later
+> dropped: [ADR-0058](./0058-two-tier-spec-format.md) §2 froze the SOL format with **no version field**
+> (`suspec_language`/`aps_version`/`spec_version` do not exist). The §6 decision — drop the per-repo
+> version marker — stands; only the illustrative frontmatter field is superseded by ADR-0058.
+
 This **refines [ADR-0049](./0049-minimal-install-no-mount-no-imposed-workspace.md)** — its six `.agents/`
 folders are now the **spec repo's** authoring workspace; a code repo gets near-zero — and **refines
 [ADR-0041](./0041-two-axis-versioning.md)** (the package-version marker is dropped for adopters). It changes
