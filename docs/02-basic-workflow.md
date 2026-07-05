@@ -3,9 +3,12 @@
 The loop:
 
 ```text
-Pull -> (Inventory) -> Spec -> (Change Plan) -> (Task) -> Run -> Review -> Close
-        optional               optional        split-only
+Pull -> (Inventory) -> Spec -> (Change Plan) -> (Task) -> Run -> (Review) -> Close
 ```
+
+The mandatory triad is **Spec → Run → Close**. The parenthesized steps layer on only when the work
+warrants them — Inventory and Change Plan for structural work, Task when the work is split across
+agents, Review whenever code ships.
 
 Every artifact is markdown in the workspace. See [where files live](03-where-files-live.md).
 

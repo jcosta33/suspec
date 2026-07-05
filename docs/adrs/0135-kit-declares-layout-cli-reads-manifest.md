@@ -26,10 +26,11 @@ CLI-coupling smell are the same problem.
 1. **A kit manifest** (at the kit root) maps each artifact/scaffold **role** to its **path within the
    kit** — `spec`, `task`, `review`, `finding`, `change-plan`, `intake`, `inventory`, `adr`, etc. The kit
    **owns its layout**: moving a template is a manifest edit, not a CLI change.
-2. **The CLI resolves every template path through the manifest**, never a literal `templates/` string:
-   `init` copies what the manifest lists, `update` syncs against it, `new <artifact>` materializes from
-   the manifest's path for that role, `check` validates presence via the manifest. A missing manifest is
-   a clear error, never a silent assumption.
+2. **The CLI resolves the kit's layout through the manifest, never a hardcoded `templates/` string**, at
+   the points that are actually path-coupled: `update` refreshes the kit-owned prefixes the manifest
+   lists, and `check` validates the required paths it names. A manifest-less kit falls back to the
+   built-in default so it never breaks (AC-004). (`init` copies the whole kit and `new` renders each
+   artifact inline from its frozen format — neither is `templates/`-path-coupled; see the Correction.)
 3. **Two homes, both manifest-declared.** The **shared loop artifacts** (spec/task/review/finding — the
    mandatory glue of ADR-0134) keep one canonical home the **kit** chooses; **skill-specific scaffolds**
    live in each skill's `references/` (already true for the `write-*` skills). The manifest can point at

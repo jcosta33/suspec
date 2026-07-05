@@ -180,7 +180,7 @@ implemented in your installed version.
 
 Hard:
 
-- C001, C002, C003, C007, C009, C010, C016
+- C001, C002, C003, C007, C009, C010, C016, C020
 - all SOL-S
 - SOL-P001-SOL-P008
 - all SOL-M
