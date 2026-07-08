@@ -1,5 +1,12 @@
 # Step bars
 
+> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
+> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
+> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
+> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
+> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+
+
 > **Reference appendix.** Step bars are a design reference — predicates a team MAY hold each loop
 > step to. They have seen no use in practice here; the working checks are the [checks
 > contract](checks.md) and review judgment. Kept for teams that want explicit per-step bars.
