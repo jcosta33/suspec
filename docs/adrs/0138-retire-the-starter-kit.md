@@ -2,8 +2,8 @@
 type: adr
 id: adr-0138
 status: accepted
-created: 2026-07-13
-updated: 2026-07-13
+created: 2026-07-09
+updated: 2026-07-09
 ---
 
 # ADR-0138 — Retire the starter kit: the CLI seeds, the skills install globally, the shapes live in the contract
@@ -81,7 +81,7 @@ owner, no consumption pressure, creation cheaper than disposal.
 
 ## Status
 
-Accepted (2026-07-13). **Supersedes** [ADR-0135](./0135-kit-declares-layout-cli-reads-manifest.md)
+Accepted (2026-07-09). **Supersedes** [ADR-0135](./0135-kit-declares-layout-cli-reads-manifest.md)
 (its surviving half — the manifest-declared layout loses its last consumer when `suspec update`
 retires) and the kit-survival remainder of [ADR-0075](./0075-starter-kit-template-repo.md)
 (already superseded on its copy-a-whole-workspace face by
