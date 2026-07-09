@@ -128,7 +128,7 @@ Per-command specifics are noted in the usage below.
 
 The usage blocks below are the CLI's own (`suspec <command> --help`).
 
-### Seed and update
+### Seed
 
 #### `suspec init`
 
@@ -144,20 +144,8 @@ suspec init
   artifacts live in your personal store, outside the repo; the store is never touched here
 ```
 
-#### `suspec update`
-
-Check kit drift, or refresh kit-managed templates (conflict-safe).
-
-```text
-suspec update [--check | --write]
-  --check (default)           compare .agents/.suspec-version to the kit VERSION; writes nothing
-  --write | --apply           refresh the kit-owned templates (per the kit manifest) + re-stamp the pin
-  --on-conflict backup|overwrite|skip   handle a customized kit file (default: backup → *.suspec-bak)
-  --from <path|url>           kit source (default: the suspec-starter-kit on GitHub)
-  --json                      machine output
-  --check: exit 0 up-to-date · 1 behind · 2 error · --write: 1 if files need reconciling
-  skills are not refreshed here — they install globally (npx skills add jcosta33/suspec-skills -g)
-```
+The seeded files are yours from that moment on; nothing refreshes them. Skills update
+through their own channel — re-run `npx skills add jcosta33/suspec-skills -g`.
 
 ### Author
 

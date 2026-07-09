@@ -56,8 +56,8 @@ Every step keeps a by-hand path (level: convention); the CLI accelerates it and 
 machine gate.
 
 1. Make the store: `mkdir -p ~/.claude/state/<repo-name>`.
-2. Write `spec-<slug>.md` there from the spec template (the
-   [starter kit](https://github.com/jcosta33/suspec-starter-kit) ships the templates):
+2. Write `spec-<slug>.md` there — the shape is documented in
+   [artifact formats](reference/artifact-formats.md):
    status, requirements with IDs, a `Verify with:` line each.
 3. Work in isolation: `git worktree add .worktrees/<slug> -b suspec/<slug>`, `cd` in, and
    run your agent pointed at the store spec by absolute path.
@@ -75,8 +75,6 @@ the evidence, the digest is already on the PR.
 
 ## Updating
 
-- **Kit-managed templates**: `suspec update --check` reports drift against the shipped
-  kit; `suspec update --write` refreshes the kit-owned files (a customized file is backed
-  up to `*.suspec-bak` by default). Your own artifacts are never touched.
-- **Skills**: re-run `npx skills add jcosta33/suspec-skills -g` — the family updates in
-  one place, for every repo at once.
+Re-run `npx skills add jcosta33/suspec-skills -g` — the skill family updates in one
+place, for every repo at once. The files `suspec init` seeded are yours from that moment
+on; nothing overwrites them.

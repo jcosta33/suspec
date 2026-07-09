@@ -94,7 +94,6 @@ never overlap, so a guide cannot skew against the methodology it rides on
 | **start using Suspec** — the harness in your repo                            | [suspec-cli](https://github.com/jcosta33/suspec-cli) — `suspec init`, then the loop                                     |
 | **install the methodology** — the global skill family                        | [suspec-skills](https://github.com/jcosta33/suspec-skills) — `npx skills add jcosta33/suspec-skills -g`                 |
 | **understand the method** — formats, the checks contract, the decision ledger | **this repo** — `docs/` (the numbered happy path), `docs/reference/`, `docs/adrs/`                                      |
-| **see what the CLI seeds** — the template source                             | [suspec-starter-kit](https://github.com/jcosta33/suspec-starter-kit) — the thin seed `suspec init`/`update` draw from   |
 | **delegate to subagents** — review / audit / spec-author worker definitions   | [suspec-agents](https://github.com/jcosta33/suspec-agents) — Claude Code agents, or Codex TOML via `suspec agents emit --codex` |
 
 Most people run `suspec init`, install the skills, and never read this repo cover to cover.

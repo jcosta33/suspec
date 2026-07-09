@@ -16,11 +16,10 @@ says so.
 - `checks/` — the checks contract as data (`checks.yaml`) + fixtures (test data for
   `docs/reference/checks.md`; suspec-cli's oracle). `.agents/` — a small dev-skills subset
   (see `.agents/SKILLS-MANIFEST.md`).
-- The repo-seed templates ship as the sibling `../suspec-starter-kit` — a **thin seed**:
-  the template files that `suspec init` / `suspec update` land in an adopting repo, at the
-  locations its `suspec-kit.yaml` manifest declares. The universal skill family
-  (conditioning stances, code-depth guides) lives in `../suspec-skills` and installs
-  globally.
+- The repo seed is embedded in `suspec-cli`: `suspec init` writes it (config, `AGENTS.md`,
+  the skills dirs) from the CLI's own built-in scaffolds — no template repo. The universal
+  skill family (conditioning stances, code-depth guides) lives in `../suspec-skills` and
+  installs globally.
 
 ## Working on this repo
 
@@ -55,17 +54,16 @@ task slice you are given. Accepted framework decisions land here, in `docs/adrs/
   inline — the `[[KEY]]` form linking the matching anchor in `docs/research/sources.md` — and the citation moves with the claim.
   Non-verified sources never carry a MUST-level claim; fact-shaped statements without a
   source are labeled design rationale. Web-verify before adding to `sources.md`.
-- **Single-sourcing.** Formats are frozen in ADRs 0058/0060/0061/0067/0068; the kit ships
-  the template files at the location its `suspec-kit.yaml` manifest declares — today
-  `../suspec-starter-kit/templates/`, and nothing else — the CLI discovers the layout from
-  the manifest, never assumes it (ADR-0135). Everything else links, never restates. A rule
-  lands in `docs/` first; the kit repo, the suspec-skills catalog, and the dev skills
-  derive from it (a format change spans repos — cut it as one reviewed change).
+- **Single-sourcing.** Formats are frozen in their ADRs; the artifact shapes are enforced
+  by the checks contract (`checks/checks.yaml`) and materialized by the CLI's built-in
+  scaffolds; the human-facing shape reference is `docs/reference/artifact-formats.md`
+  (ADR-0138). Everything else links, never restates. A rule lands in `docs/` first; the
+  CLI's scaffolds, the suspec-skills catalog, and the dev skills derive from it (a format
+  change spans repos — cut it as one reviewed change).
 
 ## Pointers
 
 - Decisions: `docs/adrs/README.md` — the complete immutable ledger
-- The starter kit (the thin repo seed): `../suspec-starter-kit` (github.com/jcosta33/suspec-starter-kit)
 - The skill catalog (global install): `../suspec-skills` (github.com/jcosta33/suspec-skills —
   `npx skills add jcosta33/suspec-skills -g`)
 - Claude Code agent catalog: `../suspec-agents` (github.com/jcosta33/suspec-agents — ADR-0092;
