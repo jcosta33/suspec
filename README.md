@@ -3,7 +3,7 @@
 **A personal methodology harness for working with coding agents.**
 
 Suspec helps one developer produce better code faster with agents: typed working memory
-for the agent, an evidence gate that blocks instead of trusting, and a promotion path so
+for the agent, an evidence gate (`suspec done`) that blocks instead of trusting, and a promotion path so
 the durable residue — decisions, tests, issues, proof — lands where it already belongs.
 Plain markdown, any agent, and your repos stay clean.
 
@@ -33,8 +33,9 @@ write spec ──▶ work ──▶ evidence ──▶ done ──▶ promote
 2. **work** — a fresh git worktree, project setup, your agent launched against the spec.
 3. **evidence** — the harness runs each verify command itself and records the proof,
    mapped to the requirement it satisfies.
-4. **done** — the gate: every requirement needs machine-captured, passing, non-stale
-   evidence, or you accept the gap explicitly. The digest lands on the PR.
+4. **done** — the gate (`suspec done`, enforced by the CLI): every requirement needs
+   machine-captured, passing, non-stale evidence, or you accept the gap explicitly. The
+   digest lands on the PR.
 5. **promote** — a decision becomes an ADR, behavior becomes tests, a finding becomes a
    GitHub issue. The working files are disposable *because* the durable residue has left.
 
