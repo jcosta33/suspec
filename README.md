@@ -40,8 +40,8 @@ write spec ──▶ work ──▶ evidence ──▶ done ──▶ promote
    GitHub issue. The working files are disposable *because* the durable residue has left.
 
 For a change too small for a spec, `suspec check-my-work` gates the current diff and
-dispatches one adversarial reviewer. `suspec next` names the one thing to do next. Full
-guide: [docs/02-basic-workflow.md](docs/02-basic-workflow.md).
+dispatches one adversarial reviewer. `suspec next` names the one thing to do next.
+Command-level detail: [docs/reference/cli.md](docs/reference/cli.md).
 
 ## Sixty seconds
 
@@ -66,7 +66,7 @@ gate blocked — rerun `suspec evidence add` for AC-002, or accept explicitly
 
 The digest is the point. You read which requirements passed **with captured proof** and
 which didn't. A missing evidence entry means _Unverified_, never _Pass_ — and the gate
-blocks on it instead of hoping. Worked demo: a large agent PR reviewed by exception:
+blocks on it instead of hoping. The review-by-exception idea, worked end to end:
 [docs/examples/large-pr-review.md](docs/examples/large-pr-review.md).
 
 ## Where files live
@@ -153,7 +153,8 @@ rule — anything a tool doesn't enforce says so.
 2. Install the skill family: `npx skills add jcosta33/suspec-skills -g`.
 3. `suspec write spec "<your next change>"`, fill the requirements, `suspec work` it.
 4. New to the loop? **[Walk it once, hands-on](docs/tutorial/README.md)** — a guided
-   build on one small change.
+   build on one small change (still on the superseded layout — its banner and
+   [docs/03-where-files-live.md](docs/03-where-files-live.md) tell you what changed).
 
 Or hand your agent [docs/ADOPTING.md](docs/ADOPTING.md) and let it do the setup.
 

@@ -46,7 +46,8 @@ Start small and run the whole loop once:
    or an explicit acceptance. The digest lands on the PR; findings get triaged.
 5. `suspec promote <FIND>` — anything worth keeping for others becomes a GitHub issue.
 
-The tutorial walks this path in [tutorial/README.md](tutorial/README.md).
+A hands-on walkthrough lives in [tutorial/README.md](tutorial/README.md) — still on the
+superseded layout; its banner flags what changed.
 
 ## By hand — no CLI
 
