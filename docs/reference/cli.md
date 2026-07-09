@@ -81,7 +81,8 @@ write spec ──▶ work ──▶ evidence add ──▶ done ──▶ promot
    by absolute path.
 3. **`evidence add`** — the CLI runs each verify command itself in the run worktree and
    records cli-verified evidence mapped to an AC.
-4. **`done`** — the strict gate over the run, the digest on the PR, findings triage.
+4. **`done`** — the strict gate over the run, the digest on the PR, findings triage on a
+   passed (or accepted) gate.
 5. **`promote`** — a finding becomes a GitHub issue; the finding retires to `archive/`.
 
 The middle tier, `check-my-work`, gates the current diff without a spec, a launch, or an
