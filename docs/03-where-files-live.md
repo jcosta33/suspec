@@ -65,7 +65,7 @@ Active → archived → gone. Nothing needs a janitor.
   from git truth, never hand-maintained; a stale hand-written status row is worse than
   none [[PLANCOMPLY]](research/sources.md#PLANCOMPLY).
 - **Findings die at the gate.** When the gate passes (or you accept explicitly),
-  `suspec done` ends with a triage pass per finding: promote it, keep it with an expiry
+  `suspec done` ends by triaging each finding: promote it, keep it with an expiry
   date, or discard it (the default for non-critical). A blocked gate skips triage; a
   critical finding is never silently discarded.
 - **Deleted by retention.** `suspec store gc` (also `suspec clean`) deletes only archived
