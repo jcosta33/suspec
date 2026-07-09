@@ -379,15 +379,16 @@ expiry or stale runs (`N stale — suspec store doctor`).
 
 #### `suspec store`
 
-Store maintenance — doctor (reconcile), list, gc (retention), purge (whole store).
+Store maintenance — doctor (reconcile), list, gc (retention), purge (whole store), migrate.
 
 ```text
-suspec store <doctor|list|gc|purge>
+suspec store <doctor|list|gc|purge|migrate>
   doctor                      archive spec/run artifacts whose branch merged, worktree vanished,
                               or PR closed (git/GitHub truth; never deletes; orphans listed; exit 0)
   list                        active + archived artifacts with per-artifact age
   gc                          delete ONLY archive/ items past retention_days (default 30)
   purge [--force]             delete the repo’s whole store — type the repo name, or --force
+  migrate                     upgrade artifacts to the current grammar_version (never downgrades)
   --json                      machine output
 ```
 
