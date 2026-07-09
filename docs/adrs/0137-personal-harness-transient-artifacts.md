@@ -165,7 +165,9 @@ sharpened by Decision 5), [ADR-0092](./0092-suspec-agents-member.md)/[ADR-0098](
 Accepted (2026-07-09). Supersedes/narrows the ADRs listed above; upholds
 [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md),
 [ADR-0134](./0134-self-contained-spine.md), [ADR-0136](./0136-launcher-boundary-automate-not-agent.md),
-[ADR-0132](./0132-revolver-rotating-refine-loop.md).
+[ADR-0132](./0132-revolver-rotating-refine-loop.md),
+[ADR-0111](./0111-kit-skill-scope.md)/[ADR-0112](./0112-two-tier-skills.md), and
+[ADR-0092](./0092-suspec-agents-member.md)/[ADR-0098](./0098-codex-emitter-and-universal-layer.md).
 
 ## Propagation
 
