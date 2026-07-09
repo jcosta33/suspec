@@ -31,7 +31,8 @@ One directory per repo, beside your agent's own scaffold:
 ```
 
 - Flat files, one lifecycle subfolder (`archive/`), raw evidence under `evidence/<run>/`.
-  No other tree.
+  No other tree. Split slices (`task-<slug>.md`, from `suspec new task`) and change plans
+  (`change-plan-<slug>.md`) land flat in the same root.
 - The root is configurable: the `SUSPEC_STATE_DIR` environment variable, or `state_root`
   in `suspec.config.json`. Two repos that share a folder name get distinct store
   directories, matched by recorded repo path — never by a name guess.
@@ -51,6 +52,8 @@ One directory per repo, beside your agent's own scaffold:
 | evidence            | `evidence/<run>/`            | the digest on the PR (`suspec done`)         |
 | a review            | `review-<slug>.md`           | the exceptions you act on                    |
 | a lesson            | `finding-<NNN>.md`           | a GitHub issue (`suspec promote`)            |
+| a split slice       | `task-<slug>.md`             | nothing — the spec stays the contract        |
+| a change plan       | `change-plan-<slug>.md`      | the PRs that land it                         |
 
 ## Lifecycle
 
@@ -61,9 +64,10 @@ Active → archived → gone. Nothing needs a janitor.
   closed moves to `archive/` — moved, never deleted (level: toolable). State is derived
   from git truth, never hand-maintained; a stale hand-written status row is worse than
   none [[PLANCOMPLY]](research/sources.md#PLANCOMPLY).
-- **Findings die at the gate.** `suspec done` ends with a triage pass per finding:
-  promote it, keep it with an expiry date, or discard it (the default for non-critical).
-  A critical finding is never silently discarded.
+- **Findings die at the gate.** When the gate passes (or you accept explicitly),
+  `suspec done` ends with a triage pass per finding: promote it, keep it with an expiry
+  date, or discard it (the default for non-critical). A blocked gate skips triage; a
+  critical finding is never silently discarded.
 - **Deleted by retention.** `suspec store gc` (also `suspec clean`) deletes only archived
   items past `retention_days` — default 30. A 30–90 day window matches common CI artifact
   retention [[GHRETENTION]](research/sources.md#GHRETENTION) [[GLRETENTION]](research/sources.md#GLRETENTION).
@@ -79,8 +83,9 @@ Checked at read time, not by ceremony:
 - **At launch** — a spec records the commit it was written against (`base_sha`) and its
   affected areas; `suspec work` refuses a drifted spec, printing what moved, unless you
   pass `--anyway`.
-- **At the gate** — each evidence entry records a hash of the files its command touched;
-  `suspec done` re-hashes, and drifted evidence never satisfies the gate until re-run.
+- **At the gate** — each evidence entry records a digest of the whole worktree state
+  (git status + diff + the HEAD sha); `suspec done` re-hashes, and drifted evidence never
+  satisfies the gate until re-run.
 - **On demand** — `suspec check --staleness` reports which snapshotted specs drifted
   (advisory).
 

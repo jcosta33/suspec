@@ -43,7 +43,8 @@ Start small and run the whole loop once:
 3. `suspec evidence add <RUN> --ac AC-001 -- <verify command>` — the harness runs the
    command itself and records the evidence, per AC.
 4. `suspec done <RUN>` — the gate: every AC needs captured, passing, non-stale evidence,
-   or an explicit acceptance. The digest lands on the PR; findings get triaged.
+   or an explicit acceptance. The digest lands on the PR; a passed (or explicitly
+   accepted) gate then triages findings.
 5. `suspec promote <FIND>` — anything worth keeping for others becomes a GitHub issue.
 
 A hands-on walkthrough lives in [tutorial/README.md](tutorial/README.md) — still on the

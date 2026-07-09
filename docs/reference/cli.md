@@ -25,8 +25,9 @@ flat markdown files in a per-repo store **outside** the repo, never committed an
   different repo paths sharing a basename get distinct store dirs (a stable `-2`/`-3`
   suffix, matched by the recorded repo path — never by a basename guess).
 - **Layout.** Flat files — `spec-<slug>.md`, `run-<slug>.md`, `review-<slug>.md`,
-  `finding-<NNN>.md`, `intake-<slug>.md` — plus raw evidence under `evidence/<run>/` and one
-  lifecycle subfolder, `archive/`. No other tree.
+  `task-<slug>.md`, `change-plan-<slug>.md`, `finding-<NNN>.md`, `intake-<slug>.md` — plus
+  raw evidence under `evidence/<run>/` and one lifecycle subfolder, `archive/`. No other
+  tree.
 - **Disposable by design.** Durable value leaves the store by promotion (issues, ADRs,
   tests, the PR digest); `suspec pull` records the ticket URL and `suspec fix #123` rebuilds
   a working launch from the GitHub issue, so a store wipe loses nothing promoted.
@@ -95,8 +96,9 @@ evidence entry (level: enforced by the CLI's own gate):
 - **cli-verified** means the CLI ran the command itself via `evidence add` and captured
   exit + output. Evidence written any other way carries `provenance: agent` or `dev` and
   never satisfies the gate by default.
-- **Stale evidence never satisfies.** Each evidence entry records a hash of the files its
-  command touched; `done` re-hashes and rejects drifted evidence until re-run.
+- **Stale evidence never satisfies.** Each evidence entry records a digest of the whole
+  worktree state at capture (git status + diff + the HEAD sha); `done` re-hashes and
+  rejects drifted evidence until re-run — committing after capture doesn't launder it.
 - **Strict is the default.** Any failing or missing AC blocks (exit 1).
   `--accept-failing "<why>"` accepts explicitly — the reason lands in the digest and the
   run file. `--allow-agent-evidence` lets agent-provenance evidence count, labeled in the
@@ -105,9 +107,11 @@ evidence entry (level: enforced by the CLI's own gate):
   accepted-failing reasons — prints to stdout and, when the run's branch has an open PR,
   upserts one marker-tagged PR comment (edited in place on re-run). Raw output never leaves
   the store.
-- **Findings triage** closes the run: promote (GitHub issue) · keep (expiry stamped) ·
-  discard (the default for non-critical). A critical finding is never silently discarded.
-  Non-interactive mode defers untriaged findings with an expiry stamp.
+- **Findings triage** closes a finished run — it runs only when the gate passed or was
+  explicitly accepted; a blocked gate exits 1 before triage. Promote (GitHub issue) ·
+  keep (expiry stamped) · discard (the default for non-critical). A critical finding is
+  never silently discarded. Non-interactive mode defers untriaged findings with an
+  expiry stamp.
 
 ## Exit codes
 
