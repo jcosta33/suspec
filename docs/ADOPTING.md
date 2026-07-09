@@ -1,116 +1,80 @@
 # Adopting Suspec
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+Adopting is two installs and one config file. Your repo stays clean: artifacts live in
+your personal store, outside the repo; only what you promote is committed.
 
+## Setup
 
-Adopt Suspec by copying the starter kit into a workspace.
+1. Install the reference CLI: [suspec-cli](https://github.com/jcosta33/suspec-cli).
 
-Use a dedicated repo named:
-
-```text
-<project>-works
-```
-
-or place the same tree inside one code repo.
-
-## Manual setup
-
-1. Create the workspace.
+2. Seed the repo:
 
    ```bash
-   gh repo create <project>-works --private
-   git clone git@github.com:<org>/<project>-works.git
+   suspec init
    ```
 
-2. Copy the starter kit contents into it.
+   This writes `suspec.config.json` (defaults + detected setup), seeds `AGENTS.md` if
+   absent, creates `.agents/skills/` with the `.claude/skills` symlink, and gitignores
+   `.worktrees/`. Nothing else lands in the repo, and the store is never touched here.
+
+3. Install the universal skill family, once, globally:
 
    ```bash
-   cp -R path/to/suspec-starter-kit/. <project>-works/
+   npx skills add jcosta33/suspec-skills -g
    ```
 
-3. Fill placeholders in:
+   Universal skills live at the user level; repo-specific guides stay committed in the
+   repo they describe. The two tiers never overlap (level: convention).
 
-   - `AGENTS.md`
-   - `status.md`
-   - command table
-   - owner fields
+4. Make the seed yours: fill `AGENTS.md` with your commands and facts, and declare
+   `setup` / `verify` (and `risk_paths`, if you want the nudges) in `suspec.config.json`
+   — the [CLI reference](reference/cli.md) documents every key.
 
-4. Commit the workspace.
-
-   ```bash
-   git add .
-   git commit -m "Adopt Suspec workspace"
-   ```
-
-5. Write one small spec and run the loop once.
-
-Use symlinks only when your team and platform handle them reliably. On Windows, copying files is safer.
-
-## CLI setup
-
-If you use `suspec-cli`:
-
-```bash
-suspec init
-```
-
-In an empty directory, this creates the workspace.
-
-In a non-empty code repo, use the workspace option when you want a dedicated workspace:
-
-```bash
-suspec init --workspace ../<project>-works
-```
-
-The CLI is optional. Copying the kit by hand is valid.
-
-## Code repo pointer
-
-In each governed code repo, add only what is needed:
-
-```text
-Suspec workspace: ../<project>-works. Read the spec before coding; if a task packet exists, use that bounded slice.
-```
-
-Add `.gitignore` lines for local Suspec state if you use the CLI.
-
-Do not copy specs, tasks, reviews, or findings into the code repo.
-
-## Spec-external, single-root implementer
-
-For a dedicated workspace governing a separate code repo, keep the implementer in one root:
-
-- Canonical specs, tasks, reviews, and findings stay in the workspace.
-- When you cut a task, snapshot its spec slice into the task packet — stamped with the spec id and version — and place the task in the code repo under a gitignored `.suspec/`.
-- The implementer reads the pinned snapshot and writes only in the code repo, so its commands and edits resolve against one root.
-- The review lead merges the run evidence back into the workspace: the board, the task status, and the review packet.
-
-The code repo's committed history stays clean. Choose the co-located layout instead when you need code and its evidence in one commit.
+Use symlinks only when your platform handles them reliably; on Windows, copying the
+skills folder is safer.
 
 ## First useful change
 
-Start small:
+Start small and run the whole loop once:
 
-1. Point a spec at one ticket via its `sources` — capture it in `intake/` first only if you want the raw request kept.
-2. Write one `status: ready` spec.
-3. Implement it on a branch or worktree, running each `Verify with:` command.
-4. Fill the spec's `## Execution` with the pasted output (split into tasks only if the work needs parallel slices).
-5. Review with evidence — a non-implementer judges it; a substantial change gets a review packet.
-6. Save one finding if there is a durable lesson.
+1. `suspec write spec "<one-line intent>"` — then fill the requirements: one AC per id,
+   each with a `Verify with:` line.
+2. `suspec work <SPEC>` — worktree, setup, your agent launched against the spec.
+3. `suspec evidence add <RUN> --ac AC-001 -- <verify command>` — the harness runs the
+   command itself and records the proof, per AC.
+4. `suspec done <RUN>` — the gate: every AC needs captured, passing, non-stale evidence,
+   or an explicit acceptance. The digest lands on the PR; findings get triaged.
+5. `suspec promote <FIND>` — anything worth keeping for others becomes a GitHub issue.
 
 The tutorial walks this path in [tutorial/README.md](tutorial/README.md).
 
-## Updating the kit
+## By hand — no CLI
 
-If you copied the kit, update by copying new kit-owned files or by using:
+Every step keeps a by-hand path (level: convention); the CLI accelerates it and adds the
+machine gate.
 
-```bash
-suspec update --check
-suspec update --write
-```
+1. Make the store: `mkdir -p ~/.claude/state/<repo-name>`.
+2. Write `spec-<slug>.md` there from the spec template (the
+   [starter kit](https://github.com/jcosta33/suspec-starter-kit) ships the templates):
+   status, requirements with IDs, a `Verify with:` line each.
+3. Work in isolation: `git worktree add .worktrees/<slug> -b suspec/<slug>`, `cd` in, and
+   run your agent pointed at the store spec by absolute path.
+4. Run each `Verify with:` command yourself and paste the real output into the run file.
+   Without the CLI there is no machine-enforced gate — the evidence discipline is yours
+   (level: convention; `suspec evidence add` + `suspec done` are the toolable form).
+5. Promote by hand: open the issue, write the ADR, paste the digest on the PR.
 
-Keep project-owned specs, tasks, reviews, findings, and decisions unchanged unless you choose to edit them.
+## What gets committed
+
+Nothing but `suspec.config.json`, the seeded `AGENTS.md` and any repo-specific guides
+you keep, and your own promotions — ADRs, tests, whatever you land through the normal PR.
+Specs, runs, reviews, findings, and evidence stay in your store; when a reviewer wants
+the proof, the digest is already on the PR.
+
+## Updating
+
+- **Kit-managed templates**: `suspec update --check` reports drift against the shipped
+  kit; `suspec update --write` refreshes the kit-owned files (a customized file is backed
+  up to `*.suspec-bak` by default). Your own artifacts are never touched.
+- **Skills**: re-run `npx skills add jcosta33/suspec-skills -g` — the family updates in
+  one place, for every repo at once.

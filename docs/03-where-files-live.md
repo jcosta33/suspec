@@ -1,112 +1,105 @@
 # Where files live
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
 Suspec uses three surfaces:
 
-- **Framework repo**: the docs and decisions for Suspec itself.
-- **Workspace repo or folder**: specs, tasks, reviews, findings, and board for a project.
-- **Code repo**: the application code.
+- **Your repo** — the code, one `suspec.config.json`, and everything you promote: ADRs,
+  tests, plus any committed repo-specific agent guides.
+- **Your store** — the per-repo working memory, outside every repo: specs, runs, reviews,
+  findings, intake snapshots, evidence.
+- **Global** — the universal Suspec skill family, installed once at the user level
+  (`~/.claude/skills` + `~/.agents/skills`).
 
-Keep durable work records in the workspace, not scattered across chat or PR comments.
+The split is the point. Store artifacts are relevant to *you* while the work is live;
+anything worth keeping for others leaves the store by promotion — a decision becomes an
+ADR, behavior becomes tests, a finding becomes a GitHub issue, the proof becomes the PR
+digest. The durable record lives in the layers that already own it, not in a parallel one.
 
-## Workspace layout
+## The store
 
-```text
-your-workspace/
-  AGENTS.md
-  specs/
-    checkout/
-      spec.md
-      research.md
-  intake/
-  tasks/
-  reviews/
-  findings/
-  inventory/
-  change-plans/
-  decisions/
-  templates/
-  status.md
-```
-
-Core homes:
-
-- `intake/`: upstream asks captured verbatim.
-- `specs/<feature>/`: intended behavior and related support docs.
-- `tasks/`: bounded split packets when one spec becomes parallel work.
-- `reviews/`: review packets kept while they are active records.
-- `findings/`: durable lessons saved at Close.
-- `inventory/`: present-state maps for brownfield work.
-- `change-plans/`: wave plans for structural work.
-- `decisions/`: project ADRs.
-- `status.md`: the hand-edited Human-attention list and closed-work links. Live spec/task/review
-  STATE is derived — `suspec status` is the canonical view where the CLI is installed; a stale
-  hand-written state row is worse than none ([[PLANCOMPLY]](research/sources.md#PLANCOMPLY)).
-
-## Co-located or dedicated
-
-Both layouts are valid.
-
-- **Co-located**: put the workspace inside one code repo, often under `suspec/`.
-- **Dedicated**: use a separate repo for one or more code repos.
-
-Default name for a dedicated workspace repo:
+One directory per repo, beside your agent's own scaffold:
 
 ```text
-<project>-works
+~/.claude/state/<repo-name>/
+  spec-checkout-discounts.md
+  run-checkout-discounts.md
+  review-checkout-discounts.md
+  finding-001.md
+  intake-tick-4812.md
+  evidence/
+    checkout-discounts/
+  archive/
 ```
 
-Use a dedicated workspace when features span repos or when spec owners differ from code owners.
+- Flat files, one lifecycle subfolder (`archive/`), raw evidence under `evidence/<run>/`.
+  No other tree.
+- The root is configurable: the `SUSPEC_STATE_DIR` environment variable, or `state_root`
+  in `suspec.config.json`. Two repos that share a folder name get distinct store
+  directories, matched by recorded repo path — never by a name guess.
+- Never committed to any repo (level: convention — the CLI never stages the store, and
+  `suspec init` never touches it).
+- Agents read and write the store directly, by the absolute paths given in the launch
+  prompt. Only the driving spec auto-loads into an agent's context; everything else is
+  read on demand.
 
-In dedicated mode, keep the implementer single-root. See [ADOPTING](ADOPTING.md#spec-external-single-root-implementer).
+## What lives where
 
-## Code repo footprint
+| You produced        | It lives in the store as     | It becomes durable as                        |
+| ------------------- | ---------------------------- | -------------------------------------------- |
+| a captured ticket   | `intake-<slug>.md`           | nothing — the recorded URL makes it re-pullable |
+| intended behavior   | `spec-<slug>.md`             | an ADR, when it carries a decision           |
+| an agent run        | `run-<slug>.md`              | the PR and its digest comment                |
+| proof               | `evidence/<run>/`            | the digest on the PR (`suspec done`)         |
+| a review            | `review-<slug>.md`           | the exceptions you act on                    |
+| a lesson            | `finding-<NNN>.md`           | a GitHub issue (`suspec promote`)            |
 
-A code repo needs little or nothing.
+## Lifecycle
 
-Allowed footprint:
+Active → archived → gone. Nothing needs a janitor.
 
-- a short `AGENTS.md` pointer:
+- **Archived by truth, not by hand.** `suspec store doctor` reconciles the store against
+  git and GitHub: a spec or run whose branch merged, whose worktree is gone, or whose PR
+  closed moves to `archive/` — moved, never deleted (level: toolable). State is derived
+  from git truth, never hand-maintained; a stale hand-written status row is worse than
+  none [[PLANCOMPLY]](research/sources.md#PLANCOMPLY).
+- **Findings die at the gate.** `suspec done` ends with a triage pass per finding:
+  promote it, keep it with an expiry date, or discard it (the default for non-critical).
+  A critical finding is never silently discarded.
+- **Deleted by retention.** `suspec store gc` (also `suspec clean`) deletes only archived
+  items past `retention_days` — default 30. A 30–90 day window matches common CI artifact
+  retention [[GHRETENTION]](research/sources.md#GHRETENTION) [[GLRETENTION]](research/sources.md#GLRETENTION).
+- **Ambient pressure.** `work`, `next`, and `status` print one decay line when the store
+  holds stale or expired items, pointing at `suspec store doctor`.
+- **The nuclear option.** `suspec store purge` deletes a repo's whole store after typed
+  confirmation.
 
-  ```text
-  Suspec workspace: ../<project>-works. Read the spec or task packet before coding.
-  ```
+## Staleness
 
-- `.gitignore` lines for local Suspec state
-- optional agent guide copies if the repo needs them
+Checked at read time, not by ceremony:
 
-Specs, tasks, reviews, and findings belong in the workspace.
+- **At launch** — a spec records the commit it was written against (`base_sha`) and its
+  affected areas; `suspec work` refuses a drifted spec, printing what moved, unless you
+  pass `--anyway`.
+- **At the gate** — each evidence entry records a hash of the files its command touched;
+  `suspec done` re-hashes, and drifted evidence never satisfies the gate until re-run.
+- **On demand** — `suspec check --staleness` reports which snapshotted specs drifted
+  (advisory).
 
-## Retention
+## Wipe-survival
 
-(The working set — `intake/`, `tasks/`, `reviews/` — is gitignored by default per the
-ephemeral-by-default decision; retention below concerns what is committed.)
+The store is disposable by design. Everything that must survive it already lives
+elsewhere: the ticket URL in the intake record makes it re-pullable, promoted findings
+are GitHub issues, the digest is a PR comment, decisions are ADRs, behavior is tests.
+`suspec fix #123` rebuilds a working launch straight from the issue — with or without the
+store that produced it. Cross-machine continuity is a sync recipe (the store is plain
+files), not a feature.
 
-Keep for the life of the project:
+## The repo footprint
 
-- accepted specs
-- ADRs
-- saved findings
-
-Let transitory output age out once the durable record has what matters:
-
-- closed split task packets
-- review packets
-- `suspec check` output
-- run logs
-- temporary agent scratch
-
-Use git history or `archive/`.
-
-A 30-90 day window matches common CI artifact retention
-[[GHRETENTION]](research/sources.md#GHRETENTION) [[GLRETENTION]](research/sources.md#GLRETENTION).
-A task or review packet is live while open, kept for reference once closed, then moved to `archive/` or left to git history; the closed board row keeps the link. Promote a closed task's durable lesson to its home before the scratch ages out.
+`suspec init` writes exactly: `suspec.config.json` (defaults + detected setup), an
+`AGENTS.md` seed if absent, `.agents/skills/` with the `.claude/skills` symlink, and a
+`.gitignore` line for `.worktrees/`. Nothing else lands in the repo, and no directory is
+named after the tool — `suspec.config.json` is the sole tool-named file, the same
+convention as `.eslintrc`.
 
 ## Drift rule
 

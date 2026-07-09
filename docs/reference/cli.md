@@ -1,266 +1,468 @@
 # The `suspec` CLI
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+`suspec-cli` is the reference harness — and it is optional. Every step of the loop keeps a
+by-hand path (ADR-0134; level: convention); the CLI accelerates the mechanics and gives the
+evidence side teeth.
 
+The CLI prepares files, launches configured runners, captures evidence, gates on it, and
+promotes what deserves to outlive the session. It does not write code, does not run a model
+loop, and does not decide whether code is correct — the human owns the result.
 
-`suspec-cli` is optional. The markdown workflow does not require it.
+Source: [suspec-cli](https://github.com/jcosta33/suspec-cli). `suspec help` prints the
+command reference; `suspec <command> --help` prints per-command usage; `suspec` with no
+arguments opens the dashboard. The daily reconcile flows (`init`, `check`, `worktree`,
+`status`, `review`, `new`) also take `-i` for an interactive flow.
 
-The CLI prepares files, launches configured agents, and reconciles evidence.
-It does not write code and does not decide whether code is correct.
+## The store
 
-Use the [suspec-cli README](https://github.com/jcosta33/suspec-cli#commands) for exact flags and shipped commands.
+Artifacts — intake, spec, run, review, finding, evidence — are your typed working memory:
+flat markdown files in a per-repo store **outside** the repo, never committed anywhere
+(level: convention — the CLI never stages them, and `init` never touches the store).
+
+- **Resolution.** `<state-root>/<repo-name>/`, where `<state-root>` defaults to
+  `~/.claude/state` and is overridable via the `SUSPEC_STATE_DIR` environment variable or
+  `state_root` in `suspec.config.json`. `<repo-name>` is the repo directory's basename; two
+  different repo paths sharing a basename get distinct store dirs (a stable `-2`/`-3`
+  suffix, matched by the recorded repo path — never by a basename guess).
+- **Layout.** Flat files — `spec-<slug>.md`, `run-<slug>.md`, `review-<slug>.md`,
+  `finding-<NNN>.md`, `intake-<slug>.md` — plus raw evidence under `evidence/<run>/` and one
+  lifecycle subfolder, `archive/`. No other tree.
+- **Disposable by design.** Durable value leaves the store by promotion (issues, ADRs,
+  tests, the PR digest); `suspec pull` records the ticket URL and `suspec fix #123` rebuilds
+  a working launch from the GitHub issue, so a store wipe loses nothing promoted.
+- Agents read and write the store directly by the absolute paths given in the launch
+  prompt. Only the driving spec auto-loads into agent context.
+
+## `suspec.config.json`
+
+The one Suspec file in a repo. Every command works without it — defaults apply, and absence
+of config is never an error (level: toolable — a missing runtime dependency such as `gh`
+errors only on the command that needs it, naming it).
+
+| Key | Meaning | Default |
+| --- | --- | --- |
+| `setup` | commands run in a fresh worktree before launch | lockfile autodetect (`pnpm-lock.yaml`, `package-lock.json`, `yarn.lock`, `Cargo.toml`, `uv.lock`/`requirements.txt`) |
+| `setup_copy` | allowlisted gitignored files copied into the worktree (e.g. `.env.local`) | none |
+| `verify` | the repo's verify commands — `check-my-work`'s gate | none |
+| `runners` | runner adapters + `runners.default` | `claude` when on PATH |
+| `risk_paths` | globs that trigger an advisory nudge in `check-my-work` and `done` | none |
+| `wip_cap` | max active specs before `work` refuses (override with `--anyway`) | 3 |
+| `retention_days` | age past which `store gc` / `clean` deletes archived artifacts | 30 |
+| `state_root` | store root override | `~/.claude/state` |
+
+```json
+{
+  "setup": ["pnpm install"],
+  "setup_copy": [".env.local"],
+  "verify": ["pnpm test:run", "pnpm lint"],
+  "runners": { "default": "claude" },
+  "risk_paths": ["src/auth/**"],
+  "wip_cap": 3,
+  "retention_days": 30
+}
+```
+
+Built-in runners: `claude` (the reference adapter) and `codex` (whose template puts the
+store root in the sandbox's writable roots — a sandboxed runner is the adapter's problem,
+never architecture). A `custom` runner takes a raw command template with `{prompt}` /
+`{cwd}` placeholders.
+
+## The loop
+
+```
+write spec ──▶ work ──▶ evidence add ──▶ done ──▶ promote
+```
+
+1. **`write spec`** — scaffold a draft spec in the store from a one-line intent; you (or the
+   spec-author skill via `--launch`) fill the requirements.
+2. **`work`** — resolve the spec from the store, refuse it stale, create or reuse its
+   worktree, run setup, launch the configured runner with a prompt that points at the store
+   by absolute path.
+3. **`evidence add`** — the CLI runs each verify command itself in the run worktree and
+   records cli-verified evidence mapped to an AC.
+4. **`done`** — the strict gate over the run, the digest on the PR, findings triage.
+5. **`promote`** — a finding becomes a GitHub issue; the finding retires to `archive/`.
+
+The middle tier, `check-my-work`, gates the current diff without a spec, a launch, or an
+artifact. `next` names the single most actionable store item. `fix` turns a finding or a
+GitHub issue into a launched fix-spec.
+
+## Gate semantics
+
+`suspec done` gates every AC in the driving spec on at least one **cli-verified, exit-0**
+evidence entry (level: enforced by the CLI's own gate):
+
+- **cli-verified** means the CLI ran the command itself via `evidence add` and captured
+  exit + output. Evidence written any other way carries `provenance: agent` or `dev` and
+  never satisfies the gate by default.
+- **Stale evidence never satisfies.** Each evidence entry records a hash of the files its
+  command touched; `done` re-hashes and rejects drifted evidence until re-run.
+- **Strict is the default.** Any failing or missing AC blocks (exit 1).
+  `--accept-failing "<why>"` accepts explicitly — the reason lands in the digest and the
+  run file. `--allow-agent-evidence` lets agent-provenance evidence count, labeled in the
+  digest.
+- **The digest** — per AC: verify command, exit code, evidence ref, plus any
+  accepted-failing reasons — prints to stdout and, when the run's branch has an open PR,
+  upserts one marker-tagged PR comment (edited in place on re-run). Raw output never leaves
+  the store.
+- **Findings triage** closes the run: promote (GitHub issue) · keep (expiry stamped) ·
+  discard (the default for non-critical). A critical finding is never silently discarded.
+  Non-interactive mode defers untriaged findings with an expiry stamp.
+
+## Exit codes
+
+One contract across the surface:
+
+- `0` — clean / gate satisfied (or explicitly accepted)
+- `1` — actionable gap: warnings, behind, gate blocked, a failed verify command
+- `2` — usage error or hard failure
+
+Per-command specifics are noted in the usage below.
+
+## Commands
+
+The usage blocks below are the CLI's own (`suspec <command> --help`).
+
+### Seed and update
+
+#### `suspec init`
+
+Seed this repo for the personal harness — config, AGENTS.md, skills dirs.
+
+```text
+suspec init
+  (no flag)                   write suspec.config.json (defaults + detected setup), seed AGENTS.md
+                              if absent, create .agents/skills/ + the .claude/skills symlink,
+                              gitignore .worktrees/ — nothing else lands in the repo
+  --yes                       also link CLAUDE.md → AGENTS.md (accept every offer)
+  --json · -i                 machine output · interactive flow (prompts for the CLAUDE.md link)
+  artifacts live in your personal store, outside the repo; the store is never touched here
+```
+
+#### `suspec update`
+
+Check kit drift, or refresh kit-managed templates (conflict-safe).
+
+```text
+suspec update [--check | --write]
+  --check (default)           compare .agents/.suspec-version to the kit VERSION; writes nothing
+  --write | --apply           refresh the kit-owned templates (per the kit manifest) + re-stamp the pin
+  --on-conflict backup|overwrite|skip   handle a customized kit file (default: backup → *.suspec-bak)
+  --from <path|url>           kit source (default: the suspec-starter-kit on GitHub)
+  --json                      machine output
+  --check: exit 0 up-to-date · 1 behind · 2 error · --write: 1 if files need reconciling
+  skills are not refreshed here — they install globally (npx skills add jcosta33/suspec-skills -g)
+```
+
+### Author
+
+#### `suspec write`
+
+Scaffold a draft store spec from a one-line intent — optionally dispatch the spec author.
+
+```text
+suspec write spec "<one-line intent>"
+  "<intent>"                  seeds spec-<slug>.md in the store: status draft, base_sha = repo HEAD,
+                              one empty AC + a Verify placeholder — the CLI authors NO requirements
+  --launch                    dispatch the spec-author prompt (a pointer at the store spec) to the runner
+  --runner <name>             the runner from suspec.config.json runners (built-ins: claude, codex)
+  --json                      machine output
+  then: suspec work <SPEC-id>
+```
+
+#### `suspec new`
+
+Cut a store task slice from a store spec, or scaffold a change plan.
+
+```text
+suspec new <task|change-plan>
+  task --from <SPEC> [--scope AC-001,AC-002] [--id <TASK-id>]   cut a slice into the store (scope never invented)
+  change-plan <slug>                              scaffold a draft change plan (migrations/rewrites)
+  --id <TASK-id>                                  name a 2nd+ task from one spec (else TASK-<spec-slug>)
+  --force                                         re-cut over an existing task slice (e.g. to add --scope)
+  --json · -i                                     machine output · interactive flow
+  specs scaffold via `suspec write spec "<intent>"` (the one store scaffold)
+```
+
+#### `suspec pull`
+
+Snapshot a ticket into the store — verbatim capture only, never a spec.
+
+```text
+suspec pull <ref>
+  <ref>                       a gh issue (number/owner-repo#N/URL — fetched via gh), or any tracker ref
+  --force                     overwrite an existing intake-<slug>.md (else no-clobber)
+  --json                      machine output
+  writes one store intake snapshot (paste placeholder when no fetch); the recorded url
+  makes it re-pullable after a store wipe. Capture only — `suspec fix #N` scaffolds + launches
+```
+
+### Launch
+
+#### `suspec work`
+
+Work a store spec: create/reuse its worktree, set up, launch a runner pointed at the store
+(no verdict).
+
+```text
+suspec work <SPEC>
+  <SPEC>                      a spec id/slug, resolved against the store (spec-*.md)
+  --runner <name>             the runner from suspec.config.json runners (built-ins: claude, codex)
+  --base <branch>             the worktree base (else the current branch)
+  --anyway                    launch despite recorded spec staleness
+  --attach                    a live run: print the runner-native attach hint (dispatches nothing)
+  --second-worktree           a live run: launch in a suffixed worktree with its own run file
+  --dry-run                   resolve + print the plan and prompt; launch nothing, write nothing
+  --json                      machine output
+  by hand (no CLI): create the worktree, cd in, run your agent against the store spec
+```
+
+Setup runs in the worktree before launch: the config's `setup` commands (else the lockfile
+autodetect), plus the `setup_copy` allowlist. When the driving spec's `Verify with:` lines
+name runtime commands, a failed setup blocks the launch (exit 1); otherwise it warns. A spec
+whose recorded `base_sha` has drifted against its affected areas refuses to launch unless
+`--anyway`, printing what drifted. A second `work` on a live run refuses while its
+heartbeat is fresh, offering `--attach` and `--second-worktree`; a dead heartbeat is
+reported reclaimable. `work` also refuses past `wip_cap` active specs unless `--anyway`.
+
+#### `suspec fix`
+
+Scaffold a store fix-spec from a finding or gh issue, then launch it via the work pipeline.
+
+```text
+suspec fix <FIND-id | #issue>
+  <FIND-id>                   a finding id / store filename (archive/ included)
+  #<issue>                    a GitHub issue number, fetched via gh (survives a store wipe)
+  --no-launch                 scaffold spec-fix-<slug>.md only; print its path
+  --runner <name> · --base <branch> · --anyway · --json   forwarded to the work pipeline
+  scaffolds base_sha = repo HEAD (+ affected_areas from the finding), then hands off to `work`
+```
+
+#### `suspec worktree`
+
+Create / list / remove / prune isolated task worktrees.
+
+```text
+suspec worktree <create|list|remove|prune> [slug]
+  create <slug> [--task <t>] [--base <branch>]   worktree on suspec/<slug>[/<task>]
+  remove <slug> [--task <t>] [--force]           tear one down
+  list · prune                                   show / clear stale worktrees
+  --json · -i                                    machine output · interactive flow
+```
+
+### Evidence and the gate
+
+#### `suspec evidence`
+
+Capture cli-verified evidence: run a verify command in the run worktree, record it in the
+store.
+
+```text
+suspec evidence add <RUN> --ac <AC-id> -- <command…>
+  add <RUN>                   the store run the evidence belongs to (run-<RUN>.md)
+  --ac <AC-id>                the acceptance criterion the evidence maps to (e.g. AC-003)
+  -- <command…>               the command to run (in the run worktree; bare binary + args, no shell)
+  --json                      machine output
+  exit mirrors the command (0/1) — the record is written either way; raw output stays in the store
+```
+
+#### `suspec done`
+
+The strict gate: lint the run artifacts, gate every AC on cli-verified evidence, digest +
+triage.
+
+```text
+suspec done <RUN>
+  <RUN>                       the store run to close (run-<RUN>.md)
+  --accept-failing "<why>"    accept gate gaps explicitly — the reason lands in the digest + run file
+  --allow-agent-evidence      let provenance: agent evidence count (labeled in the digest)
+  --discard-critical <id>     allow triage to discard the named critical finding
+  --json                      machine output (defers findings triage with an expiry stamp)
+  exit 0 gate satisfied/accepted · 1 gate blocked (gaps listed) · 2 usage / lint hard-error
+```
+
+#### `suspec review`
+
+Reconcile a store run against its spec — artifact lint + evidence per AC (no verdict).
+
+```text
+suspec review <RUN>
+  <RUN>                       a store run slug (run-<RUN>.md)
+  lint: the run record, its driving spec, its review packet, every evidence record
+  reconcile: each spec AC against the evidence (verified / stale / failing / missing)
+  --json · -i                 machine output · interactive flow
+  surfaces facts + routes; the human owns the result — `suspec done` closes the gate
+```
+
+#### `suspec check`
+
+Validate one artifact by its type, or lint the store's artifacts for this repo.
+
+```text
+suspec check [file]
+  (no file)                   lint the store's artifacts — runs, specs, reviews, evidence records
+  <file>                      validate by frontmatter type: spec, review (C012/C013), or change-plan (C010/C011); exit 0 clean · 1 warnings · 2 error
+  --staleness                 advisory: which snapshotted specs drifted since their snapshot SHA
+  --json · -i                 machine output · interactive flow
+```
+
+The checks are artifact lint — per-artifact facts with per-check severity, never a
+whole-store verdict. The contract is [checks](checks.md) (`checks/checks.yaml` in this
+repo).
+
+#### `suspec check-my-work`
+
+The middle tier: gate the current repo diff (config `verify`) + dispatch one adversarial
+reviewer.
+
+```text
+suspec check-my-work "<one-line intent>"
+  "<intent>"                  what the reviewer reviews the current diff against
+  (diff base)                 merge-base with the default branch; staged+unstaged when already on it
+  --save                      record a check run + evidence records in the store (else artifact-free)
+  --no-review                 gate only — no reviewer dispatched
+  --dry-run                   print the plan + reviewer prompt; run nothing, write nothing
+  --runner <name>             the reviewer runner (else runners.default) · --json
+  exit mirrors the gate: 0 verify passed/none declared · 1 a verify command failed · 2 usage/launch failure
+```
+
+#### `suspec stamp`
+
+Stamp a spec snapshot SHA (enables `check --staleness`).
+
+```text
+suspec stamp <ref>
+  <spec id|slug>              write snapshot: HEAD (enables `check --staleness`)
+  --repo <path>               stamp against a separate code repo · --json
+```
+
+### Promotion
+
+#### `suspec promote`
+
+Promote a store finding to a GitHub issue (evidence digest + provenance), then archive it.
+
+```text
+suspec promote <FIND>
+  <FIND>                      a finding id (frontmatter `id:`) or store filename (finding-*.md)
+  --json                      machine output
+  the issue body carries the finding + the run evidence digest + the provenance label;
+  the issue number is stamped into the finding, which then retires to archive/
+  exit 0 promoted · 1 gh missing/failing (named; nothing changed) · 2 unknown finding
+```
+
+### Store and attention
+
+#### `suspec status`
+
+The store summary — runs, specs, and what needs attention.
+
+```text
+suspec status
+  (no flag)                   active + archived store artifacts, plus the attention ranking
+  --json · -i                 machine output · interactive view
+```
+
+#### `suspec next`
+
+The single most actionable store item — live runs, gate gaps, triage debt, ready specs.
+
+```text
+suspec next
+  (no flag)                   print THE top item (+ the ambient decay line)
+  --json                      the full ranking, machine-readable
+  reads only the store + local git state — zero network, zero gh; writes nothing
+```
+
+`work`, `next`, and `status` print one ambient decay line when the store holds items past
+expiry or stale runs (`N stale — suspec store doctor`).
+
+#### `suspec store`
+
+Store maintenance — doctor (reconcile), list, gc (retention), purge (whole store).
+
+```text
+suspec store <doctor|list|gc|purge>
+  doctor                      archive spec/run artifacts whose branch merged, worktree vanished,
+                              or PR closed (git/GitHub truth; never deletes; orphans listed; exit 0)
+  list                        active + archived artifacts with per-artifact age
+  gc                          delete ONLY archive/ items past retention_days (default 30)
+  purge [--force]             delete the repo’s whole store — type the repo name, or --force
+  --json                      machine output
+```
+
+Terminal states derive from git/GitHub truth — `doctor` is a reconciler, never a judge.
+
+#### `suspec clean`
+
+Store hygiene — delete archived artifacts past retention (= `store gc`).
+
+```text
+suspec clean
+  (no flag)                   delete ONLY archive/ items past retention_days (default 30)
+  --json                      machine output
+```
+
+### Projection
+
+#### `suspec show`
+
+Project a parsed artifact as JSON — task, spec, review, or the checks contract (read-only).
+
+```text
+suspec show <task|spec|review|checks> [ref]
+  task <stem>                 the parsed task packet (scope, affected areas, claimed changes)
+  spec <id|path>              the parsed spec (frontmatter, requirements + verify commands)
+  review <stem>               the parsed review packet (status, coverage rows, verify blocks)
+  checks                      the checks contract (version + the core checks)
+  --json                      machine output; reads only, renders no verdict
+```
+
+#### `suspec agents`
+
+Project Claude Code agent definitions into another runner (Codex TOML).
+
+```text
+suspec agents emit --codex [--from <dir>]
+  emit --codex                generate .codex/agents/*.toml from the agent definitions
+  --from <dir>                the agent *.md defs (default: ./.claude/agents, else ../suspec-agents/agents)
+  --force                     overwrite existing generated .toml files (they regenerate)
+  --json                      machine output
+  prose discipline only — tool-scoping + hooks are Claude-Code-only and do NOT travel
+```
+
+#### `suspec help`
+
+Show the command reference.
+
+```text
+suspec help
+suspec --help · suspec --version
+```
 
 ## Boundary
 
-| CLI owns | Agent or team owns |
+| CLI owns | You / your agent own |
 | --- | --- |
-| scaffolding | coding loop |
-| intake snapshots | model reasoning |
-| checks | edits |
-| task packets | provider credentials |
-| worktrees | tool-calling runtime |
-| launch envelope | correctness |
-| review draft | merge decision |
-
-## Shipped surface
-
-The command set includes:
-
-- `init`
-- `update`
-- `check`
-- `new`
-- `worktree`
-- `status`
-- `clean`
-- `stamp`
-- `review`
-- `pull`
-- `promote`
-- `run --agent`
-- `work <SPEC>`
-- `show`
-- `agents emit --codex`
-- `help`
-
-`suspec-mcp` exposes CLI data over MCP. It shells out to the CLI `--json` contract.
+| store scaffolds and intake snapshots | requirement content |
+| worktrees and setup | the coding loop |
+| the launch envelope | model reasoning and edits |
+| evidence capture (cli-verified) | what the evidence proves |
+| artifact lint and reconciliation | provider credentials |
+| the gate, digest, and triage mechanics | the result — Pass/Fail is yours |
+| promotion mechanics (`gh`) | what deserves to be durable |
 
 ## Non-goals
 
 The CLI does not provide:
 
-- `suspec close` that mutates the board
-- code generation
-- spec compilation
-- automatic task decomposition
-- architecture enforcement
-- agent runtime
-- model configuration
-- verdicts
-
-## Deferred or measured-out
-
-Deferred:
-
-- `suspec inventory new`
-- per-adapter hook generation
-- run-record `commands[]`
-- strict SOL parser
-- per-task cost attribution
-
-Measured-out:
-
-- hard oversized-packet threshold. Diff size is reported as neutral review information.
-
-## Command contracts
-
-### `suspec init`
-
-Creates a workspace from the starter kit.
-
-Writes `AGENTS.md`, templates, guides, flow folders, examples, and `status.md`.
-
-### `suspec pull <ticket>`
-
-Captures an external ticket into `intake/`.
-
-It does not write a spec.
-
-### `suspec new spec <slug> [--title <t>] [--owner <o>]`
-
-Creates `specs/<slug>/spec.md` from the template.
-
-The user fills requirements.
-
-### `suspec check [file...]`
-
-Reads specs or workspace files and reports diagnostics. Accepts one or more files in a single
-invocation (the exit code is the max across them), so a batch — e.g. the pre-commit hook's staged
-set — is checked in one process rather than paying the startup cost per file. With no file, it
-renders the whole-workspace verdict — including that the workspace has the paths the kit's
-`suspec-kit.yaml` declares as required (a manifest-less kit falls back to a built-in default).
-
-Exit codes:
-
-- `0`: clean
-- `1`: warnings
-- `2`: hard errors
-
-It reports facts. It does not issue a merge verdict.
-
-### `suspec new task --from <SPEC-id> [--scope AC-...]`
-
-Creates a task packet from declared scope.
-
-It does not invent requirements.
-
-### `suspec new change-plan <slug> [--title <t>] [--owner <o>]`
-
-Creates a draft change plan.
-
-Use it for migrations, rewrites, or structural changes that need waves.
-
-### `suspec worktree <create|list|remove|prune>`
-
-Creates and tracks task worktrees.
-
-One task gets one branch or worktree.
-
-### `suspec clean [--apply]`
-
-Reports spent ephemeral task and review artifacts.
-
-With `--apply`, it prunes the spent artifacts that are safe to remove.
-
-### `suspec stamp <ref>`
-
-Writes staleness provenance for a spec snapshot or review evidence hash.
-
-It makes later drift checks compare against an explicit recorded revision.
-
-### `suspec run <task> --agent <name>`
-
-Launches a configured agent in the task worktree.
-
-Records the launch envelope. The agent does the work.
-
-### `suspec work <SPEC>`
-
-Works a spec directly — the task is optional. Creates or reuses the spec's worktree, runs project-declared
-setup from `suspec.config.json` (advisory — a failed setup warns and launches anyway), generates a lean
-prompt pointing the agent at the spec, launches the configured adapter, and records the run.
-
-It renders no verdict and writes no board — its only writes are the run record and the transient prompt
-under `.suspec/work/`. The by-hand path (create the worktree, `cd` in, run your agent against the spec)
-needs no CLI (ADR-0134); `work` only accelerates it.
-
-### `suspec review <task>`
-
-Drafts a review packet from the task, diff, spec, and change plan.
-
-It routes mismatches and exceptions to human attention. It does not decide the result.
-
-### `suspec status`
-
-Prints a derived board from workspace files — the state of record where the CLI is installed.
-
-`--needs-review` narrows the human-readable board to the specs with an actionable task (awaiting
-review or needing a human), so what needs attention is visible at a glance at volume; the summary
-lines always render, and `--json` stays the raw, unfiltered board a client slices itself.
-
-Committed `status.md` stays hand-edited as the Human-attention list and durable links, never a
-state cache.
-
-### `suspec show <task|spec|review|checks> [ref]`
-
-Projects a parsed artifact or the checks contract as JSON.
-
-It reads only and renders no verdict.
-
-### `suspec update [--check | --write]`
-
-The kit drift surface: `--check` (the default) reports where the local workspace guides/templates
-have drifted from the shipped kit; `--write` lands the kit content (leaving `*.suspec-bak` backups).
-It refreshes only the paths the kit declares as its own in `suspec-kit.yaml` — a manifest-less kit
-falls back to a built-in default — never an adopter's own artifacts. It renders no verdict.
-
-### `suspec promote <task>`
-
-Scaffolds one `findings/<slug>.md` from a closing task's Findings section, pre-filling `from:`. It
-never mutates the board.
-
-### `suspec agents emit --codex [--from <dir>] [--force]`
-
-Generates Codex TOML from Claude Code agent definitions.
-
-Tool scoping and hooks remain Claude-Code-only; the emitter carries prose discipline.
-
-### `suspec help`
-
-Prints the command reference.
-
-## Local state
-
-If the CLI is used inside a code repo, it may create a gitignored directory:
-
-```text
-.suspec/
-  config.yaml
-  work/
-  cache/
-  tmp/
-```
-
-Rules:
-
-- never commit `.suspec/`
-- deleting it loses no durable record
-- specs, reviews, and findings stay in the workspace
-
-## Adapter shape
-
-```yaml
-agents:
-  codex:
-    command: codex
-    working_directory: task_worktree
-    startup_instruction: "Read AGENTS.md, then read the task file you were given."
-```
-
-Adapters launch existing tools. They do not carry credentials or model settings.
-
-## Run record
-
-Reserved machine shape:
-
-```json
-{
-  "task_id": "...",
-  "changed_files": [],
-  "commands": [],
-  "out_of_scope": [],
-  "findings": [],
-  "provenance": {}
-}
-```
-
-This is reconciliation input. Markdown remains the durable artifact.
-
-## Source policies
-
-| Policy | Meaning |
-| --- | --- |
-| `generated` | emitted from a named source artifact |
-| `governed` | implementation under a spec requirement |
-| `observed` | existing code with no spec yet |
-| `external` | third-party code |
-| `deprecated` | migration or removal only |
-
-`observed` is the brownfield default. Code is not silently treated as governed.
+- code generation or an agent runtime
+- verdicts — it surfaces facts and routes; the human owns the result
+- runner session supervision — a live run gets the runner-native attach hint, nothing more
+- cross-machine sync — the store is plain files; syncing it is a recipe, not a feature
+- team governance — artifacts are personal; anything team-facing leaves via promotion
+
+`suspec-mcp` exposes CLI data over MCP. It shells out to the CLI `--json` contract.
 
 ## Related
 

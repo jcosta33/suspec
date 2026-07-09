@@ -1,47 +1,45 @@
 # Suspec
 
-> **Superseded model — [ADR-0137](docs/adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](docs/adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+**A personal methodology harness for working with coding agents.**
 
-
-**A lightweight spec and review workflow for teams using coding agents.**
-
-Tickets become specs. Specs become bounded agent work. Agent output becomes evidence you
-can review. Plain markdown, any agent, no runtime.
+Suspec helps one developer produce better code faster with agents: typed working memory
+for the agent, an evidence gate that blocks instead of trusting, and a promotion path so
+the durable residue — decisions, tests, issues, proof — lands where it already belongs.
+Plain markdown, any agent, and your repos stay clean.
 
 ## The problem
 
 Agents multiply code. They don't multiply your capacity to direct and check it. The mess
 pools in five places: vague tickets pasted into chat, context re-explained every session,
-agents drifting off-scope, giant PRs nobody can honestly review, and lessons lost when the
-session ends.
+agents drifting off-scope, "all tests pass" claims nobody verified, and lessons lost when
+the session ends.
 
 Suspec is not an agent. Your tool — Claude Code, Codex, Cursor, Aider, or a human — writes
 the code. Suspec structures the work around it, and spends where the bottleneck is:
-**generation outruns validation**. So the review side gets the structure.
+**generation outruns validation**. So the proof side gets the structure.
 
 ## The loop
 
 ```
-Pull ──▶ Spec ──▶ (Task) ──▶ Run ──▶ (Review) ──▶ Close
- │        │         │        │        │          │
-intake   spec   split task branch   review     finding
-snapshot optional when     + code   packet     + status
-         work fans out
+write spec ──▶ work ──▶ evidence ──▶ done ──▶ promote
+    │           │          │          │          │
+  intent     worktree   machine-run  the gate  issue / ADR /
+  becomes    + agent    proof per    + digest  test / PR
+  a contract  launch    requirement  on the PR  digest
 ```
 
-1. **Pull** — point the spec's `sources` at the origin (a ticket URL, an issue, or `self`), or snapshot the ticket into `intake/` when you want the raw request kept. Intake is optional.
-2. **Spec** — a one-page contract: requirements with IDs and `Verify with:` lines.
-3. **Task** — optional: a bounded packet when one spec splits into parallel slices.
-4. **Run** — your agent, in its own git worktree (a parallel checkout: own folder, own branch).
-5. **Review** — coverage, evidence, a human-attention list. Not a 3,000-line diff.
-6. **Close** — save what you learned as a finding; update the board.
+1. **write spec** — intent becomes a one-page contract: requirements with IDs and
+   `Verify with:` lines, scaffolded into your store.
+2. **work** — a fresh git worktree, project setup, your agent launched against the spec.
+3. **evidence** — the harness runs each verify command itself and records the proof,
+   mapped to the requirement it satisfies.
+4. **done** — the gate: every requirement needs machine-captured, passing, non-stale
+   evidence, or you accept the gap explicitly. The digest lands on the PR.
+5. **promote** — a decision becomes an ADR, behavior becomes tests, a finding becomes a
+   GitHub issue. The working files are disposable *because* the durable residue has left.
 
-Structural or brownfield work adds two optional steps: an **inventory** (map what exists)
-and a **change plan** (how the code changes safely). Small cleanups usually run straight from the spec. Full
+For a change too small for a spec, `suspec check-my-work` gates the current diff and
+dispatches one adversarial reviewer. `suspec next` names the one thing to do next. Full
 guide: [docs/02-basic-workflow.md](docs/02-basic-workflow.md).
 
 ## Sixty seconds
@@ -54,106 +52,109 @@ A requirement in a spec:
 When the refresh token is expired, the client must clear the local
 session and redirect to `/login`.
 
-Verify with: `auth-refresh-expired-token.test`
+Verify with: `pnpm test:run auth-refresh-expired-token`
 ```
 
-The review packet that comes back after an agent run:
+What the gate reports at `suspec done`:
 
-```markdown
-| ID     | Result     | Evidence             | Human attention |
-| ------ | ---------- | -------------------- | --------------- |
-| AC-001 | Pass       | test output pasted   | no              |
-| AC-002 | Unverified | no test output found | yes             |
-
-## Human attention
-
-1. AC-002 has no pasted test output.
-2. Retry logic changed in `src/auth/client.ts` — outside task scope.
+```text
+AC-001  pnpm test:run auth-refresh-expired-token   exit 0   verified
+AC-002  no cli-verified evidence                            missing
+gate blocked — rerun `suspec evidence add` for AC-002, or accept explicitly
 ```
 
-The table is the point. You read which requirements passed **with evidence** and which
-didn't. You read where your eyes are needed. You skip the whole diff. An empty evidence cell
-means _Unverified_, never _Pass_. Full demo — a large agent PR reviewed by exception:
+The digest is the point. You read which requirements passed **with captured proof** and
+which didn't. A missing evidence entry means _Unverified_, never _Pass_ — and the gate
+blocks on it instead of hoping. Worked demo: a large agent PR reviewed by exception:
 [docs/examples/large-pr-review.md](docs/examples/large-pr-review.md).
 
 ## Where files live
 
-- **This repo** — the framework: the docs and the checks contract. The ready-to-copy workspace (templates + guides) is [jcosta33/suspec-starter-kit](https://github.com/jcosta33/suspec-starter-kit).
-- **Your workspace** — specs, tasks, reviews, findings: a dedicated repo, or the same tree in your project ([where files live](docs/03-where-files-live.md)).
-- **Your code repos** — stay clean. The PR links its review packet. That's all.
+- **Your repo** — the code, one `suspec.config.json`, and whatever you promote (ADRs,
+  tests), plus any committed repo-specific agent guides. Nothing else.
+- **Your store** — `~/.claude/state/<repo-name>/`: specs, runs, reviews, findings,
+  evidence. Personal, transient, never committed to any repo.
+- **Global** — the universal Suspec skill family, installed once at the user level.
+
+Details: [where files live](docs/03-where-files-live.md).
+
+## Two skill tiers
+
+Universal Suspec skills (the methodology: authoring, reviewing, stances) install globally —
+`npx skills add jcosta33/suspec-skills -g` — and update in one place. Repo-specific guides
+(your commands, your conventions) stay committed in the repo they describe. The two tiers
+never overlap, so a guide cannot skew against the methodology it rides on
+(level: convention).
 
 ## Which repo do I want?
 
-| You want to…                                                                  | Go to                                                                                                                |
-| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **start using Suspec** — get a working workspace                              | [suspec-starter-kit](https://github.com/jcosta33/suspec-starter-kit) — copy it whole, fill `AGENTS.md`, run the loop |
-| **understand the method** — formats, the checks contract, the decision ledger | **this repo** — `docs/` (the numbered happy path), `docs/reference/`, `docs/adrs/`                                   |
-| **run the checks / wire the gate** — `suspec check` as a command              | [suspec-cli](https://github.com/jcosta33/suspec-cli) — the reference CLI (optional)                                  |
-| **add optional skills** — review stances, code-lifecycle + authoring guides    | [suspec-skills](https://github.com/jcosta33/suspec-skills) — `npx skills add jcosta33/suspec-skills`                 |
-| **delegate to subagents** — review / audit / spec-author worker definitions    | [suspec-agents](https://github.com/jcosta33/suspec-agents) — copy Claude Code agents, or generate Codex TOML with `suspec agents emit --codex` |
-| **use Suspec over MCP** — read + reconcile facts from a non-terminal client    | [suspec-mcp](https://github.com/jcosta33/suspec-mcp) — an MCP server for Claude Desktop / Cursor (no shell needed)   |
+| You want to…                                                                 | Go to                                                                                                                   |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **start using Suspec** — the harness in your repo                            | [suspec-cli](https://github.com/jcosta33/suspec-cli) — `suspec init`, then the loop                                     |
+| **install the methodology** — the global skill family                        | [suspec-skills](https://github.com/jcosta33/suspec-skills) — `npx skills add jcosta33/suspec-skills -g`                 |
+| **understand the method** — formats, the checks contract, the decision ledger | **this repo** — `docs/` (the numbered happy path), `docs/reference/`, `docs/adrs/`                                      |
+| **see what the CLI seeds** — the template source                             | [suspec-starter-kit](https://github.com/jcosta33/suspec-starter-kit) — the thin seed `suspec init`/`update` draw from   |
+| **delegate to subagents** — review / audit / spec-author worker definitions   | [suspec-agents](https://github.com/jcosta33/suspec-agents) — Claude Code agents, or Codex TOML via `suspec agents emit --codex` |
 
-Most people start at the kit and never read this repo cover to cover.
+Most people run `suspec init`, install the skills, and never read this repo cover to cover.
 
 ## Works today
 
-**Today** (markdown + your agent, nothing to install): the templates, specs, optional task packets,
-review packets, findings, the worked examples. Suspec itself needs no runtime.
+**Today** (markdown + your agent, nothing to install): the spec format, the artifact
+formats, the skill family, the worked examples. Every step keeps a by-hand path — the
+methodology needs no runtime.
 
-**Toolable** (optional — the reference CLI, [suspec-cli](https://github.com/jcosta33/suspec-cli)):
-`suspec check` runs the [checks contract](docs/reference/checks.md) over your specs and reviews, and
-the kit's [hooks](https://github.com/jcosta33/suspec-starter-kit/tree/main/hooks) wire it into your
-commit and PR gates — teeth for the review side. The rest scaffolds the loop's mechanics (`init`,
-`new`, `worktree`, `pull`, `promote`, `status`), launches a prepared task (`run`), or reconciles a
-finished run against its spec and diff (`review` — surfacing facts like omitted edits and unbacked
-claims, never a result). None of it is required to run Suspec: [CLI reference](docs/reference/cli.md).
+**Toolable** (the reference CLI, [suspec-cli](https://github.com/jcosta33/suspec-cli)):
+the store, the `work` launch spine, cli-verified evidence capture, the `done` gate, the PR
+digest, promotion, and the [checks contract](docs/reference/checks.md) as artifact lint.
+The gate is the CLI's teeth: only evidence the CLI captured itself counts, by default.
+Full surface: [CLI reference](docs/reference/cli.md).
 
 Suspec does **not** promise deterministic generation, automatic correctness, formal
 verification, software compiled from specs, or the end of PR review. It promises better
-inputs, bounded work, reviewable evidence, and kept context.
+inputs, bounded work, machine-captured evidence, and kept context.
 
 ## Is / is not
 
-**Is:** a spec format agents work from · a task-packet format that bounds agent work · a
-review-packet format that shows where human attention goes · a findings convention so lessons
-survive the session · a starter kit of markdown templates · a workspace convention that
-keeps all of it out of your code repos.
+**Is:** a spec format agents work from · typed working memory for agent runs, kept outside
+your repos · an evidence gate keyed to requirement IDs · a promotion path so decisions,
+findings, and proof outlive the session · a global skill family · a findings convention
+with a built-in death owner (promote, keep with expiry, or discard).
 
 **Is not:** an agent or runtime · a compiler · a programming language · a Jira/Linear
-replacement · a code generator · a replacement for PRs and CI · a docs portal · a full SDLC
-platform · a guarantee that agent output is correct.
+replacement · a code generator · a replacement for PRs and CI · team governance — the
+artifacts are yours; anything team-facing leaves via promotion · a guarantee that agent
+output is correct.
 
-**Take what you want.** Each part stands alone — adopt just the review packet, or just the
-spec format, and add the rest when the work calls for it. Plain markdown you own outright:
-no runtime, no lock-in, no walled garden. Together they compound; apart, each still earns
-its place.
+**Take what you want.** Each part stands alone — adopt just the evidence discipline, or
+just the spec format, and add the rest when the work calls for it. Plain markdown you own
+outright: no lock-in, no walled garden.
 
-**Who should not use Suspec.** If you work alone, in a codebase you know, on changes small
-enough to read whole — plan mode, an `AGENTS.md`, and your test suite already give you most of
-what this framework offers, at zero ceremony. Suspec starts paying when the diff is bigger than
-your attention, when more than one person or agent touches the work, or when someone else must
-later reconstruct what was intended and what was proven. Until one of those is true, don't adopt
-it — and if you only want the review discipline, install the
+**Who should not use Suspec.** If your changes are small enough to read whole and you
+validate by reading, plan mode, an `AGENTS.md`, and your test suite already give you most
+of what this harness offers, at zero ceremony. Suspec starts paying when the diff is
+bigger than your attention, when "the agent says it passes" is not evidence you accept,
+or when you keep re-explaining the same context every session. Until one of those is
+true, don't adopt it — and if you only want the review discipline, install the
 [skills](https://github.com/jcosta33/suspec-skills) alone and skip the rest.
 
 Against its neighbors: spec-first scaffolds generate plans. Trackers hold tickets. AI
-reviewers hunt bugs and check a diff against a linked ticket's acceptance criteria. An
-`AGENTS.md` alone carries standing facts, not per-change contracts.
-
-Suspec's distinct piece is the **persisted, independent, exception-routing review packet**
-tied to requirement IDs. It is deterministic — no model in the loop. It is keyed to a
-spec/task that lives in your git history. It is verdict-free: it routes facts, and a human
-owns Pass/Fail. Around it sit a workspace and one honesty rule — anything a tool doesn't
-enforce says so.
+reviewers hunt bugs. An `AGENTS.md` alone carries standing facts, not per-change
+contracts. Suspec's distinct piece is the **evidence gate keyed to requirement IDs**:
+deterministic — no model in the loop; proof captured by the harness, not claimed by the
+agent; verdict-free — it routes facts, and you own Pass/Fail. Around it sits one honesty
+rule — anything a tool doesn't enforce says so.
 
 ## Initiation
 
-1. Copy the kit whole — it is a ready workspace: use [jcosta33/suspec-starter-kit](https://github.com/jcosta33/suspec-starter-kit) as a template (a new repo, or a folder in your project).
-2. Fill its `AGENTS.md` with your commands and facts.
-3. Claude Code finds the guides via the shipped `.claude/skills` symlink; point any other tool at `.agents/skills/`.
-4. New to the loop? **[Walk it once, hands-on](docs/tutorial/README.md)** — a guided build on one small change. Then write a spec for your next real change and run it.
+1. In your repo: `suspec init` ([suspec-cli](https://github.com/jcosta33/suspec-cli)) —
+   one config file, seeded agent instructions, nothing else lands in the repo.
+2. Install the skill family: `npx skills add jcosta33/suspec-skills -g`.
+3. `suspec write spec "<your next change>"`, fill the requirements, `suspec work` it.
+4. New to the loop? **[Walk it once, hands-on](docs/tutorial/README.md)** — a guided
+   build on one small change.
 
-Or hand your agent [docs/ADOPTING.md](docs/ADOPTING.md) and let it do the copying.
+Or hand your agent [docs/ADOPTING.md](docs/ADOPTING.md) and let it do the setup.
 
 ## Going deeper
 

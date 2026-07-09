@@ -1,37 +1,32 @@
 # AGENTS.md — working on the Suspec framework
 
-> **Superseded model — [ADR-0137](docs/adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](docs/adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
 ## What this repo is
 
-This repo **is** the Suspec framework — _a lightweight spec and review workflow for teams using
-coding agents_, shipped as markdown: the docs and the checks contract (the copy-whole starter
-kit ships as the sibling `suspec-starter-kit` template repo). It ships **no runtime**:
-anything described as checkable names its checker (the reference implementation in progress is
-`suspec-cli`, a sibling repo); everything else is convention or review checklist, and says so.
+This repo **is** the Suspec framework — _a personal methodology harness for working with
+coding agents_, shipped as markdown: the docs and the checks contract. It ships **no
+runtime**: anything described as checkable names its checker (the reference implementation
+is `suspec-cli`, a sibling repo); everything else is convention or review checklist, and
+says so.
 
 - `docs/` — the product: a numbered happy path (`01`–`10`), `reference/` (the deep layer:
-  structured requirements, checks, step bars, artifact formats, advanced lifecycle, CLI reference,
-  memory), `examples/` (three flagship walkthroughs; `large-pr-review.md` is the demo),
-  `ADOPTING.md`, `adrs/` (the decision ledger), `research/sources.md` (the evidence bibliography).
+  structured requirements, checks, step bars, artifact formats, advanced lifecycle, CLI
+  reference, memory), `examples/` (three flagship walkthroughs; `large-pr-review.md` is the
+  demo), `ADOPTING.md`, `adrs/` (the decision ledger), `research/sources.md` (the evidence
+  bibliography).
 - `checks/` — the checks contract as data (`checks.yaml`) + fixtures (test data for
   `docs/reference/checks.md`; suspec-cli's oracle). `.agents/` — a small dev-skills subset
   (see `.agents/SKILLS-MANIFEST.md`).
-- The starter kit ships as its own template repo, `../suspec-starter-kit` (ADR-0075): a
-  complete workspace adopters copy whole — the core loop guides plus the workspace
-  authoring guides at `.agents/skills/` and `templates/`. Conditioning stances and
-  code-depth guides live in `../suspec-skills`.
+- The repo-seed templates ship as the sibling `../suspec-starter-kit` — a **thin seed**:
+  the template files that `suspec init` / `suspec update` land in an adopting repo, at the
+  locations its `suspec-kit.yaml` manifest declares. The universal skill family
+  (conditioning stances, code-depth guides) lives in `../suspec-skills` and installs
+  globally.
 
-## Suspec workspace
+## Working on this repo
 
-Specs, tasks, reviews, findings, audits, and the board for changes to this repo live in the
-private family workspace — read the task packet you are given. Accepted framework decisions still
-land here, in `docs/adrs/`.
+Specs, runs, reviews, and findings for changes to this repo live in the developer's
+personal store (`~/.claude/state/<repo-name>/`), per the harness itself — read the spec or
+task slice you are given. Accepted framework decisions land here, in `docs/adrs/`.
 
 ## Startup
 
@@ -46,11 +41,11 @@ land here, in `docs/adrs/`.
 - **Fresh-product voice.** No migration framing anywhere except `docs/adrs/`.
   The framework is presented as originally designed.
 - **Honesty framework (ADR-0063).** Rules carry a level: convention · checklist · toolable
-  (names suspec-cli's command) · enforced (only with a shipped tool — today, nothing). Never
+  (names suspec-cli's command) · enforced (only with a shipped tool). Never
   write enforcement-sounding claims without a level.
 - **Vocabulary tiers (ADR-0057).** User tier (README, `docs/01–10`, `docs/examples/`,
   kit core): step · requirement/AC · evidence · review result (Pass/Fail/Unverified/Blocked) ·
-  checks · structured requirements · writing rules · workspace · save a finding. Reference tier
+  checks · structured requirements · writing rules · store · save a finding. Reference tier
   may also use the precise internal terms (pass, obligation, proof, verdict, SOL codes);
   `docs/reference/glossary.md` maps both directions.
 - **No counts ceremony.** Do not hardcode closed-set cardinalities in public/current prose.
@@ -60,19 +55,19 @@ land here, in `docs/adrs/`.
   inline — the `[[KEY]]` form linking the matching anchor in `docs/research/sources.md` — and the citation moves with the claim.
   Non-verified sources never carry a MUST-level claim; fact-shaped statements without a
   source are labeled design rationale. Web-verify before adding to `sources.md`.
-- **Single-sourcing.** Formats are frozen in ADRs 0058/0060/0061/0067/0068; the kit ships them
-  at the location it **declares in its `suspec-kit.yaml` manifest** (today `../suspec-starter-kit/templates/`) —
-  the CLI discovers the layout, never assumes it (ADR-0135). Everything else links, never
-  restates. A rule lands in `docs/` first; the kit repo, the suspec-skills catalog, and the
-  dev skills derive from it (a format change is a two-repo change, cut and reviewed from the
-  private family workspace).
+- **Single-sourcing.** Formats are frozen in ADRs 0058/0060/0061/0067/0068; the kit ships
+  the template files at the location its `suspec-kit.yaml` manifest declares — today
+  `../suspec-starter-kit/templates/`, and nothing else — the CLI discovers the layout from
+  the manifest, never assumes it (ADR-0135). Everything else links, never restates. A rule
+  lands in `docs/` first; the kit repo, the suspec-skills catalog, and the dev skills
+  derive from it (a format change spans repos — cut it as one reviewed change).
 
 ## Pointers
 
 - Decisions: `docs/adrs/README.md` — the complete immutable ledger
-- Workspace (specs, audits, plans, board): the private family workspace
-- The starter kit: `../suspec-starter-kit` (github.com/jcosta33/suspec-starter-kit)
-- Optional guide catalog: `../suspec-skills` (github.com/jcosta33/suspec-skills)
+- The starter kit (the thin repo seed): `../suspec-starter-kit` (github.com/jcosta33/suspec-starter-kit)
+- The skill catalog (global install): `../suspec-skills` (github.com/jcosta33/suspec-skills —
+  `npx skills add jcosta33/suspec-skills -g`)
 - Claude Code agent catalog: `../suspec-agents` (github.com/jcosta33/suspec-agents — ADR-0092;
   Claude-Code-first worker definitions + the delegation hook; honest scope: toolable/partial)
 - Dev skills (the small subset for working on this repo): `.agents/skills/` — see
@@ -81,9 +76,9 @@ land here, in `docs/adrs/`.
 
 ## Commands
 
-| Slot | Command | Resolves                                                                                                |
-| ---- | ------- | ------------------------------------------------------------------------------------------------------- |
-| —    | (none)  | markdown-only repo; coherence is checked by review from the private family workspace |
+| Slot | Command | Resolves                                             |
+| ---- | ------- | ---------------------------------------------------- |
+| —    | (none)  | markdown-only repo; coherence is checked by review |
 
 ## Workflow
 
@@ -96,8 +91,8 @@ follow their own branching; tasks run in worktrees per `docs/07-running-agents.m
 
 <!-- suspec:start -->
 
-This repository is adopted into a Suspec workflow. The spec / task / review
-workspace and templates come from the Suspec starter kit
-(github.com/jcosta33/suspec-starter-kit). Run `suspec --help` for the commands.
+This repository is worked with the Suspec personal harness: specs, runs, and evidence live
+in your personal store, outside the repo; only promoted residue is committed. Run
+`suspec help` for the commands.
 
 <!-- suspec:end -->
