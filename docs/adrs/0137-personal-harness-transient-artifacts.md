@@ -86,7 +86,8 @@ Four evidence lines broke that model:
 
 **Superseded** (decision premised on the committed workspace / works repo / board / committed
 artifacts): [ADR-0049](./0049-minimal-install-no-mount-no-imposed-workspace.md) (its in-repo
-`.agents/` workspace half), [ADR-0050](./0050-suspec-is-a-spec-repo-discipline.md),
+`.agents/` workspace half; the install-next-to-your-skills principle survives, re-aimed at the
+global tier by Decision 5), [ADR-0050](./0050-suspec-is-a-spec-repo-discipline.md),
 [ADR-0051](./0051-complete-the-spec-repo-pivot.md), [ADR-0052](./0052-per-feature-spec-folders.md),
 [ADR-0060](./0060-suspec-workspace.md), [ADR-0067](./0067-memory-tiering.md),
 [ADR-0069](./0069-workspace-shaped-starter-kit.md), [ADR-0073](./0073-multi-repo-workspace.md),
