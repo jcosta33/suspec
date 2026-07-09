@@ -4,7 +4,7 @@
 
 Suspec helps one developer produce better code faster with agents: typed working memory
 for the agent, an evidence gate (`suspec done`) that blocks instead of trusting, and a promotion path so
-the durable residue — decisions, tests, issues, proof — lands where it already belongs.
+the durable residue — decisions, tests, issues, evidence — lands where it already belongs.
 Plain markdown, any agent, and your repos stay clean.
 
 ## The problem
@@ -16,7 +16,7 @@ the session ends.
 
 Suspec is not an agent. Your tool — Claude Code, Codex, Cursor, Aider, or a human — writes
 the code. Suspec structures the work around it, and spends where the bottleneck is:
-**generation outruns validation**. So the proof side gets the structure.
+**generation outruns validation**. So the evidence side gets the structure.
 
 ## The loop
 
@@ -24,14 +24,14 @@ the code. Suspec structures the work around it, and spends where the bottleneck 
 write spec ──▶ work ──▶ evidence ──▶ done ──▶ promote
     │           │          │          │          │
   intent     worktree   machine-run  the gate  issue / ADR /
-  becomes    + agent    proof per    + digest  test / PR
+  becomes    + agent    evidence per + digest  test / PR
   a contract  launch    requirement  on the PR  digest
 ```
 
 1. **write spec** — intent becomes a one-page contract: requirements with IDs and
    `Verify with:` lines, scaffolded into your store.
 2. **work** — a fresh git worktree, project setup, your agent launched against the spec.
-3. **evidence** — the harness runs each verify command itself and records the proof,
+3. **evidence** — the harness runs each verify command itself and records the evidence,
    mapped to the requirement it satisfies.
 4. **done** — the gate (`suspec done`, enforced by the CLI): every requirement needs
    machine-captured, passing, non-stale evidence, or you accept the gap explicitly. The
@@ -64,7 +64,7 @@ AC-002  no cli-verified evidence                            missing
 gate blocked — rerun `suspec evidence add` for AC-002, or accept explicitly
 ```
 
-The digest is the point. You read which requirements passed **with captured proof** and
+The digest is the point. You read which requirements passed **with captured evidence** and
 which didn't. A missing evidence entry means _Unverified_, never _Pass_ — and the gate
 blocks on it instead of hoping. The review-by-exception idea, worked end to end:
 [docs/examples/large-pr-review.md](docs/examples/large-pr-review.md).
@@ -119,7 +119,7 @@ inputs, bounded work, machine-captured evidence, and kept context.
 
 **Is:** a spec format agents work from · typed working memory for agent runs, kept outside
 your repos · an evidence gate keyed to requirement IDs · a promotion path so decisions,
-findings, and proof outlive the session · a global skill family · a findings convention
+findings, and evidence outlive the session · a global skill family · a findings convention
 with a built-in death owner (promote, keep with expiry, or discard).
 
 **Is not:** an agent or runtime · a compiler · a programming language · a Jira/Linear
@@ -142,8 +142,8 @@ true, don't adopt it — and if you only want the review discipline, install the
 Against its neighbors: spec-first scaffolds generate plans. Trackers hold tickets. AI
 reviewers hunt bugs. An `AGENTS.md` alone carries standing facts, not per-change
 contracts. Suspec's distinct piece is the **evidence gate keyed to requirement IDs**:
-deterministic — no model in the loop; proof captured by the harness, not claimed by the
-agent; verdict-free — it routes facts, and you own Pass/Fail. Around it sits one honesty
+deterministic — no model in the loop; evidence captured by the harness, not claimed by
+the agent; no review result rendered — it routes facts, and you own Pass/Fail. Around it sits one honesty
 rule — anything a tool doesn't enforce says so.
 
 ## Initiation

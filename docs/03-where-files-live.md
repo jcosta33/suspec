@@ -11,7 +11,7 @@ Suspec uses three surfaces:
 
 The split is the point. Store artifacts are relevant to *you* while the work is live;
 anything worth keeping for others leaves the store by promotion — a decision becomes an
-ADR, behavior becomes tests, a finding becomes a GitHub issue, the proof becomes the PR
+ADR, behavior becomes tests, a finding becomes a GitHub issue, the evidence becomes the PR
 digest. The durable record lives in the layers that already own it, not in a parallel one.
 
 ## The store
@@ -48,7 +48,7 @@ One directory per repo, beside your agent's own scaffold:
 | a captured ticket   | `intake-<slug>.md`           | nothing — the recorded URL makes it re-pullable |
 | intended behavior   | `spec-<slug>.md`             | an ADR, when it carries a decision           |
 | an agent run        | `run-<slug>.md`              | the PR and its digest comment                |
-| proof               | `evidence/<run>/`            | the digest on the PR (`suspec done`)         |
+| evidence            | `evidence/<run>/`            | the digest on the PR (`suspec done`)         |
 | a review            | `review-<slug>.md`           | the exceptions you act on                    |
 | a lesson            | `finding-<NNN>.md`           | a GitHub issue (`suspec promote`)            |
 

@@ -41,7 +41,7 @@ Start small and run the whole loop once:
    each with a `Verify with:` line.
 2. `suspec work <SPEC>` — worktree, setup, your agent launched against the spec.
 3. `suspec evidence add <RUN> --ac AC-001 -- <verify command>` — the harness runs the
-   command itself and records the proof, per AC.
+   command itself and records the evidence, per AC.
 4. `suspec done <RUN>` — the gate: every AC needs captured, passing, non-stale evidence,
    or an explicit acceptance. The digest lands on the PR; findings get triaged.
 5. `suspec promote <FIND>` — anything worth keeping for others becomes a GitHub issue.
@@ -70,7 +70,7 @@ machine gate.
 Nothing but `suspec.config.json`, the seeded `AGENTS.md` and any repo-specific guides
 you keep, and your own promotions — ADRs, tests, whatever you land through the normal PR.
 Specs, runs, reviews, findings, and evidence stay in your store; when a reviewer wants
-the proof, the digest is already on the PR.
+the evidence, the digest is already on the PR.
 
 ## Updating
 
