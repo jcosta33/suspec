@@ -172,7 +172,8 @@ Accepted (2026-07-09). Supersedes/narrows the ADRs listed above; upholds
 - `docs/adrs/README.md` — ledger row + disposition flips for every ADR named above.
 - Supersession banners, same sweep as this ADR: `README.md`, `AGENTS.md`, `docs/README.md`,
   `docs/01-what-is-suspec.md`, `docs/02-basic-workflow.md`, `docs/03-where-files-live.md`,
-  `docs/05-brownfield-and-change-plans.md`, `docs/09-saving-findings.md`, `docs/10-integrations.md`,
+  `docs/05-brownfield-and-change-plans.md`, `docs/06-creating-tasks.md`, `docs/07-running-agents.md`,
+  `docs/08-reviewing-output.md`, `docs/09-saving-findings.md`, `docs/10-integrations.md`,
   `docs/ADOPTING.md`, `docs/artifact-registry.md`, `docs/reference/cli.md`,
   `docs/reference/artifact-formats.md`, `docs/reference/checks.md`, `docs/reference/agent-guides.md`,
   `docs/reference/cheatsheet.md`, `docs/reference/glossary.md`, `docs/reference/advanced-lifecycle.md`,
