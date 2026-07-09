@@ -1,5 +1,8 @@
 # Docs
 
+> Pages still awaiting rewrite open with a **Superseded model** banner; where one conflicts
+> with [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins.
+
 The numbered happy path, in order:
 
 1. [What is Suspec?](01-what-is-suspec.md) - the harness and its artifacts.

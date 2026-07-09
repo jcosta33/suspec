@@ -3,7 +3,7 @@
 > **Experimental annex.** SOL is shipped and parsed (`format: sol`), but it sits outside the
 > recommended path: controlled requirement syntax has peer-reviewed human-side evidence (EARS
 > reduces ambiguity vs free prose), **no measured LLM-side result**, and this project's own
-> workspace drifted back to plain form after early use. Use it if your risk profile wants it;
+> specs drifted back to plain form after early use. Use it if your risk profile wants it;
 > nothing else in Suspec depends on it.
 
 SOL is the stricter spec form.
@@ -165,7 +165,7 @@ Methods:
 
 For `test`, scope may be `unit`, `integration`, or `e2e`.
 
-Adapters resolve through the workspace Commands table.
+Adapters resolve through the repo's `suspec.config.json` command slots.
 
 ## Metadata
 

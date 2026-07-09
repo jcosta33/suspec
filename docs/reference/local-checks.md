@@ -9,7 +9,7 @@ Project-specific checks belong to the project.
 | Layer | Owns |
 | --- | --- |
 | Suspec core CLI | generic artifact checks |
-| Workspace | command slots and local policy |
+| `suspec.config.json` | command slots and local policy |
 | Code repo | build, test, lint, typecheck |
 | Local scripts | project-specific predicates |
 

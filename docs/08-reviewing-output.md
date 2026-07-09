@@ -1,5 +1,11 @@
 # Reviewing output
 
+> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
+> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
+> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
+> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
+> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+
 Review checks the worker's output against the **spec** — the task, when one exists, scopes which requirements and indexes the evidence, but the spec is what the code is judged against.
 
 Do not read a large diff from line 1. Start with:

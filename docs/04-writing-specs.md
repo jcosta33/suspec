@@ -107,8 +107,8 @@ the ephemeral review evaporates.
 
 ## Optional SOL form (experimental)
 
-Plain markdown is the default — and in practice the only form this project's own workspace still
-writes. SOL, an EARS-like structured syntax for high-risk requirements, remains available behind
+Plain markdown is the default — and in practice the only form this project's own specs still
+use. SOL, an EARS-like structured syntax for high-risk requirements, remains available behind
 `format: sol` as an **experimental annex**: the human-side evidence for controlled syntax is real,
 the LLM-side evidence is absent, and our own usage abandoned it. Details, honestly labeled:
 [structured requirements](reference/structured-requirements.md). Do not mix plain `AC-NNN`

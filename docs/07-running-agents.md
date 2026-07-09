@@ -1,5 +1,11 @@
 # Running agents
 
+> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
+> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
+> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
+> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
+> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+
 Suspec does not run agents. It gives them a spec by default, or a task packet when work is split.
 
 Any worker can use a Suspec packet:
