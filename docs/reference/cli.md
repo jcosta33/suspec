@@ -68,6 +68,54 @@ store root in the sandbox's writable roots — a sandboxed runner is the adapter
 never architecture). A `custom` runner takes a raw command template with `{prompt}` /
 `{cwd}` placeholders.
 
+#### The Stop-hook gate (Claude Code, optional)
+
+A settings template that makes a Claude Code session refuse to stop while this repo's
+gate is red (level: convention — a template you install; nothing installs it for you).
+Add the entry to the repo's `.claude/settings.json` (or your user settings):
+
+```json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 30,
+            "command": "command -v suspec >/dev/null 2>&1 || exit 0; node -e 'let d=\"\";process.stdin.on(\"data\",c=>d+=c).on(\"end\",()=>{let h={};try{h=JSON.parse(d)}catch{}if(h.stop_hook_active)process.exit(0);const cp=require(\"child_process\");const sus=a=>{const r=cp.spawnSync(\"suspec\",a.concat(\"--json\"),{encoding:\"utf8\"});try{return JSON.parse(r.stdout)}catch{return null}};const st=sus([\"status\"]);if(!st||!Array.isArray(st.active))process.exit(0);for(const f of st.active){if(f.kind!==\"run\")continue;const slug=f.filename.slice(4,-3);const run=sus([\"show\",\"run\",slug]);const s=run&&run.value&&run.value.frontmatter?run.value.frontmatter.status:null;if(s!==\"live\"&&s!==\"exited\")continue;const rev=sus([\"review\",slug]);if(!rev)continue;if(Array.isArray(rev.gaps)&&rev.gaps.length>0){console.error(\"suspec gate red: run \"+slug+\" — \"+rev.gaps.length+\" AC(s) without fresh cli-verified evidence (\"+rev.gaps.join(\", \")+\"). Capture: suspec evidence add \"+slug+\" --ac <AC> -- <command> · then: suspec done \"+slug);process.exit(2)}if(rev.level===\"blocking\"){console.error(\"suspec gate red: run \"+slug+\" — artifact lint hard error; inspect: suspec review \"+slug);process.exit(2)}}process.exit(0)});'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+When the session stops, the hook reads the repo's store through the read-only faces —
+`suspec status --json` for the run list, `suspec show run <slug> --json` for each run's
+status, `suspec review <slug> --json` for the gate preview — and blocks the stop (exit 2)
+with a one-line reason while any `live` or `exited` run has ACs without fresh cli-verified
+exit-0 evidence, or an artifact-lint hard error. The message names the gap and the exact
+`evidence add` / `done` commands that clear it. It never runs `suspec done` itself — the
+gate stays yours to close.
+
+No-op guarantees — the hook exits 0, without blocking, when:
+
+- `suspec` is not on PATH (the first guard; nothing else runs);
+- the repo has no store yet, or the directory is not a repo (`status --json` reads empty —
+  measured under 300 ms end to end);
+- every run in the store is `done` or aborted, or every gate is green;
+- Claude Code is already continuing because this hook blocked once
+  (`stop_hook_active` — the documented loop guard: one block per stop attempt, never an
+  infinite refusal).
+
+Assumptions: the hook runs with the session's working directory, so it gates the repo the
+session is rooted in — sessions rooted at the repo root see the store; a session rooted
+inside a task worktree resolves no store (store resolution keys on the repo root) and
+no-ops. Blocking is advisory pressure on the agent, not enforcement: the developer can
+always stop the session from the terminal.
+
 ## The loop
 
 ```
