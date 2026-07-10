@@ -1,36 +1,23 @@
 # Checks fixtures
 
-> **Superseded model — [ADR-0137](../docs/adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../docs/adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
 _Advanced design note — maintainer rationale; not needed to use Suspec._
 
 Test data for [the checks reference](../docs/reference/checks.md), consumed by suspec-cli.
 Every check in that reference is a claim about what a correct checker reports on a given
 file; this directory pins those reports as fixtures, per the two-way severity split
-(hard error / warning). suspec-cli's `suspec check` is the reference consumer — its
-test suite runs against these files — and a reviewer working by hand can use them the
-same way: apply the checks, compare against the pinned expectation.
+(hard error / warning). suspec-cli's `suspec check` is the reference consumer — a
+path-agnostic checker that reads exactly the files it is handed; its test suite runs
+against these files — and a reviewer working by hand can use them the same way: apply the
+checks, compare against the pinned expectation.
 
 **Nothing in this directory runs.** It is data, not a runner: Suspec ships the contract
 ([`checks.yaml`](./checks.yaml)) and the fixtures that test it, never the checker.
 
-## When is a workspace valid?
-
-The whole bar, in one breath: a workspace is valid when **(a)** it has a populated
-`AGENTS.md` (aim for ~100 lines — guidance, not a cap), **(b)** the core templates are
-present, and **(c)** at least one spec satisfies the core checks of
-[the checks reference](../docs/reference/checks.md). Nothing else is required. This is a
-convention — nothing in this repository enforces it; `suspec check` can verify clause (c).
-
 ## The two evidence rules
 
-Checklist level — review is expected to inspect both; `suspec check`'s packet mode can
-flag the mechanical parts:
+Checklist level — review is expected to inspect both; `suspec check` on a review packet
+(`suspec check <review-path> --spec <spec-path> [--task <task-path>]` — `--task` required
+iff the review names a `task:`) flags the mechanical parts:
 
 - **`non-empty-paste`** — a completion claim binds to pasted output or a CI link, never a
   bare "tests passed" [[EVIBOUND]](../docs/research/sources.md#EVIBOUND). In a review
@@ -49,7 +36,7 @@ flag the mechanical parts:
 | [`fixtures/prose-fixtures/`](./fixtures/prose-fixtures/README.md)             | The labeled writing-rules fixture set: prose spans with ground-truth labels for the advisory watchlist, plus the precision/recall baseline any detector is scored against.                                                                                                                |
 | `fixtures/intake/`                                                        | One valid intake snapshot; the expectation is pinned in the file's trailing note.                                                                                                                                                                                                    |
 | `fixtures/transformation/`                                                | A valid inventory + change-plan pair; its `EXPECTED.md` pins `C010 preserves-refs-resolve` and `C011 waves-present`.                                                                                                                                                                 |
-| `fixtures/cross-folder-source/`                                           | A spec whose `sources:` points across folders; its `EXPECTED.md` pins `C009 broken-source-link` resolution across folders.                                                                                                                                                          |
+| `fixtures/cross-folder-source/`                                           | A spec whose `sources:` points across folders; its `EXPECTED.md` pins `C009 broken-source-link` artifact-relative resolution.                                                                                                                                                        |
 
 The review-packet **reconcile** checks — `C012 coverage`, `C013 verify-evidence-binding`,
 `C014 do-not-change-touched` — are pinned as negative fixtures in
@@ -96,9 +83,6 @@ updates this producer note and the fixtures that exercise it in the same commit.
 | Strength words             | must, must not, should, should not, may (SOL form: the same words uppercase)                                      |
 | Review results             | core: Pass, Fail, Unverified, Blocked · lifecycle: Waived, Stale, Contradicted                                    |
 | Verification methods       | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`                        |
-| Loop steps                 | Pull, Spec, Task, Run, Review, Close; Inventory and Change Plan for structural work                               |
-| Lifecycle steps (advanced) | author, lint, improve, lower, decompose, implement, verify, review, promote                                       |
-| Improve operations         | NORMALIZE, ATOMIZE, CONCRETIZE, QUANTIFY, BIND, SCOPE, CLARIFY, DECONFLICT, COMPRESS, PROMOTE                     |
 | Check layers               | S (structure), P (prose), M (cross-references), V (verification), O (splitting work) — code form `SOL-<LAYER>NNN` |
 
 Reconciliation duties this note carries:
@@ -106,9 +90,9 @@ Reconciliation duties this note carries:
 - The core check IDs and severities in [`checks.yaml`](./checks.yaml) match
   [the checks reference](../docs/reference/checks.md) row for row.
 - The task and review section lists in [`checks.yaml`](./checks.yaml) are the
-  minimum-required subset of the kit's `templates/` (the suspec-starter-kit repo) — a kit template
-  may carry additional, uncontracted headings (e.g. the optional multi-lens candidate-findings
-  capture); the contract lists only what the checks read.
+  minimum-required subset of the artifact shapes in
+  [artifact formats](../docs/reference/artifact-formats.md) — an artifact may carry
+  additional, uncontracted headings; the contract lists only what the checks read.
 - Every fixture's pinned expectation agrees with both; a fixture that disagrees means
   the contract, the prose, or the fixture is wrong — find out which before shipping.
 

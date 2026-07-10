@@ -39,8 +39,8 @@ A review packet's coverage table:
 
 **Expected:** flagged — an empty Evidence cell means **Unverified**, never **Pass**.
 The row's correct content is `Unverified` plus a Human attention entry. Implemented as **C016**
-(ADR-0097): the **gate** path (`suspec check <review>`) blocks on it (hard error); the advisory
-**reconcile** path (`suspec review`) surfaces the same row id without blocking (ADR-0077 D8).
+(ADR-0097): blocking at check time — a structural contradiction, not a judgment call; the human
+owns what blocks a merge.
 
 ---
 
@@ -137,7 +137,7 @@ the packet must surface it even when every requirement row is green.
 
 ## V8 — duplicate `id:` across files (C002 `duplicate-id`, hard error)
 
-Two spec files in the same workspace, both claiming the same frontmatter id:
+Two spec files checked in the same invocation, both claiming the same frontmatter id:
 
 ```markdown
 ## <!-- specs/checkout/spec.md -->
@@ -227,9 +227,10 @@ sources: [intake/export-json.md]
 ---
 ```
 
-…in a workspace whose `intake/` contains no `export-json.md`.
+…where `intake/export-json.md` does not exist relative to the spec's own directory
+(resolution is artifact-relative).
 
-**Expected:** flagged — a workspace path in `sources:` resolves to nothing. A bare
+**Expected:** flagged — a path-shaped ref in `sources:` resolves to nothing. A bare
 external tracker id (`JIRA-123`) is exempt — naming one at all is C008 territory.
 
 ---
@@ -361,9 +362,9 @@ machine-rejected. A consistency fact, never a verdict.
 
 ## V20 — a dangling inline citation (C015 `citation-resolves`, warning)
 
-A spec whose frontmatter `sources:` names the workspace `sources.md`, whose `AC-001` makes an
-empirical claim citing `[[FAROS2025]]` — a `[[KEY]]` whose key has no `<a id="FAROS2025">` anchor
-in that `sources.md`:
+A spec whose frontmatter `sources:` names a `sources.md` (resolved against the spec's own
+directory), whose `AC-001` makes an empirical claim citing `[[FAROS2025]]` — a `[[KEY]]` whose key
+has no `<a id="FAROS2025">` anchor in that `sources.md`:
 
 ```markdown
 ---
@@ -381,7 +382,7 @@ The reviewer must apply the survey's recommended ordering, per [[FAROS2025]].
 Verify with: a test.
 ```
 
-…in a workspace whose `docs/research/sources.md` declares anchors for `GOOGLESA`, `MAST`,
+…where the named `../../docs/research/sources.md` declares anchors for `GOOGLESA`, `MAST`,
 `SMELLS`, … but **no** `<a id="FAROS2025">`.
 
 **Expected:** flagged — `[[FAROS2025]]` resolves to no `<a id>` anchor in the named `sources.md`.
@@ -393,32 +394,7 @@ cites nothing, is never flagged; the dangle fires only when a `sources.md` is re
 
 ---
 
-## V21 — an orphaned bundled reference (C017 `orphaned-reference`, warning)
-
-A skill guide with a bundled `references/` directory whose `SKILL.md` names one reference and
-forgets the other:
-
-```markdown
-<!-- .agents/skills/write-spec/SKILL.md -->
-
-# write-spec
-
-Load `references/checklist.md` before you start.
-```
-
-…in a skill dir that also holds `references/orphan.md` — a file the `SKILL.md` text names nowhere.
-
-**Expected:** flagged — `references/orphan.md` is bundled but pointed at by no `SKILL.md` line, so
-it is dead weight no reader is sent to (the reference-load field test measured that a bundled
-resource helps only when the guide loads it). **Orphan direction only**: the named `checklist.md` is
-_not_ flagged, and the inverse case (a guide naming a reference that does not exist) is out of scope.
-Matching is lenient — the bare filename anywhere in the body counts as named — so a guide that does
-point at its references never false-fires (measured 0-orphan across the real skills corpus). A
-workspace-scope warning; surfaces a fact, never a verdict.
-
----
-
-## V22 — a letter-suffixed requirement id (C019 `malformed-requirement-heading`, warning)
+## V21 — a letter-suffixed requirement id (C019 `malformed-requirement-heading`, warning)
 
 A spec heading shaped like a requirement id, but with a letter suffix:
 
@@ -436,10 +412,10 @@ The fix is a digits-only id — a split requirement gets its own number (`AC-007
 
 ---
 
-## V23 — a review's `task:` names an absent task packet (C020 `unresolvable-ref`, hard-error)
+## V22 — a review's `task:` does not match the handed task packet (C020 `unresolvable-ref`, hard-error)
 
-A review packet on the GATE path (`suspec check <review>`) whose frontmatter `task:` names a task id
-with no local `tasks/<id>.md`:
+A review packet whose frontmatter `task:` names a task id, checked against a task packet that
+identifies as a different task:
 
 ```markdown
 ---
@@ -456,10 +432,14 @@ status: draft
 | AC-001 | Pass   | pasted   | no              |
 ```
 
-…in a workspace whose `tasks/` holds no `TASK-checkout-expiry-typo.md`.
+…checked as `suspec check review.md --spec spec.md --task task.md`, where `task.md`'s frontmatter
+`id:` is not `TASK-checkout-expiry-typo`.
 
-**Expected:** flagged `unresolvable-ref` (hard-error) — the review's `task:` resolves to no local task
-packet, so C012/C013/C016 cannot run; without it the review gates CLEAN and a typo'd/renamed task id
-silently bypasses the honesty checks. Blocks at the gate (structural, like C016); the reconcile path
-(`suspec review`) stays advisory (ADR-0077 D8). Deliberately narrow — an unreachable source SPEC
-(cross-root, ADR-0100) stays clean, being indistinguishable from a typo here. Minted in ADR-0128.
+**Expected:** flagged `unresolvable-ref` (hard-error) — the review's `task:` does not resolve to the
+task packet it was handed, so C012/C013/C016 would key on the wrong slice; without it a
+typo'd/renamed task ref silently bypasses the honesty checks. Blocking (structural, like C016).
+Deliberately narrow — the check keys on the `task:` ref only; the spec's identity is the reviewer's
+call, and a task-less review (no `task:` frontmatter) is out of C020's scope entirely (it reconciles
+spec-keyed, with no `--task`). Minted in ADR-0128; explicit-companion scope per ADR-0143. (A review
+that names a task but is checked with no `--task` never reaches this check: the missing flag is
+itself a blocking usage error.)

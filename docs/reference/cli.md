@@ -25,7 +25,7 @@ The complete command surface (level: enforced — suspec-cli):
 
 ```bash
 suspec check <path>                                                # a spec or change plan
-suspec check <review-path> --spec <spec-path> --task <task-path>   # a review packet
+suspec check <review-path> --spec <spec-path> [--task <task-path>] # a review packet
 suspec check --contract                                            # the checks contract as JSON
 ```
 

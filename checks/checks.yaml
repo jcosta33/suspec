@@ -3,11 +3,14 @@
 #
 # This file is the machine-readable shadow of the core checks of
 # docs/reference/checks.md (the prose reference is canonical; this file
-# restates it as testable data) and of the packet templates at
-# the kit's templates/ (the suspec-starter-kit repo). It shadows only the core checks and packet schemas —
-# the SOL catalogue is prose-only and lives in the reference.
+# restates it as testable data). It shadows only the core checks and packet
+# schemas — the SOL catalogue is prose-only and lives in the reference; the
+# human-facing artifact-shape reference is docs/reference/artifact-formats.md.
 # Frontmatter lists are minimum-required: extra keys are legal and ignored.
-# The reference consumer is suspec-cli's `suspec check`; a reviewer can apply every rule by hand.
+# The reference consumer is suspec-cli's `suspec check` — a path-agnostic
+# checker that reads exactly the files it is handed (the primary artifact's
+# kind from its own frontmatter `type:`, companions as explicit flags); a
+# reviewer can apply every rule by hand.
 # The files under fixtures/ pin the expected results and guard this file and
 # the prose from drifting apart.
 #
@@ -15,8 +18,10 @@
 #   hard-error  a checker must reject the file
 #   warning     a checker should flag it; teams may treat any warning as
 #               blocking by policy
+# Severities are expressed at check time — exit codes are the API (0 clean ·
+# 1 warning · 2 blocking); the human owns what blocks a merge.
 
-version: 0.15.0 # contract version of this file; bump on any rule change
+version: 0.16.0 # contract version of this file; bump on any rule change
 
 # --- Spec form selector -------------------------------------------------------
 # The default spec form is plain structured markdown. A spec opts into the
@@ -31,37 +36,41 @@ spec_form:
 # --- Core checks ---------------------------------------------------------------
 # Mirrors the "Core checks" table in docs/reference/checks.md, row for row.
 # C001–C009, C015, and C019 key on the spec (C019: the plain `###` form only); C010–C011 key on the change plan;
+# C002 keys on the file set passed in one invocation (frontmatter id uniqueness across the checked files);
 # C012 keys on the review packet's coverage table against its source spec;
 # C013 keys on the review packet's structured verify blocks against its source spec;
-# C014 keys the changed files (the worktree diff, or the review packet's Changed files) against the task packet's Do-not-change entries.
-# C015 keys the spec's inline [[KEY]] citations against the <a id> anchors in the sources.md its frontmatter names.
+# C014 keys the review packet's Changed files against the task packet's Do-not-change entries.
+# C015 keys the spec's inline [[KEY]] citations against the <a id> anchors in the sources.md its
+# frontmatter names, resolved against the spec's own directory.
+# Reference resolution is ARTIFACT-RELATIVE everywhere: a ref resolves against the artifact that
+# names it, never against a surrounding tree.
 # IDs are stable; the prose reference defines each rule in full — this list
 # pins id, name, and severity so a checker and the fixtures can cite them.
 core_checks:
   - { id: C001, name: unique-ids, severity: hard-error }
-  - { id: C002, name: duplicate-id, severity: hard-error } # frontmatter id: uniqueness across files; requirement ids are spec-scoped (ADR-0080)
+  - { id: C002, name: duplicate-id, severity: hard-error } # frontmatter id: uniqueness across the files checked together; requirement ids are spec-scoped (ADR-0080)
   - { id: C003, name: verify-with, severity: hard-error }
   - { id: C004, name: one-strength-word, severity: warning } # spec: at least one binding word per requirement (must / must not / should / should not / may) — zero binds on nothing; more than one is a split-candidate advisory under the same id, advice-framed (ADR-0126). Applies to obligation blocks only: SOL INTERFACE (IF-) is exempt — a signature declaration has no strength-word slot by grammar (ADR-0127); QUESTION (Q-) never parses as a requirement.
   - { id: C005, name: non-goals-present, severity: warning }
   - { id: C006, name: open-questions-present, severity: warning }
   - { id: C007, name: no-tbd-at-ready, severity: hard-error } # open questions not marked non-blocking included
   - { id: C008, name: sources-named, severity: warning }
-  - { id: C009, name: broken-source-link, severity: hard-error } # workspace refs only; bare tracker ids exempt
-  - { id: C010, name: preserves-refs-resolve, severity: hard-error } # change plan: preserves: + guarantee-table ids resolve (PG-NNN = plan-local)
+  - { id: C009, name: broken-source-link, severity: hard-error } # path-shaped refs only, resolved against the spec's own directory (artifact-relative); bare tracker ids exempt
+  - { id: C010, name: preserves-refs-resolve, severity: hard-error } # change plan: preserves: + guarantee-table ids resolve (PG-NNN = plan-local); SPEC-x#AC-NNN refs resolve against the plan's sibling specs
   - { id: C011, name: waves-present, severity: warning } # change plan: kind in {migration, rewrite, schema-change} => non-empty waves, each naming a verify step
-  - { id: C012, name: coverage, severity: warning } # review packet: in-scope ids covered, no orphan rows; non-draft source spec only (ADR-0079)
-  - { id: C013, name: verify-evidence-binding, severity: warning } # review packet: a verify block's cmd matches the requirement's named Verify command + result=pass; non-draft source spec only. Nominal severity warning, but a CMD-MISMATCH blocks at the GATE face (suspec check <review>) — a recorded cmd that disagrees with the spec's named command is a structural contradiction (ADR-0129 promotes it from the ADR-0083 conservative warning); other faces + the reconcile path (suspec review) stay advisory (ADR-0077 D8). The check confirms the recorded command's CONSISTENCY, never that it ran — nothing re-executes it.
+  - { id: C012, name: coverage, severity: warning } # review packet: in-scope ids covered, no orphan rows; the in-scope set is the task's declared scope when the review names a task, else the spec's full requirement id set (the task is an optional split slice); non-draft source spec only (ADR-0079)
+  - { id: C013, name: verify-evidence-binding, severity: warning } # review packet: a verify block's cmd matches the requirement's named Verify command + result=pass; non-draft source spec only. Nominal severity warning, but a CMD-MISMATCH is blocking at check time — a recorded cmd that disagrees with the spec's named command is a structural contradiction (ADR-0129); the other faces stay advisory. The check confirms the recorded command's CONSISTENCY, never that it ran — nothing re-executes it.
   - { id: C014, name: do-not-change-touched, severity: warning } # review packet: a Changed-files entry matches a task's Do-not-change entry (same matcher + {{placeholder}} skip as Affected areas); distinct from outsideScope; surfaced to Human attention (ADR-0086)
-  - { id: C015, name: citation-resolves, severity: warning } # spec: an inline [[KEY]] citation resolves to a matching <a id="KEY"> anchor in the workspace's sources.md; skips when no sources.md is resolvable (no false-flag); v0 = dangling-anchor only (ADR-0087)
-  - { id: C016, name: pass-needs-evidence, severity: hard-error } # review packet (GATE path, suspec check <review>): a Pass coverage row with an empty Evidence cell is a structural contradiction — implements the pass-needs-evidence content_rule below. The reconcile path (suspec review) surfaces the same fact advisorily, never blocking (ADR-0077 D8); minted + measured 0-FP in ADR-0097
-  - { id: C017, name: orphaned-reference, severity: warning } # workspace: a bundled .agents/skills/<name>/references/<file> not named anywhere in its sibling SKILL.md (orphan direction only — a load-bearing reference the guide forgot to point at); ADR-0097 (#45), measured 0-orphan on the real .agents/skills/ corpus at mint time (ADR-0097)
-  # C018 is RESERVED for the oversized-packet signal (ADR-0094/ADR-0097) — do not mint it for anything else.
+  - { id: C015, name: citation-resolves, severity: warning } # spec: an inline [[KEY]] citation resolves to a matching <a id="KEY"> anchor in the sources.md the spec's frontmatter names, resolved against the spec's own directory; skips when no sources.md is resolvable (no false-flag); v0 = dangling-anchor only (ADR-0087)
+  - { id: C016, name: pass-needs-evidence, severity: hard-error } # review packet: a Pass coverage row with an empty Evidence cell is a structural contradiction — implements the pass-needs-evidence content_rule below; minted + measured 0-FP in ADR-0097
+  # C017 and C018 are RESERVED — do not mint them for new checks (C018: the oversized-packet signal, ADR-0094/ADR-0097).
   - { id: C019, name: malformed-requirement-heading, severity: warning } # spec: a ### heading shaped like a requirement id but with a lowercase split-suffix (AC-004a) — the parser reads it as prose, so the requirement silently vanishes from scope/coverage; the warning makes the disappearance visible (the id shape is `AC-NNN` — digits only, per the format frozen in ADR-0058; minted in ADR-0125)
-  - { id: C020, name: unresolvable-ref, severity: hard-error } # review packet (GATE path, suspec check <review>): the review's `task:` ref resolves to no local task packet (tasks/<id>.md absent), so C012/C013/C016 cannot run — without C020 the review gates CLEAN and a typo'd/renamed task id silently bypasses the honesty checks. Blocks at the gate (structural, like C016); the reconcile path (suspec review) stays advisory (ADR-0077 D8). Deliberately narrow: an unreachable source SPEC stays clean (cross-root, ADR-0100 — indistinguishable from a typo here). Minted in ADR-0128 (suspec-works #89)
-  # NOTE: oversized-packet (ADR-0094) is specified-not-shipped — a raw LOC/files band cannot be both useful and low-FP for code task diffs (measured ~15% FP at 600 LOC; ADR-0097). The diff size is surfaced as NEUTRAL INFO in `suspec review` instead, no band asserted.
+  - { id: C020, name: unresolvable-ref, severity: hard-error } # review packet: the review's `task:` ref does not resolve to the task packet it is checked against (the handed packet identifies as a different task, or carries no id), so C012/C013/C016 would key on the wrong slice — without C020 a typo'd/renamed task ref silently bypasses the honesty checks. Blocking (structural, like C016). Minted in ADR-0128; explicit-companion scope per ADR-0143
+  # NOTE: oversized-packet (ADR-0094) is specified-not-shipped — a raw LOC/files band cannot be both useful and low-FP for code task diffs (measured ~15% FP at 600 LOC; ADR-0097). The diff size is a reviewer judgment, no band asserted.
 
 # --- The task packet -----------------------------------------------------------
-# Keyed to the kit's templates/task.md (suspec-starter-kit repo): a well-formed task presents every
+# The task packet's required shape (the human-facing reference is
+# docs/reference/artifact-formats.md): a well-formed task presents every
 # required H2 section and satisfies every content rule.
 task_file:
   frontmatter: [type, id, source, scope, status]
@@ -93,9 +102,12 @@ task_file:
         when its frontmatter status is the terminal value `closed`.
 
 # --- The review packet ----------------------------------------------------------
-# Keyed to the kit's templates/review.md (suspec-starter-kit repo).
+# The review packet's required shape (the human-facing reference is
+# docs/reference/artifact-formats.md).
 review_file:
-  frontmatter: [type, id, task, pr, status]
+  frontmatter: [type, id, status]
+  optional_frontmatter: [task, pr] # task: only when the review covers a split task slice — its
+  # presence obliges the task companion at check time; a task-less review is checked spec-keyed
   status_enum: [draft, pass, waived, blocked, needs-human] # waived = merged with a recorded waiver (who · rows · why · expiry)
   required_sections:
     - Summary
@@ -105,14 +117,13 @@ review_file:
     - Suggested decision
   optional_sections:
     - Change-plan coverage # only when the task executes a change plan; same columns
-    - Task status # v0.4.1: closeout confirmation — board row + the task packet's
-      # own status: re-synced together; recommended, not required
-      # (pre-0.4.1 packets without it stay valid)
+    - Task status # closeout confirmation — the task packet's own status,
+      # re-synced at close; recommended, not required
   coverage_table:
     columns: [ID, Result, Evidence, Human attention]
     result_enum: [Pass, Fail, Unverified, Blocked]
   content_rules:
-    - id: pass-needs-evidence # the packet-side face of non-empty-paste; implemented as core check C016 (the GATE path blocks an empty-Evidence Pass; the reconcile path surfaces it advisorily — ADR-0097)
+    - id: pass-needs-evidence # the packet-side face of non-empty-paste; implemented as core check C016 (an empty-Evidence Pass is blocking at check time — ADR-0097)
       applies_to: Requirement coverage, Change-plan coverage
       severity: hard-error
       rule: >-
@@ -129,7 +140,7 @@ review_file:
         `needs-human`.
     - id: trigger-coverage
       applies_to: Human attention
-      # Affected-areas entries may carry a workspace-owned context prefix
+      # Affected-areas entries may carry a repo-owned context prefix
       # (`web: src/…`) naming a Commands sub-table; matchers compare the path
       # part. A body convention — not a placeholder namespace.
       severity: warning
@@ -139,18 +150,21 @@ review_file:
         changes, risky files, missing test output, changed public interfaces,
         DB migrations, security-sensitive changes, new finding candidates,
         blocked questions, missing or unconvincing worker-boot provenance for a
-        delegated task (v0.4.1). The mechanical part a checker can flag: a
+        delegated task. The mechanical part a checker can flag: a
         changed file outside the task's Affected areas that no Human attention
         entry mentions.
     - id: coverage # C012; ADR-0079
       applies_to: Requirement coverage
       severity: warning
       rule: >-
-        Keyed on the task packet's declared `scope` as the in-scope id set:
-        every in-scope requirement id has a coverage row (an in-scope id with
-        no row reads uncovered), and every coverage row names an id present in
-        the source spec (a row naming an id absent from the source spec reads
-        orphan). Scope-guarded to non-draft source specs — a review whose
+        Keyed on the task packet's declared `scope` as the in-scope id set when
+        the review names a task, else on the source spec's full requirement id
+        set (the task is an optional split slice; a task-less 1:1 review
+        reconciles spec-keyed): every in-scope requirement id has a coverage
+        row (an in-scope id with no row reads uncovered), and every coverage
+        row names an id present in the source spec (a row naming an id absent
+        from the source spec reads orphan). Scope-guarded to non-draft source
+        specs — a review whose
         source spec is still `draft` is exempt (its requirement ids are
         work-in-progress, the same draft-is-not-final principle as C007's
         ready gate). When `scope`
@@ -171,13 +185,13 @@ review_file:
         is surfaced as an internal-consistency fact. A Pass row with no verify
         block (free-form cell only) stays a warning routed to human attention
         (a command-in-prose match is fuzzy). Scope-guarded to non-draft source
-        specs. The structured-form mismatch is hard-capable but ships at warning
-        (a future ADR may promote it). Surfaces a fact, never a verdict
+        specs. A cmd-mismatch is blocking at check time (ADR-0129); the other
+        faces ship at warning. Surfaces a fact, never a verdict
         (ADR-0077 Decision 8).
 
 # --- Command slots (advisory) ----------------------------------------------------
 # Adapter slots a Verify item or `Verify with:` line may name instead of a
-# literal command; each resolves through the workspace's `AGENTS.md > Commands`
+# literal command; each resolves through the repo's `AGENTS.md > Commands`
 # table. Advisory: no slot is required, and absence never fails a check.
 commands:
   level: advisory
@@ -206,7 +220,7 @@ placeholders:
       owner: this contract
       rule: reserved for the adapter slots above; a new cmd* name lands in this file first
     - prefix: "project:"
-      owner: the adopting workspace
+      owner: the adopting repo
       rule: consumer-owned; this contract never assigns it meaning
     - prefix: "<vendor>:"
       owner: any tool vendor
@@ -221,5 +235,5 @@ fixtures:
   domains: [fixtures/auth-refresh, fixtures/payment-5xx, fixtures/checkout]
   intake: fixtures/intake/intake-jira-123.md # valid intake; expectation pinned in its trailing note
   transformation: fixtures/transformation # inventory + change plan; EXPECTED.md pins C010/C011
-  cross-folder-source: fixtures/cross-folder-source # EXPECTED.md pins C009 broken-source-link resolution across folders
+  cross-folder-source: fixtures/cross-folder-source # EXPECTED.md pins C009 artifact-relative resolution across folders
   prose: fixtures/prose-fixtures/labeled.yaml

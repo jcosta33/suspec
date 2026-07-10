@@ -1,18 +1,25 @@
 # Checks
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
 Checks catch common Suspec mistakes.
 
 Use this page as a review checklist.
 
-`suspec check` implements the toolable subset. The CLI command catalogue is the source for what
-ships today.
+`suspec check` implements the toolable subset. It is a path-agnostic checker: it reads
+exactly the files it is handed — the primary artifact's kind from its own frontmatter
+`type:`, companions as explicit flags — and resolves nothing else.
+
+```
+suspec check <path>                                                # spec or change plan
+suspec check <review-path> --spec <spec-path> [--task <task-path>] # review packet
+suspec check --contract                                            # the contract as JSON
+```
+
+Exit codes are the API: `0` clean · `1` warning · `2` blocking. A review packet always
+needs `--spec`; `--task` is required iff the review names a `task:` (the task is an
+optional split slice — a task-less 1:1 review reconciles spec-keyed, against the spec's
+full requirement set). A missing required companion exits blocking naming the flag — the
+strongest checks never silently degrade — and a `--task` the review never references is
+refused as a wiring mistake. The human owns what blocks a merge.
 
 ## Honesty levels
 
@@ -21,7 +28,7 @@ ships today.
 | convention | expected practice; not checked |
 | checklist | reviewer inspects it |
 | toolable | a tool can check it |
-| enforced | a configured gate blocks on it |
+| enforced | a shipped tool rejects it (blocking exit) |
 
 This docs repo enforces nothing by itself.
 
@@ -30,46 +37,39 @@ This docs repo enforces nothing by itself.
 | ID | Name | Check | Severity |
 | --- | --- | --- | --- |
 | C001 | `unique-ids` | Requirement IDs are unique within a file. | hard |
-| C002 | `duplicate-id` | No other workspace file uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard |
+| C002 | `duplicate-id` | No other file checked in the same invocation uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard |
 | C003 | `verify-with` | Every requirement has `Verify with:` or `VERIFY BY`. | hard |
 | C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate (advice, ADR-0126). SOL `INTERFACE` (IF-) is exempt — a signature declaration has no strength-word slot (ADR-0127). | warning |
 | C005 | `non-goals-present` | Non-goals section exists and is non-empty. | warning |
 | C006 | `open-questions-present` | Open questions section exists, even if it says `None`. | warning |
 | C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard |
 | C008 | `sources-named` | Frontmatter `sources:` names at least one origin. | warning |
-| C009 | `broken-source-link` | Workspace paths and cross-reference IDs resolve. | hard |
-| C010 | `preserves-refs-resolve` | Change-plan `preserves:` entries resolve to requirements or `PG-NNN`. | hard |
+| C009 | `broken-source-link` | Path-shaped source refs resolve against the spec's own directory (artifact-relative). Bare tracker IDs are exempt. | hard |
+| C010 | `preserves-refs-resolve` | Change-plan `preserves:` entries resolve to requirements or `PG-NNN`; `SPEC-id#AC-NNN` refs resolve against the plan's sibling specs. | hard |
 | C011 | `waves-present` | Migration, rewrite, and schema-change plans have waves with verify steps. | warning |
 | C012 | `coverage` | Review coverage rows match the task scope and source spec. | warning |
-| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row result — a **consistency** check (nothing re-runs the command). A cmd-mismatch **blocks** at the gate (`suspec check <review>`, ADR-0129); other faces and `suspec review` stay advisory. | warning (cmd-mismatch: hard-error at the gate) |
+| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row result — a **consistency** check (nothing re-runs the command). A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard) |
 | C014 | `do-not-change-touched` | Changed files are reconciled against `Do not change`. | warning |
-| C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`. | warning |
+| C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`, itself resolved against the spec's own directory. | warning |
 | C016 | `pass-needs-evidence` | A `Pass` row with empty evidence is invalid. | hard |
-| C017 | `orphaned-reference` | A bundled skill reference file is not named by its sibling `SKILL.md`. | warning |
-| C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. (C018 stays reserved for the oversized-packet signal.) | warning |
-| C020 | `unresolvable-ref` | A review packet's `task:` ref resolves to no local task packet, so coverage/evidence cannot be checked — without it the review gates clean and a typo'd task id bypasses the honesty checks. Blocks at the gate (`suspec check <review>`); advisory in `suspec review`. (An unreachable source spec stays clean — cross-root, ADR-0100.) | hard-error |
+| C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. | warning |
+| C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard |
+
+C017 and C018 are reserved IDs — they are not minted for new checks.
 
 Notes:
 
-- `AC-NNN` IDs are unique within a spec, not across the workspace. Cross-spec references use `SPEC-id#AC-NNN`.
+- `AC-NNN` IDs are unique within a spec, not across files. Cross-spec references use `SPEC-id#AC-NNN`.
 - A `Verify with:` command that does not exist yet is not a spec defect. The requirement is `Unverified` until evidence exists.
-- The oversized-packet size band is specified-not-shipped. `suspec review` reports diff size as neutral information.
-- The review-packet checks (C012/C013/C014/C016) run only when the packet's `task:`/`spec:` reference
-  resolves — an unresolvable reference gates clean with a distinct condition, not a blocking error.
-  C014 needs the live diff (reconcile-time), not prose changed-files. Measured wild-tier reconcile
-  precision on free-form run summaries is not yet at the ≤10% effective-false-positive budget; the
-  reviewer's own re-run is the honest backstop.
-
-## Workspace validity
-
-A valid workspace has:
-
-- populated `AGENTS.md`
-- core templates present
-- at least one spec that passes core checks
-
-Keep live `AGENTS.md` and board files free of `{{placeholder}}` text. Templates may keep
-placeholders.
+- The oversized-packet size band is specified-not-shipped (ADR-0097). Diff size is a reviewer judgment; no band is asserted.
+- The review-packet checks run against the companions the reviewer hands the checker — the
+  review is never checked shallowly by accident, because a missing required companion is a
+  blocking usage error, not a silent skip. C012 keys on the task's declared `scope` when the
+  review names a task, and on the spec's full requirement set when it doesn't; C020 applies
+  only to task-referencing reviews. C014 needs the live diff (checklist level): the reviewer's
+  own re-run is the honest backstop.
+- References resolve artifact-relative everywhere. A spec citing a file two folders up writes
+  the relative path from its own directory (`../../intake/sup-204.md`); no root is ever inferred.
 
 ## Task and review packet checks
 
@@ -102,8 +102,8 @@ SOL-specific checks apply only to specs with `format: sol`.
 
 The core C checks apply to both plain and SOL specs.
 
-SOL-specific codes are the reference contract. Use the CLI catalogue to confirm which are
-implemented in your installed version.
+SOL-specific codes are the reference contract. Use `suspec check --contract` to confirm
+which core checks are implemented in your installed version.
 
 ### Structure
 
@@ -196,12 +196,12 @@ Hard:
 
 Warning:
 
-- C004, C005, C006, C008, C011, C012, C013, C014, C015, C017, C019
+- C004, C005, C006, C008, C011, C012, C013, C014, C015, C019
 - SOL-P050-SOL-P058
 - SOL-V003, SOL-V011
 - SOL-O004, SOL-O006
 
-Teams may promote warnings to blocking in their own gates.
+Teams may treat any warning as blocking by policy.
 
 ## Related
 
