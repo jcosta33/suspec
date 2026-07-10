@@ -13,16 +13,19 @@ description: >-
 
 # Implement a task
 
-The task packet (`templates/task.md`) bounds your work: a scope of requirement
-IDs, areas not to change, and a Verify checklist. Your job is to satisfy
-exactly that scope and leave behind evidence a reviewer can check without
-trusting you. These rules are conventions the review packet inspects — nothing
-enforces them at edit time.
+The task packet bounds your work: a scope of requirement IDs, areas not to
+change, and a Verify checklist. The task packet and its spec arrive as
+explicit full paths in the dispatch prompt from whoever cut the tasks. Read
+them at those paths and record your run directly in them — never a copy.
+Your job is to satisfy exactly that scope and leave behind evidence a
+reviewer can check without trusting you. These rules are conventions the
+review packet inspects — nothing enforces them at edit time.
 
 ## Rules
 
 1. **Read the sources first.** The task packet, then the linked spec (and
-   change plan, if any), before touching code. _Why: the packet says what to
+   change plan, if any) — at their explicit paths, given in the dispatch
+   prompt — before touching code. _Why: the packet says what to
    do; the spec says why, and how success will be judged._
 2. **One worktree (or branch) per task.** Keep this task's changes isolated so
    parallel tasks stay write-disjoint and the reviewer sees one clean diff.
@@ -54,21 +57,18 @@ enforces them at edit time.
    concurrency)? What changed that the spec did not ask for? Which callers of
    a changed surface did you not look at? Fix what you find and note what you
    fixed. _Why: the cheapest review round is the one you run on yourself._
-8. **Record the run** — for 1:1 work (no task) fill the spec's `## Execution`
-   section; for a split task fill the task's `## Run summary`. Either way:
-   changed files, one line per Verify command citing its pasted output, anything
-   that could not be met as written, out-of-scope edits if any, blocked questions
-   — and drop durable discoveries in `## Findings`.
+8. **Record the run directly in the artifact** — for 1:1 work (no task)
+   append to the spec's `## Execution` section; for a split task fill the
+   task's `## Run summary` — directly at its own path, never a copy. Either
+   way: changed files, one line per Verify command citing its pasted output,
+   anything that could not be met as written, out-of-scope edits if any,
+   blocked questions — and drop durable discoveries in `## Findings`.
+   Findings ride the review packet; durable ones become native memories (see
+   save-findings).
 9. **Never write a review result on your own work.** Self-review yields fixes
    and notes — never a Pass. The review packet is filled by someone who did
    not write the diff. _Why: authors favor their own output; independence is
    the point of the review step._
-
-**Spec-external mode (single-root).** When the workspace and code live in separate
-repos, the task and its pinned spec snapshot sit in the code repo's gitignored `.suspec/`.
-Read the snapshot; write only in the code repo (your code + `.suspec/` scratch) — never the
-canonical workspace. Your commands and edits resolve against one root, and the review lead
-merges your evidence back.
 
 ## Refuses
 

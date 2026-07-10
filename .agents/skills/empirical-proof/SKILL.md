@@ -1,98 +1,116 @@
 ---
 name: empirical-proof
 type: agent-guide
-description: >-
-  Bind every completion claim to real evidence: run the command, paste the
-  verbatim output (command, exit, summary) next to the claim. ALWAYS apply when
-  recording a Pass or Fail against a requirement or check, when asserting how
-  anything behaves, or when judging someone else's "done". Reject a bare "tests
-  passed", schema-valid output, a paraphrase, a stale pre-edit run, or a
-  reviewer trusting the worker's paste. Skip when authoring a document that
-  makes no behavioural claim and runs nothing.
+description: Back every claim with verbatim pasted output. ALWAYS apply this skill on any task that writes code, runs validations, runs benchmarks, or makes verifiable claims about behaviour — each completion claim gets its own pasted command output. Do not paraphrase results, summarise with "✅ all passing", or trust upstream pasted output (re-run yourself when reviewing). Skip this skill only for tasks with no verifiable claims (rare for product-development work; surface as a blocker if you suspect this applies).
 ---
 
-# Empirical proof — evidence or it didn't happen
+# Skill: empirical-proof
 
-A model is a pattern-completer: the pattern of a finished task includes confident language ("all
-tests pass", "looks correct") regardless of whether the claim is true. The structural defence is
-forced visible output — no claim is recorded as Pass without the real, re-runnable output pasted
-beside it. In the kit this discipline lives inside the three core guides; this standalone copy is
-the form used for working on this repo, where the runs are mostly greps, link checks, and diff
-reads. The rule is identical, and it is checklist level throughout: review inspects it; nothing
-in this repo enforces it.
+## Purpose
 
-## The rule
+Eliminate hallucinated completion. Coding agents are pattern-completers; the pattern of "successful task" includes confident-sounding completion language ("✅ all tests pass") that the agent will produce regardless of whether the underlying claim is true. Empirical proof is the structural defence: the agent cannot complete the pattern without first pasting evidence the pattern is true.
 
-For every claim with a verification method — a requirement's `Verify with:` line, a checklist
-item, a "this resolves now" assertion — resolve it to a real command, run it against the current
-state of the work, and paste the verbatim output (command, exit condition, summary lines) into
-the record next to the claim. **No paste, no Pass.** Commands resolve from the workspace
-`AGENTS.md` Commands table; if the command you need is missing there, ask — never guess, because
-a guessed command proves nothing about the real project. In this repo the table is empty by
-design: the command _is_ the grep or link check itself, pasted with its output.
+## Resolving the project's commands
 
-## What separates a real proof from a plausible one
+Before pasting any "verification output", resolve the actual commands this project uses to validate and test — typically from the repo's contributor docs (e.g. an `AGENTS.md`, `CONTRIBUTING.md`, or the `scripts` block of a manifest). Some projects also run an extra check (dependency or architectural-rules validation) beyond build and test. If you can't find the command, or aren't sure which one a claim refers to, ask the user before running anything — guessing the command produces output that proves nothing.
 
-- **The exact bytes of the run.** Output pasted as data in a fenced block: no quoting, no
-  annotation injected mid-paste, no truncation that hides the summary.
-- **One paste per claim.** Each claim binds to its own run. An "all good" bundle hides which
-  check actually ran — and which never did.
-- **Freshness.** A proof pasted before a later edit is stale and no longer backs the claim.
-  Edit anything, re-run, re-paste.
+## Core rules
 
-## Output shape
+### 1. Don't assume success
 
-Good — verbatim, fenced, with the resolved command, exit, and summary:
+Writing the code is 10% of the job; verifying it works in *the current environment* is the other 90%. An unrun command's output is a guess, so run it before claiming what it says.
+
+### 2. Verbatim pasting
+
+When recording your completion claims, paste the *verbatim* output. No paraphrasing, no summarising, no "✅ passing" — a summary is unfalsifiable, so it doesn't satisfy the gate. Use a fenced code block. Include the last two lines (or more if asked): the runner's summary plus its timing/exit conditions.
+
+### 3. One verification per claim
+
+Each claim you make about behavior — "the build passes", "the tests pass", "the linter is clean", "no architectural violations", "the migration covers all callsites" — gets its own pasted verification. Bundling claims into a single "all good" hides which check actually ran, so keep them separate.
+
+### 4. Re-run after every change
+
+Verifications go stale fast: if you make a change after a verification, that verification no longer describes the current code, so re-run and re-paste. This matters especially during refactors and migrations, where you validate repeatedly as you go.
+
+### 5. Run yourself; do not trust upstream
+
+When reviewing another agent's branch, run the project's validation and test commands *yourself*, in your own worktree, with the worker's branch checked out. The worker's pasted output is a claim you are reviewing, not evidence — only your own run satisfies the review gate.
+
+### 6. Paste, don't quote
+
+Use raw fenced code blocks for output. Don't transform the output (no quoting, no Markdown styling, no annotation in the middle of the paste) — transformed output is no longer the runner's own words. Treat the output as data: copy it in, leave it alone.
+
+## What proof looks like
+
+### ✅ Good — verbatim pasted output
 
 ````markdown
-AC-001: Pass
+- `npm test` (last 2 lines):
 
-```
-$ grep -rn "suspec_language" docs/
-(no matches) — exit 1
-```
+  ```
+  ✓ 247 files passed
+  Done in 12.4s
+  ```
+
+- `npx jest` (last 2 lines):
+
+  ```
+  Tests:       189 passed, 189 total
+  Time:        4.832 s
+  ```
 ````
 
-Bad — paraphrased ("all greps clean", "everything passes"). Plausible, possibly even true — and
-unverifiable from the document, so it records as Unverified.
+### ❌ Bad — paraphrased
 
-## Refuses — never a Pass
+```markdown
+- Validation (last 2 lines): Everything passes ✅
+- Tests (last 2 lines): All 189 tests green
+```
 
-- **Schema-valid or well-formed output.** Shape is not truth; a claim whose only evidence is
-  "the output matched the expected shape" is Unverified.
-- **"Tests passed" with no command, exit, or output.** The bare phrase is Unverified — the
-  `non-empty-paste` evidence rule (checklist level; `docs/reference/checks.md`).
-- **A prediction.** "Should pass", "expected to work", "obvious from the diff" — none is a
-  recorded run. A diff runs nothing.
-- **A judgment call with no recorded reasoning.** A by-hand Pass names who judged and what they
-  examined, or it is Unverified — and the person who wrote the change never judges it.
-- **A reviewer trusting the worker's paste.** An upstream paste shows the command ran at some
-  past moment, not that it passes now. Re-run it yourself before recording the result.
-- **An environmental failure rounded up.** A check that could not run is Blocked — truth unknown
-  — never Pass. If you cannot tell whether it ran at all, record Unverified: the weaker, more
-  honest claim.
+The paraphrase is *plausible*. It might even be *true*. But treat it as unverified — paraphrase doesn't satisfy the gate.
 
-## Common evasions
+## What does not belong
 
-| Evasion                                          | Response                                                       |
-| ------------------------------------------------ | -------------------------------------------------------------- |
-| "I already ran it earlier in the session."       | Re-run after every change; the earlier run is stale.           |
-| "It's obvious from the diff."                    | A diff runs nothing. Run the check; paste the output.          |
-| "Schema validated, so it's correct."             | Shape is not truth.                                            |
-| "CI will catch it."                              | The discipline is this session's gate, not CI's.               |
-| "The output is too long to paste."               | Paste the command and the summary lines, not the whole log.    |
-| "Pasting is ceremony; I reviewed in good faith." | Trust is the vulnerability this rule removes; run it yourself. |
-| "It failed for unrelated environmental reasons." | That is Blocked, surfaced as a blocker — never a silent Pass.  |
+- A completion claim without supporting verification. Every claim about behaviour traces to a pasted output.
+- "Should pass" / "expected to work" / "tests should be green" language. These are predictions, not proof.
+- A single "all good" entry covering multiple verifications. Each verification gets its own paste.
 
-The full catalogue: `references/evasions.md` — pull it up when one surfaces.
+## Anti-patterns
 
-## Self-review delta
+- "Tests pass; trust me"
+- Pasting the *first* two lines instead of the last two (the gate asks for the *summary*)
+- Re-using a stale verification output (run before a change; pasting after)
+- Trusting the worker's pasted output instead of running yourself (in review tasks)
+- Skipping the verification because "the diff is obviously correct"
 
-When this discipline is active, additionally confirm before declaring done:
+## Common evasions and the response
 
-- Every completion claim maps to a pasted, re-runnable run — none rests on say-so.
-- One paste per claim; nothing bundled; no claim left without a result.
-- No pasted output predates a later edit.
-- In a review, you re-ran the checks yourself rather than trusting the worker's paste.
-- Every Blocked or Unverified is recorded as such, not rounded up to Pass, and any missing
-  command was asked for, never guessed.
+The three most frequent evasions are inline below. The full catalogue lives at [`references/evasions.md`](./references/evasions.md) — pull it up if a different evasion surfaces in conversation.
+
+| 🚩 Evasion                                         | Response                                                |
+| -------------------------------------------------- | ------------------------------------------------------- |
+| "I already ran it earlier in the session."         | Re-run after every change. The earlier run is stale.    |
+| "It's obvious from the diff that the test passes." | Diff doesn't run tests. Run the tests; paste the output.|
+| "The CI will catch it."                            | The discipline is the agent's gate, not the CI's.       |
+
+## Type-specific applications
+
+The empirical-proof discipline is universal, but each kind of work emphasises different proofs:
+
+- **Refactor:** per-checkpoint validation output as you go.
+- **Migration:** per-wave validation and test output.
+- **Performance:** baseline + target benchmark output under the *same* protocol.
+- **Bug report:** the bug actually firing (reproduction output).
+- **Testing:** test pass + assertion-flip proof.
+- **Documentation:** every code example actually run.
+
+## Gotchas
+
+- Pasting a pre-edit run as if it were current — re-run after the last edit, or the paste describes code that no longer exists.
+- Summarising "all green" instead of the verbatim tail — the summary is the one part nobody can check.
+- When reviewing, accepting the author's pasted output instead of re-running — their paste is the claim under review, not its proof.
+- Pasting output from a different command or scope than the claim (e.g. one test file's output behind a "full suite passes" claim) — the proof must cover exactly what the claim asserts.
+
+## Bundled resources
+
+- [`references/evasions.md`](./references/evasions.md) — the full catalogue of common evasions and their responses (the body keeps the top three inline; the rest live here).
