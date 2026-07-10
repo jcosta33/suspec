@@ -96,16 +96,16 @@ Names an author might still meet in older text. Do not cite them as current; use
 | `adversarial-review` | retired   | The refute-by-default review discipline now lives in `revolver-review`, which consumed it (ADR-0132). |
 | `persona-skeptic`   | retired   | The refute-by-default review discipline, now carried by `revolver-review`.   |
 | `suspec-explorer`   | retired   | The runner's built-in exploration agent + the `codebase-exploration` skill. |
-| `suspec-starter-kit` (repo, as a skills home) | retired | Its skills relocated to the `suspec-skills` catalog (ADR-0138, ADR-0140); adopter repos take no seed. |
-| CLI verbs other than `check` — `init`, `work`, `evidence`, `done`, `promote`, `pull`, `fix`, `new`, `write`, `review`, `show`, `next`, `status`, `store` (and `doctor`/`gc`/`purge`), `clean`, `stamp`, `update`, `worktree`, `check-my-work`, `agents` | retired | `suspec check` is the entire CLI contract (ADR-0143); authoring is the skills' job; placement is the developer's (ADR-0141); durable findings go to native memory or project channels (ADR-0142). |
-| `suspec check --staleness` | retired | The reviewer owns staleness by reading the diff (ADR-0143). |
-| `suspec.config.json` / `SUSPEC_STATE_DIR` / `state_root` | retired | No resolution, nothing to configure: the CLI reads only the paths it is handed (ADR-0141, ADR-0143). |
-| the personal store (`~/.claude/state/<repo-name>/`) | retired | Placement is the agent's choice, beside its native artifacts, per `docs/03-where-files-live.md` (ADR-0141). |
-| the finding file + triage (`promote` / keep-with-expiry / discard) | retired | A durable lesson becomes a native harness memory; team-facing residue goes through project channels (ADR-0142). |
-| `status.md` / the board | retired | No owned work-state projection; paths flow explicitly (ADR-0141). |
+| `suspec-starter-kit` (repo, as a skills home) | relocated | Its skills relocated to the `suspec-skills` catalog (ADR-0138, ADR-0140); adopter repos take no seed. |
+| `suspec-cli` (multi-verb surface) | relocated | The CLI contract collapsed into `suspec check` (ADR-0143) — the former verbs (`init`, `work`, `evidence`, `done`, `promote`, `pull`, `fix`, `new`, `write`, `review`, `show`, `next`, `status`, `store` with `doctor`/`gc`/`purge`, `clean`, `stamp`, `update`, `worktree`, `check-my-work`, `agents`) have no successor commands: authoring is the skills' job, placement is the developer's (ADR-0141), durable findings go to native memory or project channels (ADR-0142). |
+| `--staleness` | retired | The reviewer owns staleness by reading the diff (ADR-0143). |
+| `suspec.config.json` (with `SUSPEC_STATE_DIR` and `state_root`) | relocated | Nothing to configure — the CLI reads only the paths it is handed (ADR-0141, ADR-0143). |
+| the personal store (`~/.claude/state/<repo-name>/`) | relocated | Placement is the agent's choice, beside its native artifacts, per `docs/03-where-files-live.md` (ADR-0141). |
+| `finding` (the artifact, with its triage flow) | relocated | A durable lesson becomes a native harness memory; team-facing residue goes through project channels (ADR-0142). |
+| `status.md` (the board) | relocated | No owned work-state projection; paths flow explicitly (ADR-0141). |
 | `docs/reference/advanced-lifecycle.md` | retired | Proportional rigor and the loop live in `docs/01-what-is-suspec.md` and `docs/02-basic-workflow.md`. |
 | `docs/reference/step-bars.md` | retired | Rigor guidance lives in the workflow pages (`docs/02-basic-workflow.md`, `docs/05-brownfield-and-change-plans.md`). |
-| `suspec_get_status`, `suspec_check_workspace`, `suspec_check_store`, `suspec_get_task`, `suspec_get_spec`, `suspec_get_review`, `suspec_get_artifact`, `suspec_reconcile`, `suspec_list`, `suspec_scaffold_spec`, `suspec_split_task`, `suspec_scaffold_finding` (MCP) | retired | The MCP surface adapts `suspec check` only: `suspec_check_file` + `suspec_get_checks` (ADR-0143). |
-| `suspec agents emit` (Codex emitter) | retired | Committed Codex projections are hand-maintained (ADR-0143). |
+| `suspec-mcp` (store-facing tool surface) | relocated | The surface collapsed into `suspec_check_file` + `suspec_get_checks`, adapting `suspec check` only (ADR-0143). |
+| `suspec agents emit` (Codex emitter) | relocated | Maintenance moved to hand-edited committed Codex projections (ADR-0143). |
 | `write-documentation` (catalog vs. kit split) | relocated | One home: the `suspec-skills` catalog. |
 | `implement-task` (catalog vs. kit split) | relocated | One home: the `suspec-skills` catalog; the suspec repo keeps a byte-identical dev mirror. |
