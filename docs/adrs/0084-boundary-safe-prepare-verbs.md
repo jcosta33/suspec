@@ -1,7 +1,7 @@
 ---
 type: adr
 id: adr-0084
-status: accepted
+status: superseded by adr-0143
 created: 2026-06-16
 updated: 2026-06-16
 ---
