@@ -1,32 +1,34 @@
 # Agent guides
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+Suspec's disciplines ship as a skill family — the guides that condition an agent (or a
+person) to write, split, implement, review, and close work the Suspec way. A capable
+harness plus the skill family is a complete install (level: convention):
 
+```bash
+npx skills add jcosta33/suspec-skills -g
+```
 
-Agent guides are optional instruction packs.
+The spec is the contract; a task packet narrows it when work is split. Every guide keeps a
+by-hand path — the disciplines work with no tool at all
+([ADR-0134](../adrs/0134-self-contained-spine.md)).
 
-The spec is the contract; a task packet narrows it when work is split.
+## The core loop
 
-## Kit core
-
-The starter kit's core loop guides. `write-spec` → `implement-task` → `save-findings` cover the
-mandatory **spec → run → close** triad; `review-output` is the review step, layered on whenever code
-ships ([ADR-0134](../adrs/0134-self-contained-spine.md)):
+`write-spec` → `implement-task` → `save-findings` cover the mandatory
+**spec → run → close** triad; `review-output` is the review step, layered on whenever code
+ships:
 
 | Guide | Use |
 | --- | --- |
 | `write-spec` | write or amend specs (Spec) |
 | `implement-task` | run a spec or split task packet (Run) |
 | `review-output` | review worker output (Review — whenever code ships) |
-| `save-findings` | record findings, update the board (Close) |
+| `save-findings` | write durable lessons as native memories (Close) |
 
-## Kit authoring guides
+## Authoring guides
 
-Also kit-shipped (Suspec-coupled → the kit, [ADR-0112](../adrs/0112-two-tier-skills.md)) — install only what the workspace uses:
+Suspec-coupled guides for the other artifact kinds — load one when the work calls for that
+kind:
 
 | Guide | Use |
 | --- | --- |
@@ -42,7 +44,7 @@ Also kit-shipped (Suspec-coupled → the kit, [ADR-0112](../adrs/0112-two-tier-s
 
 ## Implementation depth (opt-in)
 
-Kit skills that implement Suspec work of a given kind — Suspec-coupled, summoned as the work needs them:
+Guides that implement Suspec work of a given kind — summoned as the work needs them:
 
 | Guide | Use |
 | --- | --- |
@@ -55,14 +57,26 @@ Kit skills that implement Suspec work of a given kind — Suspec-coupled, summon
 | `write-testing` | tests as the deliverable |
 | `write-documentation` | human-facing docs |
 
-## Universal catalog (suspec-skills)
+## Framework-free skills
 
-Framework-free skills, installable in any repo with no Suspec knowledge ([ADR-0112](../adrs/0112-two-tier-skills.md)) — load alongside the work:
+The catalog's second tier: skills with no Suspec knowledge, usable in any repo
+([ADR-0112](../adrs/0112-two-tier-skills.md)) — load alongside the work:
 
-- Market/review methods: `market-research`, `persona-challenger`, `bulletproof`, `revolver-review`
-- Disciplines: `codebase-exploration`, `debugging`, `security-review`, `git-pr`, `planning-spec`, `empirical-proof`, `concise-output`, `fix-flaky-test`
+- Market/review methods: `market-research`, `persona-challenger`, `bulletproof`,
+  `revolver-review`
+- Disciplines: `codebase-exploration`, `debugging`, `security-review`, `git-pr`,
+  `planning-spec`, `empirical-proof`, `concise-output`, `fix-flaky-test`
 
-Authoring disciplines live in their kit guides. Do not maintain duplicate copies.
+Authoring disciplines live in their Suspec-coupled guides. Do not maintain duplicate
+copies.
+
+## Repo-committed guides
+
+A project may commit its own guides in its repo — repo-specific disciplines, house verify
+recipes, domain rules. Committed guides are the one Suspec-related surface that lives
+inside a repo: instructions belong to the project; working artifacts never land there.
+Keep repo guides thin — they narrow the global family for one codebase, they do not fork
+it.
 
 ## Guide rules
 
@@ -93,7 +107,7 @@ Before adding a guide:
 
 - name the user task it serves
 - prove no existing guide owns it
-- decide if it is kit, workspace, or catalog material
+- decide whether it belongs to the global family or to one repo's committed guides
 - give it a clear activation description
 - remove duplicate rules from nearby guides
 

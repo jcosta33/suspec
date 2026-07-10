@@ -1,16 +1,10 @@
 # Artifact index
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
-The current Suspec agents, skills, and MCP tools live across the repo family. This index lists the
-public surfaces with their source homes and status (ADR-0114: `active` · `retired` · `relocated` —
-a name whose status is not `active` names its replacement below). Every entry in the tables is
-`active`; the non-active names live in the Retired and relocated section at the end.
+The current Suspec agents, skills, and MCP tools live across the repo family. This index
+lists the public surfaces with their source homes and status (ADR-0114: `active` ·
+`retired` · `relocated` — a name whose status is not `active` names its replacement
+below). Every entry in the tables is `active`; the non-active names live in the Retired
+and relocated section at the end.
 
 ## Agents
 
@@ -28,9 +22,39 @@ Source: [`../suspec-agents/agents/`](https://github.com/jcosta33/suspec-agents).
 For code-location work, use the runner's built-in code exploration agent together with the
 `codebase-exploration` skill.
 
-## Universal Skills
+## Skills
 
-Source: [`../suspec-skills/skills/`](https://github.com/jcosta33/suspec-skills).
+Source: [`../suspec-skills/skills/`](https://github.com/jcosta33/suspec-skills). One
+catalog, installed globally (`npx skills add jcosta33/suspec-skills -g`): the methodology
+disciplines and the conditioning skills together.
+
+The methodology disciplines:
+
+| Name                  | Home           | Use it when                          |
+|-----------------------|----------------|--------------------------------------|
+| `write-spec`          | suspec-skills  | Authoring or revising a spec.        |
+| `spec-check`          | suspec-skills  | Checking a spec against core rules.  |
+| `split-work`          | suspec-skills  | Splitting a spec or plan into tasks. |
+| `implement-task`      | suspec-skills  | Implementing a Suspec task packet.   |
+| `review-output`       | suspec-skills  | Building a review packet.            |
+| `save-findings`       | suspec-skills  | Routing durable lessons into native memory. |
+| `write-prd`           | suspec-skills  | Authoring a PRD.                     |
+| `write-rfc`           | suspec-skills  | Authoring an RFC.                    |
+| `write-research`      | suspec-skills  | Authoring a research note.           |
+| `write-audit`         | suspec-skills  | Authoring an audit.                  |
+| `write-bug-report`    | suspec-skills  | Authoring a diagnosis-only bug report. |
+| `write-inventory`     | suspec-skills  | Authoring an inventory.              |
+| `write-change-plan`   | suspec-skills  | Authoring a change plan.             |
+| `write-documentation` | suspec-skills  | Authoring documentation.             |
+| `write-feature`       | suspec-skills  | Implementing a feature.              |
+| `write-fix`           | suspec-skills  | Implementing a fix.                  |
+| `write-refactor`      | suspec-skills  | Implementing a refactor.             |
+| `write-rewrite`       | suspec-skills  | Implementing a rewrite.              |
+| `write-migration`     | suspec-skills  | Implementing a migration.            |
+| `write-performance`   | suspec-skills  | Implementing a performance change.   |
+| `write-testing`       | suspec-skills  | Implementing tests.                  |
+
+The conditioning skills:
 
 | Name                   | Home           | Use it when                                      |
 |------------------------|----------------|--------------------------------------------------|
@@ -47,52 +71,21 @@ Source: [`../suspec-skills/skills/`](https://github.com/jcosta33/suspec-skills).
 | `bulletproof`          | suspec-skills  | Hardening a claim, decision, spec, or plan — evidence-gated critique with kill criteria. |
 | `revolver-review`      | suspec-skills  | Driving a substantial change to a clean state — a rotating pool of ≥6 distinct stances, one reviewer at a time, fixing between rounds until it converges. |
 
-## Kit Guides
-
-Source: [`../suspec-starter-kit/.agents/skills/`](https://github.com/jcosta33/suspec-starter-kit).
-
-| Name                  | Home                | Use it when                         |
-|-----------------------|---------------------|-------------------------------------|
-| `implement-task`      | suspec-starter-kit  | Implementing a Suspec task packet.  |
-| `review-output`       | suspec-starter-kit  | Building a review packet.           |
-| `save-findings`       | suspec-starter-kit  | Routing durable discoveries home.   |
-| `spec-check`          | suspec-starter-kit  | Checking a spec against core rules. |
-| `split-work`          | suspec-starter-kit  | Splitting a spec or plan into tasks. |
-| `write-spec`          | suspec-starter-kit  | Authoring or revising a spec.       |
-| `write-prd`           | suspec-starter-kit  | Authoring a PRD.                    |
-| `write-rfc`           | suspec-starter-kit  | Authoring an RFC.                   |
-| `write-research`      | suspec-starter-kit  | Authoring a research note.          |
-| `write-audit`         | suspec-starter-kit  | Authoring an audit.                 |
-| `write-bug-report`    | suspec-starter-kit  | Authoring a diagnosis-only bug report. |
-| `write-inventory`     | suspec-starter-kit  | Authoring an inventory.             |
-| `write-change-plan`   | suspec-starter-kit  | Authoring a change plan.            |
-| `write-documentation` | suspec-starter-kit  | Authoring documentation.            |
-| `write-feature`       | suspec-starter-kit  | Implementing a feature.             |
-| `write-fix`           | suspec-starter-kit  | Implementing a fix.                 |
-| `write-refactor`      | suspec-starter-kit  | Implementing a refactor.            |
-| `write-rewrite`       | suspec-starter-kit  | Implementing a rewrite.             |
-| `write-migration`     | suspec-starter-kit  | Implementing a migration.           |
-| `write-performance`   | suspec-starter-kit  | Implementing a performance change.  |
-| `write-testing`       | suspec-starter-kit  | Implementing tests.                 |
-
 ## MCP Tools
 
-Source: [`../suspec-mcp/src/tools.ts`](https://github.com/jcosta33/suspec-mcp).
+Source: [`../suspec-mcp/src/tools.ts`](https://github.com/jcosta33/suspec-mcp). The
+server adapts the `suspec check` surface for shell-less runners — path-explicit, with
+companions as explicit parameters, shelling out to the CLI (ADR-0085, ADR-0143).
 
-| Name                      | Home        | Use it when                         |
-|---------------------------|-------------|-------------------------------------|
-| `suspec_get_status`       | suspec-mcp  | Reading workspace status.           |
-| `suspec_check_workspace`  | suspec-mcp  | Running workspace checks.           |
-| `suspec_check_file`       | suspec-mcp  | Checking a single file.             |
-| `suspec_get_task`         | suspec-mcp  | Reading a task packet.              |
-| `suspec_get_spec`         | suspec-mcp  | Reading a spec.                     |
-| `suspec_get_review`       | suspec-mcp  | Reading a review packet.            |
-| `suspec_get_checks`       | suspec-mcp  | Reading the checks contract.        |
-| `suspec_reconcile`        | suspec-mcp  | Reconciling workspace/board state.  |
-| `suspec_list`             | suspec-mcp  | Listing workspace artifacts.        |
-| `suspec_scaffold_spec`    | suspec-mcp  | Scaffolding a spec.                 |
-| `suspec_split_task`       | suspec-mcp  | Scaffolding split task packets.     |
-| `suspec_scaffold_finding` | suspec-mcp  | Scaffolding a finding candidate.    |
+| Name                | Home        | Use it when                                                    |
+|---------------------|-------------|-----------------------------------------------------------------|
+| `suspec_check_file` | suspec-mcp  | Checking one artifact by full path; spec/task companions as explicit parameters. |
+| `suspec_get_checks` | suspec-mcp  | Reading the checks contract (the `--contract` face).           |
+
+## CLI
+
+Source: [`../suspec-cli`](https://github.com/jcosta33/suspec-cli). The surface is one
+command: `suspec check` (ADR-0143). Reference: [reference/cli.md](reference/cli.md).
 
 ## Retired and relocated
 
@@ -103,5 +96,16 @@ Names an author might still meet in older text. Do not cite them as current; use
 | `adversarial-review` | retired   | The refute-by-default review discipline now lives in `revolver-review`, which consumed it (ADR-0132). |
 | `persona-skeptic`   | retired   | The refute-by-default review discipline, now carried by `revolver-review`.   |
 | `suspec-explorer`   | retired   | The runner's built-in exploration agent + the `codebase-exploration` skill. |
-| `write-documentation` (catalog) | relocated | Ships in the kit (`suspec-starter-kit/.agents/skills/`), not the catalog. |
-| `implement-task` (catalog)      | relocated | Ships in the kit; the suspec repo keeps a byte-identical dev mirror. |
+| `suspec-starter-kit` (repo, as a skills home) | retired | Its skills relocated to the `suspec-skills` catalog (ADR-0138, ADR-0140); adopter repos take no seed. |
+| CLI verbs other than `check` — `init`, `work`, `evidence`, `done`, `promote`, `pull`, `fix`, `new`, `write`, `review`, `show`, `next`, `status`, `store` (and `doctor`/`gc`/`purge`), `clean`, `stamp`, `update`, `worktree`, `check-my-work`, `agents` | retired | `suspec check` is the entire CLI contract (ADR-0143); authoring is the skills' job; placement is the developer's (ADR-0141); durable findings go to native memory or project channels (ADR-0142). |
+| `suspec check --staleness` | retired | The reviewer owns staleness by reading the diff (ADR-0143). |
+| `suspec.config.json` / `SUSPEC_STATE_DIR` / `state_root` | retired | No resolution, nothing to configure: the CLI reads only the paths it is handed (ADR-0141, ADR-0143). |
+| the personal store (`~/.claude/state/<repo-name>/`) | retired | Placement is the agent's choice, beside its native artifacts, per `docs/03-where-files-live.md` (ADR-0141). |
+| the finding file + triage (`promote` / keep-with-expiry / discard) | retired | A durable lesson becomes a native harness memory; team-facing residue goes through project channels (ADR-0142). |
+| `status.md` / the board | retired | No owned work-state projection; paths flow explicitly (ADR-0141). |
+| `docs/reference/advanced-lifecycle.md` | retired | Proportional rigor and the loop live in `docs/01-what-is-suspec.md` and `docs/02-basic-workflow.md`. |
+| `docs/reference/step-bars.md` | retired | Rigor guidance lives in the workflow pages (`docs/02-basic-workflow.md`, `docs/05-brownfield-and-change-plans.md`). |
+| `suspec_get_status`, `suspec_check_workspace`, `suspec_check_store`, `suspec_get_task`, `suspec_get_spec`, `suspec_get_review`, `suspec_get_artifact`, `suspec_reconcile`, `suspec_list`, `suspec_scaffold_spec`, `suspec_split_task`, `suspec_scaffold_finding` (MCP) | retired | The MCP surface adapts `suspec check` only: `suspec_check_file` + `suspec_get_checks` (ADR-0143). |
+| `suspec agents emit` (Codex emitter) | retired | Committed Codex projections are hand-maintained (ADR-0143). |
+| `write-documentation` (catalog vs. kit split) | relocated | One home: the `suspec-skills` catalog. |
+| `implement-task` (catalog vs. kit split) | relocated | One home: the `suspec-skills` catalog; the suspec repo keeps a byte-identical dev mirror. |

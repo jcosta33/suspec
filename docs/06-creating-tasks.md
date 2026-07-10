@@ -1,16 +1,16 @@
 # Creating tasks
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+A task packet is the **split slice** — cut only when one spec becomes several parallel
+pieces. For the common 1:1 case there is no task: the implementer works from the spec and
+fills its `## Execution` section.
 
-A task packet is the **split slice** — cut only when one spec becomes several parallel pieces. For
-the common 1:1 case there is no task: the implementer works from the spec and fills its `## Execution`
-section.
+A task does not add requirements. It copies a scope-subset from a spec or change plan.
 
-It does not add requirements. It copies a scope-subset from a spec or change plan.
+Task packets are files like any other Suspec artifact: written by the splitting skill,
+placed beside your native artifacts per the [placement rule](03-where-files-live.md),
+and dispatched by explicit path — the packet names its spec by full path, and the
+dispatch prompt names the packet by full path. Lint one with `suspec check <path>`
+(level: enforced — suspec-cli).
 
 ## Task shape
 
@@ -28,7 +28,7 @@ status: ready
 
 ## Source
 
-- `specs/checkout/spec.md`
+- `/Users/you/agent-notes/shop-api/spec-checkout.md`
 
 ## Scope
 
@@ -49,8 +49,10 @@ status: ready
 
 ## Agent instructions
 
-Copy from the task template.
+One slice's standing instructions — scope, evidence rules, when to stop and ask.
 ```
+
+The full shape is documented in [artifact formats](reference/artifact-formats.md).
 
 ## Scope
 

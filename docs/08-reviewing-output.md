@@ -1,12 +1,11 @@
 # Reviewing output
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+Review checks the worker's output against the **spec** — the task, when one exists,
+scopes which requirements and indexes the evidence, but the spec is what the code is
+judged against.
 
-Review checks the worker's output against the **spec** — the task, when one exists, scopes which requirements and indexes the evidence, but the spec is what the code is judged against.
+The reviewer's posture is refute-by-default: the worker's paste is a claim, not proof,
+and every green row is a candidate for disproof until the reviewer has grounded it.
 
 Do not read a large diff from line 1. Start with:
 
@@ -29,7 +28,9 @@ When the change warrants more than one pass, escalate to a **rotating (Revolver)
 
 ## Review packet
 
-The packet lives in `reviews/` and follows the kit template.
+The reviewer writes the packet beside their own native artifacts, per the
+[placement rule](03-where-files-live.md), and it names the spec and task it reconciles
+against. The shape is documented in [artifact formats](reference/artifact-formats.md).
 
 Required sections:
 
@@ -75,11 +76,28 @@ Invalid evidence:
 - a screenshot with no stated check
 - a claim that a command was run, without output or link
 
-The worker's paste is a claim, not proof: the reviewer re-runs the checks and pastes their own
-output. And know what the tooling does not catch — `suspec check`'s review checks fire only when
-the packet's `task:`/`spec:` reference resolves (a typo'd id gates clean), and the reconcile's
-precision on free-form run summaries is measured well below its target on disciplined packets.
-The teeth are real where they bite; the reviewer's own run is the part that always bites.
+The worker's paste is a claim, not proof: the reviewer re-runs the checks and pastes
+their own output. Staleness is the reviewer's to own the same way — read the diff and
+confirm the evidence was produced against the code being judged, not an earlier state.
+
+## The deterministic check
+
+When the packet is written, run the floor:
+
+```bash
+suspec check <review-path> --spec <spec-path> --task <task-path>
+```
+
+Companions are explicit: the checker reads exactly the files it is handed, and a review
+packet checked without a required companion is a blocking error (exit 2) — the floor
+never silently degrades into a shallower check (level: enforced — suspec-cli).
+
+What it verifies is exactly what a lazy or dishonest reviewer would fudge: every scoped
+requirement has a coverage row, every evidence command matches the spec's `Verify with:`
+line, every `Pass` carries evidence, every reference resolves — plus the packet's lint.
+Exit codes: `0` clean, `1` warning, `2` blocking. It reports facts; it never renders the
+review result. What no tool covers — whether the evidence actually demonstrates the
+requirement — is the reviewer's own run and the human's verdict.
 
 ## Human attention
 
@@ -119,6 +137,9 @@ Use the table:
 | Any Unverified without waiver | Do not merge |
 | Any Blocked | Do not merge |
 | Fail or Unverified waived by owner | Merge with waiver |
+
+The suggested decision is a suggestion. The human owns the verdict — no packet, check,
+or agent merges anything.
 
 Waivers name:
 

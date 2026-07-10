@@ -148,6 +148,6 @@ Do not repeat the same read twice unless the risk calls for redundancy.
 
 ## Related
 
-- [Advanced lifecycle](advanced-lifecycle.md)
+- [Rigor ladder](rigor-escalation.md)
 - [Reviewing output](../08-reviewing-output.md)
 - [Agent guides](agent-guides.md)

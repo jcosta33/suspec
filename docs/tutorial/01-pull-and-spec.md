@@ -1,16 +1,6 @@
-# Pull and Spec
+# Spec
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
-This page creates:
-
-- `intake/checkout-expiry.md`
-- `specs/checkout/spec.md`
+This page produces one file: a spec.
 
 Scenario:
 
@@ -18,22 +8,13 @@ Scenario:
 
 The `shop-api` command is illustrative. Use your own repo for a real run.
 
-## 1. Pull
+## 1. Capture intent
 
-Create `intake/checkout-expiry.md`.
+Start from whatever the ask actually says — a ticket, a Slack message, a line from a
+human. Don't create an artifact for this; just keep the source text handy so the spec
+can name it.
 
-Copy the source ask without rewriting it:
-
-```markdown
----
-type: intake
-source: SHOP-4012
-url: https://acme.atlassian.net/browse/SHOP-4012
-captured: 2026-06-20
----
-
-# Intake: stale checkout sessions return 500s
-
+```text
 SHOP-4012 - Stale checkout sessions return 500s
 Reporter: Priya N. (Support)
 Priority: High
@@ -47,14 +28,24 @@ What we want: a checkout session older than 30 minutes must return
 409 SESSION_EXPIRED, never a 5xx.
 ```
 
-Check:
+## 2. Write the spec
 
-- source, URL, and capture date are filled
-- body is source text, not interpretation
+Use the write-spec skill (or write it by hand — the skill is the discipline, not a
+requirement) to turn that ask into requirement text.
 
-## 2. Spec
+Place the file next to your own native artifacts — the same place you keep your plans,
+notes, and memories for this work, in a folder named after the repo you are working on
+(or wherever fits your harness best). You choose the exact spot; keep it out of the repo
+unless the project's own governance says otherwise, and carry the file's full path
+forward — every later step names artifacts by explicit path.
 
-Create `specs/checkout/spec.md`.
+As one example of that choice, this walkthrough uses:
+
+```text
+~/.claude/notes/shop-api/checkout-expiry-spec.md
+```
+
+Your harness may put it somewhere else entirely — that's fine.
 
 ```markdown
 ---
@@ -64,7 +55,7 @@ title: Expired checkout sessions return 409
 status: ready
 owner: checkout-team
 sources:
-  - intake/checkout-expiry.md
+  - SHOP-4012
 ---
 
 # Expired checkout sessions return 409
@@ -97,11 +88,21 @@ Verify with: `npm run test:integration -- expired-session`
 - `src/checkout/`
 ```
 
-Check:
+## 3. Lint it
+
+```bash
+suspec check ~/.claude/notes/shop-api/checkout-expiry-spec.md
+```
+
+This exits 0 on a clean spec. A ready spec with no requirements, a missing `Verify
+with:`, or a leftover `TBD` reports a blocking row naming the gap; a thin `Non-goals` or
+`Open questions` section reports a warning.
+
+By hand, without the CLI, check the same things:
 
 - `status: ready`
 - one requirement: `AC-001`
 - `Verify with:` exists
 - non-goals bound scope
 
-Next: [Task and Run](02-task-and-run.md).
+Next: [Task and implement](02-task-and-run.md).

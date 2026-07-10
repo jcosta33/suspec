@@ -1,19 +1,17 @@
 # Brownfield work and change plans
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
 Use extra structure only when the work needs it.
 
 The expanded loop:
 
 ```text
-Pull -> Inventory -> Spec -> Change Plan -> (Task) -> Run -> (Review) -> Close
+inventory -> spec -> change plan -> (task) -> implement -> review
 ```
+
+Inventory and change plan are artifact kinds like any other: written by their skills,
+placed beside your native artifacts per the
+[placement rule](03-where-files-live.md), named by full path from then on. Lint either
+one with `suspec check <path>` (level: enforced — suspec-cli).
 
 ## Inventory
 
@@ -98,14 +96,18 @@ Increase review depth when work has:
 
 ## Re-baseline
 
-When changes ship without artifacts — a hotfix, a fast iteration — the specs stop describing what was built. Reality and the artifacts disagree. Re-baseline to make them true again:
+When changes ship without artifacts — a hotfix, a fast iteration — your specs stop
+describing what was built. Reality and the artifacts disagree. Re-baseline to make them
+true again:
 
 - inventory the current code, reading what is there, not the stale spec
 - audit the gap: which requirements reality outran, what shipped with no spec
-- revise each drifted spec to match what was built, or mark it `superseded`; where the code is wrong instead, that is a finding
-- save a finding recording the drift, and update the board
+- revise each drifted spec to match what was built, or discard it; where the code is
+  wrong instead, that is a finding
+- save what the drift taught — see [saving findings](09-saving-findings.md)
 
-This is the same machinery as adopting an existing codebase — inventory first — pointed at a workspace whose own specs went stale.
+This is the same machinery as adopting an existing codebase — inventory first — pointed
+at your own specs that went stale.
 
 ## When not to use this
 

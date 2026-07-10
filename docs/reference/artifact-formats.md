@@ -1,33 +1,27 @@
 # Artifact formats
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
 Every Suspec file is markdown with frontmatter.
 
-The `type:` field identifies the artifact.
+The `type:` field identifies the artifact. Kind is read from frontmatter, never from the
+filename or location — where the files live is your choice
+([where files live](../03-where-files-live.md)).
 
 ## Core types
 
-| Type | Prefix | Home |
-| --- | --- | --- |
-| `intake` | none | `intake/` |
-| `spec` | `SPEC-` | `specs/<feature>/spec.md` |
-| `task` | `TASK-` | `tasks/` |
-| `review` | `REVIEW-` | `reviews/` |
-| `finding` | `FINDING-` | `findings/` |
-| `status` | none | `status.md` |
+| Type | ID prefix |
+| --- | --- |
+| `intake` | none |
+| `spec` | `SPEC-` |
+| `task` | `TASK-` |
+| `review` | `REVIEW-` |
+| `finding` | `FINDING-` |
 
 ## Conditional types
 
-| Type | Prefix | Home |
-| --- | --- | --- |
-| `inventory` | `INV-` | `inventory/` |
-| `change-plan` | `CHANGE-` | `change-plans/` |
+| Type | ID prefix |
+| --- | --- |
+| `inventory` | `INV-` |
+| `change-plan` | `CHANGE-` |
 
 ## Advanced types
 
@@ -114,7 +108,7 @@ Sections:
 - Agent instructions
 - Findings
 - Run summary
-- Self-review, when the packet carries one (kit addition)
+- Self-review, when the packet carries one
 
 Every verify item names a requirement id.
 
@@ -143,8 +137,8 @@ A review reconciles against the **spec** ([ADR-0134](../adrs/0134-self-contained
 Sections:
 
 - Summary
-- Review plan, for a lead-orchestrated review (kit addition)
-- Candidate findings, for a multi-lens review (optional kit addition)
+- Review plan, for a lead-orchestrated review
+- Candidate findings, for a multi-lens review (optional)
 - Changed files
 - Requirement coverage
 - Change-plan coverage, when relevant
@@ -190,18 +184,8 @@ Sections:
 - related spec / task / review / file
 - Future guidance (optional)
 
-One finding, one durable claim.
-
-## Status board
-
-`status.md` is hand-edited — it carries what only a human writes:
-
-- the human-attention list
-- pending findings awaiting adjudication
-- links from closed work to its review packet (while retained)
-
-Live spec/task/review state is derived: `suspec status` is the state of record where the CLI is
-installed. A stale hand-written state row misleads more than an empty one.
+One finding, one durable claim. A durable finding becomes a native memory at Close
+([memory](memory.md)).
 
 ## Inventory
 

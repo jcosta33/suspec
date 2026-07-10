@@ -1,34 +1,31 @@
 # Adopting Suspec
 
-Adopting is two installs and one config file. Your repo stays clean: artifacts live in
-your personal store, outside the repo; only what you promote is committed.
+Adopting is one install. Nothing lands in your repo.
 
 ## Setup
 
-1. Install the reference CLI: [suspec-cli](https://github.com/jcosta33/suspec-cli).
-
-2. Seed the repo:
-
-   ```bash
-   suspec init
-   ```
-
-   This writes `suspec.config.json` (defaults + detected setup), seeds `AGENTS.md` if
-   absent, creates `.agents/skills/` with the `.claude/skills` symlink, and gitignores
-   `.worktrees/`. Nothing else lands in the repo, and the store is never touched here.
-
-3. Install the universal skill family, once, globally:
+1. Install the skill family, once, globally:
 
    ```bash
    npx skills add jcosta33/suspec-skills -g
    ```
 
-   Universal skills live at the user level; repo-specific guides stay committed in the
-   repo they describe. The two tiers never overlap (level: convention).
+   That is a complete install: the skills carry the methodology — authoring specs,
+   splitting work, implementing, reviewing, saving findings — and the artifact shapes
+   (level: convention). Universal skills live at the user level; repo-specific guides
+   (your commands, your conventions) stay committed in the repo they describe, and the
+   two tiers never overlap (level: convention).
 
-4. Make the seed yours: fill `AGENTS.md` with your commands and facts, and declare
-   `setup` / `verify` (and `risk_paths`, if you want the nudges) in `suspec.config.json`
-   — the [CLI reference](reference/cli.md) documents every key.
+2. Optional: install the reference CLI,
+   [suspec-cli](https://github.com/jcosta33/suspec-cli), for the deterministic checks.
+   One command:
+
+   ```bash
+   suspec check <path>
+   ```
+
+   It reads exactly the files you hand it — no setup, no config, no footprint
+   (level: enforced — suspec-cli).
 
 Use symlinks only when your platform handles them reliably; on Windows, copying the
 skills folder is safer.
@@ -37,44 +34,55 @@ skills folder is safer.
 
 Start small and run the whole loop once:
 
-1. `suspec write spec "<one-line intent>"` — then fill the requirements: one AC per id,
-   each with a `Verify with:` line.
-2. `suspec work <SPEC>` — worktree, setup, your agent launched against the spec.
-3. `suspec evidence add <RUN> --ac AC-001 -- <verify command>` — the harness runs the
-   command itself and records the evidence, per AC.
-4. `suspec done <RUN>` — the gate: every AC needs captured, passing, non-stale evidence,
-   or an explicit acceptance. The digest lands on the PR; a passed (or explicitly
-   accepted) gate then triages findings.
-5. `suspec promote <FIND>` — anything worth keeping for others becomes a GitHub issue.
+1. Author a spec through the skill: requirements with `AC-NNN` ids, each with a
+   `Verify with:` line, non-goals, acceptance criteria. Place the file next to your own
+   native artifacts — the same place you keep your plans, notes, and memories for this
+   work, in a folder named after the repo you are working on (or wherever fits your
+   harness best). You choose the exact spot; keep it out of the repo unless the
+   project's own governance says otherwise, and carry the file's full path forward —
+   every later step names artifacts by explicit path.
+2. Lint it: `suspec check <path>`.
+3. Implement — your agent works from the spec by path, runs every verify command, and
+   pastes real output.
+4. Review — an independent reviewer builds the review packet against the spec, then runs
+   the floor: `suspec check <review-path> --spec <spec-path> --task <task-path>`.
+   Exit codes: `0` clean, `1` warning, `2` blocking.
+5. Keep what mattered: a durable lesson becomes a native harness memory; a decision
+   becomes an ADR; a defect becomes an issue — through your project's own channels.
 
-A hands-on walkthrough lives in [tutorial/README.md](tutorial/README.md) — still on the
-superseded layout; its banner flags what changed.
+A hands-on walkthrough lives in [tutorial/README.md](tutorial/README.md).
 
 ## By hand — no CLI
 
-Every step keeps a by-hand path (level: convention); the CLI accelerates it and adds the
-machine gate.
+Every step keeps a by-hand path (level: convention); the CLI accelerates the checking,
+nothing else.
 
-1. Make the store: `mkdir -p ~/.claude/state/<repo-name>`.
-2. Write `spec-<slug>.md` there — the shape is documented in
-   [artifact formats](reference/artifact-formats.md):
-   status, requirements with IDs, a `Verify with:` line each.
-3. Work in isolation: `git worktree add .worktrees/<slug> -b suspec/<slug>`, `cd` in, and
-   run your agent pointed at the store spec by absolute path.
-4. Run each `Verify with:` command yourself and paste the real output into the run file.
-   Without the CLI there is no machine-enforced gate — the evidence discipline is yours
-   (level: convention; `suspec evidence add` + `suspec done` are the toolable form).
-5. Promote by hand: open the issue, write the ADR, paste the digest on the PR.
+1. Write the spec yourself — the shape is documented in
+   [artifact formats](reference/artifact-formats.md): status, requirements with IDs, a
+   `Verify with:` line each. Place it beside your native artifacts as above.
+2. Work in isolation if you run parallel workers — a branch or worktree is ordinary git
+   practice, yours to manage.
+3. Run each `Verify with:` command yourself and paste the real output into the spec's
+   `## Execution` section.
+4. Review by checklist: one coverage row per requirement, empty evidence is
+   `Unverified` never `Pass`, exceptions routed to a human. Without the CLI the floor is
+   yours to hold (level: checklist; `suspec check` is the toolable form).
 
 ## What gets committed
 
-Nothing but `suspec.config.json`, the seeded `AGENTS.md` and any repo-specific guides
-you keep, and your own promotions — ADRs, tests, whatever you land through the normal PR.
-Specs, runs, reviews, findings, and evidence stay in your store; when a reviewer wants
-the evidence, the digest is already on the PR.
+Nothing, by Suspec's hand. Your repo takes the code, the tests, and whatever your
+project's own governance already commits — ADRs, agent guides, the PRs themselves.
+Specs, task packets, and review packets stay outside the repo, beside your native
+artifacts, unless the project's own governance says otherwise.
+
+## Teams
+
+The checks contract is data — `checks/checks.yaml` in this repo. A team that wants its
+own standards reshapes the contract to match: tighten a severity, drop a check, add a
+convention. The CLI checks whatever contract it ships; the honesty floor's value is that
+it is deterministic, not that it is universal.
 
 ## Updating
 
 Re-run `npx skills add jcosta33/suspec-skills -g` — the skill family updates in one
-place, for every repo at once. The files `suspec init` seeded are yours from that moment
-on; nothing overwrites them.
+place, for every repo at once.

@@ -1,30 +1,41 @@
 # Cheatsheet
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
-## Loop
+## The loop
 
 ```text
-Pull -> (Inventory) -> Spec -> (Change Plan) -> (Task) -> Run -> (Review) -> Close
+Spec ──▶ (Task) ──▶ Implement ──▶ Review ──▶ Close
 ```
 
-## Files
+Task is optional — cut task packets only when the work splits or wants an explicit
+hand-off. Close saves what the work taught: durable lessons become native memories
+([memory](memory.md)).
 
-| Step | File |
+## Proportional rigor
+
+Use the least structure that changes execution or reviewability: a trivial fix gets a
+one-line inline spec and no file; a feature gets a lean spec with requirements and
+acceptance criteria; large work extends rather than pads. The rungs and when to climb:
+[rigor ladder](rigor-escalation.md).
+
+## Artifacts
+
+| Kind | Carries |
 | --- | --- |
-| Pull | `intake/*.md` |
-| Inventory | `inventory/*.md` |
-| Spec | `specs/<feature>/spec.md` |
-| Change Plan | `change-plans/*.md` |
-| Task | `tasks/*.md` |
-| Run | spec `## Execution` (default), or task `## Run summary` |
-| Review | `reviews/*.md` |
-| Close | `findings/*.md`, `status.md` |
+| spec | intent, non-goals, requirements (`AC-NNN` + `Verify with:`), open questions |
+| task packet | one scoped slice of a spec, for hand-off |
+| review packet | requirement coverage, evidence, human attention |
+| change plan | baseline, target, preservation guarantees, verified waves |
+| finding | one lesson; a durable one becomes a native memory |
+
+Shapes: [artifact formats](artifact-formats.md).
+
+## Where files go
+
+Place the file next to your own native artifacts — the same place you keep your plans,
+notes, and memories for this work, in a folder named after the repo you are working on (or
+wherever fits your harness best). You choose the exact spot; keep it out of the repo unless
+the project's own governance says otherwise, and carry the file's full path forward — every
+later step names artifacts by explicit path.
 
 ## Requirement
 
@@ -45,26 +56,15 @@ Rules:
 
 ## Results
 
-Four core results:
-
 | Result | Meaning |
 | --- | --- |
-| Pass | evidence shows requirement is met |
-| Fail | evidence shows requirement is not met |
+| Pass | evidence shows the requirement is met |
+| Fail | evidence shows the requirement is not met |
 | Unverified | evidence is missing or insufficient |
 | Blocked | cannot judge yet |
 
-Empty evidence means `Unverified`.
-
-Three lifecycle markers (decorate a prior result, never a core value — [advanced lifecycle](advanced-lifecycle.md)):
-
-| Marker | Meaning |
-| --- | --- |
-| Waived | a `Fail`/`Unverified` accepted by the owner, with reason and expiry |
-| Stale | a prior `Pass` no longer trusted after the text or evidence path changed |
-| Contradicted | evidence conflicts |
-
-Merge gate: every in-scope requirement is `Pass` (not carrying a `Stale`/`Contradicted` marker) or a `Fail`/`Unverified` under a live `Waived`. An empty scope does not pass. (Canonical wording: [advanced-lifecycle](./advanced-lifecycle.md).)
+Empty evidence means `Unverified`. A prior `Pass` whose requirement text, verify command,
+or exercised code has changed is stale — re-verify ([drift](drift.md)).
 
 ## Evidence
 
@@ -77,8 +77,8 @@ Valid:
 Invalid:
 
 - `tests passed`
-- worker summary alone
-- unsupported screenshot
+- a worker summary alone
+- an unsupported screenshot
 
 ## Review triggers
 
@@ -95,40 +95,14 @@ Route to Human attention:
 - candidate findings
 - blocked questions
 
-## Core checks
-
-The checks contract covers id uniqueness, verify lines, binding words, non-goals,
-sources, coverage, evidence binding, scope walls, and citations. One table, one home:
-[checks](checks.md).
-
-## Workspace names
-
-Dedicated workspace repo:
-
-```text
-<project>-works
-```
-
-Code repo pointer:
-
-```text
-Suspec workspace: ../<project>-works. Read the spec or task packet before coding.
-```
-
-## CLI
-
-Common commands:
+## Checks
 
 ```bash
-suspec init
-suspec update --check
-suspec check
-suspec new spec <slug>
-suspec new task --from SPEC-id --scope AC-001
-suspec worktree create TASK-id
-suspec run TASK-id --agent codex
-suspec review TASK-id
-suspec status
+suspec check <path>                                                # spec or change plan
+suspec check <review-path> --spec <spec-path> --task <task-path>   # review packet
+suspec check --contract                                            # the checks contract as JSON
 ```
 
-CLI prepares and reconciles. It does not write code or decide correctness.
+Exit `0` clean · `1` warning · `2` blocking. A review checked without a required companion
+is a blocking error (exit 2). The checker reports facts, never verdicts — the human owns
+the result. Full reference: [CLI](cli.md) · the contract: [checks](checks.md).

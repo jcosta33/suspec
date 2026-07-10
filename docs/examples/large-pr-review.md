@@ -1,17 +1,12 @@
 # Example: large PR review
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
-Goal: review a 41-file agent PR without reading it blindly from top to bottom.
+Goal: review a 41-file agent PR without reading it blindly top to bottom — review-first.
+The reviewer trusts the review packet, not the worker's summary.
 
 ## Situation
 
-An agent refactored checkout session handling.
+An agent refactored checkout session handling. Its own spec (`SPEC-checkout`) and task
+(`TASK-checkout-session-refactor`) already exist, from the PR's own author.
 
 Claim:
 
@@ -28,7 +23,11 @@ Risk:
 
 ## Inventory
 
-The reviewer first records current behavior:
+The reviewer first records current behavior, beside their own working files:
+
+```text
+~/.claude/notes/shop-api/checkout-session-inventory.md
+```
 
 ```markdown
 ---
@@ -49,6 +48,8 @@ id: INV-checkout-session
 ```
 
 ## Change plan
+
+`~/.claude/notes/shop-api/checkout-session-change-plan.md`
 
 ```markdown
 ---
@@ -72,6 +73,8 @@ preserves:
 ```
 
 ## Review packet
+
+`~/.claude/notes/shop-api/checkout-session-refactor-review.md`
 
 ```markdown
 ---
@@ -107,6 +110,20 @@ status: needs-human
 Do not merge. Fix AC-002 and explain `src/retry.ts`.
 ```
 
+Check it, against the PR author's own spec and task, by explicit path:
+
+```bash
+suspec check ~/.claude/notes/shop-api/checkout-session-refactor-review.md \
+  --spec ~/.claude/notes/shop-api/checkout-spec.md \
+  --task ~/.claude/notes/shop-api/checkout-session-refactor-task.md
+```
+
+A `Fail` row with evidence attached isn't what the checker objects to — AC-002 is
+honestly reported, so this reports clean or warning-level rows at most. What it would
+block on is a `Pass` row with no evidence, or a `task:` reference that resolves to
+nothing. The decision to not merge here comes from the human-attention list, not from
+the check's exit code — the check keeps the packet honest, the human decides.
+
 ## Follow-up task
 
 ```markdown
@@ -138,7 +155,17 @@ status: review-ready
 
 ## Second review
 
+`~/.claude/notes/shop-api/checkout-expiry-regression-review.md`
+
 ```markdown
+---
+type: review
+id: REVIEW-checkout-expiry-regression
+task: TASK-checkout-expiry-regression
+pr: none yet
+status: pass
+---
+
 ## Requirement coverage
 
 | ID | Result | Evidence | Human attention |
@@ -152,26 +179,28 @@ Spot-checked: AC-002 - reran test; output matched.
 Merge follow-up, then re-review original PR state.
 ```
 
-## Finding
+Check the follow-up:
+
+```bash
+suspec check ~/.claude/notes/shop-api/checkout-expiry-regression-review.md \
+  --spec ~/.claude/notes/shop-api/checkout-spec.md \
+  --task ~/.claude/notes/shop-api/checkout-expiry-regression-task.md
+```
+
+Exits clean: one row, `Pass`, evidence present.
+
+## Close
+
+The regression is worth remembering — save it as a native memory:
 
 ```markdown
-# Finding: checkout expiry regression hides behind green broad CI
+## Broad checkout CI can pass while expired-session handling regresses
 
-## What we learned
+Verified: checkout-session-refactor-review.md, AC-002 -> expected 409, got 500,
+before the follow-up fix (checkout-expiry-regression-review.md, AC-002 -> 1 passed)
 
-Broad checkout CI can pass while the expired-session case regresses.
-
-## Evidence
-
-- `REVIEW-checkout-session-refactor`, AC-002
-
-## Where it applies
-
-- checkout session refactors
-
-## Where it does not apply
-
-- changes that do not touch checkout session status handling
+Applies to: checkout session refactors.
+Does not apply to: changes that don't touch checkout session status handling.
 ```
 
 ## Lesson
@@ -181,3 +210,7 @@ Review by exception found three things the worker summary hid:
 - one failed requirement
 - one risky path
 - one out-of-scope file
+
+None of the three showed up in "All checkout session behaviors preserved," and none
+showed up in a green CI run. The review packet — not the claim — is what a reviewer can
+actually check.

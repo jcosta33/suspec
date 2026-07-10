@@ -1,12 +1,5 @@
 # Glossary
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
 | Term | Meaning |
 | --- | --- |
 | acceptance criterion | One verifiable requirement, usually `AC-NNN`. |
@@ -16,38 +9,43 @@
 | audit | Present-state report. Observes, does not prescribe. |
 | bug report | Diagnosis of one defect. |
 | change plan | Structural change plan with waves and preservation guarantees. |
-| Close | Final loop step: merge or block, update board, save findings. |
+| checks | The deterministic facts `suspec check` reports over an artifact — the honesty floor plus per-kind lint. |
+| Close | Final loop step: merge or block, save durable lessons as native memories. |
+| companion | An artifact a review packet reconciles against, passed by explicit flag (`--spec`, `--task`). |
 | distinct-lens review | Multiple reviewers with different focuses. |
 | drift | Requirement and implementation diverged after earlier evidence. |
 | Dropped from sources | Spec section for source asks intentionally left out. |
-| durable record | Kept for project life: accepted specs, ADRs, findings. |
+| durable record | Kept for project life: code, tests, ADRs, issues — plus your native memories. |
 | evidence | Pasted output, CI link, or named manual observation. |
 | evidence path | Files and checks exercised by the last valid evidence. |
 | Execution | Append-only run record on the spec; one dated entry per change-cycle, prose or a structured change-record (ADR-0110). |
-| finding | Durable lesson saved at Close. |
+| finding | One lesson surfaced by the work; a durable one becomes a native memory at Close. |
+| honesty floor | The checks a lazy or dishonest reviewer cannot fake: coverage-complete, command-matches, pass-needs-evidence, ref-resolves. |
 | honesty level | convention, checklist, toolable, enforced. |
 | intake | Verbatim source snapshot. |
 | inventory | Present-state map before brownfield work. |
-| loop | Pull, Spec, Run, Review, Close; add Task when work splits. |
-| multi-repo workspace | One workspace governing several code repos. |
+| loop | Spec, Implement, Review, Close; add Task when work splits. |
+| native memory | The harness's own durable memory surface (a memory file, CLAUDE.md, whatever the runner provides); where durable findings land. |
 | non-goal | Explicit out-of-scope behavior. |
 | open question | Unresolved spec question. Blocking questions keep specs draft. |
 | preservation guarantee | Behavior a change plan must preserve. |
-| Pull | Capture upstream ask into intake. |
 | requirement | Binding behavior plus verification. |
 | research | Source-backed inquiry. No decision. |
 | review by exception | Read coverage, failures, and exceptions before the diff. |
-| review packet | Per-task review record. |
+| review packet | Per-review record: coverage, evidence, human attention. |
 | review result | Pass, Fail, Unverified, or Blocked. |
 | review stance | Optional reading posture, such as adversarial reviewer or auditor. |
+| rigor ladder | The named rungs of proportional rigor; pick the lowest that leaves enough proof. |
 | risk-weighted review | More review for higher-risk change shape, diffusion, churn, or impact. |
 | Run | Worker implements and records evidence. |
+| save a finding | Close-step act: write a durable lesson as a native memory. |
 | scout | Read-only delegated helper. |
+| skill family | The globally installed guides that carry the methodology. |
 | SOL | Optional structured requirement notation selected by `format: sol`. |
 | source authority | Rule for which artifact governs when intent conflicts. |
 | spec | Intended behavior and verification. |
 | split work | Turn spec or change plan into task packets. |
-| status board | `status.md`. Hand-edited Human-attention list + durable links; live state is the derived `suspec status` view. |
+| step | One stage of the loop: Spec, Task, Implement, Review, Close. |
 | structured requirements | Plain `AC-NNN` requirements or SOL blocks over the same record. |
 | task packet | Bounded split work order for an agent or person. |
 | transitory output | Short-lived output such as run logs and check output. |
@@ -56,7 +54,6 @@
 | watchlist | Vague terms that need same-line criteria. |
 | wave | One verified stage of a change plan. |
 | worker | Implementer that owns a spec or task slice and returns a run summary. |
-| workspace | Repo or folder holding Suspec artifacts. |
 | worktree | Separate checkout for one task. |
 | writing rules | Requirement hygiene rules. |
 
@@ -68,9 +65,7 @@
 | obligation | requirement |
 | pass (lowercase — a loop step) | step |
 | profile | review stance |
-| promote | save a finding |
 | proof | evidence |
-| spec repo | workspace |
 | trace | agent run summary |
 | verdict | review result |
 

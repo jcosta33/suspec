@@ -1,12 +1,5 @@
 # Drift
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
 Drift is a mismatch between intent and evidence.
 
 It happens when a requirement, code path, or verify command changes after a prior `Pass`.
@@ -50,8 +43,8 @@ A spec is a living organism: amend the original rather than write a new one (ADR
   `superseded_by`) only when a whole feature is replaced.
 - **Status.** A spec moves `ready → active` once it is in use and being amended; `superseded` only on
   whole-feature replacement. This is the spec's **lifecycle maturity** (`draft → ready → active →
-  superseded`), not its workflow position (in-progress / in-review / done) — that lives on the board and
-  the task, never in the spec's status.
+  superseded`), not its workflow position (in-progress / in-review / done) — that lives with the
+  task and the review, never in the spec's status.
 
 ## Evidence path
 

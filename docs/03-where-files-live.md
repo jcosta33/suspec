@@ -1,122 +1,68 @@
 # Where files live
 
-Suspec uses three surfaces:
+Place the file next to your own native artifacts — the same place you keep your plans,
+notes, and memories for this work, in a folder named after the repo you are working on
+(or wherever fits your harness best). You choose the exact spot; keep it out of the repo
+unless the project's own governance says otherwise, and carry the file's full path
+forward — every later step names artifacts by explicit path.
 
-- **Your repo** — the code, one `suspec.config.json`, and everything you promote: ADRs,
-  tests, plus any committed repo-specific agent guides.
-- **Your store** — the per-repo working memory, outside every repo: specs, runs, reviews,
-  findings, intake snapshots, evidence.
-- **Global** — the universal Suspec skill family, installed once at the user level
-  (`~/.claude/skills` + `~/.agents/skills`).
+That paragraph is the whole placement rule. The rest of this page is why it is shaped
+that way.
 
-The split is the point. Store artifacts are relevant to *you* while the work is live;
-anything worth keeping for others leaves the store by promotion — a decision becomes an
-ADR, behavior becomes tests, a finding becomes a GitHub issue, the evidence becomes the PR
-digest. The durable record lives in the layers that already own it, not in a parallel one.
+## Why no location is prescribed
 
-## The store
+Your harness already solves placement: it lands its own plans, notes, and memories in
+its own conventions, without any external rule. Suspec describes the intent — beside
+your native artifacts, out of the adopter's repo — and the agent chooses the spot
+(level: convention). A prescribed path would make Suspec responsible for a directory's
+hygiene, and a directory someone owns grows management machinery: cleanup, migration,
+reconciliation. No owned location, no machinery. Artifacts are transient working files;
+when the work is done, what mattered has already left them.
 
-One directory per repo, beside your agent's own scaffold:
+## Paths flow explicitly
 
-```text
-~/.claude/state/<repo-name>/
-  spec-checkout-discounts.md
-  run-checkout-discounts.md
-  review-checkout-discounts.md
-  finding-001.md
-  intake-tick-4812.md
-  evidence/
-    checkout-discounts/
-  archive/
-```
+Nothing discovers, resolves, or infers locations (level: convention):
 
-- Flat files, one lifecycle subfolder (`archive/`), raw evidence under `evidence/<run>/`.
-  No other tree. Split slices (`task-<slug>.md`, from `suspec new task`) and change plans
-  (`change-plan-<slug>.md`) land flat in the same root.
-- The root is configurable: the `SUSPEC_STATE_DIR` environment variable, or `state_root`
-  in `suspec.config.json`. Two repos that share a folder name get distinct store
-  directories, matched by recorded repo path — never by a name guess.
-- Never committed to any repo (level: convention — the CLI never stages the store, and
-  `suspec init` never touches it).
-- Agents read and write the store directly, by the absolute paths given in the launch
-  prompt. Only the driving spec auto-loads into an agent's context; everything else is
-  read on demand.
+- A skill that writes an artifact states where it put it, and carries that path forward.
+- A dispatch prompt names the spec — and the task, when one exists — by full path.
+- The checker reads exactly the files it is handed:
+  `suspec check <path>` for a spec or change plan,
+  `suspec check <review-path> --spec <spec-path> --task <task-path>` for a review packet
+  (level: enforced — suspec-cli).
 
-## What lives where
+The trade is deliberate: no tool can list your specs or resume your work in flight,
+because no tool knows where they are. You do — and the artifacts are plain markdown,
+greppable with whatever you already use.
 
-| You produced        | It lives in the store as     | It becomes durable as                        |
-| ------------------- | ---------------------------- | -------------------------------------------- |
-| a captured ticket   | `intake-<slug>.md`           | nothing — the recorded URL makes it re-pullable |
-| intended behavior   | `spec-<slug>.md`             | an ADR, when it carries a decision           |
-| an agent run        | `run-<slug>.md`              | the PR and its digest comment                |
-| evidence            | `evidence/<run>/`            | the digest on the PR (`suspec done`)         |
-| a review            | `review-<slug>.md`           | the exceptions you act on                    |
-| a lesson            | `finding-<NNN>.md`           | a GitHub issue (`suspec promote`)            |
-| a split slice       | `task-<slug>.md`             | nothing — the spec stays the contract        |
-| a change plan       | `change-plan-<slug>.md`      | the PRs that land it                         |
+## Nothing in the adopter repo
 
-## Lifecycle
+Your repo takes the code, the tests, and whatever your project's own governance already
+commits — ADRs, agent guides. No Suspec directory, no config file, no gitignore entry,
+no seeded scaffold (level: convention). If a project's governance chooses to commit
+specs or reviews, that is the project's call, not Suspec's default.
 
-Active → archived → gone. Nothing needs a janitor.
+## Where durable value goes
 
-- **Archived by truth, not by hand.** `suspec store doctor` reconciles the store against
-  git and GitHub: a spec or run whose branch merged, whose worktree is gone, or whose PR
-  closed moves to `archive/` — moved, never deleted (level: toolable). State is derived
-  from git truth, never hand-maintained; a stale hand-written status row is worse than
-  none [[PLANCOMPLY]](research/sources.md#PLANCOMPLY).
-- **Findings die at the gate.** When the gate passes (or you accept explicitly),
-  `suspec done` ends by triaging each finding: promote it, keep it with an expiry
-  date, or discard it (the default for non-critical). A blocked gate skips triage; a
-  critical finding is never silently discarded.
-- **Deleted by retention.** `suspec store gc` (also `suspec clean`) deletes only archived
-  items past `retention_days` — default 30. A 30–90 day window matches common CI artifact
-  retention [[GHRETENTION]](research/sources.md#GHRETENTION) [[GLRETENTION]](research/sources.md#GLRETENTION).
-- **Ambient pressure.** `work`, `next`, and `status` print one decay line when the store
-  holds stale or expired items, pointing at `suspec store doctor`.
-- **The nuclear option.** `suspec store purge` deletes a repo's whole store after typed
-  confirmation.
+The files are disposable *because* the durable residue leaves them for the layers that
+already own it:
 
-## Staleness
+| You produced        | It lives, while the work is live, as | Durable value lands in                     |
+| ------------------- | ------------------------------------ | ------------------------------------------- |
+| a captured ticket   | an intake file                       | nothing — the recorded URL re-fetches it    |
+| intended behavior   | a spec                               | an ADR, when it carries a decision          |
+| verification        | pasted output in the spec or task    | the PR and its discussion                   |
+| a review            | a review packet                      | the exceptions you act on                   |
+| a lesson            | the packet's findings section        | a native harness memory, an issue, a test   |
+| a split slice       | a task packet                        | nothing — the spec stays the contract       |
+| a change plan       | a change plan                        | the PRs that land it                        |
 
-Checked at read time, not by ceremony:
-
-- **At launch** — a spec records the commit it was written against (`base_sha`) and its
-  affected areas; `suspec work` refuses a drifted spec, printing what moved, unless you
-  pass `--anyway`.
-- **At the gate** — each evidence entry records a digest of the whole worktree state
-  (git status + diff + the HEAD sha); `suspec done` re-hashes, and drifted evidence never
-  satisfies the gate until re-run.
-- **On demand** — `suspec check --staleness` reports which snapshotted specs drifted
-  (advisory).
-
-## Wipe-survival
-
-The store is disposable by design. Everything that must survive it already lives
-elsewhere: the ticket URL in the intake record makes it re-pullable, promoted findings
-are GitHub issues, the digest is a PR comment, decisions are ADRs, behavior is tests.
-`suspec fix #123` rebuilds a working launch straight from the issue — with or without the
-store that produced it. Cross-machine continuity is a sync recipe (the store is plain
-files), not a feature.
-
-## The repo footprint
-
-`suspec init` writes exactly: `suspec.config.json` (defaults + detected setup), an
-`AGENTS.md` seed if absent, `.agents/skills/` with the `.claude/skills` symlink, and a
-`.gitignore` line for `.worktrees/`. Nothing else lands in the repo, and no directory is
-named after the tool — `suspec.config.json` is the sole tool-named file, the same
-convention as `.eslintrc`.
+See [saving findings](09-saving-findings.md) for the memory route.
 
 ## Drift rule
 
-Code can prove a spec wrong. It does not silently update the spec.
-
-When code and intent diverge, do one of three things:
-
-- re-run the verification
-- amend the spec
-- fix the code
-
-See [drift](reference/drift.md).
+Code can prove a spec wrong. It does not silently update the spec. When code and intent
+diverge, do one of three things: re-run the verification, amend the spec, or fix the
+code.
 
 ## Related
 

@@ -12,7 +12,7 @@ Use these rules first:
 - Code can falsify a spec, not silently amend it.
 - Review rows judge against current spec text and evidence.
 - Changed requirements or changed exercised code make old evidence stale.
-- Findings inform future work but are not requirements until promoted into a spec.
+- Findings inform future work but are not requirements until written into a spec.
 
 ## Artifact rank
 
@@ -61,7 +61,7 @@ These edits need the governing owner:
 - add, remove, or repoint `Verify with:`
 - accept manual evidence where automated evidence was expected
 - approve, supersede, or amend an ADR
-- promote a finding into a spec requirement
+- write a finding into a spec requirement
 
 Meaning-preserving cleanup does not need the same approval.
 

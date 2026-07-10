@@ -18,7 +18,7 @@ climb only for a reason you can name.
 | **L2** | Spec + task | A scoped, disposable task packet (write surface, scope) | The change wants an explicit hand-off — parallel work, a delegated worker, a scope worth pinning. |
 | **L3** | + independent review | A non-implementer judges the diff against the spec | Anything that ships behavior. **The default whenever code changes** — the review is independent, its *formal packet* scales with risk. |
 | **L4** | Revolver | A rotating pool of ≥6 distinct stances, one reviewer at a time, fixing between rounds until it converges | A MAJOR-hunt: high diffusion, security-sensitive, or a large change one reviewer's partition would leave gaps in; runs on cheap varied models ([ADR-0132](../adrs/0132-revolver-rotating-refine-loop.md)). |
-| **L5** | Orchestrated waves | Change plan, decomposed wave tasks, per-wave reviews | A migration, a rewrite, or a structural change across subsystems — the [advanced lifecycle](advanced-lifecycle.md). |
+| **L5** | Orchestrated waves | Change plan, decomposed wave tasks, per-wave reviews | A migration, a rewrite, or a structural change across subsystems — a change plan drives the waves. |
 
 **L1 or L3 is the default. The top rung is never the default.** L4 and L5 are for the change that earns
 them, not a habit. Climbing a rung buys proof or reviewability; it also costs artifact, tokens, and
@@ -49,7 +49,7 @@ honest. Two things hold at every rung where code ships:
 - **Independent review is invariant** ([ADR-0119](../adrs/0119-independent-review-invariant.md)) — a
   non-implementer judges the work. What scales with risk is the *formal review packet*, not whether an
   independent look happens.
-- **Evidence gates the claim** ([ADR-0121](../adrs/0121-evidence-gating-load-bearing-mechanic.md)) — a
+- **Evidence carries the claim** ([ADR-0121](../adrs/0121-evidence-gating-load-bearing-mechanic.md)) — a
   `Pass` needs real output, not confident prose.
 
 These are the minimum, not the surplus. When you cut rigor, cut the unleveraged structure — never the
@@ -66,6 +66,6 @@ enough; the point is that the cost was a decision, not a default.
 
 - [Minimum useful rigor](../adrs/0131-minimum-useful-rigor.md) — the doctrine this ladder serves
 - [Decomposition and risk-weighted review](../adrs/0094-decomposition-and-risk-weighted-review.md) — the risk axis
-- [Advanced lifecycle](advanced-lifecycle.md) — the L5 form, in full
+- [Artifact formats](artifact-formats.md) — the change-plan shape the L5 waves run on
 - [Basic workflow](../02-basic-workflow.md) — the L1/L3 common paths
 - [Review stances](review-stances.md)

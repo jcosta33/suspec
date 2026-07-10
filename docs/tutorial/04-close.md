@@ -1,87 +1,56 @@
 # Close
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+Start only after review is `pass`, or an owner accepts a waiver.
 
+Close does not produce a Suspec artifact. The spec, task, and review have already served
+their purpose — they got you an evidenced, independently-checked decision. What close
+adds is durable memory, and it costs one file write, in your own harness.
 
-This page creates:
+## 1. Save the finding, as a memory
 
-- `findings/session-expiry-is-409.md`
-- an updated `status.md`
+Not every review teaches something worth remembering next time. This one does: the fix
+reveals that expired checkout sessions are a distinct, expected case, not a server
+error. Write it the way your harness records memories — a memory file, `CLAUDE.md`,
+whatever your runner provides — one claim per memory, the evidence attached, under a
+searchable title. Suspec adds no parallel findings store — if the lesson belongs to the
+team rather than to you, raise it through the project's own channels (an issue, an ADR,
+a test).
 
-Start only after review is `pass` or an owner accepts a waiver.
-
-## 1. Save the finding
-
-Create `findings/session-expiry-is-409.md`.
+Illustrative entry, in whatever your harness's memory format is:
 
 ```markdown
----
-type: finding
-id: FINDING-session-expiry-is-409
-from: REVIEW-checkout-expiry
-date: 2026-06-20
-related:
-  - SPEC-checkout#AC-001
----
+## Expired checkout sessions return 409, not a 5xx
 
-# Finding: expired checkout sessions are 409
+Verified: `npm run test:integration -- expired-session` -> 3 passed, 3 total
+(checkout-expiry-review.md, AC-001)
 
-## What we learned
-
-Expired checkout sessions return `409 SESSION_EXPIRED`, not a 5xx.
-
-## Evidence
-
-- `reviews/checkout-expiry.md`, AC-001
-- `npm run test:integration -- expired-session`
-
-## Where it applies
-
-- checkout session expiry
-
-## Where it does not apply
-
-- other checkout validation failures
-- non-checkout sessions
-
-## Future guidance
-
-Treat expired checkout sessions as an expected client error.
+Applies to: checkout session expiry.
+Does not apply to: other checkout validation failures, non-checkout sessions.
 ```
 
-Check:
+## 2. Leave the rest where it landed
 
-- one claim
-- evidence named
-- applies and does-not-apply sections present
-- related requirement linked
-
-## 2. Update the board
-
-In `status.md`:
-
-- mark `SPEC-checkout` as ready or accepted, per your local status model
-- mark `TASK-checkout-expiry` closed
-- link the task row to `reviews/checkout-expiry.md` while retained
-- add the finding under pending acceptance if your board tracks that list
+The spec, task, and review files stay wherever you placed them in step 1 — nothing
+promotes, nothing moves, nothing gets deleted on a timer. If you want them gone once the
+lesson is captured, delete them yourself; if you want them around as a record of how
+this feature was decided, keep them. Either way, the code, the tests, and the memory you
+just wrote are what other people and future sessions actually see.
 
 ## Artifact chain
 
 | Step | Artifact |
 | --- | --- |
-| Pull | `intake/checkout-expiry.md` |
-| Spec | `specs/checkout/spec.md` |
-| Task | `tasks/checkout-expiry.md` |
-| Run | task `## Run summary` |
-| Review | `reviews/checkout-expiry.md` |
-| Close | `findings/session-expiry-is-409.md`, `status.md` |
+| Spec | `checkout-expiry-spec.md` |
+| Task | `checkout-expiry-task.md` |
+| Implement | task `## Run summary` |
+| Review | `checkout-expiry-review.md` |
+| Close | a native memory entry — no new file in this scheme |
 
 ## What you skipped
 
-No inventory or change plan was needed because this is one small feature.
+No task split was strictly necessary — this is a one-worker feature, cut for the
+tutorial only to show the shape. No inventory or change plan was needed because this is
+one small feature, not structural work.
 
-Use [brownfield work and change plans](../05-brownfield-and-change-plans.md) for structural work.
+Use [brownfield work and change plans](../05-brownfield-and-change-plans.md) for
+structural work.

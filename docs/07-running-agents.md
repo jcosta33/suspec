@@ -1,12 +1,7 @@
 # Running agents
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-Suspec does not run agents. It gives them a spec by default, or a task packet when work is split.
+Suspec does not run agents. It gives them a spec by default, or a task packet when work
+is split — named by explicit path.
 
 Any worker can use a Suspec packet:
 
@@ -19,20 +14,22 @@ Any worker can use a Suspec packet:
 
 ## Handoff
 
-Point the worker at the spec, or at the task file when one exists:
+The dispatch prompt names the spec — and the task, when one exists — by full path:
 
 ```text
-Read specs/checkout/spec.md and implement AC-001.
+Read /Users/you/agent-notes/shop-api/spec-checkout.md and implement AC-001.
 
-Read tasks/checkout-expiry.md and do what it says.
+Read /Users/you/agent-notes/shop-api/task-checkout-expiry.md and do what it says.
 ```
 
-The spec contains requirements and `Verify with:` lines. A task file adds the split scope, `Do not change`,
-affected areas, verify commands, and standing instructions for one slice.
+The spec contains requirements and `Verify with:` lines. A task packet adds the split
+scope, `Do not change`, affected areas, verify commands, and standing instructions for
+one slice. Paths flow explicitly — the worker is handed everything it needs by path and
+never discovers artifacts on its own (level: convention).
 
 ## Worker types
 
-- **Worker**: implements a task and leaves a run summary.
+- **Worker**: implements a spec or task slice and leaves a run summary.
 - **Scout**: reads or researches and reports back. It does not merge code.
 
 Do not merge scout output as implementation work.
@@ -51,26 +48,22 @@ The reviewer is not the implementer. The spec or task author may review the impl
 
 Escalate to a stronger model or session on unclear scope, repeated Verify failures, risky files, or a requirement that needs reinterpretation. A cheaper implementer fits clear, bounded work — but measure the saving by pass rate, rework rate, and review outcome; never assume it.
 
-## Worktree rule
+## Isolation
 
-Use one branch or worktree per spec, or per task when the spec is split.
+Isolation is your own git practice — Suspec does not create, manage, or clean up
+worktrees or branches. What matters to the methodology is only this: parallel workers
+need isolated file state, and the reviewer needs the working tree kept until review is
+final.
 
-Branch pattern:
+If you use worktrees:
 
-```text
-suspec/<spec-slug>/<task-slug>
-```
-
-For a single-implementer spec:
-
-```text
-suspec/<task-slug>
-```
-
-Worktrees isolate file state. They do not isolate shared services, ports, databases, or credentials. Configure those separately when needed.
-And exclude the worktree folder from your dev tools: vitest, eslint, cargo and friends do not read
-`.gitignore`, so worktree copies otherwise show up as duplicated tests or phantom lint errors
-(vitest `test.exclude`, eslint `ignores`, …).
+- one branch or worktree per spec, or per task when the spec is split — name them
+  however your team names branches
+- worktrees isolate file state; they do not isolate shared services, ports, databases,
+  or credentials — configure those separately when needed
+- exclude the worktree folder from your dev tools: vitest, eslint, cargo and friends do
+  not read `.gitignore`, so worktree copies otherwise show up as duplicated tests or
+  phantom lint errors (vitest `test.exclude`, eslint `ignores`, …)
 
 ## Provenance
 
@@ -125,9 +118,9 @@ The worker inspects its own diff before handoff.
 
 Self-review can produce fixes. It does not produce the review result. The result belongs to an independent reviewer.
 
-## Keep the worktree
+## Keep the working tree
 
-Keep the worktree until review is final. Review may need to:
+Keep the branch or worktree until review is final. Review may need to:
 
 - inspect the diff
 - rerun commands

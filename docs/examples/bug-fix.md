@@ -1,13 +1,7 @@
 # Example: bug fix
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
-Goal: fix a defect by amending the spec, writing a task, and proving the regression.
+Goal: fix a defect with the least ceremony that still proves it, escalating only when
+the fix surprises you.
 
 ## Bug
 
@@ -17,9 +11,36 @@ PAY-88
 Retrying a payment after a timeout can double charge the customer.
 ```
 
-## Spec amendment
+## The trivial path: one line, no file
 
-Existing spec: `SPEC-payments`.
+A fix this small doesn't earn a committed spec. The "spec" is one line, inline in the
+task dispatch or your own working note:
+
+> Fix: a payment retry after a timeout, with the same idempotency key, must not create a
+> second charge. Verify with `npm run test:integration -- payment-timeout-retry`.
+
+Implement it, reproduce the bug, then paste both runs — red before green, not just the
+final green:
+
+```text
+npm run test:integration -- payment-timeout-retry
+1 failed before the fix
+1 passed after the fix
+```
+
+That's the whole loop at this size: no spec file, no task file, no review packet. The
+code plus the red-then-green evidence is the proof.
+
+## When it escalates
+
+Say the fix turns out to touch more than the ticket implied — reproducing the double
+charge means changing the idempotency lookup itself, not just the retry path, and that
+lookup is shared with settlement reconciliation. A blast radius wider than the ticket is
+the signal to escalate, not a blanket rule that bugs always need a spec.
+
+### Spec amendment
+
+Existing spec: `SPEC-payments`, e.g. `~/.claude/notes/payments-api/payments-spec.md`.
 
 Add:
 
@@ -38,9 +59,9 @@ Non-goal:
 - No change to idempotency-key format.
 ```
 
-## Task
+### Task
 
-`tasks/payment-timeout-retry.md`
+`~/.claude/notes/payments-api/payment-timeout-retry-task.md`
 
 ```markdown
 ---
@@ -77,9 +98,9 @@ status: review-ready
 - Blocked questions: none
 ```
 
-## Review
+### Review
 
-`reviews/payment-timeout-retry.md`
+`~/.claude/notes/payments-api/payment-timeout-retry-review.md`
 
 ```markdown
 ---
@@ -107,35 +128,33 @@ Spot-checked: AC-003 - reran integration test after fix; pass reproduced.
 Merge after human inspection of the money-path note.
 ```
 
-## Close
+Check it:
 
-Finding:
-
-```markdown
-# Finding: payment timeout retries use the same idempotency record
-
-## What we learned
-
-Timeout retries with the same idempotency key reuse the original payment record.
-
-## Evidence
-
-- `reviews/payment-timeout-retry.md`, AC-003
-
-## Where it applies
-
-- payment timeout retry handling
-
-## Where it does not apply
-
-- retries with a different idempotency key
+```bash
+suspec check ~/.claude/notes/payments-api/payment-timeout-retry-review.md \
+  --spec ~/.claude/notes/payments-api/payments-spec.md \
+  --task ~/.claude/notes/payments-api/payment-timeout-retry-task.md
 ```
 
-Board:
+This exits clean when the coverage row, the pasted evidence, and the spec's own `Verify
+with:` command all agree; it exits blocking (2) if AC-003 were marked `Pass` with an
+empty evidence cell.
 
-- task closed after review
-- finding pending acceptance or accepted, per local board policy
+### Close
+
+The idempotency-lookup sharing was worth remembering — save it as a native memory:
+
+```markdown
+## Payment timeout retries reuse the idempotency record, not a new charge
+
+Verified: `npm run test:integration -- payment-timeout-retry` -> failed before, passed after
+(payment-timeout-retry-review.md, AC-003)
+
+Applies to: payment timeout retry handling.
+Does not apply to: retries with a different idempotency key.
+```
 
 ## Lesson
 
-A bug fix needs red-before-green evidence, not only the final green run.
+Start at one line. Escalate only when the fix surprises you — a wider blast radius than
+the ticket implied is the signal, not a policy that says every bug needs a spec.

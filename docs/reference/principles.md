@@ -1,6 +1,6 @@
 # Principles
 
-These rules resolve conflicts in the docs and templates.
+These rules resolve conflicts in the docs.
 
 ## 1. No runtime in this repo
 

@@ -1,20 +1,54 @@
 # Integrations
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+Suspec uses markdown. Any tool that can read files can use it — and every integration on
+this page is optional: the methodology is the skills, every step keeps a by-hand path,
+and no step requires a tool (level: convention).
 
+## The CLI
 
-Suspec uses markdown. Any tool that can read files can use it.
+[suspec-cli](https://github.com/jcosta33/suspec-cli) is the deterministic checker — the
+honesty floor. It is path-agnostic: it reads exactly the files it is handed by full
+path, never resolves a location, a config, or a repo root, and never scans for siblings
+(level: enforced — suspec-cli).
+
+The surface:
+
+```bash
+suspec check <path>                                           # spec or change plan
+suspec check <review-path> --spec <spec-path> --task <task-path>   # review packet
+suspec check --contract                                       # the checks contract as JSON
+```
+
+- Companions are explicit flags; a review packet checked without a required companion is
+  a blocking error (exit 2) — the floor never degrades silently.
+- Exit codes are the API: `0` clean, `1` warning, `2` blocking. `--json` is the
+  structured face.
+- It reports facts — a missing coverage row, a `Pass` with no evidence, a command that
+  does not match the spec, a reference that does not resolve, artifact lint — and never
+  renders a review result.
+
+The full surface and the checks it runs: [CLI reference](reference/cli.md) and
+[checks](reference/checks.md).
+
+## The MCP server
+
+[suspec-mcp](https://github.com/jcosta33/suspec-mcp) adapts the same check surface for
+MCP-capable, shell-less runners: path-explicit check tools that shell out to the CLI and
+return its JSON. Same contract, same explicit paths, no extra capability — an agent that
+can run shell commands does not need it.
+
+## Agent catalogs
+
+[suspec-agents](https://github.com/jcosta33/suspec-agents) carries Claude Code worker
+definitions — reviewer, auditor, spec author, and friends — for developers who delegate
+to subagents. The [artifact index](artifact-registry.md) lists the current set.
 
 ## Agents
 
 Give the agent:
 
-- `AGENTS.md`
-- the spec, or the task packet when work is split
+- `AGENTS.md` (or your harness's equivalent standing instructions)
+- the spec — and the task packet, when work is split — by full path
 - the repo checkout or worktree
 
 Common setup:
@@ -22,7 +56,7 @@ Common setup:
 | Tool | Integration |
 | --- | --- |
 | Claude Code | reads `AGENTS.md`; optional `CLAUDE.md` symlink |
-| Codex | reads `AGENTS.md` and spec/task files |
+| Codex | reads `AGENTS.md` and the spec/task paths in the prompt |
 | Cursor | read the spec or task packet in chat, or attach the file |
 | GitHub Copilot | paste or link the spec or task packet |
 | Aider / other CLIs | point the command at the spec or task file |
@@ -33,50 +67,36 @@ The spec is the contract; a task packet narrows it when work is split. The agent
 
 Keep the tracker as the backlog.
 
-Use Suspec for the work record:
+Use Suspec for the working contract:
 
-1. Capture the ticket in `intake/`.
+1. Capture the ticket as an intake file when you want the original preserved — manual
+   copy-paste is the mechanism — or point the spec's `sources` straight at the ticket URL.
 2. Write or amend a spec.
-3. Link PR and review packet back to the tracker.
-
-Optional `suspec pull` can create intake snapshots. Manual copy-paste is valid.
+3. Link the PR and the review outcome back to the tracker.
 
 ## PRs and CI
 
 Keep PRs and CI.
 
-Use the review packet to connect CI output to requirements:
+The review packet connects CI output to requirements:
 
-- PR shows the diff.
-- CI runs commands.
-- Review packet records which requirement each result supports.
+- the PR shows the diff
+- CI runs commands
+- the review packet records which requirement each result supports
 
-`suspec-cli` emits **gate facts + an exit code** (a clean reconcile vs. open items); the team wires CI
-to block on that exit code if it wants a hard gate. The gate is the team's — Suspec reports, it never
-owns merge authority. Two honest bounds: the review checks fire only when the packet's task/spec
-reference resolves, and reconcile precision on free-form run summaries is still below its
-false-positive budget — the independent reviewer re-running the checks is the invariant, the exit
-code is the convenience.
+`suspec check` emits facts and an exit code; a team that wants a hard gate wires CI to
+block on the exit code (level: toolable — `suspec check`, exit codes 0/1/2). The gate is
+the team's — Suspec reports, it never owns merge authority. The check's bounds are
+honest: it verifies coverage, command match, evidence presence, and reference
+resolution; whether the evidence demonstrates the requirement is the reviewer's own run
+and the human's verdict.
 
 ## Code repos
 
-Code repos stay clean.
-
-At most, add:
-
-- `AGENTS.md` pointer to the workspace
-- `.gitignore` entries for local Suspec state
-- optional local agent guides
-
-Specs and reviews stay in the workspace.
-
-## CLI and MCP
-
-`suspec-cli` can scaffold and reconcile files.
-
-`suspec-mcp` can expose Suspec data to MCP-capable agents.
-
-Both prepare or report state. They do not implement code or issue verdicts.
+Code repos stay clean. Nothing lands in the adopter's repo — no config, no directories,
+no gitignore entries (level: convention). Committed agent guides (`AGENTS.md` and
+friends) are your project's own practice; Suspec artifacts stay outside, beside your
+native artifacts, per [where files live](03-where-files-live.md).
 
 ## Boundaries
 

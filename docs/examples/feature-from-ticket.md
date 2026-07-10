@@ -1,13 +1,7 @@
 # Example: feature from ticket
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
-
-
-Goal: turn one ticket into a reviewed feature.
+Goal: turn one ticket into a reviewed feature — the full spec -> optional split ->
+review -> check flow.
 
 ## Ticket
 
@@ -18,25 +12,13 @@ Add a "Download CSV" button to the report page.
 It should export the currently filtered rows.
 ```
 
-## Intake
-
-`intake/web-123.md`
-
-```markdown
----
-type: intake
-source: WEB-123
-url: https://tracker.example/WEB-123
-captured: 2026-06-20
----
-
-Add a "Download CSV" button to the report page.
-It should export the currently filtered rows.
-```
-
 ## Spec
 
-`specs/report-csv/spec.md`
+Placed beside the author's own working files — one example:
+
+```text
+~/.claude/notes/reports-app/report-csv-spec.md
+```
 
 ```markdown
 ---
@@ -46,7 +28,7 @@ title: Report CSV export
 status: ready
 owner: reporting-team
 sources:
-  - intake/web-123.md
+  - WEB-123
 ---
 
 # Report CSV export
@@ -76,15 +58,21 @@ Verify with: `npm run test:e2e -- report-csv-export`
 
 - `app/reports/`
 - `test/e2e/`
-
-## Dropped from sources
-
-- None.
 ```
 
-## Task
+Lint it:
 
-`tasks/report-csv.md`
+```bash
+suspec check ~/.claude/notes/reports-app/report-csv-spec.md
+```
+
+## Task (optional split)
+
+One requirement, one worker — this feature doesn't need a split. If a wider version of
+this feature landed three export formats in parallel, a task per format would keep the
+workers off each other's files:
+
+`~/.claude/notes/reports-app/report-csv-task.md`
 
 ```markdown
 ---
@@ -121,7 +109,7 @@ status: review-ready
 
 ## Review
 
-`reviews/report-csv.md`
+`~/.claude/notes/reports-app/report-csv-review.md`
 
 ```markdown
 ---
@@ -149,16 +137,24 @@ Spot-checked: AC-001 - reran the e2e test; output matched.
 Merge.
 ```
 
+Check it against both companions:
+
+```bash
+suspec check ~/.claude/notes/reports-app/report-csv-review.md \
+  --spec ~/.claude/notes/reports-app/report-csv-spec.md \
+  --task ~/.claude/notes/reports-app/report-csv-task.md
+```
+
+Exits clean: one requirement, one coverage row, evidence present.
+
 ## Close
 
-Board:
-
-- `TASK-report-csv`: closed, linked to `reviews/report-csv.md`
-
-Finding:
-
-- none. No durable lesson beyond the spec.
+No durable lesson beyond the spec itself — nothing to save as a memory here. The spec,
+task, and review have served their purpose; the exported CSV code and its test are what
+remain.
 
 ## Lesson
 
-The important row is the review coverage row. It binds the ticket's acceptance criterion to evidence.
+The review coverage row is the important artifact. It binds the ticket's acceptance
+criterion to evidence — everything upstream of it (the ticket, the spec) exists to make
+that row possible to write honestly.

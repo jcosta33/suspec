@@ -1,109 +1,84 @@
 # Saving findings
 
-> **Superseded model — [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+Findings come in two lifetimes. Ephemeral findings — surprises, candidate issues,
+things the reviewer should see — ride the review packet's findings section and die with
+it. Durable lessons outlive the work, and they go where your harness will actually read
+them again:
 
+A durable lesson becomes a native memory: write it the way your harness records memories
+(a memory file, CLAUDE.md, whatever your runner provides), one claim per memory, the
+evidence attached, under a searchable title. Suspec adds no parallel findings store — if
+the lesson belongs to the team rather than to you, raise it through the project's own
+channels (an issue, an ADR, a test).
 
-Close is where durable lessons leave the task and enter the workspace.
-
-Save a finding when the lesson will matter again.
-
-Do not save task-local scratch.
+Save a lesson when it will matter again. Do not save task-local scratch.
 
 ## What counts
 
-Good finding candidates:
+Good candidates for a durable memory:
 
 - a behavior that surprised the worker or reviewer
 - a project constraint not already documented
 - a risky edge case
-- a test or fixture fact future tasks need
+- a test or fixture fact future work needs
 - a recurring implementation pattern
 - a known non-goal or boundary
 
-Poor finding candidates:
+Poor candidates:
 
 - routine command output
 - temporary debugging notes
 - one-off local setup
 - speculation with no evidence
 
-## Finding shape
+## The shape of a memory
 
-Use the kit template.
-
-Include:
-
-- one claim
-- evidence
-- where it applies
-- where it does not apply
-- related spec, task, review, or file
-
-Example:
+One claim, its evidence, its boundaries:
 
 ```markdown
-# Finding: expired checkout sessions are 409
-
-## What we learned
+# Expired checkout sessions are 409
 
 Expired checkout sessions return `409 SESSION_EXPIRED`, not a 5xx.
 
-## Evidence
+Evidence: `test/integration/expired-session.test.ts`; confirmed in the
+checkout-expiry review, AC-001.
 
-- `reviews/checkout-expiry.md`, AC-001
-- `test/integration/expired-session.test.ts`
-
-## Where it applies
-
-- checkout session expiry
-
-## Where it does not apply
-
-- other checkout validation failures
-- non-checkout sessions
+Applies to checkout session expiry. Does not apply to other checkout
+validation failures or non-checkout sessions.
 ```
 
-## Board update
+Write it in whatever format your harness's memory surface uses — the discipline is the
+claim + evidence + searchable title, not a file format (level: convention).
 
-After review:
+## Memory hygiene
 
-- update `status.md` — the Human-attention list and links; live state is the derived
-  `suspec status` view where the CLI is installed (a stale state row misleads more than an
-  empty one — [[PLANCOMPLY]](research/sources.md#PLANCOMPLY))
-- link closed work to its review packet while retained
-- add pending findings to Human attention
-- carry forward blocked questions or follow-up work
+Agent-authored content is a claim, not a fact. Keep the memory surface honest
+(level: convention):
 
-A closed row without evidence is not a reliable board entry.
+- a memory states what was **verified**, not what was assumed
+- an agent-authored claim names its evidence, so a future reader can re-check it
+- a memory contradicted by current reality is corrected or deleted, not left to mislead
 
-## Promotion
+A finding without evidence is an opinion.
 
-Some discoveries belong somewhere else:
+## What belongs somewhere else
+
+Some discoveries have a better home than your memory:
 
 - intended behavior -> spec amendment
-- decision with tradeoffs -> ADR
-- reusable fact -> finding
-- repeated fact pattern -> pattern, if the workspace uses patterns
-- term definition -> glossary
+- a decision with tradeoffs -> an ADR, through the project's own process
+- a defect or team-facing lesson -> an issue
+- behavior worth locking in -> a test
+- a term definition -> the project's glossary
 
-A finding does not weaken a requirement. If the finding contradicts the spec, reconcile the spec.
+A finding does not weaken a requirement. If the finding contradicts the spec, reconcile
+the spec.
 
 ## Retrieval
 
-There is no retrieval engine in the markdown workflow.
-
-Use:
-
-- clear filenames
-- `status.md`
-- links from specs, tasks, and reviews
-- grep
-
-Name findings for the words future readers will search.
+Retrieval is your harness's job — its memory surface is indexed and loaded by the
+runner itself, which is exactly why the lesson goes there. Help it: name memories for
+the words a future reader will search.
 
 ## Related
 

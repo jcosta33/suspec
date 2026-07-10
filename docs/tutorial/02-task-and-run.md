@@ -1,20 +1,23 @@
-# Task and Run
+# Task and implement
 
-> **Superseded model — [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md).** This page still describes the committed
-> workspace / board / `.suspec/` layout. Suspec artifacts are now transient personal working
-> files under `~/.claude/state/<repo-name>/`, never committed to any repo; durable value is
-> promoted to ADRs, tests, issues, and PR digests. Where this page conflicts with
-> [ADR-0137](../adrs/0137-personal-harness-transient-artifacts.md), the ADR wins. Rewrite pending.
+This page produces a task packet and its filled-in run evidence.
 
+This split is optional. For a one-worker feature, skip step 1 and hand the worker the
+spec directly — the worker records changed files, verify results, and blocked questions
+under the spec's own `## Execution` section, and step 3 in [Review](03-review.md) checks
+the review against `--spec` alone, with no `--task` flag. This tutorial cuts a task
+anyway, so you can see the split-work shape.
 
-This page creates:
+## 1. Split the work
 
-- `tasks/checkout-expiry.md`
-- a run summary in that task
+Use the split-work skill (or cut it by hand) to carve a scope-subset off the spec. A
+task never adds a requirement — it only narrows to what one worker will do.
 
-## 1. Task
+Place it beside the spec:
 
-Create `tasks/checkout-expiry.md`.
+```text
+~/.claude/notes/shop-api/checkout-expiry-task.md
+```
 
 ```markdown
 ---
@@ -30,7 +33,7 @@ status: ready
 
 ## Source
 
-- `specs/checkout/spec.md`
+- `~/.claude/notes/shop-api/checkout-expiry-spec.md`
 
 ## Scope
 
@@ -51,30 +54,30 @@ status: ready
 
 ## Agent instructions
 
-Copy from the task template.
+Read the source spec's Intent and Non-goals before touching code. Stay inside Affected
+areas. Stop and ask before touching anything in Do not change.
 ```
 
-Check:
+Check, by hand:
 
 - scope is `[AC-001]`
 - `Do not change` names the schema
 - verify command matches the spec
-- agent instructions come from the template
+- agent instructions are concrete, not a placeholder
 
-## 2. Run
+## 2. Dispatch and implement
 
-Use one worktree or branch per task.
+Use the implement-task skill, or hand the task to a worker directly — dispatch by
+explicit path so nothing has to be discovered or guessed:
 
-Example:
+```text
+Read ~/.claude/notes/shop-api/checkout-expiry-task.md and do what it says.
+```
+
+Use one worktree or branch per task, e.g.:
 
 ```bash
 git worktree add -b suspec/checkout-expiry ../shop-api--checkout-expiry main
-```
-
-Hand off:
-
-```text
-Read tasks/checkout-expiry.md and do what it says.
 ```
 
 ## Expected return
@@ -98,7 +101,7 @@ The worker pastes real output under the verify item and fills the run summary:
 - Blocked questions: none
 ```
 
-Check:
+Check, by hand:
 
 - output is pasted, not summarized
 - changed files are listed

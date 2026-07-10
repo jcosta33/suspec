@@ -165,7 +165,9 @@ Methods:
 
 For `test`, scope may be `unit`, `integration`, or `e2e`.
 
-Adapters resolve through the repo's `suspec.config.json` command slots.
+Adapters name commands the project itself defines — its own test, lint, or contract
+runners. Suspec resolves nothing; the adapter label tells the reader which project command
+proves the requirement.
 
 ## Metadata
 
@@ -185,8 +187,8 @@ Core checks apply to SOL specs.
 
 SOL-specific checks are the contract in [checks](checks.md).
 
-Treat them as checklist items unless your installed `suspec-cli` catalogue says they are
-implemented.
+Treat them as checklist items unless the checks contract (`suspec check --contract`) lists
+them as implemented.
 
 ## Versioning
 
