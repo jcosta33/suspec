@@ -48,15 +48,17 @@ npx skills add jcosta33/suspec-skills -g    # the skill family
 # optional: install suspec-cli — github.com/jcosta33/suspec-cli
 ```
 
-Author a spec through the skill. A requirement looks like this:
+Most changes stop right there: state the fix and its verify command inline, implement,
+paste the output, done — no file, no packet, no check run. For work that earns more
+structure, author a spec through the skill. A requirement looks like this:
 
 ```markdown
-### AC-001 — Expired refresh token redirects to login
+### AC-001 — CSV export honors the selected date range
 
-When the refresh token is expired, the client must clear the local
-session and redirect to `/login`.
+The export endpoint must filter rows to the date range selected in the
+UI before generating the CSV file.
 
-Verify with: `pnpm test:run auth-refresh-expired-token`
+Verify with: `pnpm test:run export-date-range-filter`
 ```
 
 Check it:
@@ -65,11 +67,12 @@ Check it:
 suspec check <path>
 ```
 
-Exit codes are the API: `0` clean, `1` warning, `2` blocking. After implementation, the
+Exit codes are the API: `0` clean, `1` warning, `2` blocking (level: enforced — suspec-cli). After implementation, the
 review packet gets the full floor —
-`suspec check <review-path> --spec <spec-path> --task <task-path>` —
+`suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the spec
+was split into one) —
 and a `Pass` with an empty evidence cell, a command that does not match the spec, or a
-silent coverage gap comes back as a fact, not an opinion.
+silent coverage gap comes back as a fact, not an opinion (level: enforced — suspec-cli).
 
 ## Where files live
 
@@ -90,7 +93,7 @@ step exists for ceremony's sake (level: convention).
 
 Suspec coexists with your harness's native plan mode — it never modifies, replaces, or
 races it. Native planning stays for the work that suits it; Suspec artifacts appear
-alongside, when the work earns them.
+alongside, when the work earns them (level: convention).
 
 ## Two skill tiers
 
@@ -132,9 +135,9 @@ outright: no lock-in, no walled garden.
 
 **Who should not use Suspec.** If your changes are small enough to read whole and you
 validate by reading, native plan mode, an `AGENTS.md`, and your test suite already give
-you most of what this offers, at zero ceremony. Suspec starts paying when the diff is
-bigger than your attention, when "the agent says it passes" is not evidence you accept,
-or when your plans and reviews are inconsistent prose nobody can check. Until one of
+you most of what this offers, at zero ceremony. Suspec starts paying when the diff
+outgrows your attention, when more than one person or agent touches the work, or when
+someone must later reconstruct what was intended and what was proven. Until one of
 those is true, don't adopt it.
 
 Against its neighbors: spec-first scaffolds generate plans. Trackers hold tickets. AI

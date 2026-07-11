@@ -50,6 +50,12 @@ updated: 2026-07-10
 - [ADR-0137](./0137-personal-harness-transient-artifacts.md) Decision 3 (durability by promotion)
   — recorded in 0137's ledger disposition alongside
   [ADR-0141](./0141-artifacts-beside-native-artifacts.md)'s narrowing.
+- [ADR-0032](./0032-memory-model.md) (refined by [ADR-0067](./0067-memory-tiering.md), carried
+  by 0137 Decision 3) — the two-tier, provenance-anchored, promotion-based architecture (Tier-1
+  index, Tier-2 evidence store, the promote verb) is exactly what Decisions 1-2 reject; this is
+  the decision the rejected-alternatives table names directly ("a second memory beside the
+  harness's memory is the same parallel-record mistake"). Only the claim+evidence discipline
+  survives, as skill prose.
 
 **Upheld:**
 - [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md)'s evidence discipline — a finding
@@ -77,7 +83,8 @@ updated: 2026-07-10
 ## Status
 
 Accepted (2026-07-10). Supersedes
-[ADR-0123](./0123-project-memory-quarantine-and-poisoning-defense.md) and (with
+[ADR-0123](./0123-project-memory-quarantine-and-poisoning-defense.md), [ADR-0032](./0032-memory-model.md)
+(refined by [ADR-0067](./0067-memory-tiering.md)), and (with
 [ADR-0141](./0141-artifacts-beside-native-artifacts.md)) the promotion decision of
 [ADR-0137](./0137-personal-harness-transient-artifacts.md); upholds
 [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md)'s evidence discipline. Part of the
@@ -85,7 +92,7 @@ Accepted (2026-07-10). Supersedes
 
 ## Propagation
 
-- `docs/adrs/README.md` — ledger row + disposition flips (0123, 0137).
+- `docs/adrs/README.md` — ledger row + disposition flips (0123, 0137, 0032).
 - Canon: `docs/09-saving-findings.md` and `docs/reference/memory.md` rewritten around this
   decision.
 - corpus-skills: `save-findings` spine rewrite; the finding-triage lines in `review-output` and

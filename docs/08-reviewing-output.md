@@ -4,8 +4,9 @@ Review checks the worker's output against the **spec** — the task, when one ex
 scopes which requirements and indexes the evidence, but the spec is what the code is
 judged against.
 
-The reviewer's posture is refute-by-default: the worker's paste is a claim, not proof,
-and every green row is a candidate for disproof until the reviewer has grounded it.
+The reviewer's posture is refute-by-default: the worker's paste is a claim, not
+evidence, and every green row is a candidate for disproof until the reviewer has
+grounded it.
 
 Do not read a large diff from line 1. Start with:
 
@@ -29,18 +30,13 @@ When the change warrants more than one pass, escalate to a **rotating (Revolver)
 ## Review packet
 
 The reviewer writes the packet beside their own native artifacts, per the
-[placement rule](03-where-files-live.md), and it names the spec and task it reconciles
-against. The shape is documented in [artifact formats](reference/artifact-formats.md).
-
-Required sections:
-
-- Summary
-- Changed files
-- Requirement coverage
-- Change-plan coverage, when relevant
-- Human attention
-- Task status (recommended; optional in the checks contract)
-- Suggested decision
+[placement rule](03-where-files-live.md), and it names the spec — and the task, when one
+exists — it reconciles against. The full section list — including Review plan and
+Candidate findings for a lead-orchestrated or multi-lens review, and Open decisions when
+relevant — is documented in [artifact formats](reference/artifact-formats.md); the checks
+contract's own required/optional split is narrower (Summary, Changed files, Requirement
+coverage, Human attention, Suggested decision required; Change-plan coverage and Task
+status optional, the latter recommended but not required).
 
 ## Coverage table
 
@@ -76,7 +72,7 @@ Invalid evidence:
 - a screenshot with no stated check
 - a claim that a command was run, without output or link
 
-The worker's paste is a claim, not proof: the reviewer re-runs the checks and pastes
+The worker's paste is a claim, not evidence: the reviewer re-runs the checks and pastes
 their own output. Staleness is the reviewer's to own the same way — read the diff and
 confirm the evidence was produced against the code being judged, not an earlier state.
 
@@ -85,7 +81,7 @@ confirm the evidence was produced against the code being judged, not an earlier 
 When the packet is written, run the floor:
 
 ```bash
-suspec check <review-path> --spec <spec-path> --task <task-path>
+suspec check <review-path> --spec <spec-path> [--task <task-path>]
 ```
 
 Companions are explicit: the checker reads exactly the files it is handed, and a review
@@ -93,11 +89,14 @@ packet checked without a required companion is a blocking error (exit 2) — the
 never silently degrades into a shallower check (level: enforced — suspec-cli).
 
 What it verifies is exactly what a lazy or dishonest reviewer would fudge: every scoped
-requirement has a coverage row, every evidence command matches the spec's `Verify with:`
-line, every `Pass` carries evidence, every reference resolves — plus the packet's lint.
+requirement has a coverage row, every `Pass` row backed by a structured `verify` block
+has its command machine-matched against the spec's `Verify with:` line (a `Pass` row
+backed only by the free-form Evidence cell draws an advisory warning instead — routed to
+human attention, not machine-verified for command correctness), every `Pass` carries
+evidence, every reference resolves — plus the packet's lint.
 Exit codes: `0` clean, `1` warning, `2` blocking. It reports facts; it never renders the
 review result. What no tool covers — whether the evidence actually demonstrates the
-requirement — is the reviewer's own run and the human's verdict.
+requirement — is the reviewer's own run and the human's review result.
 
 ## Human attention
 
@@ -113,6 +112,7 @@ Route anything a reviewer must inspect:
 - missing or weak test output
 - candidate findings
 - unresolved questions
+- missing or unconvincing worker-boot provenance for a delegated task
 
 If no trigger applies, say `None`.
 
@@ -138,7 +138,7 @@ Use the table:
 | Any Blocked | Do not merge |
 | Fail or Unverified waived by owner | Merge with waiver |
 
-The suggested decision is a suggestion. The human owns the verdict — no packet, check,
+The suggested decision is a suggestion. The human owns the decision — no packet, check,
 or agent merges anything.
 
 Waivers name:
@@ -164,7 +164,7 @@ The status is about the review packet, not the PR platform state.
 
 An agent driving the app can produce evidence: actions taken, screen state, logs, or screenshots.
 
-It does not produce the verdict. A reviewer still judges the evidence against the requirement.
+It does not produce the review result. A reviewer still judges the evidence against the requirement.
 
 ## Related
 

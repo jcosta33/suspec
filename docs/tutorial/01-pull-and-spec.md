@@ -75,7 +75,7 @@ Expired checkout sessions return a client-visible expiry response instead of a s
 ### AC-001 - Expired session returns 409
 
 When a request acts on a checkout session older than 30 minutes, the API must respond
-`409 SESSION_EXPIRED` and must not return a 5xx.
+`409 SESSION_EXPIRED`, never a 5xx.
 
 Verify with: `npm run test:integration -- expired-session`
 
@@ -94,9 +94,9 @@ Verify with: `npm run test:integration -- expired-session`
 suspec check ~/.claude/notes/shop-api/checkout-expiry-spec.md
 ```
 
-This exits 0 on a clean spec. A ready spec with no requirements, a missing `Verify
-with:`, or a leftover `TBD` reports a blocking row naming the gap; a thin `Non-goals` or
-`Open questions` section reports a warning.
+This exits 0 on a clean spec. A missing `Verify with:` or a leftover `TBD` reports a
+blocking row naming the gap; a thin `Non-goals` or `Open questions` section reports a
+warning.
 
 By hand, without the CLI, check the same things:
 

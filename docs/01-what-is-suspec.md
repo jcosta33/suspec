@@ -11,6 +11,7 @@ code; Suspec shapes the work around it.
 
 It gives you:
 
+- an inline, zero-file path for changes too small to need a spec
 - specs with requirements and acceptance criteria, sized to the work
 - optional task packets when one spec splits into parallel slices
 - review packets that reconcile evidence against the spec, requirement by requirement
@@ -28,7 +29,7 @@ not decorative (level: convention):
 - A **trivial fix** gets a one-line inline spec and no file at all.
 - A **feature** gets a lean spec: a handful of requirements with IDs and `Verify with:`
   lines, non-goals, acceptance criteria.
-- **Large work** extends the spec — inventory, change plan, task slices — rather than
+- **Large work** extends the spec — inventory, change plan, task packets — rather than
   padding it.
 
 How you entered the work (a ticket, a chat message, your own idea) never sets the
@@ -39,7 +40,7 @@ ceremony level. The work does.
 Suspec never modifies, replaces, or races your harness's own plan mode. If lightweight
 native planning serves the change, use it and stop there. Suspec artifacts are produced
 alongside, by skills, when the work earns them — a contract the agent implements against
-and a reviewer reconciles against, not a second planner.
+and a reviewer reconciles against, not a second planner (level: convention).
 
 ## The honesty floor
 
@@ -51,17 +52,20 @@ the load-bearing claims cannot be faked:
 - every `Pass` carries evidence — an empty evidence cell can never read as `Pass`
 - every reference resolves
 
-plus per-artifact lint on specs, change plans, tasks, and review packets. The checker is
-`suspec check <path>` — facts and exit codes, no model in the loop, no review result
-rendered (level: enforced — suspec-cli). Every step also keeps a by-hand path; no step
-requires a tool (level: convention).
+plus per-artifact lint on specs, change plans, and review packets. The checker is
+`suspec check` — `suspec check <path>` for a spec or change plan,
+`suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the spec
+was split into one) for a review packet — facts and exit codes, no model in the loop, no
+review result rendered (level: enforced — suspec-cli). Every step also keeps a by-hand
+path; no step requires a tool (level: convention).
 
 ## Code is king
 
 Suspec artifacts are transient working files. They are never committed to the repos you
-work on, and nothing durable is supposed to live in them: a decision becomes an ADR,
+work on unless the project's own governance says otherwise, and nothing durable is
+supposed to live in them: a decision becomes an ADR,
 behavior becomes tests, a lesson becomes a native harness memory, the discussion lives
-on the PR. The durable record stays in the layers that already own it.
+on the PR. The durable record stays in the layers that already own it (level: convention).
 
 ## Who should not use it
 

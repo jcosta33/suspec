@@ -42,7 +42,7 @@ Run authoring, implementation, and review as different sessions:
 - **Implementer** — executes one spec or task slice; reads the spec and any task; the scoped requirements are the boundary; does not change requirements.
 - **Lens reviewer** — reviews one lens (correctness, evidence, design risk, …) and returns findings only.
 - **Review lead** — for a formal review, cycles a pool of distinct lens stances one reviewer at a time on the revised change, applies fixes between rounds, and writes the packet.
-- **Human/owner** — owns the verdict.
+- **Human/owner** — owns the decision.
 
 The reviewer is not the implementer. The spec or task author may review the implementation, as long as they did not implement it.
 
@@ -65,17 +65,6 @@ If you use worktrees:
   not read `.gitignore`, so worktree copies otherwise show up as duplicated tests or
   phantom lint errors (vitest `test.exclude`, eslint `ignores`, …)
 
-## Provenance
-
-For delegated or worker-run specs/tasks, record:
-
-- sources read
-- guide loaded
-- worker identity
-- isolation mode: worktree, shared tree, or patch-only
-
-This is evidence for review. It is not a trust token.
-
 ## What the worker must return
 
 The returned spec `## Execution` entry, or task packet when split, contains:
@@ -86,6 +75,9 @@ The returned spec `## Execution` entry, or task packet when split, contains:
 - out-of-scope edits named
 - blocked questions named
 - candidate findings listed
+- a Provenance line, optional, for delegated or worker-run work: sources read, guide
+  loaded, worker identity, isolation mode (worktree, shared tree, or patch-only).
+  Lead-run or trivial work omits it. Evidence for review, not a trust token.
 
 Example:
 
@@ -96,6 +88,10 @@ Example:
 
       Test Suites: 1 passed, 1 total
       Tests:       3 passed, 3 total
+
+## Findings
+
+- Candidate findings: none
 
 ## Run summary
 

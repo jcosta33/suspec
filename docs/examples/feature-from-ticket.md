@@ -68,44 +68,12 @@ suspec check ~/.claude/notes/reports-app/report-csv-spec.md
 
 ## Task (optional split)
 
-One requirement, one worker — this feature doesn't need a split. If a wider version of
-this feature landed three export formats in parallel, a task per format would keep the
-workers off each other's files:
-
-`~/.claude/notes/reports-app/report-csv-task.md`
-
-```markdown
----
-type: task
-id: TASK-report-csv
-source:
-  - SPEC-report-csv
-scope: [AC-001]
-status: review-ready
----
-
-## Scope
-
-- AC-001 - export currently filtered rows as CSV.
-
-## Do not change
-
-- report filtering semantics
-
-## Verify
-
-- [x] `npm run test:e2e -- report-csv-export` (AC-001)
-
-      1 passed
-
-## Run summary
-
-- Changed files: `app/reports/export.ts`, `app/reports/page.tsx`, `test/e2e/report-csv.spec.ts`
-- Verify results:
-  - `npm run test:e2e -- report-csv-export` (AC-001): PASS, output above
-- Out-of-scope edits: none
-- Blocked questions: none
-```
+One requirement, one worker — this is the common 1:1 case
+([creating tasks](../06-creating-tasks.md)), so this example skips the task packet: the
+review below reconciles straight against the spec. If a wider version of this feature
+landed three export formats in parallel, a task per format would keep the workers off
+each other's files — see [bug fix](bug-fix.md) and [large PR review](large-pr-review.md)
+for that worked shape.
 
 ## Review
 
@@ -115,7 +83,6 @@ status: review-ready
 ---
 type: review
 id: REVIEW-report-csv
-task: TASK-report-csv
 pr: none yet
 status: pass
 ---
@@ -137,20 +104,23 @@ Spot-checked: AC-001 - reran the e2e test; output matched.
 Merge.
 ```
 
-Check it against both companions:
+Check it against the spec — no `task:` in the frontmatter means no `--task` on the call,
+per [ADR-0143](../adrs/0143-path-agnostic-check-cli-contract.md):
 
 ```bash
 suspec check ~/.claude/notes/reports-app/report-csv-review.md \
-  --spec ~/.claude/notes/reports-app/report-csv-spec.md \
-  --task ~/.claude/notes/reports-app/report-csv-task.md
+  --spec ~/.claude/notes/reports-app/report-csv-spec.md
 ```
 
-Exits clean: one requirement, one coverage row, evidence present.
+Exits with an advisory warning (exit 1): one requirement, one coverage row, evidence
+present — C013 flags the free-form Evidence cell and routes it to human attention. Add a
+`verify` block ([ADR-0083](../adrs/0083-verify-evidence-reconcile.md)) to machine-confirm
+it and exit clean instead.
 
 ## Close
 
-No durable lesson beyond the spec itself — nothing to save as a memory here. The spec,
-task, and review have served their purpose; the exported CSV code and its test are what
+No durable lesson beyond the spec itself — nothing to save as a memory here. The spec
+and review have served their purpose; the exported CSV code and its test are what
 remain.
 
 ## Lesson

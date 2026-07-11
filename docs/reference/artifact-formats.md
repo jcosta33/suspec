@@ -14,7 +14,6 @@ filename or location — where the files live is your choice
 | `spec` | `SPEC-` |
 | `task` | `TASK-` |
 | `review` | `REVIEW-` |
-| `finding` | `FINDING-` |
 
 ## Conditional types
 
@@ -126,13 +125,18 @@ Frontmatter:
 ```yaml
 type: review
 id: REVIEW-checkout-expiry
-task: TASK-checkout-expiry   # or `spec: SPEC-…` INSTEAD, for a 1:1 review with no task
+task: TASK-checkout-expiry   # omit for a 1:1 review with no task
 pr: https://...
 reviewer: name-or-session
 status: draft
 ```
 
-A review reconciles against the **spec** ([ADR-0134](../adrs/0134-self-contained-spine.md)): with `task:`, coverage keys on the spec's ACs the task scoped (reached via the task's `source:`); with `spec:` (1:1, no task), on the whole spec. A task, when present, only scopes and indexes evidence — it is never the review's target.
+A review reconciles against the **spec**, always passed explicitly via `--spec <path>` on
+the check call ([ADR-0143](../adrs/0143-path-agnostic-check-cli-contract.md)): with
+`task:`, coverage keys on the spec's ACs the task scoped (the task's `scope:` list); with
+no `task:` (1:1, no task), on the whole spec. A task, when present, only
+scopes and indexes evidence — it is never the review's target. The review's frontmatter
+never names its own spec; only `task:` is read and validated by the checker.
 
 Sections:
 
@@ -164,28 +168,11 @@ A `Pass` needs evidence.
 
 ## Finding
 
-Frontmatter:
-
-```yaml
-type: finding
-id: FINDING-session-expiry-is-409
-from: REVIEW-checkout-expiry
-date: 2026-06-20
-related:
-  - SPEC-checkout#AC-001
-```
-
-Sections:
-
-- What we learned
-- Evidence
-- Where it applies
-- Where it does not apply
-- related spec / task / review / file
-- Future guidance (optional)
-
-One finding, one durable claim. A durable finding becomes a native memory at Close
-([memory](memory.md)).
+Findings are not a standalone artifact — there is no `finding` type, no `FINDING-` id, no
+file to write. Ephemeral findings ride the review packet's Candidate findings section
+(above) and die with it. A durable finding becomes a native harness memory instead — one
+claim, its evidence, a searchable title, no id assigned ([memory](memory.md),
+[saving findings](../09-saving-findings.md)).
 
 ## Inventory
 
@@ -230,3 +217,4 @@ Every wave names verification.
 - [Checks](checks.md)
 - [Basic workflow](../02-basic-workflow.md)
 - [Where files live](../03-where-files-live.md)
+- [Reviewing output](../08-reviewing-output.md)

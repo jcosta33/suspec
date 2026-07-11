@@ -31,22 +31,31 @@ updated: 2026-07-10
    no interactive mode, no dashboard. _Level: enforced (suspec-cli)._
 
 2. **Path-agnostic, always.** The CLI reads exactly the files it is handed by full path. It never
-   resolves a store, a config, a repo root, or a workspace tree, and never scans for siblings.
+   resolves a store, a config, a repo root, or a workspace tree. The exceptions are three
+   reference checks — C009, C015, and C010 (Decision 4) — each of which resolves one level of
+   sibling directory relative to the passed artifact and never walks a tree or touches a store.
    The primary artifact's kind is read from its own frontmatter; companions are always explicit
    flags. _Level: enforced (suspec-cli)._
 
-3. **A missing required companion blocks.** A review packet checked without the spec and task it
-   reconciles against exits blocking (2) naming the missing flag — the honesty floor never
-   degrades silently into a shallower check. _Level: enforced (suspec-cli)._
+3. **A missing required companion blocks.** `--spec` is required for every review; `--task` is
+   required iff the review's frontmatter names a `task:` (a task-less 1:1 review reconciles
+   spec-keyed, against the spec's full requirement set) — a `--task` passed but not referenced is
+   refused as a wiring mistake, never silently ignored. A review checked without a companion it
+   needs exits blocking (2) naming the missing flag — the honesty floor never degrades silently
+   into a shallower check. _Level: enforced (suspec-cli)._
 
 4. **Reference checks resolve artifact-relative.** C009 (source refs) and C015 (citation anchors)
    resolve against the passed artifact's own directory — `sources.md` is the spec's sibling —
-   never against a workspace root. _Level: enforced (suspec-cli)._
+   never against a workspace root. C010 (change-plan `preserves:`/`SPEC-id#AC-NNN` refs) is the
+   narrow exception to Decision 2's no-siblings-scan rule: it resolves `SPEC-id#AC-NNN` by scanning
+   the plan's own directory for sibling `*/spec.md` files, one level beside the plan, never a tree
+   walk. _Level: enforced (suspec-cli)._
 
 5. **C017 leaves the adopter contract.** The orphaned-reference scan presumes a governed tree to
    walk; catalog hygiene is the catalog repo's own concern (narrows
-   [ADR-0097](./0097-mint-c016-c017-defer-oversized.md); C016 stands untouched).
-   _Level: convention._
+   [ADR-0097](./0097-mint-c016-c017-defer-oversized.md); C016's check and hard-error severity stand
+   untouched — the gate-path/reconcile-path split it was framed against narrows per Decision 7,
+   same as C013/C020). _Level: convention._
 
 6. **Contract 0.16.0.** `checks/checks.yaml` (canon) and the CLI's contract table move together
    in one logical change; the sibling-canon drift guard stays the enforcement.
@@ -55,12 +64,17 @@ updated: 2026-07-10
 7. **Exit codes are the API.** 0 clean · 1 warning · 2 blocking; `--json` stays the structured
    face. Severity previously expressed as "blocks at the gate face" is expressed as blocking
    severity at check time — the human owns what blocks a merge (narrows
-   [ADR-0129](./0129-c013-cmd-mismatch-blocks-at-gate.md) and
-   [ADR-0128](./0128-mint-c020-unresolvable-ref.md): both checks and their hard severities stand;
+   [ADR-0097](./0097-mint-c016-c017-defer-oversized.md) (C016's gate-path-vs-reconcile-path split),
+   [ADR-0129](./0129-c013-cmd-mismatch-blocks-at-gate.md), and
+   [ADR-0128](./0128-mint-c020-unresolvable-ref.md): the checks and their hard severities stand;
    the gate face they referenced retires). _Level: enforced (suspec-cli)._
 
 8. **Family consequences.** corpus-mcp adapts this surface only — path-explicit tools, shell-out
-   posture unchanged (upholds [ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md)). The
+   posture unchanged. The `suspec show <task|spec|review|checks> --json` read family
+   [ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md) grew as "the loader surface the MCP
+   needs" — and [ADR-0110](./0110-execution-change-record.md) confirms shipped (`suspec show
+   spec`) — retires with the rest of the multi-verb surface; only ADR-0085's shell-out,
+   never-import-core architecture survives (narrows ADR-0085 and ADR-0110; see Upheld). The
    `agents emit` Codex emitter retires; the committed Codex projections become hand-maintained
    (narrows [ADR-0098](./0098-codex-emitter-and-universal-layer.md): the universal AGENTS.md
    discipline stands; the emitter and its sync guard retire). _Level: convention._
@@ -84,8 +98,17 @@ updated: 2026-07-10
 - [ADR-0097](./0097-mint-c016-c017-defer-oversized.md), [ADR-0128](./0128-mint-c020-unresolvable-ref.md),
   [ADR-0129](./0129-c013-cmd-mismatch-blocks-at-gate.md) — per Decisions 5 and 7.
 - [ADR-0098](./0098-codex-emitter-and-universal-layer.md) — per Decision 8.
+- [ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md) and
+  [ADR-0110](./0110-execution-change-record.md) — per Decision 8: the `suspec show … --json` read
+  family ADR-0085 grew (shipped per ADR-0110's `suspec show spec`) retires with the multi-verb
+  surface; ADR-0085's shell-out, never-import-core architecture is what actually survives (see
+  Upheld). ADR-0110's Scope and Coverage sub-decisions stand; its Pins sub-decision (`reviewed-sha:`
+  + `evidence-hash:`, written by `suspec stamp`) retires with the staleness machinery it served —
+  ADR-0107/ADR-0130 (Superseded, above) — Decision 1's exhaustive surface ("nothing else — no other
+  command") leaves no `stamp` command to write it.
 
-**Upheld:** [ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md) (shell-out, never import),
+**Upheld:** [ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md) (shell-out, never
+import-core architecture only — its read-family growth narrows, above),
 [ADR-0063](./0063-honesty-framework-and-tooling-boundary.md) (levels as stated),
 [ADR-0079](./0079-c012-coverage-check.md)/[ADR-0083](./0083-verify-evidence-reconcile.md) (the
 surviving checks' semantics).
@@ -120,19 +143,25 @@ Accepted (2026-07-10). Supersedes
 [ADR-0097](./0097-mint-c016-c017-defer-oversized.md),
 [ADR-0128](./0128-mint-c020-unresolvable-ref.md),
 [ADR-0129](./0129-c013-cmd-mismatch-blocks-at-gate.md),
-[ADR-0098](./0098-codex-emitter-and-universal-layer.md); upholds
-[ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md),
-[ADR-0063](./0063-honesty-framework-and-tooling-boundary.md). Part of the
+[ADR-0098](./0098-codex-emitter-and-universal-layer.md),
+[ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md) (its read-family growth only — the
+shell-out architecture is upheld),
+[ADR-0110](./0110-execution-change-record.md); upholds
+[ADR-0085](./0085-suspec-mcp-adapts-the-json-contract.md) (shell-out, never-import-core
+architecture),
+[ADR-0063](./0063-honesty-framework-and-tooling-boundary.md),
+[ADR-0079](./0079-c012-coverage-check.md)/[ADR-0083](./0083-verify-evidence-reconcile.md) (the
+surviving checks' semantics). Part of the
 [ADR-0140](./0140-skills-are-the-product-tools-reinforce.md) re-founding.
 
 ## Propagation
 
 - `docs/adrs/README.md` — ledger row + disposition flips (0136, 0084, 0107, 0130, 0077, 0097,
-  0128, 0129, 0098, 0085).
+  0128, 0129, 0098, 0085, 0110).
 - Canon: `checks/checks.yaml` → 0.16.0 (C009/C015 re-scope wording, C017 removal);
   `docs/reference/cli.md` (two-invocation rewrite), `docs/reference/checks.md`,
   `checks/README.md`, `docs/10-integrations.md`.
-- corpus-cli: the surgery — 18 command retirements, store/gate/launch/Tui/Workspace cull,
+- corpus-cli: the surgery — 19 command retirements, store/gate/launch/Tui/Workspace cull,
   explicit-path review checking, contract bump, test rebuild, gates green.
 - corpus-mcp: path-pass-through realign + fixture regeneration against the rebuilt CLI.
 - corpus-agents: drop the retired verbs from agent bodies; retire the codex-sync guard; freeze

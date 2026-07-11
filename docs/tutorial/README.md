@@ -31,7 +31,7 @@ Requirement:
 This uses the fictional `shop-api`. The Suspec artifacts are real; the code and test
 command are illustrative.
 
-Run the same loop on your own repo for executable proof.
+Run the same loop on your own repo for executable evidence.
 
 ## Pages
 

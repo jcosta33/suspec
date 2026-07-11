@@ -25,10 +25,24 @@ status: draft
 ---
 
 # Review: Expired checkout session returns 409
+
+## Summary
+
+Checkout returned a 500 for a session older than 30 minutes instead of the expected 409.
+The fix checks expiry before the charge call and returns `409 SESSION_EXPIRED` with no
+side effect.
+
+## Changed files
+
+- `src/checkout/expiry.ts`
+- `src/api/errors.ts`
+- `test/integration/expired-session.test.ts`
 ```
 
-For a one-worker feature with no task packet, use `spec: SPEC-checkout` in place of
-`task:` — the review then reconciles directly against the whole spec.
+For a one-worker feature with no task packet, omit the `task:` line entirely — do not
+add a `spec:` field; the review's frontmatter never names its own spec. The review still
+reconciles against the whole spec because `--spec` is always passed explicitly on the
+`suspec check` call.
 
 ## 2. Add coverage
 
@@ -90,12 +104,25 @@ suspec check ~/.claude/notes/shop-api/checkout-expiry-review.md \
 
 Companions are always explicit — pass `--task` only when a task packet actually exists;
 for the one-worker path, pass `--spec` alone. Naming a companion that can't be found
-exits blocking (2). This check exits 0 clean when the coverage row, its evidence, and
-the spec agree; it exits blocking (2) if a `Pass` row carries no evidence, or if the
-review's `task:` reference resolves to nothing.
+exits blocking (2). This check exits blocking (2) if a `Pass` row carries no evidence, or
+if the review's `task:` reference resolves to nothing. A `Pass` row backed only by the
+free-form Evidence cell built above — like this one — draws an advisory warning (exit 1);
+add a fenced `verify` block alongside the row to machine-confirm it and exit 0 clean:
+
+````markdown
+| AC-001 | Pass | `npm run test:integration -- expired-session` -> `Tests: 3 passed, 3 total` | yes |
+
+```verify id=AC-001 cmd="npm run test:integration -- expired-session" result=pass
+Tests: 3 passed, 3 total
+```
+````
+
+The `cmd=` must match the spec's `Verify with:` command exactly; `result=` is `pass` or
+`fail`. Or leave the row as-is to route to human attention.
 
 By hand, without the CLI, check:
 
+- Summary and Changed files are present
 - one row for `AC-001`
 - evidence cell has output
 - spot-check recorded

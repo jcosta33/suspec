@@ -73,10 +73,10 @@ copies.
 ## Repo-committed guides
 
 A project may commit its own guides in its repo — repo-specific disciplines, house verify
-recipes, domain rules. Committed guides are the one Suspec-related surface that lives
-inside a repo: instructions belong to the project; working artifacts never land there.
-Keep repo guides thin — they narrow the global family for one codebase, they do not fork
-it.
+recipes, domain rules. Guides are instructions, so they belong to the project and are meant
+to live in the repo; working artifacts stay out of the repo unless the project's own
+governance says otherwise. Keep repo guides thin — they narrow the global family for one
+codebase, they do not fork it.
 
 ## Guide rules
 

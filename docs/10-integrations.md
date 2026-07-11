@@ -8,14 +8,18 @@ and no step requires a tool (level: convention).
 
 [suspec-cli](https://github.com/jcosta33/suspec-cli) is the deterministic checker — the
 honesty floor. It is path-agnostic: it reads exactly the files it is handed by full
-path, never resolves a location, a config, or a repo root, and never scans for siblings
-(level: enforced — suspec-cli).
+path, never resolves a location, a config, a repo root, or a workspace tree. The
+exceptions are three reference checks: source refs and citation anchors resolve against
+the artifact's own directory (`sources.md` is the spec's sibling file), and a change
+plan's `SPEC-id#AC-NNN` refs resolve one level beside the plan — one level above the
+plan's own directory, scanning that parent's sibling directories for a `spec.md` file — a flat layout, with the plan and its spec as sibling
+files in one folder, fails the check (level: enforced — suspec-cli).
 
 The surface:
 
 ```bash
 suspec check <path>                                           # spec or change plan
-suspec check <review-path> --spec <spec-path> --task <task-path>   # review packet
+suspec check <review-path> --spec <spec-path> [--task <task-path>]   # review packet
 suspec check --contract                                       # the checks contract as JSON
 ```
 
@@ -87,9 +91,11 @@ The review packet connects CI output to requirements:
 `suspec check` emits facts and an exit code; a team that wants a hard gate wires CI to
 block on the exit code (level: toolable — `suspec check`, exit codes 0/1/2). The gate is
 the team's — Suspec reports, it never owns merge authority. The check's bounds are
-honest: it verifies coverage, command match, evidence presence, and reference
-resolution; whether the evidence demonstrates the requirement is the reviewer's own run
-and the human's verdict.
+honest: it verifies coverage, evidence presence, reference resolution, and — for a `Pass`
+row backed by a structured `verify` block — command match (a `Pass` row backed only by
+free-form evidence is flagged advisory, routed to human attention, not machine-matched);
+whether the evidence demonstrates the requirement is the reviewer's own run and the
+human's review result.
 
 ## Code repos
 

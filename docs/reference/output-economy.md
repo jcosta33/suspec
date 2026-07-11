@@ -23,7 +23,7 @@ Brevity is the default, not a mandate.
 
 ## The dial
 
-Want stronger economy? Install the optional concision skill from the
+Want stronger economy? Install the optional `concise-output` skill from the
 [suspec-skills](https://github.com/jcosta33/suspec-skills) catalog. It is opt-in conditioning — not a
 Suspec requirement, and not a runtime hook.
 

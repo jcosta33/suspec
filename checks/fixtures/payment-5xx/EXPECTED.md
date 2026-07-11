@@ -5,8 +5,9 @@
 Checks fixture for [the check catalogue](../../../docs/reference/checks.md): payment
 provider 5xx handling, with two seeded defects — a pair of contradictory requirements, and
 an open blocking question in a spec marked `status: ready`. The results below are known by
-hand and pin what suspec-cli's `suspec check` must report (toolable). Until that tool
-runs, nothing here is enforced — reviewers use the same tables as a checklist.
+hand. Rows citing core checks (C-codes) pin what suspec-cli's `suspec check` must report
+(toolable); SOL-code rows are the reference contract, applied as a review checklist — use
+`suspec check --contract` to confirm what your installed version implements.
 
 **Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
 share one `id:` — they are one spec written on both surfaces (this directory's equivalence
@@ -68,7 +69,7 @@ though only the SOL surface has a code that names it.
 | `pass-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                                                                                                                                                 |
 | `pass-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Pass                                                                                                                       |
 | `coverage` (C012)  | review vs spec scope       | pass — every in-scope AC has a coverage row and no row is orphaned (the source spec is `status: ready`, so C012 is in scope for this domain — unlike the draft-spec domains) |
-| `verify-evidence-binding` (C013) | review evidence blocks | not exercised — this domain's packet records no structured `verify` blocks; the free-form Evidence cells stay a human-attention warning, never a C013 fact |
+| `verify-evidence-binding` (C013) | review rows AC-001, AC-002 | **fires** (warning) — each Pass row carries only a free-form Evidence cell, no structured `verify` block, so the free-form-only advisory routes it to human attention rather than machine-rejecting it (the source spec is `status: ready`, so C013 is in scope for this domain — unlike the draft-spec domains) |
 | `no-open-critical` | review                     | **does not fire** — the open blocking question is correctly reflected as `status: blocked`; the rule guards terminal statuses. Counterfactual: the same packet at `status: pass` would fire it |
 | `trigger-coverage` | review Human attention     | pass — names the contradiction, the blocked question, the unverified row, and the security-sensitive path                                                                                      |
 

@@ -1,10 +1,10 @@
 # Structured requirements (SOL)
 
 > **Experimental annex.** SOL is shipped and parsed (`format: sol`), but it sits outside the
-> recommended path: controlled requirement syntax has peer-reviewed human-side evidence (EARS
-> reduces ambiguity vs free prose), **no measured LLM-side result**, and this project's own
-> specs drifted back to plain form after early use. Use it if your risk profile wants it;
-> nothing else in Suspec depends on it.
+> recommended path: controlled requirement syntax (EARS-style clauses) is an established
+> convention elsewhere ([[KIRO]](../research/sources.md#KIRO)), and design rationale — not a
+> measured result — is why SOL exists, and it has **no measured LLM-side result** of its own.
+> Use it if your risk profile wants it; nothing else in Suspec depends on it.
 
 SOL is the stricter spec form.
 
@@ -48,10 +48,11 @@ format: sol
 ## Block rules
 
 - Header is flush-left: `REQ AC-001:`.
-- Body ends at the next blank line, heading, or block header.
+- Body runs until the next block header or heading — a blank line does not end it.
 - Keywords are uppercase and case-sensitive.
 - Condition text is opaque. No expression syntax.
-- Do not put blank lines inside a block.
+- Do not put blank lines inside a block: the parser folds whatever follows into the
+  same body instead of stopping, so stray text gets absorbed silently.
 
 ## Block types
 

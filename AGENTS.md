@@ -11,7 +11,7 @@ says so.
 
 - `docs/` — the product: a numbered happy path (`01`–`10`), `reference/` (the deep layer:
   structured requirements, checks, artifact formats, CLI reference, memory, glossary),
-  `examples/` (three flagship walkthroughs; `large-pr-review.md` is the demo),
+  `examples/` (flagship walkthroughs; `large-pr-review.md` is the demo),
   `ADOPTING.md`, `adrs/` (the decision ledger), `research/sources.md` (the evidence
   bibliography).
 - `checks/` — the checks contract as data (`checks.yaml`) + fixtures (test data for
@@ -25,7 +25,7 @@ says so.
 
 Specs, reviews, and findings for changes to this repo live beside the developer's own
 native artifacts, per the methodology itself — artifacts are named by explicit path, so
-read the spec or task slice you are given by the path you are given. Accepted framework
+read the spec or task packet you are given by the path you are given. Accepted framework
 decisions land here, in `docs/adrs/`.
 
 ## Startup

@@ -29,7 +29,7 @@ npm run test:integration -- payment-timeout-retry
 ```
 
 That's the whole loop at this size: no spec file, no task file, no review packet. The
-code plus the red-then-green evidence is the proof.
+code plus the red-then-green run is the evidence.
 
 ## When it escalates
 
@@ -136,9 +136,12 @@ suspec check ~/.claude/notes/payments-api/payment-timeout-retry-review.md \
   --task ~/.claude/notes/payments-api/payment-timeout-retry-task.md
 ```
 
-This exits clean when the coverage row, the pasted evidence, and the spec's own `Verify
-with:` command all agree; it exits blocking (2) if AC-003 were marked `Pass` with an
-empty evidence cell.
+This exits with an advisory warning (exit 1) as shown: the coverage row, the pasted
+evidence, and the spec's own `Verify with:` command all agree, but a free-form Evidence
+cell can't be machine-matched, so C013 routes it to human attention — add a `verify`
+block ([ADR-0083](../adrs/0083-verify-evidence-reconcile.md)) to machine-confirm it and
+exit clean instead. It exits blocking (2) if AC-003 were marked `Pass` with an empty
+evidence cell.
 
 ### Close
 

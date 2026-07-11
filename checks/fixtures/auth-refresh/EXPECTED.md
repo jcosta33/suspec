@@ -3,9 +3,10 @@
 # auth-refresh — expected check results
 
 Checks fixture for [the check catalogue](../../../docs/reference/checks.md): silent token
-refresh on 401, with two seeded spec defects. The results below are known by hand and pin
-what suspec-cli's `suspec check` must report (toolable). Until that tool runs, nothing
-here is enforced — reviewers use the same tables as a checklist.
+refresh on 401, with two seeded spec defects. The results below are known by hand. Rows
+citing core checks (C-codes) pin what suspec-cli's `suspec check` must report (toolable);
+SOL-code rows are the reference contract, applied as a review checklist — use
+`suspec check --contract` to confirm what your installed version implements.
 
 **Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
 share one `id:` — they are one spec written on both surfaces (this directory's equivalence

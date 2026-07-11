@@ -33,12 +33,15 @@ intent -> spec -> implement -> review packet -> check -> findings
    result against the spec: one coverage row per scoped requirement, evidence per row,
    exceptions routed to human attention.
 4. **Check** — the deterministic floor:
-   `suspec check <review-path> --spec <spec-path> --task <task-path>` — coverage
-   complete, commands match, every `Pass` evidenced, references resolve. Exit codes:
+   `suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the
+   spec was split into one) — coverage complete, commands match, every `Pass` evidenced,
+   references resolve. Exit codes:
    `0` clean, `1` warning, `2` blocking (level: enforced — suspec-cli). The human owns
-   the verdict; the check owns the facts.
+   the review result; the check owns the facts.
 5. **Findings** — ephemeral findings ride the review packet and die with it. A durable
    lesson becomes a native harness memory — see [saving findings](09-saving-findings.md).
+
+Every step above keeps a by-hand path; no step requires a tool (level: convention).
 
 ## The optional layers
 
@@ -48,7 +51,7 @@ intent -> spec -> implement -> review packet -> check -> findings
   preservation guarantees, waves, verification per wave, rollback. See
   [brownfield work and change plans](05-brownfield-and-change-plans.md).
 - **Task** — cut only when one spec splits into **parallel slices**. The common 1:1
-  case has no task file: the implementer works from the spec. See
+  case has no task packet: the implementer works from the spec. See
   [creating tasks](06-creating-tasks.md).
 - **Intake** — capture the upstream ask verbatim when work starts from a ticket or
   thread and you want the original preserved. Otherwise the spec names its source
@@ -60,20 +63,21 @@ intent -> spec -> implement -> review packet -> check -> findings
 | --- | --- |
 | Trivial fix | one-line inline spec -> implement -> verify -> done |
 | Small feature | spec -> implement -> review -> check |
-| Bug fix | amend the spec -> implement -> review -> check |
+| Bug fix against an existing spec | amend the spec -> implement -> review -> check |
 | Brownfield change | inventory -> spec -> implement -> review -> check |
 | Migration or rewrite | inventory -> spec -> change plan -> wave tasks -> reviews |
 | PR that already exists | write the acceptance bar as a spec -> review against it |
 
-Match the ceremony to the risk, not the reverse: most work sits at a lean spec plus
-independent review, and heavier forms are for the change that earns them.
+Match the ceremony to the risk, not the reverse: pick the row above that fits the change,
+and let heavier forms stay reserved for the change that earns them.
 
 ## What not to skip
 
 For code-changing work, keep:
 
 - verification output — real, pasted, per requirement
-- independent review — a non-implementer judges it; the formal packet scales with risk
+- independent review — a non-implementer judges it; on the trivial path this is the owner
+  reading the pasted output, not a separate step, and the formal packet scales with risk
 - evidence for every `Pass` — empty evidence means `Unverified`, never `Pass`
 - a visible record of blocked or unverified work
 

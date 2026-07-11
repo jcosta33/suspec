@@ -1,6 +1,6 @@
 # Example: large PR review
 
-Goal: review a 41-file agent PR without reading it blindly top to bottom — review-first.
+Goal: review a 41-file agent PR without reading it blindly top to bottom — review by exception.
 The reviewer trusts the review packet, not the worker's summary.
 
 ## Situation
@@ -49,7 +49,7 @@ id: INV-checkout-session
 
 ## Change plan
 
-`~/.claude/notes/shop-api/checkout-session-change-plan.md`
+`~/.claude/notes/shop-api/checkout-session/change-plan.md` — the plan sits in its own folder so its `preserves:` refs can resolve against the sibling `checkout/spec.md` when you run `suspec check` on it
 
 ```markdown
 ---
@@ -114,7 +114,7 @@ Check it, against the PR author's own spec and task, by explicit path:
 
 ```bash
 suspec check ~/.claude/notes/shop-api/checkout-session-refactor-review.md \
-  --spec ~/.claude/notes/shop-api/checkout-spec.md \
+  --spec ~/.claude/notes/shop-api/checkout/spec.md \
   --task ~/.claude/notes/shop-api/checkout-session-refactor-task.md
 ```
 
@@ -183,11 +183,14 @@ Check the follow-up:
 
 ```bash
 suspec check ~/.claude/notes/shop-api/checkout-expiry-regression-review.md \
-  --spec ~/.claude/notes/shop-api/checkout-spec.md \
+  --spec ~/.claude/notes/shop-api/checkout/spec.md \
   --task ~/.claude/notes/shop-api/checkout-expiry-regression-task.md
 ```
 
-Exits clean: one row, `Pass`, evidence present.
+Exits with an advisory warning (exit 1): one row, `Pass`, evidence present — C013 flags
+the free-form Evidence cell and routes it to human attention. Add a `verify` block
+([ADR-0083](../adrs/0083-verify-evidence-reconcile.md)) to machine-confirm it and exit
+clean instead.
 
 ## Close
 

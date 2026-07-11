@@ -13,11 +13,11 @@ climb only for a reason you can name.
 
 | Rung | Shape | Adds over the rung below | Typical use |
 | --- | --- | --- | --- |
-| **L0** | Prompt only | — | A throwaway, a spike, a question. No durable artifact. |
-| **L1** | Lean spec | Intent + acceptance criteria + a Verify line each | A small, clear, single-concern change. **The default for most work.** |
+| **L0** | Prompt only, or a one-line inline spec | — for a bare prompt; a single requirement sentence + a `Verify with:` line, kept in your own working note or the task dispatch, for a trivial fix | A throwaway, a spike, a question, or a fix small enough that a committed file would outweigh the change ([bug fix example](../examples/bug-fix.md)). No durable artifact. |
+| **L1** | Lean spec | Intent + acceptance criteria + a Verify line each, in a committed `type: spec` file | A small, clear, single-concern change. **The default for most work.** |
 | **L2** | Spec + task | A scoped, disposable task packet (write surface, scope) | The change wants an explicit hand-off — parallel work, a delegated worker, a scope worth pinning. |
 | **L3** | + independent review | A non-implementer judges the diff against the spec | Anything that ships behavior. **The default whenever code changes** — the review is independent, its *formal packet* scales with risk. |
-| **L4** | Revolver | A rotating pool of ≥6 distinct stances, one reviewer at a time, fixing between rounds until it converges | A MAJOR-hunt: high diffusion, security-sensitive, or a large change one reviewer's partition would leave gaps in; runs on cheap varied models ([ADR-0132](../adrs/0132-revolver-rotating-refine-loop.md)). |
+| **L4** | Revolver | A rotating pool of distinct stances, one reviewer at a time, fixing between rounds until it converges | A MAJOR-hunt: high diffusion, security-sensitive, or a large change one reviewer's partition would leave gaps in; runs on cheap varied models ([ADR-0132](../adrs/0132-revolver-rotating-refine-loop.md)). |
 | **L5** | Orchestrated waves | Change plan, decomposed wave tasks, per-wave reviews | A migration, a rewrite, or a structural change across subsystems — a change plan drives the waves. |
 
 **L1 or L3 is the default. The top rung is never the default.** L4 and L5 are for the change that earns

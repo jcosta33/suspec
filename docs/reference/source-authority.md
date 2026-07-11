@@ -20,11 +20,10 @@ Use these rules first:
 | --- | --- |
 | 1 | accepted ADR |
 | 2 | approved spec |
-| 3 | accepted finding |
-| 4 | reviewed audit |
-| 5 | reviewed research |
-| 6 | task notes |
-| 7 | chat |
+| 3 | reviewed audit |
+| 4 | reviewed research |
+| 5 | task notes |
+| 6 | chat |
 
 Drafts rank one step below their accepted tier.
 

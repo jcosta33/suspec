@@ -92,6 +92,10 @@ The worker pastes real output under the verify item and fills the run summary:
       Test Suites: 1 passed, 1 total
       Tests:       3 passed, 3 total
 
+## Findings
+
+- Candidate findings: none
+
 ## Run summary
 
 - Changed files: `src/checkout/expiry.ts`, `src/api/errors.ts`, `test/integration/expired-session.test.ts`

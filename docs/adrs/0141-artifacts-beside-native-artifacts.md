@@ -41,7 +41,10 @@ updated: 2026-07-10
 3. **Paths flow explicitly.** Whoever needs a file names it by full path — a skill carrying a
    path forward through the work, a dispatch prompt naming its inputs, the checker receiving
    artifact paths as arguments ([ADR-0143](./0143-path-agnostic-check-cli-contract.md)). Nothing
-   discovers, resolves, or infers locations. _Level: convention._
+   discovers, resolves, or infers a store, a config, a repo root, or a workspace tree; the narrow
+   exception is [ADR-0143](./0143-path-agnostic-check-cli-contract.md) Decision 4's
+   artifact-relative sibling lookup for three reference checks (C009, C015, C010) — one level
+   beside the passed artifact, never a tree walk. _Level: convention._
 
 ## Superseded and narrowed decisions
 
@@ -53,11 +56,15 @@ updated: 2026-07-10
 
 **Narrowed:**
 - [ADR-0137](./0137-personal-harness-transient-artifacts.md) — "artifacts are transient and never
-  committed to any repo" stands (Decision 1 direction, sharpened by
-  [ADR-0140](./0140-skills-are-the-product-tools-reinforce.md) Decision 6); Decision 2's
-  CLI-resolved store, Decision 6's structural anti-rot machinery, and Decision 7's
-  `suspec.config.json` exception retire. Durability by promotion (Decision 3) is retired by
-  [ADR-0142](./0142-findings-become-native-memories.md).
+  committed to any repo" stands as the default (Decision 1 above narrows it with a governance
+  exception, mirrored in [ADR-0140](./0140-skills-are-the-product-tools-reinforce.md) Decision 6);
+  Decision 2's CLI-resolved store, Decision 6's structural anti-rot machinery, and Decision 7's
+  `suspec.config.json` exception retire. Decision 4's repo-root worktree launch and its
+  launch-prompt-as-store-pointer retire along with it — both the store it points into (Decision 2,
+  above) and the CLI-generated launch prompt / worktree orchestration itself
+  ([ADR-0143](./0143-path-agnostic-check-cli-contract.md), superseding
+  [ADR-0136](./0136-launcher-boundary-automate-not-agent.md)). Durability by promotion (Decision 3)
+  is retired by [ADR-0142](./0142-findings-become-native-memories.md).
 
 ## Alternatives considered
 

@@ -8,13 +8,9 @@ It changes what the reviewer looks for. It does not change the artifact format.
 
 Each stance states:
 
-- prevents
-- default questions
-- required evidence
+- use for
+- focus
 - refuses
-- self-review delta
-- applies
-- does not apply
 
 ## Stances
 

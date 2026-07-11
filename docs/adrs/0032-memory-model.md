@@ -1,7 +1,7 @@
 ---
 type: adr
 id: 0032-memory-model
-status: accepted
+status: superseded by adr-0142
 created: 2026-06-02
 updated: 2026-06-02
 supersedes:

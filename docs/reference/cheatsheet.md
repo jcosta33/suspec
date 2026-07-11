@@ -98,11 +98,12 @@ Route to Human attention:
 ## Checks
 
 ```bash
-suspec check <path>                                                # spec or change plan
-suspec check <review-path> --spec <spec-path> --task <task-path>   # review packet
+suspec check <artifact> [<artifact>...]                            # spec / change-plan (exit = max)
+suspec check <review-path> --spec <spec-path> [--task <task-path>] # review packet
 suspec check --contract                                            # the checks contract as JSON
 ```
 
-Exit `0` clean · `1` warning · `2` blocking. A review checked without a required companion
-is a blocking error (exit 2). The checker reports facts, never verdicts — the human owns
-the result. Full reference: [CLI](cli.md) · the contract: [checks](checks.md).
+Several spec/change-plan paths in one `check` call also run a cross-file duplicate-id check
+(C002) over the set. Exit `0` clean · `1` warning · `2` blocking. A review checked without a
+required companion is a blocking error (exit 2). The checker reports facts, never verdicts —
+the human owns the result. Full reference: [CLI](cli.md) · the contract: [checks](checks.md).

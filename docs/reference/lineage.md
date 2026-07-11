@@ -8,7 +8,7 @@ it was **make intent, verification, and change control explicit**. Standards say
 formality is meant to scale with the work, and "documents" may be files, models, or records, not paper.
 
 Suspec keeps those **functions** and collapses the **forms** — one authoritative living spec plus
-machine-captured execution, atomic findings, and small decision records, instead of a document stack.
+machine-captured execution, review-carried findings, and small decision records, instead of a document stack.
 The table maps each legacy function to where it lives now.
 
 | Legacy practice | Function it served | In Suspec |
@@ -18,7 +18,7 @@ The table maps each legacy function to where it lives now.
 | Verification & validation plan | what will be checked, and how | the spec's `Verify with:` lines + the review's evidence ([[ISO29148]]) |
 | Technical review / inspection | structured gating, not a comment thread | the **review** packet — requirement coverage + human-attention, independent of the author |
 | Traceability matrix | requirement ↔ evidence | generated from ids: the review's coverage table + the spec's `## Execution` digest, not a hand-kept matrix |
-| Anomaly / defect report | one durable problem record | a **finding** (atomic, linkable) |
+| Anomaly / defect report | one durable problem record | a **finding** — ephemeral, riding the review packet; durable ones become a native memory, no id assigned |
 | Change-control record | manage the baseline deliberately | the living spec's status lifecycle + supersession ([[ISO42010]]); ADRs supersede, never rewrite ([[NYGARDADR]] / [[MADR]]) |
 | Architecture Decision Record | short, durable rationale for one choice | a **decision** — kept verbatim, marked superseded with a pointer |
 | Build / test / CI output | raw execution record | run output is transitory ([[GHRETENTION]] / [[GLRETENTION]]); its durable residue is the spec's `## Execution` |
@@ -29,8 +29,10 @@ Two disciplines carry the weight that separate paperwork used to:
 - **Review is participation, not a sign-off.** Coverage and substantive engagement predict quality;
   a rubber-stamp does not ([[MCINTOSH14]]).
 - **A review check earns blocking only when it is precise.** A noisy check gets ignored; the bar is a
-  low effective-false-positive rate ([[GOOGLESA]]) — which is why Suspec checks are advisory until
-  measured (see [principles](principles.md), honesty level *toolable*).
+  low effective-false-positive rate ([[GOOGLESA]]) — which is why a check earns hard-error severity
+  only once measured. The checker itself is shipped (level: enforced — suspec-cli, see
+  [principles](principles.md)); what stays advisory is gate ownership — checks yield facts and exit
+  codes, and the human decides what blocks a merge.
 
 What Suspec deliberately does **not** revive: a separate document per change, a hand-maintained
 traceability matrix, a routine standalone test plan, or a generic detached review checklist. Those are

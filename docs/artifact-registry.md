@@ -12,7 +12,7 @@ Source: [`../suspec-agents/agents/`](https://github.com/jcosta33/suspec-agents).
 
 | Name                   | Home             | Use it when                                              |
 |------------------------|------------------|----------------------------------------------------------|
-| `suspec-reviewer`      | suspec-agents    | Reviewing a finished task/PR; proof-first mode reruns Verify and pastes evidence. |
+| `suspec-reviewer`      | suspec-agents    | Reviewing a finished task/PR; evidence-first mode reruns Verify and pastes evidence. |
 | `suspec-auditor`       | suspec-agents    | Recording the present state of a code area.              |
 | `suspec-challenger`    | suspec-agents    | Pressure-testing a not-yet-built proposal/spec/plan.     |
 | `suspec-spec-author`   | suspec-agents    | Authoring or revising specs.                             |
@@ -26,7 +26,7 @@ For code-location work, use the runner's built-in code exploration agent togethe
 
 Source: [`../suspec-skills/skills/`](https://github.com/jcosta33/suspec-skills). One
 catalog, installed globally (`npx skills add jcosta33/suspec-skills -g`): the methodology
-disciplines and the conditioning skills together.
+disciplines and the framework-free skills together.
 
 The methodology disciplines:
 
@@ -54,7 +54,7 @@ The methodology disciplines:
 | `write-performance`   | suspec-skills  | Implementing a performance change.   |
 | `write-testing`       | suspec-skills  | Implementing tests.                  |
 
-The conditioning skills:
+The framework-free skills ([ADR-0112](adrs/0112-two-tier-skills.md)):
 
 | Name                   | Home           | Use it when                                      |
 |------------------------|----------------|--------------------------------------------------|
@@ -69,7 +69,7 @@ The conditioning skills:
 | `planning-spec`        | suspec-skills  | Planning a non-trivial change before fan-out.    |
 | `security-review`      | suspec-skills  | Reviewing trust-boundary and data-flow risks.    |
 | `bulletproof`          | suspec-skills  | Hardening a claim, decision, spec, or plan — evidence-gated critique with kill criteria. |
-| `revolver-review`      | suspec-skills  | Driving a substantial change to a clean state — a rotating pool of ≥6 distinct stances, one reviewer at a time, fixing between rounds until it converges. |
+| `revolver-review`      | suspec-skills  | Driving a substantial change to a clean state — a rotating pool of distinct stances, one reviewer at a time, fixing between rounds until it converges. |
 
 ## MCP Tools
 
@@ -79,7 +79,7 @@ companions as explicit parameters, shelling out to the CLI (ADR-0085, ADR-0143).
 
 | Name                | Home        | Use it when                                                    |
 |---------------------|-------------|-----------------------------------------------------------------|
-| `suspec_check_file` | suspec-mcp  | Checking one artifact by full path; spec/task companions as explicit parameters. |
+| `suspec_check_file` | suspec-mcp  | Checking one artifact by explicit path, shelling out to `suspec check --json`; spec/task companions as explicit parameters. |
 | `suspec_get_checks` | suspec-mcp  | Reading the checks contract (the `--contract` face).           |
 
 ## CLI

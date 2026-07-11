@@ -24,15 +24,24 @@ Adopting is one install. Nothing lands in your repo.
    suspec check <path>
    ```
 
-   It reads exactly the files you hand it — no setup, no config, no footprint
-   (level: enforced — suspec-cli).
+   It reads exactly the files you hand it, by full path, and resolves nothing else — the
+   exceptions are three reference checks: source refs and citation anchors resolve
+   against the artifact's own directory (`sources.md` is the spec's sibling file), and
+   a change plan's `SPEC-id#AC-NNN` refs resolve one level beside the plan — one level
+   above the plan's own directory, scanning that parent's sibling directories for a
+   `spec.md` file — no setup, no config, no
+   footprint, though the plan must live in its own directory with each referenced spec
+   in a sibling directory (a flat layout fails the check) (level: enforced —
+   suspec-cli).
 
 Use symlinks only when your platform handles them reliably; on Windows, copying the
 skills folder is safer.
 
 ## First useful change
 
-Start small and run the whole loop once:
+Start small and run the whole loop once. The loop is proportioned to feature-sized work —
+a trivial fix earns a one-line inline spec and no files at all; see
+[the bug-fix example](examples/bug-fix.md) for that shorter path.
 
 1. Author a spec through the skill: requirements with `AC-NNN` ids, each with a
    `Verify with:` line, non-goals, acceptance criteria. Place the file next to your own
@@ -45,7 +54,7 @@ Start small and run the whole loop once:
 3. Implement — your agent works from the spec by path, runs every verify command, and
    pastes real output.
 4. Review — an independent reviewer builds the review packet against the spec, then runs
-   the floor: `suspec check <review-path> --spec <spec-path> --task <task-path>`.
+   the floor: `suspec check <review-path> --spec <spec-path>`.
    Exit codes: `0` clean, `1` warning, `2` blocking.
 5. Keep what mattered: a durable lesson becomes a native harness memory; a decision
    becomes an ADR; a defect becomes an issue — through your project's own channels.
@@ -66,7 +75,7 @@ nothing else.
    `## Execution` section.
 4. Review by checklist: one coverage row per requirement, empty evidence is
    `Unverified` never `Pass`, exceptions routed to a human. Without the CLI the floor is
-   yours to hold (level: checklist; `suspec check` is the toolable form).
+   yours to hold (level: checklist; `suspec check` is the enforced form).
 
 ## What gets committed
 

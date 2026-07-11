@@ -31,7 +31,7 @@ review packet inspects — nothing enforces them at edit time.
    parallel tasks stay write-disjoint and the reviewer sees one clean diff.
 3. **Stay in scope.** Implement the ACs the packet lists — no more. If a
    requirement cannot be met as written, or your change seems to need a
-   non-goal or Do-not-change area, stop and say what you need and why —
+   non-goal or Do not change area, stop and say what you need and why —
    never improvise past the boundary or work around it — stop and ask. _Why: an
    improvised interpretation is a decision nobody made, landing where it is most
    expensive to find — in the code; a bare prohibition is measured weak, and the
@@ -62,9 +62,12 @@ review packet inspects — nothing enforces them at edit time.
    task's `## Run summary` — directly at its own path, never a copy. Either
    way: changed files, one line per Verify command citing its pasted output,
    anything that could not be met as written, out-of-scope edits if any,
-   blocked questions — and drop durable discoveries in `## Findings`.
-   Findings ride the review packet; durable ones become native memories (see
-   save-findings).
+   blocked questions. For a split task, also drop durable discoveries in the
+   task's `## Findings`. The spec carries no `## Findings` section — for 1:1
+   work, note durable discoveries in the Execution entry's prose instead, and
+   let the review step carry them into the review packet's `## Findings`
+   (see review-output). Findings ride the task or review packet; durable
+   ones become native memories (see save-findings).
 9. **Never write a review result on your own work.** Self-review yields fixes
    and notes — never a Pass. The review packet is filled by someone who did
    not write the diff. _Why: authors favor their own output; independence is

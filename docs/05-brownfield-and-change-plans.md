@@ -10,8 +10,9 @@ inventory -> spec -> change plan -> (task) -> implement -> review
 
 Inventory and change plan are artifact kinds like any other: written by their skills,
 placed beside your native artifacts per the
-[placement rule](03-where-files-live.md), named by full path from then on. Lint either
-one with `suspec check <path>` (level: enforced — suspec-cli).
+[placement rule](03-where-files-live.md), named by full path from then on. Lint the
+change plan with `suspec check <path>` (level: enforced — suspec-cli); inventory has
+no CLI check today — review it by hand (level: checklist).
 
 ## Inventory
 

@@ -6,11 +6,11 @@ fills its `## Execution` section.
 
 A task does not add requirements. It copies a scope-subset from a spec or change plan.
 
-Task packets are files like any other Suspec artifact: written by the splitting skill,
+Task packets are files like any other Suspec artifact: written by the split-work skill,
 placed beside your native artifacts per the [placement rule](03-where-files-live.md),
 and dispatched by explicit path — the packet names its spec by full path, and the
-dispatch prompt names the packet by full path. Lint one with `suspec check <path>`
-(level: enforced — suspec-cli).
+dispatch prompt names the packet by full path. `suspec check` has no task-packet face
+today; review one by hand against the shape below (level: checklist).
 
 ## Task shape
 
@@ -88,8 +88,8 @@ Name tempting adjacent areas:
 
 A changed `Do not change` path is a review exception, even if the change looks harmless.
 And give the wall its escape hatch: a worker blocked by a frozen path stops and asks — never
-edits past it. The wall-plus-hatch form is the one that holds
-([[IMPOSSIBLE]](research/sources.md#IMPOSSIBLE)).
+edits past it. A preliminary study found the wall-plus-hatch form cuts violations far more
+than a bare prohibition alone ([[IMPOSSIBLE]](research/sources.md#IMPOSSIBLE)).
 
 ## Verify
 
@@ -120,6 +120,14 @@ web: app/checkout/**
 
 Each repo still needs its own verification command.
 
+## Findings
+
+The worker records candidate findings — surprises, risks, adjacent issues — here as they
+surface during implementation, not in the run summary.
+
+A durable lesson becomes a native memory; an ephemeral one rides the packet and dies with
+it ([saving findings](09-saving-findings.md)).
+
 ## Run summary
 
 The worker fills the run summary after implementation.
@@ -130,7 +138,6 @@ It records:
 - verify results with pasted output
 - out-of-scope edits
 - blocked questions
-- candidate findings
 
 The summary points to evidence. It does not replace evidence.
 

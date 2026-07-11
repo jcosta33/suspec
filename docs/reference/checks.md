@@ -55,7 +55,7 @@ This docs repo enforces nothing by itself.
 | C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. | warning |
 | C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard |
 
-C017 and C018 are reserved IDs — they are not minted for new checks.
+C018 is a reserved ID — it is not minted for a new check.
 
 Notes:
 

@@ -6,8 +6,9 @@ Test data for [the checks reference](../docs/reference/checks.md), consumed by s
 Every check in that reference is a claim about what a correct checker reports on a given
 file; this directory pins those reports as fixtures, per the two-way severity split
 (hard error / warning). suspec-cli's `suspec check` is the reference consumer — a
-path-agnostic checker that reads exactly the files it is handed; its test suite runs
-against these files — and a reviewer working by hand can use them the same way: apply the
+path-agnostic checker that reads exactly the files it is handed; its test suite pins the
+contract table and a subset of these fixtures as oracles, conditional on a sibling canon
+checkout — and a reviewer working by hand can use all of them the same way: apply the
 checks, compare against the pinned expectation.
 
 **Nothing in this directory runs.** It is data, not a runner: Suspec ships the contract

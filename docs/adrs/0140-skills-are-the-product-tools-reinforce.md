@@ -59,33 +59,44 @@ updated: 2026-07-10
 
 5. **Checks advise and report; Suspec owns no gate.** The deterministic checks yield facts and
    exit codes at check time — clean, warning, blocking — and the human decides what blocks a
-   merge. The gate-command mechanic (a tool that arbitrates "done") retires; the principle that
-   ungrounded model judgment is not a review signal stands
-   (narrows [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md): evidence discipline
-   upheld, the gate command retired). _Level: convention._
+   merge. The gate-command mechanic retires with the decisions that actually own it
+   ([ADR-0143](./0143-path-agnostic-check-cli-contract.md) Decision 7); the principle that
+   ungrounded model judgment is not a review signal —
+   [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md), which names no new tool — stands
+   untouched. _Level: convention._
 
-6. **Code stays king.** Adopters commit no Suspec artifacts to their repos; durable value lives
-   in the layers that already own it — code, tests, ADRs, issues, PRs, native memory
-   ([ADR-0142](./0142-findings-become-native-memories.md)). The producer's own governance
-   workspace is meta-infrastructure, not the product. _Level: convention._
+6. **Code stays king.** Adopters commit no Suspec artifacts to their repos, unless the project's
+   own governance says otherwise ([ADR-0141](./0141-artifacts-beside-native-artifacts.md)
+   Decision 1); durable value lives in the layers that already own it — code, tests, ADRs, issues,
+   PRs, native memory ([ADR-0142](./0142-findings-become-native-memories.md)). The producer's own
+   governance workspace is meta-infrastructure, not the product. _Level: convention._
 
 ## Superseded and narrowed decisions
 
 **Narrowed:**
-- [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md) — "ungrounded model judgment is not
-  a review signal" and the evidence-bound review discipline stand; the evidence-gate command as
-  Suspec's load-bearing mechanic retires with Decision 5. The load-bearing mechanic is the
-  deterministic honesty floor at check time.
 - [ADR-0138](./0138-retire-the-starter-kit.md) — the kit's retirement stands; its successor claim
   (CLI `init` seeding, CLI-embedded scaffolds as the artifact-shape home) is retired: skills carry
   the shapes and placement guidance, the checks contract stays the machine-readable shape source,
   and the CLI seeds nothing ([ADR-0143](./0143-path-agnostic-check-cli-contract.md)).
+- [ADR-0111](./0111-kit-skill-scope.md)/[ADR-0112](./0112-two-tier-skills.md) — the physical
+  two-home placement (Suspec-coupled skills → the kit's `.agents/skills/`, framework-free skills →
+  the catalog) retires with the starter kit itself ([ADR-0138](./0138-retire-the-starter-kit.md)):
+  there is no more kit home to place anything in, so every skill — coupled or not — now ships from
+  the one global catalog. The underlying coupling test (does a skill name a Suspec concept) survives
+  only as descriptive vocabulary for what a skill assumes, not as an enforced placement rule.
 
-**Upheld, load-bearing in v3:** [ADR-0131](./0131-minimum-useful-rigor.md) (Decision 4 elevates it
+**Upheld, load-bearing in v3:** [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md)
+("ungrounded model judgment is not a review signal" and the evidence-bound review discipline
+stand untouched — it never named a new tool, so Decision 5 has nothing of 0121's to narrow; the
+gate-command mechanic it is sometimes conflated with belonged to
+[ADR-0077](./0077-suspec-cli-reconcile-only-harness.md)/[ADR-0084](./0084-boundary-safe-prepare-verbs.md)/
+[ADR-0107](./0107-fast-track-staleness-detection.md)/[ADR-0128](./0128-mint-c020-unresolvable-ref.md)/
+[ADR-0129](./0129-c013-cmd-mismatch-blocks-at-gate.md)/[ADR-0130](./0130-review-staleness-content-drift.md)/
+[ADR-0136](./0136-launcher-boundary-automate-not-agent.md), retired/narrowed by
+[ADR-0143](./0143-path-agnostic-check-cli-contract.md)), [ADR-0131](./0131-minimum-useful-rigor.md) (Decision 4 elevates it
 to doctrine), [ADR-0134](./0134-self-contained-spine.md) (by-hand path for every step),
 [ADR-0132](./0132-revolver-rotating-refine-loop.md)/[ADR-0133](./0133-examine-dont-ruminate.md)
-(review and examination disciplines), [ADR-0111](./0111-kit-skill-scope.md)/
-[ADR-0112](./0112-two-tier-skills.md) (two-tier skills),
+(review and examination disciplines),
 [ADR-0113](./0113-product-vs-docs-boundary.md), [ADR-0109](./0109-output-economy-convention.md).
 
 ## Alternatives considered
@@ -110,11 +121,13 @@ to doctrine), [ADR-0134](./0134-self-contained-spine.md) (by-hand path for every
 
 ## Status
 
-Accepted (2026-07-10). Narrows [ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md) and
-[ADR-0138](./0138-retire-the-starter-kit.md); upholds [ADR-0131](./0131-minimum-useful-rigor.md),
+Accepted (2026-07-10). Narrows [ADR-0138](./0138-retire-the-starter-kit.md) and
+[ADR-0111](./0111-kit-skill-scope.md)/[ADR-0112](./0112-two-tier-skills.md) (the kit/catalog
+physical placement retires with the starter kit; the coupling test survives only as descriptive
+vocabulary); upholds
+[ADR-0121](./0121-evidence-gating-load-bearing-mechanic.md), [ADR-0131](./0131-minimum-useful-rigor.md),
 [ADR-0134](./0134-self-contained-spine.md), [ADR-0132](./0132-revolver-rotating-refine-loop.md),
-[ADR-0133](./0133-examine-dont-ruminate.md), [ADR-0111](./0111-kit-skill-scope.md)/
-[ADR-0112](./0112-two-tier-skills.md), [ADR-0113](./0113-product-vs-docs-boundary.md),
+[ADR-0133](./0133-examine-dont-ruminate.md), [ADR-0113](./0113-product-vs-docs-boundary.md),
 [ADR-0109](./0109-output-economy-convention.md). Companion decisions:
 [ADR-0141](./0141-artifacts-beside-native-artifacts.md) (placement),
 [ADR-0142](./0142-findings-become-native-memories.md) (memory),

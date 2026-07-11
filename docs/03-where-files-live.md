@@ -21,14 +21,19 @@ when the work is done, what mattered has already left them.
 
 ## Paths flow explicitly
 
-Nothing discovers, resolves, or infers locations (level: convention):
+Nothing discovers, resolves, or infers locations, with one narrow exception (level: convention):
 
 - A skill that writes an artifact states where it put it, and carries that path forward.
 - A dispatch prompt names the spec — and the task, when one exists — by full path.
-- The checker reads exactly the files it is handed:
-  `suspec check <path>` for a spec or change plan,
-  `suspec check <review-path> --spec <spec-path> --task <task-path>` for a review packet
-  (level: enforced — suspec-cli).
+- The checker reads exactly the files it is handed for a spec (`suspec check <path>`) or
+  a review packet (`suspec check <review-path> --spec <spec-path>`, adding
+  `--task <task-path>` when the spec was split into one) (level: enforced — suspec-cli).
+- The one exception, artifact-relative resolution, never a tree walk: checking a spec
+  resolves its source links and inline citations against whatever relative path its own
+  frontmatter names, from the spec's own directory — however many levels that path
+  itself climbs — and checking a change plan resolves its `SPEC-id#AC-NNN` refs by
+  scanning the plan's own directory for sibling `*/spec.md` files, one level beside the
+  plan and no further (level: enforced — suspec-cli).
 
 The trade is deliberate: no tool can list your specs or resume your work in flight,
 because no tool knows where they are. You do — and the artifacts are plain markdown,

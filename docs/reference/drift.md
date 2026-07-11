@@ -17,7 +17,8 @@ Old evidence becomes stale when:
 
 ## Result
 
-Use `Stale` for a prior `Pass` that needs re-checking.
+A drifted `Pass` is no longer trustworthy: mark it `Unverified` until it is re-checked,
+then update it to whatever the fresh evidence shows.
 
 Do not keep the old `Pass` silently.
 
