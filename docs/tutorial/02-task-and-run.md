@@ -2,7 +2,8 @@
 
 This page produces a task packet and its filled-in run evidence.
 
-This split is optional. For a one-worker feature, skip step 1 and hand the worker the
+This split is scaffold — pulled in when one spec feeds parallel workers or an explicit
+hand-off. For a one-worker feature, skip step 1 and hand the worker the
 spec directly — the worker records changed files, verify results, and blocked questions
 under the spec's own `## Execution` section, and step 3 in [Review](03-review.md) checks
 the review against `--spec` alone, with no `--task` flag. This tutorial cuts a task

@@ -3,12 +3,14 @@
 ## The loop
 
 ```text
-Spec ──▶ (Task) ──▶ Implement ──▶ Review ──▶ Close
+intent ──▶ spec ──▶ implement ──▶ review ──▶ check ──▶ findings
 ```
 
-Task is optional — cut task packets only when the work splits or wants an explicit
-hand-off. Close saves what the work taught: durable lessons become native memories
-([memory](memory.md)).
+The keys — intent, review, findings — are present on virtually every change, at whatever
+weight it earns. The scaffold — the spec intent graduates into, the task split, inventory,
+change plan, the deterministic check — is erected when the work earns it: cut task packets
+only when the work splits or wants an explicit hand-off. Findings saves what the work
+taught: durable lessons become native memories ([memory](memory.md)).
 
 ## Proportional rigor
 

@@ -10,7 +10,7 @@
 | bug report | Diagnosis of one defect. |
 | change plan | Structural change plan with waves and preservation guarantees. |
 | checks | The deterministic facts `suspec check` reports over an artifact — the honesty floor plus per-kind lint. |
-| Close | Final loop step: merge or block, save durable lessons as native memories. |
+| Close | Final act of a change: merge or block, save durable lessons as native memories. |
 | companion | An artifact a review packet reconciles against, passed by explicit flag (`--spec`, `--task`). |
 | distinct-lens review | Multiple reviewers with different focuses. |
 | drift | Requirement and implementation diverged after earlier evidence. |
@@ -24,7 +24,8 @@
 | honesty level | convention, checklist, toolable, enforced. |
 | intake | Verbatim source snapshot. |
 | inventory | Present-state map before brownfield work. |
-| loop | Spec, Implement, Review, Close; add Task when work splits. |
+| key | One of intent, review, findings — present on virtually every change, at whatever weight the change earns. |
+| loop | Intent, spec, implement, review, check, findings — the full shape of one change. |
 | native memory | The harness's own durable memory surface (a memory file, CLAUDE.md, whatever the runner provides); where durable findings land. |
 | non-goal | Explicit out-of-scope behavior. |
 | open question | Unresolved spec question. Blocking questions keep specs draft. |
@@ -39,13 +40,14 @@
 | risk-weighted review | More review for higher-risk change shape, diffusion, churn, or impact. |
 | Run | Worker implements and records evidence. |
 | save a finding | Close-step act: write a durable lesson as a native memory. |
+| scaffold | What Suspec erects around the keys when the work earns it: the spec, task split, inventory, change plan, the deterministic checker. |
 | scout | Read-only delegated helper. |
 | skill family | The globally installed guides that carry the methodology. |
 | SOL | Optional structured requirement notation selected by `format: sol`. |
 | source authority | Rule for which artifact governs when intent conflicts. |
 | spec | Intended behavior and verification. |
 | split work | Turn spec or change plan into task packets. |
-| step | One stage of the loop: Spec, Task, Implement, Review, Close. |
+| step | One stage of the loop: intent, spec, implement, review, check, findings. |
 | structured requirements | Plain `AC-NNN` requirements or SOL blocks over the same record. |
 | task packet | Bounded split work order for an agent or person. |
 | transitory output | Short-lived output such as run logs and check output. |

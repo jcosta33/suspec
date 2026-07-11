@@ -12,7 +12,9 @@ Verify with: pnpm test:run auth-refresh-expired-token
 
 Implement, run the verify command, paste the output. Done. No file, no packet, no check
 run. Proportional rigor means the structure below exists for the work that earns it —
-never as a toll on the work that doesn't (level: convention).
+never as a toll on the work that doesn't (level: convention). Even at this weight the
+three keys are present: intent is the one-line fix, review is you reading the pasted
+output, findings is the deliberate call that nothing durable was learned.
 
 ## The full loop
 
@@ -43,19 +45,45 @@ intent -> spec -> implement -> review packet -> check -> findings
 
 Every step above keeps a by-hand path; no step requires a tool (level: convention).
 
-## The optional layers
+## The keys
 
+Three parts of the loop — **intent**, **review**, **findings** — are present on
+virtually every change, at whatever weight the change earns:
+
+- **Intent** — every change starts by stating what must become true, even when the next
+  step is straight to code. At minimum ceremony it is one sentence folded inline; when
+  the work earns structure it graduates into a spec.
+- **Review** — nearly every change ends with a judgment of the result against the
+  intent. At minimum ceremony it is the owner reading the diff and the pasted output;
+  the formal packet scales with risk.
+- **Findings** — every change closes with a decision about what it taught, even when
+  that decision is a deliberate "nothing durable learned". A durable lesson becomes a
+  native memory.
+
+The trivial path above is not an exception to the loop — it is the keys at their
+lightest weight, with zero scaffold around them.
+
+## The scaffold
+
+The scaffold is what Suspec erects around the keys when the work earns it — pulled in
+proportionally, never a station to pass through. The spec (the structured form intent
+graduates into) and the deterministic check are the scaffold the full loop above already
+shows; the rest:
+
+- **Task** — cut only when one spec splits into **parallel slices**. The common 1:1
+  case has no task packet: the implementer works from the spec. See
+  [creating tasks](06-creating-tasks.md).
 - **Inventory** — map existing code before brownfield work: observed modules,
   interfaces, tests, unknowns, with file references. Skip when the code is understood.
 - **Change plan** — for migrations, rewrites, schema changes, high-risk refactors:
   preservation guarantees, waves, verification per wave, rollback. See
   [brownfield work and change plans](05-brownfield-and-change-plans.md).
-- **Task** — cut only when one spec splits into **parallel slices**. The common 1:1
-  case has no task packet: the implementer works from the spec. See
-  [creating tasks](06-creating-tasks.md).
 - **Intake** — capture the upstream ask verbatim when work starts from a ticket or
   thread and you want the original preserved. Otherwise the spec names its source
   directly (a URL, an issue, or `self`).
+
+Implementation is neither key nor scaffold — it is the work itself, the thing the loop
+exists to serve. No key depends on scaffold (level: convention).
 
 ## Common paths
 

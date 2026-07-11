@@ -88,7 +88,9 @@ Details: [where files live](docs/03-where-files-live.md).
 
 The least structure that changes execution or reviewability. A trivial fix gets a
 one-line inline spec and no file. A feature gets a lean spec — a handful of requirements,
-non-goals, acceptance criteria. Large work extends the spec rather than padding it. No
+non-goals, acceptance criteria. Large work extends the spec rather than padding it.
+Intent, review, and findings are the keys — present on virtually every change, at
+whatever weight it earns; the rest is scaffold, erected when the work earns it. No
 step exists for ceremony's sake (level: convention).
 
 Suspec coexists with your harness's native plan mode — it never modifies, replaces, or

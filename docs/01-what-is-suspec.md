@@ -32,6 +32,11 @@ not decorative (level: convention):
 - **Large work** extends the spec — inventory, change plan, task packets — rather than
   padding it.
 
+Seen through the loop: intent, review, and findings are the **keys** — present on
+virtually every change, at whatever weight it earns. The rest — the spec intent
+graduates into, task packets, inventory, change plans, the deterministic checker — is
+**scaffold**, erected around the keys when the work earns it (level: convention).
+
 How you entered the work (a ticket, a chat message, your own idea) never sets the
 ceremony level. The work does.
 

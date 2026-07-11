@@ -14,9 +14,11 @@ by-hand path — the disciplines work with no tool at all
 
 ## The core loop
 
-`write-spec` → `implement-task` → `save-findings` cover the mandatory
-**spec → run → close** triad; `review-output` is the review step, layered on whenever code
-ships:
+`write-spec` → `implement-task` → `review-output` → `save-findings` carry a change
+around the loop. The keys — intent, review, findings — are present on virtually every
+change, at whatever weight it earns; the spec (the structured form intent graduates
+into) and the artifacts the guides below author are scaffold, erected when the work
+earns them:
 
 | Guide | Use |
 | --- | --- |
