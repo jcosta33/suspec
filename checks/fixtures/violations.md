@@ -345,14 +345,15 @@ draft's ids are work-in-progress, mirroring C007's ready gate). Surfaces facts, 
 
 ---
 
-## V19 — a verify block's cmd disagrees with the named command (C013 `verify-evidence-binding`, warning)
+## V19 — a verify block's cmd disagrees with the named command (C013 `verify-evidence-binding`, hard error)
 
 A non-draft spec whose `AC-001` carries `` Verify with: `npm test -- auth-refresh.spec.ts` ``, reviewed
 by a packet whose `AC-001` Pass row carries a structured `verify` block (a fenced sibling, info-string
 `id=AC-001 cmd="npm test -- other.spec.ts" result=pass`) recording a **different** command.
 
-**Expected:** flagged `cmd-mismatch` — the block's recorded `cmd` does not match the requirement's named
-Verify command. The comparison normalizes away surrounding backticks, a trailing `(parenthetical)` note,
+**Expected:** flagged `cmd-mismatch` as a hard error — the block's recorded `cmd` does not
+match the requirement's named Verify command. The comparison normalizes away surrounding backticks,
+a trailing `(parenthetical)` note,
 and whitespace, so the canon's own backtick-wrapped Verify-with form does **not** false-fire;
 only a genuine disagreement trips it. A block whose `cmd` matches and reads `result=pass` is
 consistent → no finding; a Pass row with only the free-form Evidence cell stays a warning, never
