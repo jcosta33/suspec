@@ -9,8 +9,7 @@
 #   lint-count-ranges.sh        no hardcoded count-bearing ADR ranges in bootstrap prose
 #   lint-skill-mirrors.sh       local maintainer skill subset matches suspec-skills byte for byte
 #
-# The suspec-cli spec-side check (0116, active spec → `## Execution`) ships in `suspec check`, not here.
-# Per ADR-0077, wiring these into a given repo's CI is that repo's call; this script is what CI would run.
+# Each repository decides whether to wire these checks into CI; this script is the shared entry point.
 #
 # Usage: scripts/lint-all.sh [REPO_PARENT_DIR]   (default: this repo's parent directory)
 # REPO_PARENT_DIR feeds each cross-repository scan.

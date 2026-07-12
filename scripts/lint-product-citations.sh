@@ -94,7 +94,7 @@ body_files=$(
     if [ -d "$SUSPEC_AGENTS_DIR/agents" ]; then
         find "$SUSPEC_AGENTS_DIR/agents" -maxdepth 1 -type f -name '*.md'
     fi
-# suspec-agents: hand-maintained Codex projections are product output, too.
+    # suspec-agents: hand-maintained Codex projections are product output, too.
     if [ -d "$SUSPEC_AGENTS_DIR/.codex/agents" ]; then
         find "$SUSPEC_AGENTS_DIR/.codex/agents" -maxdepth 1 -type f -name '*.toml'
     fi
