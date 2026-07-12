@@ -7,7 +7,7 @@
   checker appear only when they change execution or reviewability.
 - **Code stays king.** Working artifacts are transient; durable truth belongs in code,
   tests, maintained project records, and supported native memory.
-- **Paths are explicit.** Producers carry full paths forward; consumers do not discover a
+- **Paths are explicit.** Producers carry absolute paths forward; consumers do not discover a
   store or workspace.
 - **Tasks decompose.** A task narrows existing IDs; it never invents requirements.
 - **Evidence precedes assessment.** Worker claims are review inputs, not proof.

@@ -14,7 +14,7 @@ Any worker can use a Suspec packet:
 
 ## Handoff
 
-The dispatch prompt names the spec — and the task, when one exists — by full path:
+The dispatch prompt names the spec — and the task, when one exists — by absolute path:
 
 ```text
 Read /Users/you/agent-notes/shop-api/spec-checkout.md and implement AC-001.

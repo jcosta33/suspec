@@ -76,11 +76,9 @@ silent coverage gap comes back as a fact, not an opinion (level: enforced — su
 
 ## Where files live
 
-Place the file next to your own native artifacts — the same place you keep your plans,
-notes, and memories for this work, in a folder named after the repo you are working on
-(or wherever fits your harness best). You choose the exact spot; keep it out of the repo
-unless the project's own governance says otherwise, and carry the file's full path
-forward — every later step names artifacts by explicit path.
+Place the file under `~/.agents/artifacts/<workspace>/`, resolving `~` to the
+absolute home path and deriving `<workspace>` from the repository or working-directory
+basename. Keep it out of the repository and carry its absolute path forward.
 
 Details: [where files live](docs/03-where-files-live.md).
 
@@ -94,8 +92,8 @@ whatever weight it earns; the rest is scaffold, erected when the work earns it. 
 step exists for ceremony's sake (level: convention).
 
 Suspec coexists with your harness's native plan mode — it never modifies, replaces, or
-races it. Native planning stays for the work that suits it; Suspec artifacts appear
-alongside, when the work earns them (level: convention).
+races it. Native planning stays native; ordinary Suspec artifacts use the agent-neutral
+workspace when the work earns them (level: convention).
 
 ## Global skills, local guidance
 
@@ -125,7 +123,8 @@ saving durable lessons into your harness's own memory.
 **Is not:** an agent or runtime · a claim that structured artifacts make model output
 better — the honest claim is consistency and checkability · a replacement for your
 harness's plan mode · a spec-as-source system — code stays king · a store or record —
-artifacts are transient working files, and durable value lives in code, tests, ADRs,
+the shared directory has no registry, resolver, or lifecycle machinery; artifacts are transient
+working files, and durable value lives in code, tests, ADRs,
 issues, PRs, and native memory · a Jira/Linear replacement · a replacement for PRs and
 CI · team governance — the artifacts are yours; anything team-facing goes through the
 project's own channels · a guarantee that agent output is correct.

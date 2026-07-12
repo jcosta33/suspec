@@ -23,8 +23,9 @@ says so.
 
 ## Working on this repo
 
-Working artifacts for changes to this repo live beside the developer's own native
-artifacts — read the spec or task packet at the explicit path you are given. Durable
+Working artifacts for changes to this repo live under
+`~/.agents/artifacts/<workspace>/` — read the spec or task packet at the explicit
+absolute path you are given. Durable
 lessons go to native harness memory or the project's normal channels. Accepted framework
 decisions land in `docs/adrs/`.
 
@@ -89,8 +90,8 @@ follow their own branching; isolation for parallel work is ordinary git practice
 
 <!-- suspec:start -->
 
-This repository is worked with the Suspec methodology: working artifacts live beside the
-developer's own native artifacts, outside the repo, and flow by explicit path. Durable
+This repository is worked with the Suspec methodology: ordinary working artifacts live under
+`~/.agents/artifacts/<workspace>/`, outside the repo, and flow by explicit absolute path. Durable
 lessons use native harness memory or the project's normal channels. The deterministic
 checker is `suspec check <path>`.
 

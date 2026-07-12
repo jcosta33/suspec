@@ -48,12 +48,10 @@ a trivial fix earns one-line inline intent and no files at all; see
 [the bug-fix example](examples/bug-fix.md) for that shorter path.
 
 1. Author a spec through the skill: requirements with `AC-NNN` ids, each with a
-   `Verify with:` line, non-goals, acceptance criteria. Place the file next to your own
-   native artifacts — the same place you keep your plans, notes, and memories for this
-   work, in a folder named after the repo you are working on (or wherever fits your
-   harness best). You choose the exact spot; keep it out of the repo unless the
-   project's own governance says otherwise, and carry the file's full path forward —
-   every later step names artifacts by explicit path.
+   `Verify with:` line, non-goals, acceptance criteria. Place the file under
+   `~/.agents/artifacts/<workspace>/`, resolve `~` to the absolute home path, and
+   derive `<workspace>` from the repository or working-directory basename. Keep it
+   out of the repository and carry its absolute path forward.
 2. When using the checker, lint it: `suspec check <path>`.
 3. Implement — your agent works from the spec by path, runs every verify command, and
    pastes real output.
@@ -72,7 +70,7 @@ nothing else.
 
 1. Write the spec yourself — the shape is documented in
    [artifact formats](reference/artifact-formats.md): status, requirements with IDs, a
-   `Verify with:` line each. Place it beside your native artifacts as above.
+   `Verify with:` line each. Place it in the agent-neutral workspace as above.
 2. Work in isolation if you run parallel workers — a branch or worktree is ordinary git
    practice, yours to manage.
 3. Run each `Verify with:` command yourself and paste the real output into the spec's
@@ -85,8 +83,8 @@ nothing else.
 
 Nothing, by Suspec's hand. Your repo takes the code, the tests, and whatever your
 project's own governance already commits — ADRs, agent guides, the PRs themselves.
-Specs, task packets, and review packets stay outside the repo, beside your native
-artifacts, unless the project's own governance says otherwise.
+Specs, task packets, and review packets stay outside the repository under
+`~/.agents/artifacts/<workspace>/` until explicitly promoted.
 
 ## Teams
 

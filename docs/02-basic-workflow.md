@@ -25,9 +25,9 @@ intent -> spec -> implement -> review packet -> check -> findings
 ```
 
 1. **Spec** — the authoring skill turns intent into a lean spec: requirements with
-   `AC-NNN` ids and `Verify with:` lines, non-goals, open questions. Place the file next
-   to your own native artifacts (see [where files live](03-where-files-live.md)) and
-   carry its full path forward. Lint it: `suspec check <path>`.
+   `AC-NNN` ids and `Verify with:` lines, non-goals, open questions. Place the file in
+   the [agent-neutral workspace](03-where-files-live.md) and carry its absolute path
+   forward. Lint it: `suspec check <path>`.
 2. **Implement** — the implementer (your agent, or you) works from the spec by explicit
    path, runs every verify command, and pastes real output into the spec's
    `## Execution` section. `Tests passed` without output is not evidence.

@@ -35,11 +35,9 @@ go to native memory or project channels. Shapes: [artifact formats](artifact-for
 
 ## Where files go
 
-Place the file next to your own native artifacts — the same place you keep your plans,
-notes, and memories for this work, in a folder named after the repo you are working on (or
-wherever fits your harness best). You choose the exact spot; keep it out of the repo unless
-the project's own governance says otherwise, and carry the file's full path forward — every
-later step names artifacts by explicit path.
+Place the file under `~/.agents/artifacts/<workspace>/`, resolving `~` to the
+absolute home path and deriving `<workspace>` from the repository or working-directory
+basename. Keep it out of the repository and carry its absolute path forward.
 
 ## Requirement
 

@@ -16,7 +16,7 @@ Decision history lives in the [ADR ledger](adrs/README.md).
 
 The current shapes for specs, task packets, reviews, inventories, change plans, and
 captured intake are defined in [artifact formats](reference/artifact-formats.md). Skills
-place them beside the agent's native working artifacts and carry their full paths through
+place them in the agent-neutral artifact workspace and carry their absolute paths through
 each handoff.
 
 Findings are a key in the work, not a standalone artifact type. Ephemeral observations

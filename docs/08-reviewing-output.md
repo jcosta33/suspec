@@ -8,7 +8,7 @@ Use an independent session, agent, or human. The implementer does not assess the
 
 ## Review artifact
 
-Write it beside the reviewer's native artifacts:
+Write it in the agent-neutral artifact workspace:
 
 ```markdown
 ---

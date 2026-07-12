@@ -8,7 +8,7 @@ worker implements directly from the spec and records run evidence in that workin
 Use the `implement-task` skill or hand the spec to a worker directly:
 
 ```text
-Read ~/.claude/notes/shop-api/checkout-expiry-spec.md and implement AC-001.
+Read ~/.agents/artifacts/shop-api/checkout-expiry-spec.md and implement AC-001.
 Run its Verify command, paste the real output under ## Execution, and report any blocked
 question before changing the requirement or its non-goals.
 ```

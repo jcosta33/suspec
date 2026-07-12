@@ -8,9 +8,9 @@ packet: the implementer works from the source and fills its `## Execution` secti
 A task does not add requirements. It copies a scope-subset from a spec or change plan.
 
 Task packets are files like any other Suspec artifact: written by the split-work skill,
-placed beside your native artifacts per the [placement rule](03-where-files-live.md),
-and dispatched by explicit path — the packet names its spec by full path, and the
-dispatch prompt names the packet by full path. `suspec check` has no task-packet face
+placed in the agent-neutral workspace per the [placement rule](03-where-files-live.md),
+and dispatched by explicit path — the packet names its spec by absolute path, and the
+dispatch prompt names the packet by absolute path. `suspec check` has no task-packet face
 today; review one by hand against the shape below (level: checklist).
 
 ## Task shape

@@ -472,6 +472,35 @@ These sources are **not peer-reviewed**. They may provide implementation guidanc
 <a id="SMARTBEAR"></a>
 **[SMARTBEAR] Code Review at Cisco Systems** (in *Best Kept Secrets of Peer Code Review*). Cohen, Smart Bear Software, 2006. *Verified (June 2026, web — the canonical case-study PDF).* The largest lightweight-review case study of its time (2,500 reviews, 3.2M LOC, 50 developers, 10 months): defect-detection effectiveness is best on **small changes — LOC under review under 200, not to exceed ~400** — and falls past **~60–90 minutes** of review or at inspection **rates above ~400–500 LOC/hour** (the rate metric is distinct from the absolute size ceiling). <https://static0.smartbear.co/support/media/resources/cc/book/code-review-cisco-case-study.pdf> — **industry-dataset, not peer-reviewed; a single vendor-derived 2006 in-situ dataset — cite the 200–400 LOC band as a heuristic, never as law.** Grounds: the size anchor for the oversized-packet heuristic (ADR-0094).
 
+<a id="CLAUDE-FILES"></a>
+**[CLAUDE-FILES] Explore the .claude directory.** Anthropic, Claude Code documentation.
+*Verified (July 2026, direct fetch).* Enumerates Claude Code's named configuration and managed
+application-data paths, including automatic cleanup; defines no generic artifact-discovery
+directory. <https://code.claude.com/docs/en/claude-directory> Grounds: ordinary Markdown does not
+gain a supported Claude capability from directory adjacency.
+
+<a id="CODEX-FILES"></a>
+**[CODEX-FILES] Codex configuration implementation.** OpenAI, `openai/codex`.
+*Verified (July 2026, direct source inspection).* Defines Codex home, instructions, skills,
+session, history, memory, and state configuration separately; defines no generic
+artifact-discovery directory.
+<https://github.com/openai/codex/blob/main/codex-rs/core/src/config/mod.rs> Grounds: ordinary
+Markdown does not gain a supported Codex capability from directory adjacency.
+
+<a id="CURSOR-FILES"></a>
+**[CURSOR-FILES] @Files & Folders.** Cursor documentation. *Verified (July 2026, direct fetch).*
+Defines explicit file and folder context selection; arbitrary files enter context through
+selection, not a vendor artifact directory.
+<https://docs.cursor.com/context/%40-symbols/%40-files-and-folders> Grounds: portable Suspec
+artifacts need an explicit path, not Cursor-directory adjacency.
+
+<a id="AIDER-FILES"></a>
+**[AIDER-FILES] Specifying coding conventions.** Aider documentation.
+*Verified (July 2026, direct fetch).* Defines `/read <path>` and `--read <path>` for explicit
+read-only file context; placement alone does not load a file.
+<https://aider.chat/docs/usage/conventions.html> Grounds: portable Suspec artifacts need an
+explicit path, not Aider-directory adjacency.
+
 ## Rejected — DO NOT CITE (fabricated / misattributed / unconfirmed)
 
 The skill-authoring literature attributes load-bearing figures to these arXiv ids. **Direct fetch (June 2026) found each id resolves to an unrelated paper.** They are recorded here so the fabrication is never re-introduced (per this ledger's reject discipline).

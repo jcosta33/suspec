@@ -4,7 +4,7 @@ The numbered happy path, in order:
 
 1. [What is Suspec?](01-what-is-suspec.md) - the methodology, the skills, the honesty floor.
 2. [The basic workflow](02-basic-workflow.md) - the loop, from one-line intent to full review.
-3. [Where files live](03-where-files-live.md) - beside your agent's native artifacts, named by path.
+3. [Where files live](03-where-files-live.md) - in the agent-neutral workspace, named by absolute path.
 4. [Writing specs](04-writing-specs.md) - intent, requirements, and `Verify with:`.
 5. [Brownfield work and change plans](05-brownfield-and-change-plans.md) - inventory and change plans, when needed.
 6. [Creating tasks](06-creating-tasks.md) - the split slice, cut only when decomposition is useful.

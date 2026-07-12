@@ -54,7 +54,7 @@ delegate to subagents. Its README lists the current definitions.
 Give the agent:
 
 - `AGENTS.md` (or your harness's equivalent standing instructions)
-- the spec — and the task packet, when work is split — by full path
+- the spec — and the task packet, when work is split — by absolute path
 - the repo checkout or worktree
 
 Common setup:
@@ -103,8 +103,8 @@ human's review decision.
 
 Code repos stay clean. Nothing lands in the adopter's repo — no config, no directories,
 no gitignore entries (level: convention). Committed agent guides (`AGENTS.md` and
-friends) are your project's own practice; Suspec artifacts stay outside, beside your
-native artifacts, per [where files live](03-where-files-live.md).
+friends) are your project's own practice; Suspec artifacts stay outside in the
+agent-neutral artifact workspace, per [where files live](03-where-files-live.md).
 
 ## Boundaries
 

@@ -21,7 +21,7 @@ location work.
 
 ## Dispatch contract
 
-A dispatch prompt names every input by full path and says what the agent returns. Include:
+A dispatch prompt names every input by absolute path and says what the agent returns. Include:
 
 - the target spec, task, diff, or source files
 - the repository or worktree to inspect

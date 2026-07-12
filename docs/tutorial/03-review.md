@@ -10,7 +10,7 @@ decision picker and write the selection. Place the packet beside the other
 native working artifacts:
 
 ```text
-~/.claude/notes/shop-api/checkout-expiry-review.md
+~/.agents/artifacts/shop-api/checkout-expiry-review.md
 ```
 
 ````markdown
@@ -50,8 +50,8 @@ judged. Empty or stale evidence means `Unverified`.
 This review names no task because no split occurred:
 
 ```bash
-suspec check ~/.claude/notes/shop-api/checkout-expiry-review.md \
-  --spec ~/.claude/notes/shop-api/checkout-expiry-spec.md
+suspec check ~/.agents/artifacts/shop-api/checkout-expiry-review.md \
+  --spec ~/.agents/artifacts/shop-api/checkout-expiry-spec.md
 ```
 
 The structured `verify` command must match the spec's `Verify with:` value. The checker

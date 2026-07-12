@@ -8,8 +8,8 @@ without trusting either the worker summary or a green aggregate CI run.
 The PR implements one slice of a larger checkout spec. The working inputs already exist:
 
 ```text
-~/.claude/notes/shop-api/checkout/spec.md
-~/.claude/notes/shop-api/checkout/session-refactor-task.md
+~/.agents/artifacts/shop-api/checkout/spec.md
+~/.agents/artifacts/shop-api/checkout/session-refactor-task.md
 ```
 
 The task names its source spec, scoped requirements, affected areas, and `Do not change`
@@ -19,16 +19,16 @@ paths. The worker claims:
 All checkout session behaviors preserved.
 ```
 
-The reviewer treats that sentence as a claim. They read the spec and task by full path,
+The reviewer treats that sentence as a claim. They read the spec and task by absolute path,
 inspect the actual changed files, and rerun every applicable Verify command against the
 PR state.
 
 ## Review packet
 
-Place the packet beside the reviewer's native working artifacts:
+Place the packet in the agent-neutral artifact workspace:
 
 ```text
-~/.claude/notes/shop-api/checkout/session-refactor-review.md
+~/.agents/artifacts/shop-api/checkout/session-refactor-review.md
 ```
 
 ````markdown
@@ -94,9 +94,9 @@ received 500
 Pass both companions explicitly because this review covers a split task:
 
 ```bash
-suspec check ~/.claude/notes/shop-api/checkout/session-refactor-review.md \
-  --spec ~/.claude/notes/shop-api/checkout/spec.md \
-  --task ~/.claude/notes/shop-api/checkout/session-refactor-task.md
+suspec check ~/.agents/artifacts/shop-api/checkout/session-refactor-review.md \
+  --spec ~/.agents/artifacts/shop-api/checkout/spec.md \
+  --task ~/.agents/artifacts/shop-api/checkout/session-refactor-task.md
 ```
 
 The checker reconciles identities, coverage, evidence presence, and structured command

@@ -41,7 +41,7 @@ the signal to escalate, not a blanket rule that bugs always need a spec.
 ### Working spec
 
 Write a working spec for the wider change, e.g.
-`~/.claude/notes/payments-api/payments-spec.md`.
+`~/.agents/artifacts/payments-api/payments-spec.md`.
 
 Add:
 
@@ -61,12 +61,12 @@ Non-goal:
 ```
 
 One requirement and one worker do not earn a task split. The implementer works from the
-spec's full path and records changed files, red-before-green output, and blocked questions
+spec's absolute path and records changed files, red-before-green output, and blocked questions
 under `## Execution`.
 
 ### Review
 
-`~/.claude/notes/payments-api/payment-timeout-retry-review.md`
+`~/.agents/artifacts/payments-api/payment-timeout-retry-review.md`
 
 ```markdown
 ---
@@ -96,8 +96,8 @@ Merge after human inspection of the money-path note.
 Check it:
 
 ```bash
-suspec check ~/.claude/notes/payments-api/payment-timeout-retry-review.md \
-  --spec ~/.claude/notes/payments-api/payments-spec.md
+suspec check ~/.agents/artifacts/payments-api/payment-timeout-retry-review.md \
+  --spec ~/.agents/artifacts/payments-api/payments-spec.md
 ```
 
 This exits with an advisory warning (exit 1) as shown: the coverage row, the pasted

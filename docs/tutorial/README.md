@@ -12,7 +12,7 @@ goes to one worker.
 
 You will produce:
 
-- a working spec beside the harness's native artifacts
+- a working spec in the agent-neutral artifact workspace
 - pasted implementation evidence under the spec's `## Execution` section
 - an independent review packet checked against the spec
 - a native memory only when the work teaches a durable lesson and the harness supports it

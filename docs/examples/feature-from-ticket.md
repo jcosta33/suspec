@@ -17,7 +17,7 @@ It should export the currently filtered rows.
 Placed beside the author's own working files — one example:
 
 ```text
-~/.claude/notes/reports-app/report-csv-spec.md
+~/.agents/artifacts/reports-app/report-csv-spec.md
 ```
 
 ```markdown
@@ -63,7 +63,7 @@ Verify with: `npm run test:e2e -- report-csv-export`
 Lint it:
 
 ```bash
-suspec check ~/.claude/notes/reports-app/report-csv-spec.md
+suspec check ~/.agents/artifacts/reports-app/report-csv-spec.md
 ```
 
 ## Task split
@@ -76,7 +76,7 @@ each other's files — see [large PR review](large-pr-review.md) for a split-tas
 
 ## Human-finalized review
 
-`~/.claude/notes/reports-app/report-csv-review.md`
+`~/.agents/artifacts/reports-app/report-csv-review.md`
 
 ```markdown
 ---
@@ -101,8 +101,8 @@ Check it against the spec — no `task:` in the frontmatter means no `--task` on
 per [ADR-0143](../adrs/0143-path-agnostic-check-cli-contract.md):
 
 ```bash
-suspec check ~/.claude/notes/reports-app/report-csv-review.md \
-  --spec ~/.claude/notes/reports-app/report-csv-spec.md
+suspec check ~/.agents/artifacts/reports-app/report-csv-review.md \
+  --spec ~/.agents/artifacts/reports-app/report-csv-spec.md
 ```
 
 Exits with an advisory warning (exit 1): one requirement, one coverage row, evidence

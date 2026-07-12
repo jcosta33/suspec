@@ -22,7 +22,7 @@ Requirement IDs are spec-scoped, so cross-spec references use `SPEC-id#AC-NNN`.
 
 ## Paths
 
-Every producer states where it wrote an artifact. Every consumer receives its full path.
+Every producer states where it wrote an artifact. Every consumer receives its absolute path.
 The checker reads only primary paths and companions it is handed, plus its documented
 artifact-relative reference lookups.
 
