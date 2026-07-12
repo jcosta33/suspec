@@ -95,12 +95,12 @@ Companions are explicit: the checker reads exactly the files it is handed, and a
 packet checked without a required companion is a blocking error (exit 2) — the floor
 never silently degrades into a shallower check (level: enforced — suspec-cli).
 
-What it verifies is exactly what a lazy or dishonest reviewer would fudge: every scoped
-requirement has a coverage row, every `Pass` row backed by a structured `verify` block
+What it verifies are structural and binding facts: every scoped requirement has a coverage
+row, every `Pass` row backed by a structured `verify` block
 has its command machine-matched against the spec's `Verify with:` line (a `Pass` row
 backed only by the free-form Evidence cell draws an advisory warning instead — routed to
 human attention, not machine-verified for command correctness), every `Pass` carries
-evidence, every reference resolves — plus the packet's lint.
+evidence, every supported reference resolves — plus the packet's lint.
 Exit codes: `0` clean, `1` warning, `2` blocking. It reports facts; it never renders the
 review result. What no tool covers — whether the evidence actually demonstrates the
 requirement — is the reviewer's own run and the human's review result.

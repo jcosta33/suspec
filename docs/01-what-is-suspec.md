@@ -49,20 +49,21 @@ and a reviewer reconciles against, not a second planner (level: convention).
 
 ## The honesty floor
 
-Review claims are where agent work goes wrong quietly. The deterministic checks exist so
-the load-bearing claims cannot be faked:
+Review claims are where agent work goes wrong quietly. The deterministic checks make
+structural omissions and inconsistent bindings visible:
 
 - every scoped requirement has a coverage row (nothing dropped silently)
 - every evidence command matches the spec's `Verify with:` line
 - every `Pass` carries evidence — an empty evidence cell can never read as `Pass`
-- every reference resolves
+- every supported reference resolves
 
 plus per-artifact lint on specs, change plans, and review packets. The checker is
 `suspec check` — `suspec check <path>` for a spec or change plan,
 `suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the spec
 was split into one) for a review packet — facts and exit codes, no model in the loop, no
 review result rendered (level: enforced — suspec-cli). Every step also keeps a by-hand
-path; no step requires a tool (level: convention).
+path; no step requires a tool (level: convention). The checker does not establish that
+recorded evidence is true; independent review still reruns and judges it.
 
 ## Code is king
 

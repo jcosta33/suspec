@@ -6,8 +6,8 @@ by a deterministic checker.**
 Suspec structures agent-assisted coding around intent, review, and findings.
 When work earns more structure, skills add scaffold such as a spec, a task split, an
 inventory, or a change plan. The methodology installs as a global skill family; a small
-CLI provides the honesty floor — deterministic checks a lazy or dishonest reviewer
-cannot fake. Plain markdown works with any agent, and your repositories take nothing.
+CLI provides an honesty floor of deterministic structural checks over the artifacts it is
+handed. Plain markdown works with any agent, and your repositories take nothing.
 
 ## The problem
 
@@ -31,9 +31,10 @@ check catch what discipline alone misses.
 2. **The checker reinforces the method** — [suspec-cli](https://github.com/jcosta33/suspec-cli).
    `suspec check` runs deterministic checks over the artifacts you hand it:
    every scoped requirement has a coverage row, every evidence command matches the spec's
-   `Verify with:` line, every `Pass` carries evidence, every reference resolves — plus
-   per-artifact lint (level: enforced — suspec-cli). Zero model cost, no judgment calls,
-   nothing a reviewer can talk their way past.
+   `Verify with:` line, every `Pass` carries evidence, every supported reference resolves —
+   plus per-artifact lint (level: enforced — suspec-cli). Zero model cost, deterministic
+   structural facts. The checker verifies recorded shape and bindings; it does not prove
+   that pasted evidence is true.
 
 Every step keeps a by-hand path; no step requires a tool (level: convention).
 
