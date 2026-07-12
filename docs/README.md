@@ -17,5 +17,5 @@ Then go deeper:
 
 - [Tutorial](tutorial/README.md) - walk one small change end to end.
 - [Examples](examples/README.md) - complete Suspec chains.
-- [Reference](reference/) - the deep layer: checks, the CLI, artifact formats, glossary.
+- [Reference](reference/) - checks, artifact formats, inspections, promotion, the CLI, and glossary.
 - [Adopting Suspec](ADOPTING.md) - install the skills and add the checker when useful.

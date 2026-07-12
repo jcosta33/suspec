@@ -70,7 +70,7 @@ If you use worktrees:
 The returned spec `## Execution` entry, or task packet when split, contains:
 
 - every verify item checked or marked blocked
-- real output pasted under each command
+- short decisive output once, or a stable link to an adjacent evidence receipt
 - changed files listed
 - out-of-scope edits named
 - blocked questions named
@@ -85,8 +85,7 @@ Example:
 
 - [x] `npm run test:integration -- expired-session` (AC-001)
 
-      Test Suites: 1 passed, 1 total
-      Tests:       3 passed, 3 total
+      Tests: 3 passed
 
 ## Findings
 
@@ -95,8 +94,7 @@ Example:
 ## Run summary
 
 - Changed files: `src/checkout/expiry.ts`, `test/integration/expired-session.test.ts`
-- Verify results:
-  - `npm run test:integration -- expired-session` (AC-001): PASS, output above
+- Verify evidence: AC-001 → `Tests: 3 passed` above
 - Out-of-scope edits: none
 - Blocked questions: none
 ```
@@ -105,13 +103,13 @@ Example:
 
 `Tests passed` is not evidence.
 
-A `Pass` needs pasted output, a CI link, or a named manual observation. Without that, review records `Unverified`.
+A `Supported` needs pasted output, a CI link, or a named manual observation. Without that, review records `Unverified`.
 
 ## Self-review
 
 The worker inspects its own diff before handoff.
 
-Self-review can produce fixes. It does not produce the review result. The result belongs to an independent reviewer.
+Self-review can produce fixes. It does not produce an independent assessment or human decision.
 
 ## Keep the working tree
 

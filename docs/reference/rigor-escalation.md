@@ -11,7 +11,8 @@ category or numerical threshold.
 | current behavior or ownership is unclear | inventory |
 | behavior must survive a staged structural change | change plan |
 | review claims need deterministic reconciliation | checker |
-| one pass cannot cover distinct risk surfaces | target-derived Revolver Review |
+| several risk surfaces need breadth | target-derived Revolver inspection |
+| one high-consequence surface needs depth | Triple-check |
 
 ## Escalate when
 

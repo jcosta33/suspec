@@ -17,7 +17,7 @@ claim unverified.
 
 Run the command after the final relevant edit and paste its real output or link the exact
 CI job. A script can report exit status and facts. It cannot decide that a requirement is
-Pass, Unverified, or Blocked; the reviewer makes that judgment against the requirement.
+Supported, Unverified, or Blocked; the reviewer makes that judgment against the requirement.
 
 ## Layering
 

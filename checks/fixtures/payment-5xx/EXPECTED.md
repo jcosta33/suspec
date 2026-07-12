@@ -26,7 +26,7 @@ C002 duplicate.
 | Check                  | Where          | Expected result                                                        | Severity   |
 | ---------------------- | -------------- | ---------------------------------------------------------------------- | ---------- |
 | C007 `no-tbd-at-ready` | Open questions | **fires** — an unresolved blocking question remains at `status: ready` | hard error |
-| C001–C006, C008, C009  | —              | pass                                                                   | —          |
+| C001–C004, C008, C009  | —              | pass                                                                   | —          |
 
 No core check keys on the contradiction in plain form — catching AC-002 vs AC-003 is a
 review checklist item there. That gap is exactly what the stricter surface buys below.
@@ -66,12 +66,11 @@ though only the SOL surface has a code that names it.
 
 | Check              | Where                      | Expected result                                                                                                                                                                                |
 | ------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pass-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                                                                                                                                                 |
-| `pass-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Pass                                                                                                                       |
+| `supported-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                                                                                                                                                 |
+| `supported-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Supported                                                                                                                       |
 | `coverage` (C012)  | review vs spec scope       | pass — every in-scope AC has a coverage row and no row is orphaned (the source spec is `status: ready`, so C012 is in scope for this domain — unlike the draft-spec domains) |
-| `verify-evidence-binding` (C013) | review rows AC-001, AC-002 | **fires** (warning) — each Pass row carries only a free-form Evidence cell, no structured `verify` block, so the free-form-only advisory routes it to human attention rather than machine-rejecting it (the source spec is `status: ready`, so C013 is in scope for this domain — unlike the draft-spec domains) |
-| `no-open-critical` | review                     | **does not fire** — the open blocking question is correctly reflected as `status: blocked`; the rule guards terminal statuses. Counterfactual: the same packet at `status: pass` would fire it |
-| `trigger-coverage` | review Human attention     | pass — names the contradiction, the blocked question, the unverified row, and the security-sensitive path                                                                                      |
+| `verify-evidence-binding` (C013) | review rows AC-001, AC-002 | **fires** (warning) — each Supported row carries only a free-form Evidence cell, no structured `verify` block, so the free-form-only advisory routes it to a human rather than machine-rejecting it (the source spec is `status: ready`, so C013 is in scope for this domain — unlike the draft-spec domains) |
+| `no-open-critical` | review                     | **does not fire** — the open blocking question is correctly reflected as `decision: deferred`; the rule guards acceptance. Counterfactual: the same packet at `decision: accepted` would fire it |
 
 _Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
 unchecked and it claims no completion; the rule binds completion claims, not open work._

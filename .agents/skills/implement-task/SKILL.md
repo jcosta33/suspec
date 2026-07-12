@@ -2,16 +2,16 @@
 name: implement-task
 type: agent-guide
 description: >-
-  Implement Suspec requirements: read the sources first, stay inside scope, run
-  every Verify item and paste real output, self-review your diff before
-  handoff. ALWAYS apply when given a task packet (`type: task`) or asked to
-  implement against a spec's requirements. Do not edit outside the controlling
-  scope, claim a result without pasted output, or write a review result on
-  your own work. Skip for writing specs, reviewing another agent's output, and
-  splitting work into tasks.
+  Implement a generic or unclassified Suspec task packet: read sources, stay
+  inside scope, run every Verify item, and self-review before handoff. Apply
+  only when no specialized implementation skill matches. Do not co-activate
+  with a specialized implementation skill, edit outside scope, claim a result
+  without evidence, or assess your own work.
 ---
 
 # Implement a task
+
+`DISRESPEC-SPINE: One fact once. No filler, repeated source material, empty sections, or chat restatement; after successful creation return only clickable artifact links, except for blockers, failed creation, incomplete verification, or irreversible-action confirmation.`
 
 The controlling artifact bounds your work: a task packet for a split slice, or the spec itself for
 1:1 work. It supplies the requirement IDs, areas not to change, and Verify checklist. The dispatch
@@ -67,10 +67,10 @@ review packet inspects — nothing enforces them at edit time.
    task's `## Findings`. The spec carries no `## Findings` section — for 1:1
    work, note durable discoveries in the Execution entry's prose instead, and
    let the review step route them into `## Candidate findings` for a multi-lens review or
-   `## Human attention` otherwise. Findings ride the task or review packet; only evidence-backed,
+   `## Findings or Open decisions` otherwise. Findings ride the task or review packet; only evidence-backed,
    durable lessons move into native memory or the project's normal channels at close.
 9. **Never write a review result on your own work.** Self-review yields fixes
-   and notes — never a Pass. The review packet is filled by someone who did
+   and notes — never a Supported. The review packet is filled by someone who did
    not write the diff. _Why: authors favor their own output; independence is
    the point of the review step._
 

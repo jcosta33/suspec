@@ -1,17 +1,7 @@
 # Writing specs
 
-A spec states intended behavior.
-
-Write a spec when structured intent will change execution or make review possible:
-
-- an agent needs a clear contract
-- reviewers need an acceptance bar
-- a ticket is vague or partial
-- several requirements or boundaries must stay aligned
-
-For a trivial change, state intent and verification inline. A spec is working scaffold for
-the live change, not a durable parallel source of truth; code, tests, ADRs, issues, and PRs
-carry the lasting record.
+A spec states intended behavior when structured intent will change execution or review.
+For trivial work, state intent and verification inline.
 
 ## Minimum shape
 
@@ -20,21 +10,18 @@ carry the lasting record.
 type: spec
 id: SPEC-checkout
 title: Expired checkout sessions
-status: draft
+status: ready
 owner: checkout-team
 sources:
-  - intake/SHOP-4012.md
+  - SHOP-4012
 ---
 
 # Expired checkout sessions
 
 ## Intent
 
-...
-
-## Non-goals
-
-- ...
+Reject expired checkout sessions without converting an expected client condition into a
+server failure.
 
 ## Requirements
 
@@ -44,75 +31,40 @@ When a checkout session is older than 30 minutes, the API must return
 `409 SESSION_EXPIRED` and must not return a 5xx.
 
 Verify with: `npm run test:integration -- expired-session`
-
-## Open questions
-
-- None.
-
-## Affected areas
-
-- `src/checkout/`
 ```
+
+`Intent` and `Requirements` are required. Add `Non-goals`, `Open questions`, `Affected
+areas`, `Dropped from sources`, or `Execution` only when each section carries information.
 
 ## Requirement rules
 
-Each requirement:
+Each requirement has a stable `AC-NNN` ID, states one behavior, names its actor or system,
+uses a binding word, and ends with `Verify with:`. Keep uncertainty out of requirements.
 
-- has an `AC-NNN` id
-- states one behavior
-- names the actor or system
-- uses at least one binding word: `must`, `must not`, `should`, `should not`, or `may` (more than one flags a split candidate)
-- has a `Verify with:` line
-- avoids hidden uncertainty
+## Decision gate
 
-Move uncertainty to **Open questions** — framed as a decision (options and a recommendation), not a bare question.
+Investigate discoverable facts before asking. Resolve reversible, convention-bound details.
+For material behavior, public contracts, security tradeoffs, costly choices, conflicting
+authority, or irreversible actions, use the harness picker: recommendation first, three
+genuine options by default, two for binary choices, one-sentence tradeoffs, and `Other`.
+Without a picker, render the same numbered choices plus `Other`. Never ask a bare question.
 
-## Non-goals
+Batch only independent decisions. Record unresolved decisions under `Open questions`, keep
+the spec `draft`, and block dependent work. `ready` means no blocking decision or unresolved
+marker remains; C007 enforces that floor.
 
-Use non-goals to stop scope creep. Name the boundary, what to do instead, and the escape
-hatch: when the boundary blocks the work, stop and ask rather than editing past it.
+## Optional sections
 
-Good non-goals name likely misunderstandings:
-
-- no schema change
-- no pricing change
-- no public API change
-- no migration of old records
-
-## Sources
-
-Name the source in frontmatter.
-
-If the spec does not implement part of the source, record it under **Dropped from sources** with the reason.
-
-## Status
-
-Use `draft` while questions remain.
-
-Use `ready` only when:
-
-- every requirement has `Verify with:`
-- blocking questions are resolved
-- non-goals are stated
-- affected areas are named
-
-## Execution
-
-When one implementer works directly from the spec, use `## Execution` for this run's
-changed files, verify output, and blocked questions. If the work is split into task
-packets, each task carries its own run notes instead. These notes serve the live review;
-they are not a durable lifecycle record.
+- `Non-goals`: likely scope confusion, its boundary, and the stop condition.
+- `Open questions`: only unresolved material decisions with choices and recommendation.
+- `Affected areas`: only when file or subsystem boundaries constrain execution.
+- `Dropped from sources`: source intent deliberately excluded, with reason.
+- `Execution`: current run evidence when no task split exists.
 
 ## Structured SOL form
 
-Plain markdown is the default. A spec can select the stricter EARS-like SOL syntax with
-`format: sol` when controlled clauses make ambiguity cheaper to detect. Both forms encode
-the same requirement record. See [structured requirements](reference/structured-requirements.md),
-and do not mix plain `AC-NNN` headings with SOL blocks in one spec.
-
-## Checks
-
-Use [checks](reference/checks.md) as the review checklist. `suspec check` can report the toolable subset.
+Plain Markdown is the default. Set `format: sol` for stricter EARS-like clauses. Do not mix
+plain requirement headings with SOL blocks. See [structured requirements](reference/structured-requirements.md).
 
 ## Related
 

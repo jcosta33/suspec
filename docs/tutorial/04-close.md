@@ -1,6 +1,6 @@
 # Close
 
-Close starts after the human accepts the review result. It does not produce another
+Close starts after the human accepts the review decision. It does not produce another
 Suspec artifact.
 
 ## 1. Decide whether anything is durable

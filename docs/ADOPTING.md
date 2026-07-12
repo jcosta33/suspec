@@ -78,7 +78,7 @@ nothing else.
 3. Run each `Verify with:` command yourself and paste the real output into the spec's
    `## Execution` section.
 4. Review by checklist: one coverage row per requirement, empty evidence is
-   `Unverified` never `Pass`, exceptions routed to a human. Without the CLI the floor is
+   `Unverified` never `Supported`, exceptions routed to a human. Without the CLI the floor is
    yours to hold (level: checklist; `suspec check` is the enforced form).
 
 ## What gets committed

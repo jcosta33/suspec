@@ -10,8 +10,8 @@
 - **Paths are explicit.** Producers carry full paths forward; consumers do not discover a
   store or workspace.
 - **Tasks decompose.** A task narrows existing IDs; it never invents requirements.
-- **Evidence precedes Pass.** Worker claims are review inputs, not proof.
-- **Review is independent.** The implementer does not issue the review result.
+- **Evidence precedes assessment.** Worker claims are review inputs, not proof.
+- **Review is independent.** The implementer does not assess their own work; the human decides.
 - **Checks report facts.** Exit codes and diagnostics never become merge authority.
 - **Every step works by hand.** CLI, MCP, and agent definitions are reinforcement.
 - **Claims fit sources.** External evidence supports the exact claim and carries its limits.

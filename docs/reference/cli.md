@@ -11,7 +11,7 @@ at zero model cost:
 
 - **coverage-complete** — every in-scope requirement has a coverage row in the review
 - **command-matches** — a structured evidence block names the same command as the spec
-- **pass-needs-evidence** — no `Pass` with an empty evidence cell
+- **supported-needs-evidence** — no `Supported` with an empty evidence cell
 - **ref-resolves** — every referenced artifact and anchor resolves
 
 plus the single-artifact lint for each artifact kind. The contract — every check, with its
@@ -66,7 +66,7 @@ one process, not a second command.
 A review packet checked without a required companion is a blocking error: exit 2, naming
 the missing flag (level: enforced — suspec-cli). The reconciliation checks — coverage,
 command match, evidence binding — cannot run without the artifacts the review reconciles
-against, and the floor never degrades silently into a shallower check. Pass the companions
+against, and the floor never degrades silently into a shallower check. Provide the companions
 or get a blocking exit; there is no partial mode.
 
 ## Exit codes
@@ -97,9 +97,9 @@ version and check definitions.
   reference lookups described above.
 - **No gate.** It does not decide "done". It reports facts and exit codes; the human
   decides what blocks a merge.
-- **No verdicts.** It never judges whether code is correct or a requirement is met. Review
-  results (`Pass` / `Fail` / `Unverified` / `Blocked`) are written by the human reviewer; the
-  checker verifies their shape and their binding to evidence, nothing more.
+- **No acceptance.** It never accepts work. Review assessments (`Supported` / `Unsupported` /
+  `Unverified` / `Blocked`) are written by the independent reviewer; the checker verifies their
+  shape and evidence binding. The human owns the decision and waivers.
 - **No execution.** It does not run your verify commands, your tests, or any agent. It
   checks that recorded evidence matches what the spec named — not that the commands pass.
 - **No writes.** It scaffolds nothing, seeds nothing, manages nothing. The filesystem is

@@ -83,24 +83,18 @@ each other's files — see [large PR review](large-pr-review.md) for a split-tas
 type: review
 id: REVIEW-report-csv
 pr: none yet
-status: pass
+decision: accepted
 ---
 
 ## Requirement coverage
 
-| ID | Result | Evidence | Human attention |
-| --- | --- | --- | --- |
-| AC-001 | Pass | `npm run test:e2e -- report-csv-export` -> `1 passed` | no |
+| ID | Assessment | Evidence |
+| --- | --- | --- |
+| AC-001 | Supported | `npm run test:e2e -- report-csv-export` -> `1 passed` |
 
-Reran: AC-001 - the e2e test output matched.
-
-## Human attention
-
-- None.
-
-## Suggested decision
-
-Merge.
+```verify id=AC-001 cmd="npm run test:e2e -- report-csv-export" result=pass
+1 passed
+```
 ```
 
 Check it against the spec — no `task:` in the frontmatter means no `--task` on the call,
@@ -112,7 +106,7 @@ suspec check ~/.claude/notes/reports-app/report-csv-review.md \
 ```
 
 Exits with an advisory warning (exit 1): one requirement, one coverage row, evidence
-present — C013 flags the free-form Evidence cell and routes it to human attention. Add a
+present — C013 flags the free-form Evidence cell and routes it to a human. Add a
 `verify` block ([ADR-0083](../adrs/0083-verify-evidence-reconcile.md)) to machine-confirm
 it and exit clean instead.
 

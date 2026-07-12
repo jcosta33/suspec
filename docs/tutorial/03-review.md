@@ -5,8 +5,8 @@ did not implement the change and reruns the requirement's Verify command.
 
 ## 1. Create and human-finalize the packet
 
-Have an independent agent draft the evidence and findings, then have the human reviewer fill
-the Result cells, status, waivers, and suggested decision. Place the packet beside the other
+Have an independent agent draft evidence, findings, and assessments. Then present the human
+decision picker and write the selection. Place the packet beside the other
 native working artifacts:
 
 ```text
@@ -19,15 +19,10 @@ type: review
 id: REVIEW-checkout-expiry
 pr: none yet
 reviewer: you
-status: pass
+decision: accepted
 ---
 
 # Review: Expired checkout session returns 409
-
-## Summary
-
-The implementation checks expiry before charging and returns
-`409 SESSION_EXPIRED` without a charge side effect.
 
 ## Changed files
 
@@ -37,24 +32,17 @@ The implementation checks expiry before charging and returns
 
 ## Requirement coverage
 
-| ID | Result | Evidence | Human attention |
-| --- | --- | --- | --- |
-| AC-001 | Pass | `npm run test:integration -- expired-session` -> `Tests: 3 passed, 3 total` | yes |
+| ID | Assessment | Evidence |
+| --- | --- | --- |
+| AC-001 | Supported | `npm run test:integration -- expired-session` -> `Tests: 3 passed, 3 total` |
 
 ```verify id=AC-001 cmd="npm run test:integration -- expired-session" result=pass
 Tests: 3 passed, 3 total
 ```
 
-## Human attention
-
-1. Money path: confirm the expiry response occurs before any charge call.
-
-## Suggested decision
-
-Merge after the owner inspects the money-path note.
 ````
 
-The reviewer records `Pass` only after rerunning the command against the code being
+The reviewer records `Supported` only after rerunning the command against the code being
 judged. Empty or stale evidence means `Unverified`.
 
 ## 2. Run the deterministic floor

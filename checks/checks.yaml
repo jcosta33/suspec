@@ -21,7 +21,7 @@
 # Severities are expressed at check time — exit codes are the API (0 clean ·
 # 1 warning · 2 blocking); the human owns what blocks a merge.
 
-version: 0.16.0 # contract version of this file; bump on any rule change
+version: 0.17.0 # contract version of this file; bump on any rule change
 
 # --- Spec form selector -------------------------------------------------------
 # The default spec form is plain structured markdown. A spec opts into the
@@ -51,8 +51,6 @@ core_checks:
   - { id: C002, name: duplicate-id, severity: hard-error } # frontmatter id: uniqueness across the files checked together; requirement ids are spec-scoped (ADR-0080)
   - { id: C003, name: verify-with, severity: hard-error }
   - { id: C004, name: one-strength-word, severity: warning } # spec: at least one binding word per requirement (must / must not / should / should not / may) — zero binds on nothing; more than one is a split-candidate advisory under the same id, advice-framed (ADR-0126). Applies to obligation blocks only: SOL INTERFACE (IF-) is exempt — a signature declaration has no strength-word slot by grammar (ADR-0127); QUESTION (Q-) never parses as a requirement.
-  - { id: C005, name: non-goals-present, severity: warning }
-  - { id: C006, name: open-questions-present, severity: warning }
   - { id: C007, name: no-tbd-at-ready, severity: hard-error } # open questions not marked non-blocking included
   - { id: C008, name: sources-named, severity: warning }
   - { id: C009, name: broken-source-link, severity: hard-error } # path-shaped refs only, resolved against the spec's own directory (artifact-relative); bare tracker ids exempt
@@ -60,9 +58,9 @@ core_checks:
   - { id: C011, name: waves-present, severity: warning } # change plan: kind in {migration, rewrite, schema-change} => non-empty waves, each naming a verify step
   - { id: C012, name: coverage, severity: warning } # review packet: in-scope ids covered, no orphan rows; the in-scope set is the task's declared scope when the review names a split task, else the spec's full requirement id set; non-draft source spec only (ADR-0079)
   - { id: C013, name: verify-evidence-binding, severity: warning } # review packet: a verify block's cmd matches the requirement's named Verify command + result=pass; non-draft source spec only. Nominal severity warning, but a CMD-MISMATCH is blocking at check time — a recorded cmd that disagrees with the spec's named command is a structural contradiction (ADR-0129); the other faces stay advisory. The check confirms the recorded command's CONSISTENCY, never that it ran — nothing re-executes it.
-  - { id: C014, name: do-not-change-touched, severity: warning } # review packet: a Changed-files entry matches a task's Do-not-change entry (same matcher + {{placeholder}} skip as Affected areas); distinct from outsideScope; surfaced to Human attention (ADR-0086). Checklist level — it needs the live diff, so the reviewer's own re-run is the honest backstop (the reference's notes); no checker computes it
+  - { id: C014, name: do-not-change-touched, severity: warning } # review packet: a Changed-files entry matches a task's Do-not-change entry (same matcher + {{placeholder}} skip as Affected areas); distinct from outsideScope; surfaced to Open decisions (ADR-0086). Checklist level — it needs the live diff, so the reviewer's own re-run is the honest backstop (the reference's notes); no checker computes it
   - { id: C015, name: citation-resolves, severity: warning } # spec: an inline [[KEY]] citation resolves to a matching <a id="KEY"> anchor in the sources.md the spec's frontmatter names, resolved against the spec's own directory; skips when no sources.md is resolvable (no false-flag); v0 = dangling-anchor only (ADR-0087)
-  - { id: C016, name: pass-needs-evidence, severity: hard-error } # review packet: a Pass coverage row with an empty Evidence cell is a structural contradiction — implements the pass-needs-evidence content_rule below; minted + measured 0-FP in ADR-0097
+  - { id: C016, name: supported-needs-evidence, severity: hard-error } # review packet: a Supported coverage row with an empty Evidence cell is a structural contradiction
   # C018 is RESERVED — do not mint it for a new check (the oversized-packet signal, ADR-0094/ADR-0097).
   - { id: C019, name: malformed-requirement-heading, severity: warning } # spec: a ### heading shaped like a requirement id but with a lowercase split-suffix (AC-004a) — the parser reads it as prose, so the requirement silently vanishes from scope/coverage; the warning makes the disappearance visible (the id shape is `AC-NNN` — digits only, per the format frozen in ADR-0058; minted in ADR-0125)
   - { id: C020, name: unresolvable-ref, severity: hard-error } # review packet: the review's `task:` ref does not resolve to the task packet it is checked against (the handed packet identifies as a different task, or carries no id), so C012/C013/C016 would key on the wrong slice — without C020 a typo'd/renamed task ref silently bypasses the honesty checks. Blocking (structural, like C016). Minted in ADR-0128; explicit-companion scope per ADR-0143
@@ -105,54 +103,41 @@ task_file:
 # The review packet's required shape (the human-facing reference is
 # docs/reference/artifact-formats.md).
 review_file:
-  frontmatter: [type, id, status]
-  optional_frontmatter: [task, pr] # task: only when the review covers a split task slice — its
+  frontmatter: [type, id, decision]
+  optional_frontmatter: [task, pr, waivers] # task: only when the review covers a split task slice — its
   # presence obliges the task companion at check time; a task-less review is checked spec-keyed
-  status_enum: [draft, pass, waived, blocked, needs-human] # waived = merged with a recorded waiver (who · rows · why · expiry)
+  decision_enum: [pending, accepted, changes-requested, deferred]
   required_sections:
-    - Summary
-    - Changed files
     - Requirement coverage
-    - Human attention
-    - Suggested decision
   optional_sections:
+    - Changed files
+    - Findings
+    - Open decisions
     - Change-plan coverage # only when the task executes a change plan; same columns
-    - Task status # closeout confirmation — the task packet's own status,
-      # re-synced at close; recommended, not required
   coverage_table:
-    columns: [ID, Result, Evidence, Human attention]
-    result_enum: [Pass, Fail, Unverified, Blocked]
+    columns: [ID, Assessment, Evidence]
+    assessment_enum: [Supported, Unsupported, Unverified, Blocked]
   content_rules:
-    - id: pass-needs-evidence # the packet-side face of non-empty-paste; implemented as core check C016 (an empty-Evidence Pass is blocking at check time — ADR-0097)
+    - id: supported-needs-evidence # implemented as core check C016
       applies_to: Requirement coverage, Change-plan coverage
       severity: hard-error
       rule: >-
-        A Pass needs pasted output, a CI link, or, for a manual Verify
+        Supported needs pasted output, a CI link, or, for a manual Verify
         method, a named human's recorded observation (who judged, what they
         saw) in its Evidence cell. An empty Evidence cell means Unverified,
-        never Pass.
+        never Supported.
     - id: no-open-critical
       applies_to: whole packet
       severity: hard-error
       rule: >-
-        No blocking open question remains unresolved in a review whose status
-        is `pass`; an open blocking question makes the status `blocked` or
-        `needs-human`.
-    - id: trigger-coverage
-      applies_to: Human attention
-      # Affected-areas entries may carry a repo-owned context prefix
-      # (`web: src/…`) naming a Commands sub-table; matchers compare the path
-      # part. A body convention — not a placeholder namespace.
-      severity: warning
+        No blocking open decision remains unresolved in a review whose decision
+        is `accepted`; defer the decision until the question is resolved.
+    - id: accepted-waivers
+      applies_to: frontmatter
+      severity: hard-error
       rule: >-
-        The Human attention section routes every applicable exception trigger
-        or marks it n/a: unverified or failed requirements, out-of-scope
-        changes, risky files, missing test output, changed public interfaces,
-        DB migrations, security-sensitive changes, new finding candidates,
-        blocked questions, missing or unconvincing worker-boot provenance for a
-        delegated task. The mechanical part a checker can flag: a
-        changed file outside the task's Affected areas that no Human attention
-        entry mentions.
+        An accepted review with Unsupported or Unverified requirements lists
+        those requirement IDs under `waivers`.
     - id: coverage # C012; ADR-0079
       applies_to: Requirement coverage
       severity: warning
@@ -179,11 +164,11 @@ review_file:
         within the non-draft source spec; the body is verbatim and unparsed).
         Where present, the recorded `cmd` matches the requirement's named
         `Verify with:` / `VERIFY BY` command (closed-value, exact after
-        whitespace-collapse) and a Pass row's block reads `result=pass`; a
+        whitespace-collapse) and a Supported row's block reads `result=pass`; a
         structured mismatch — a `cmd` disagreeing with the named command, a
-        `result=fail` recorded under a Pass row, or a malformed/duplicate block —
-        is surfaced as an internal-consistency fact. A Pass row with no verify
-        block (free-form cell only) stays a warning routed to human attention
+        `result=fail` recorded under a Supported row, or a malformed/duplicate block —
+        is surfaced as an internal-consistency fact. A Supported row with no verify
+        block (free-form cell only) stays a warning routed to a human
         (a command-in-prose match is fuzzy). Scope-guarded to non-draft source
         specs. A cmd-mismatch is blocking at check time (ADR-0129); the other
         faces ship at warning. Surfaces a fact, never a verdict

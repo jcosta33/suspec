@@ -12,14 +12,15 @@
 | **Inventory** | Observation-only map of current modules, interfaces, behavior, tests, constraints, and unknowns. |
 | **Change plan** | Safe transformation plan with preservation guarantees, waves, cutover, rollback, and checks. |
 | **Review packet** | Independent reconciliation of implementation and evidence against the spec. |
-| **Review result** | Human judgment recorded as Pass, Fail, Unverified, or Blocked per requirement. |
+| **Review result** | Human judgment recorded as Supported, Unsupported, Unverified, or Blocked per requirement. |
 | **Finding** | A lesson candidate. It is not a standalone artifact type. |
 | **Native memory** | A harness-provided durable memory surface; used only when supported. |
 | **Evidence** | Directly inspectable output, CI run, or named manual observation tied to a claim. |
-| **Human attention** | Exceptions and decisions a person must inspect. |
+| **Decision gate** | Structured human selection for material or irreversible choices. |
 | **Checker** | `suspec check`: read-only facts and severity levels over explicit artifact paths. |
 | **SOL** | A stricter, per-spec controlled syntax that encodes the same requirement record as plain form. |
-| **Revolver Review** | Sequential target-derived review stances, with fixes between rounds on the revised state. |
+| **Revolver** | Purpose-agnostic breadth inspection through sequential target-derived stances. |
+| **Triple-check** | Exactly three fresh top-tier passes for narrow depth. |
 
 ## Authority
 

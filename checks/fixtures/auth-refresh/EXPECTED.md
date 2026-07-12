@@ -26,7 +26,7 @@ C002 duplicate.
 | --------------------------------- | ------ | ------------------------------------------------------------------------------------------ | --------------------- |
 | C003 `verify-with`                | AC-002 | **fires** — no `Verify with:` line                                                         | hard error            |
 | Writing-rules watchlist           | AC-003 | flagged — vague verb plus non-verifiable quality; nothing on the line says how to check it | advisory (convention) |
-| C001, C002, C004–C006, C008, C009 | —      | pass                                                                                       | —                     |
+| C001, C002, C004, C008, C009 | —      | pass                                                                                       | —                     |
 
 C007 does not apply: the spec is `status: draft`.
 
@@ -61,10 +61,9 @@ files is wrong (the anti-fork rule).
 
 | Check              | Where                      | Expected result                                                          |
 | ------------------ | -------------------------- | ------------------------------------------------------------------------ |
-| `pass-needs-evidence` (C016)  | review rows AC-001, AC-003 | pass — output pasted or linked                                           |
-| `pass-needs-evidence` (C016)  | review row AC-002          | the Evidence cell is empty, so the row reads **Unverified** — never Pass |
+| `supported-needs-evidence` (C016)  | review rows AC-001, AC-003 | pass — output pasted or linked                                           |
+| `supported-needs-evidence` (C016)  | review row AC-002          | the Evidence cell is empty, so the row reads **Unverified** — never Supported |
 | `no-open-critical` | task and review            | pass — no open blocking question                                         |
-| `trigger-coverage` | review Human attention     | pass — names the unverified row and the risky file                       |
 
 These are checklist-level rules; `suspec check`'s packet mode can flag the mechanical
 parts (the empty Evidence cell).

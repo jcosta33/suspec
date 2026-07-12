@@ -19,7 +19,7 @@ HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DEV_DIR="${1:-$(CDPATH= cd -- "$HERE/../.." && pwd)}"
 
 rc=0
-for gate in lint-product-citations lint-count-ranges lint-skill-mirrors; do
+for gate in lint-product-citations lint-count-ranges lint-skill-mirrors lint-method-topology lint-disrespec-spine lint-skill-catalog; do
     echo "--- $gate ---"
     if ! sh "$HERE/$gate.sh" "$DEV_DIR"; then
         rc=1

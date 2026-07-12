@@ -37,7 +37,7 @@ type: review
 id: REVIEW-checkout-session-refactor
 task: TASK-checkout-session-refactor
 pr: none yet
-status: needs-human
+decision: changes-requested
 ---
 
 # Review: Checkout session refactor
@@ -57,12 +57,12 @@ sessions now return 500 instead of `409 SESSION_EXPIRED`. The diff also touches
 
 ## Requirement coverage
 
-| ID | Result | Evidence | Human attention |
-| --- | --- | --- | --- |
-| AC-001 | Pass | `npm run test:integration -- active-session` -> `1 passed` | no |
-| AC-002 | Fail | `npm run test:integration -- expired-session` -> expected 409, got 500 | yes |
-| AC-003 | Pass | `npm run test:integration -- missing-session` -> `1 passed` | no |
-| AC-004 | Pass | `npm run test:integration -- provider-failure` -> `1 passed` | no |
+| ID | Assessment | Evidence |
+| --- | --- | --- |
+| AC-001 | Supported | `npm run test:integration -- active-session` -> `1 passed` |
+| AC-002 | Unsupported | `npm run test:integration -- expired-session` -> expected 409, got 500 |
+| AC-003 | Supported | `npm run test:integration -- missing-session` -> `1 passed` |
+| AC-004 | Supported | `npm run test:integration -- provider-failure` -> `1 passed` |
 
 ```verify id=AC-001 cmd="npm run test:integration -- active-session" result=pass
 1 passed
@@ -81,15 +81,12 @@ received 500
 1 passed
 ```
 
-## Human attention
+## Findings
 
 1. AC-002 fails: expired sessions now return 500.
 2. Checkout charge ordering changed on a money path.
 3. `src/retry.ts` is outside the task's affected areas.
 
-## Suggested decision
-
-Do not merge. Fix AC-002 and explain or remove the out-of-scope edit.
 ````
 
 ## Deterministic check
@@ -103,8 +100,8 @@ suspec check ~/.claude/notes/shop-api/checkout/session-refactor-review.md \
 ```
 
 The checker reconciles identities, coverage, evidence presence, and structured command
-bindings. It does not convert the failed row into a merge verdict. A structurally clean
-packet can still say "do not merge" because the human review result and the check's
+bindings. It does not convert the unsupported row into acceptance. A structurally clean
+packet can still say "do not merge" because the human review decision and the check's
 severity level answer different questions.
 
 ## Revise and review again
@@ -114,9 +111,9 @@ the unrelated retry edit, and pastes the new output. The next reviewer reads the
 state and replaces claims only when their own evidence supports them:
 
 ```markdown
-| ID | Result | Evidence | Human attention |
-| --- | --- | --- | --- |
-| AC-002 | Pass | `npm run test:integration -- expired-session` -> `1 passed` | no |
+| ID | Assessment | Evidence |
+| --- | --- | --- |
+| AC-002 | Supported | `npm run test:integration -- expired-session` -> `1 passed` |
 
 Reran: AC-002 - expired-session integration test returned `1 passed`.
 ```

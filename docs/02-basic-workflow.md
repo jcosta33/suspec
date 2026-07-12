@@ -33,13 +33,13 @@ intent -> spec -> implement -> review packet -> check -> findings
    `## Execution` section. `Tests passed` without output is not evidence.
 3. **Review packet** — an independent reviewer (never the implementer) reconciles the
    result against the spec: one coverage row per scoped requirement, evidence per row,
-   exceptions routed to human attention.
+   exceptions routed to a human.
 4. **Check** — the deterministic floor:
    `suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the
-   spec was split into one) — coverage complete, commands match, every `Pass` evidenced,
+   spec was split into one) — coverage complete, commands match, every `Supported` evidenced,
    references resolve. Exit codes:
    `0` clean, `1` warning, `2` blocking (level: enforced — suspec-cli). The human owns
-   the review result; the check owns the facts.
+   the review decision; the check owns the facts.
 5. **Findings** — ephemeral findings ride the review packet and die with it. A durable
    lesson becomes a native harness memory — see [saving findings](09-saving-findings.md).
 
@@ -103,7 +103,7 @@ For code-changing work, keep:
 - verification output — real, pasted, per requirement
 - independent review — a non-implementer judges it; on the trivial path this is the owner
   reading the pasted output, not a separate step, and the formal packet scales with risk
-- evidence for every `Pass` — empty evidence means `Unverified`, never `Pass`
+- evidence for every `Supported` — empty evidence means `Unverified`, never `Supported`
 - a visible record of blocked or unverified work
 
 ## Related

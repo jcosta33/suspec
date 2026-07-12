@@ -30,7 +30,7 @@ Shared rules:
 - Requirement IDs are spec-scoped.
 - Cross-spec references use `SPEC-id#AC-NNN`.
 - Every requirement needs verification.
-- Review consumes the same results: `Pass`, `Fail`, `Unverified`, `Blocked`.
+- Review consumes the same assessments: `Supported`, `Unsupported`, `Unverified`, `Blocked`.
 
 ## Selector
 

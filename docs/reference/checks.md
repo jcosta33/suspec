@@ -41,18 +41,16 @@ This docs repo enforces nothing by itself.
 | C002 | `duplicate-id` | No other file checked in the same invocation uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard-error |
 | C003 | `verify-with` | Every requirement has `Verify with:` or `VERIFY BY`. | hard-error |
 | C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate (advice, ADR-0126). SOL `INTERFACE` (IF-) is exempt — a signature declaration has no strength-word slot (ADR-0127). | warning |
-| C005 | `non-goals-present` | Non-goals section exists and is non-empty. | warning |
-| C006 | `open-questions-present` | Open questions section exists, even if it says `None`. | warning |
 | C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard-error |
 | C008 | `sources-named` | Frontmatter `sources:` names at least one origin. | warning |
 | C009 | `broken-source-link` | Path-shaped source refs resolve against the spec's own directory (artifact-relative). Bare tracker IDs are exempt. | hard-error |
 | C010 | `preserves-refs-resolve` | Change-plan `preserves:` entries resolve to requirements or `PG-NNN`; `SPEC-id#AC-NNN` refs resolve against the plan's sibling specs. | hard-error |
 | C011 | `waves-present` | Migration, rewrite, and schema-change plans have waves with verify steps. | warning |
 | C012 | `coverage` | Review coverage rows match the task scope and source spec. | warning |
-| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row result — a **consistency** check (nothing re-runs the command). A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard-error) |
+| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row assessment — a **consistency** check (nothing re-runs the command). A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard-error) |
 | C014 | `do-not-change-touched` | Reviewer compares changed files with `Do not change`; published in the contract but checklist-only because the CLI has no live diff. | warning |
 | C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`, itself resolved against the spec's own directory. | warning |
-| C016 | `pass-needs-evidence` | A `Pass` row with empty evidence is invalid. | hard-error |
+| C016 | `supported-needs-evidence` | A `Supported` row with empty evidence is invalid. | hard-error |
 | C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. | warning |
 | C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard-error |
 
@@ -77,8 +75,8 @@ Notes:
 | Check | Rule |
 | --- | --- |
 | `non-empty-paste` | Completion claims need pasted output or a CI link. |
-| `no-open-critical` | Terminal task or review status has no unresolved blocking question. |
-| `trigger-coverage` | Human attention considered every trigger class or marked it `n/a`. |
+| `no-open-critical` | A closed task or accepted review has no unresolved blocking decision. |
+| `accepted-waivers` | Accepted reviews list every waived Unsupported or Unverified requirement ID. |
 | `verify-evidence-binding` | Structured evidence matches its requirement row and command. |
 
 ## Writing watchlist
@@ -162,7 +160,7 @@ which core checks are implemented in your installed version.
 | SOL-V001 | requirement, constraint, invariant, or interface lacks `VERIFY BY` |
 | SOL-V002 | `VERIFY BY` target does not resolve |
 | SOL-V003 | evidence cannot observe the claim |
-| SOL-V004 | pass recorded against changed text or code |
+| SOL-V004 | support recorded against changed text or code |
 | SOL-V005 | invalid result or lifecycle marker |
 | SOL-V006 | interface not verified by contract check |
 | SOL-V007 | lifecycle marker on wrong result |
@@ -197,7 +195,7 @@ Hard:
 
 Warning:
 
-- C004, C005, C006, C008, C011, C012, C013, C014, C015, C019
+- C004, C008, C011, C012, C013, C014, C015, C019
 - SOL-P050-SOL-P058
 - SOL-V003, SOL-V011
 - SOL-O004, SOL-O006

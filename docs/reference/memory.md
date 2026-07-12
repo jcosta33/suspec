@@ -30,4 +30,8 @@ record loads every session. Searchable wording helps, but it is not an indexing 
 When current evidence contradicts a memory, correct or delete it through the native
 surface.
 
+`save-findings` preserves one extracted lesson. `promote-artifact` preserves a whole
+document in a project-native durable channel. Promotion is explicit, stateless, moves by
+default, repairs references, and never pushes implicitly.
+
 Related: [saving findings](../09-saving-findings.md) · [distillation](distillation.md)

@@ -29,9 +29,9 @@ suspec check --contract                                       # the checks contr
   a blocking error (exit 2) — the floor never degrades silently.
 - Exit codes are the API: `0` clean, `1` warning, `2` blocking. `--json` is the
   structured face.
-- It reports facts — a missing coverage row, a `Pass` with no evidence, a command that
+- It reports facts — a missing coverage row, a `Supported` with no evidence, a command that
   does not match the spec, a reference that does not resolve, artifact lint — and never
-  renders a review result.
+  renders acceptance.
 
 The full surface and the checks it runs: [CLI reference](reference/cli.md) and
 [checks](reference/checks.md).
@@ -93,11 +93,11 @@ The review packet connects CI output to requirements:
 `suspec check` emits facts and an exit code; a team that wants a hard gate wires CI to
 block on the exit code (level: toolable — `suspec check`, exit codes 0/1/2). The gate is
 the team's — Suspec reports, it never owns merge authority. The check's bounds are
-honest: it verifies coverage, evidence presence, reference resolution, and — for a `Pass`
-row backed by a structured `verify` block — command match (a `Pass` row backed only by
-free-form evidence is flagged advisory, routed to human attention, not machine-matched);
+honest: it verifies coverage, evidence presence, reference resolution, and — for a `Supported`
+row backed by a structured `verify` block — command match (a `Supported` row backed only by
+free-form evidence is flagged advisory, routed to a human, not machine-matched);
 whether the evidence demonstrates the requirement is the reviewer's own run and the
-human's review result.
+human's review decision.
 
 ## Code repos
 

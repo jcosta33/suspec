@@ -17,7 +17,8 @@ your native artifacts, out of the adopter's repo — and the agent chooses the s
 (level: convention). A prescribed path would make Suspec responsible for a directory's
 hygiene, and a directory someone owns grows management machinery: cleanup, migration,
 reconciliation. No owned location, no machinery. Artifacts are transient working files;
-when the work is done, what mattered has already left them.
+when the work is done, what mattered has already left them or the user explicitly promotes
+the whole artifact into a project-native durable channel.
 
 ## Paths flow explicitly
 
@@ -61,7 +62,10 @@ already own it:
 | a split slice       | a task packet                        | nothing — the spec stays the contract       |
 | a change plan       | a change plan                        | the PRs that land it                        |
 
-See [saving findings](09-saving-findings.md) for the memory route.
+See [saving findings](09-saving-findings.md) for the memory route. Whole-document promotion
+uses `promote-artifact`: discover the project's durable destinations, select one, sanitize,
+move, repair references, and validate. It creates no Suspec location or registry and never
+pushes implicitly.
 
 ## Drift rule
 

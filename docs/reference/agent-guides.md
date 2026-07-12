@@ -12,7 +12,6 @@ Source: [suspec-agents](https://github.com/jcosta33/suspec-agents).
 | --- | --- | --- |
 | `suspec-reviewer` | independent review against a spec and rerun evidence | implementation or merge authority |
 | `suspec-auditor` | present-state observations with evidence | requirements or fixes |
-| `suspec-challenger` | pressure-testing an uncommitted proposal | reviewing finished work |
 | `suspec-spec-author` | verifiable requirements and scope boundaries | implementation choices not decided by the source |
 | `suspec-documentarian` | human-facing documentation | product decisions |
 | `suspec-researcher` | evidence for one decision-informing question | the decision itself |
@@ -35,22 +34,25 @@ implementation names its spec or task path.
 
 ## Independence
 
-The implementer does not issue the review result. Use a fresh session, another agent, or a
+The implementer does not issue the review decision. Use a fresh session, another agent, or a
 human reviewer. Worker output is an index of claims; the reviewer reruns evidence and
 inspects the code.
 
 For rotating review, derive stances from the actual target. Do not preload a default
 stance menu into the reviewer definition.
 
+Generic fresh subagents execute inspection commands. Use `bulletproof` for active claim
+verification, `demolition` for explicit quarantined advocacy, `revolver` for breadth, and
+`triple-check` for three deep independent passes. No persona agent is required.
+
 ## Projections
 
-Canonical Markdown definitions and hand-maintained Codex TOML projections must remain
-semantically exact. Edit the canonical agent first, then compare its name, description, and body
-against the projection before handoff.
+Canonical Markdown definitions and Codex TOML projections must remain exact. The family
+method gate compares each projected instruction body to its canonical definition.
 
 ## Human authority
 
-Agents report findings, severity, and evidence. They leave coverage results, packet status,
-waivers, and the merge decision to the human reviewer; checker output never becomes a verdict.
+Agents report findings, severity, evidence, and requirement assessments. They leave acceptance,
+waivers, deferral, and irreversible actions to the human picker; checker output never becomes acceptance.
 
 Related: [review stances](review-stances.md) · [reviewing output](../08-reviewing-output.md)

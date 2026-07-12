@@ -58,16 +58,16 @@ Rules:
 - one verify line
 - uncertainty goes to Open questions
 
-## Results
+## Assessments
 
-| Result | Meaning |
+| Assessment | Meaning |
 | --- | --- |
-| Pass | evidence shows the requirement is met |
-| Fail | evidence shows the requirement is not met |
+| Supported | evidence shows the requirement is met |
+| Unsupported | evidence shows the requirement is not met |
 | Unverified | evidence is missing or insufficient |
 | Blocked | cannot judge yet |
 
-Empty evidence means `Unverified`. A prior `Pass` whose requirement text, verify command,
+Empty evidence means `Unverified`. A prior `Supported` whose requirement text, verify command,
 or exercised code has changed is stale — re-verify ([drift](drift.md)).
 
 ## Evidence
@@ -86,9 +86,9 @@ Invalid:
 
 ## Review triggers
 
-Route to Human attention:
+Route to findings or open decisions:
 
-- Fail, Unverified, Blocked
+- Unsupported, Unverified, Blocked
 - out-of-scope edits
 - `Do not change` touched
 - risky files

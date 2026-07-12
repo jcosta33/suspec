@@ -64,15 +64,14 @@ sources:
   - intake/SHOP-4012.md
 ```
 
-Sections:
+Required sections:
 
 - Intent
-- Non-goals
 - Requirements
-- Open questions
-- Affected areas
-- Dropped from sources, when needed
-- Execution — current run notes when no task split exists
+
+Add `Non-goals`, `Open questions`, `Affected areas`, `Dropped from sources`, or `Execution`
+only when the section carries information. A deferred decision keeps the spec `draft` and
+blocks dependent execution.
 
 Each requirement has:
 
@@ -129,7 +128,8 @@ id: REVIEW-checkout-expiry
 task: TASK-checkout-expiry   # omit for a 1:1 review with no task
 pr: https://...
 reviewer: name-or-session
-status: draft
+decision: pending
+# waivers: [AC-002]          # required when an accepted review waives unsupported/unverified rows
 ```
 
 A review reconciles against the **spec**, always passed explicitly via `--spec <path>` on
@@ -139,39 +139,67 @@ no `task:` (1:1, no task), on the whole spec. A task, when present, only
 scopes and indexes evidence — it is never the review's target. The review's frontmatter
 never names its own spec; only `task:` is read and validated by the checker.
 
-Sections:
-
-- Summary
-- Review plan, for a lead-orchestrated review
-- Candidate findings, for a multi-lens review
-- Changed files
-- Requirement coverage
-- Change-plan coverage, when relevant
-- Human attention
-- Open decisions, when relevant
-- Task status
-- Suggested decision
+`Requirement coverage` is required. Add `Changed files`, `Findings`, `Open decisions`,
+`Change-plan coverage`, or method notes only when they carry information.
 
 Coverage rows use:
 
 ```text
-ID | Result | Evidence | Human attention
+ID | Assessment | Evidence
 ```
 
-Results:
+Assessments:
 
-- `Pass`
-- `Fail`
+- `Supported`
+- `Unsupported`
 - `Unverified`
 - `Blocked`
 
-A `Pass` needs evidence.
+`Supported` needs evidence. The agent writes assessments and leaves `decision: pending`.
+After a state-aware human picker, the selected decision is written as `accepted`,
+`changes-requested`, or `deferred`. Accepted reviews list every waived `Unsupported` or
+`Unverified` requirement ID under `waivers`.
+
+## Inspection
+
+Frontmatter:
+
+```yaml
+type: inspection
+method: bulletproof # bulletproof | demolition | revolver | triple-check
+target: path-or-stable-identifier
+mode: inspect       # optional; inspect | refine
+```
+
+An inspection records method output, not a ship verdict or lifecycle status. Substantive
+runs always write one. Large evidence and round logs use adjacent sidecars. A Demolition
+artifact opens with `Advocacy exercise, not evidence.`
+
+## Evidence receipt
+
+Name large receipts `evidence-<slug>.md`. Each record has a stable `E-NNN` anchor and:
+
+````markdown
+<a id="E-001"></a>
+## E-001
+
+- Command: `pnpm test`
+- Working directory: `/path/to/repo`
+- State: `git:<commit-or-tree-id>`
+- Exit: `0`
+
+```text
+untouched raw output
+```
+````
+
+The governing artifact links the anchor and includes only the decisive verbatim excerpt.
+One receipt may support several claims when each claim names its evidence anchor.
 
 ## Finding
 
 Findings are not a standalone artifact — there is no `finding` type, no `FINDING-` id, no
-file to write. Ephemeral findings ride the review packet's Candidate findings section
-(above) for a multi-lens review, or its Human attention section otherwise, and die with
+file to write. Ephemeral findings ride the review packet's `Findings` section and die with
 it. A durable finding becomes a native harness memory instead — one
 claim, its evidence, a searchable title, no id assigned ([memory](memory.md),
 [saving findings](../09-saving-findings.md)).

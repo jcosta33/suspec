@@ -24,9 +24,9 @@ Each reviewer receives:
 - read/write permissions
 - a return contract: actionable findings with evidence, or no finding
 
-The reviewer does not issue the final review result.
+The reviewer does not issue the final review decision.
 
-## Revolver Review
+## Revolver
 
 For substantial work:
 

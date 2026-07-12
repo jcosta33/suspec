@@ -22,9 +22,8 @@ review names a split task) flags the mechanical parts:
 
 - **`non-empty-paste`** — a completion claim binds to pasted output or a CI link, never a
   bare "tests passed" [[EVIBOUND]](../docs/research/sources.md#EVIBOUND). In a review
-  packet, an empty Evidence cell means **Unverified**, never **Pass**.
-- **`no-open-critical`** — work is not closed with an open blocking question; a task or
-  review whose status is terminal carries no unresolved blocking question anywhere in it.
+  packet, an empty Evidence cell means **Unverified**, never **Supported**.
+- **`no-open-critical`** — a closed task or accepted review carries no unresolved blocking decision.
 
 ## What is in this directory
 
@@ -38,6 +37,7 @@ review names a split task) flags the mechanical parts:
 | `fixtures/intake/`                                                        | One valid intake snapshot; the expectation is pinned in the file's trailing note.                                                                                                                                                                                                    |
 | `fixtures/transformation/`                                                | A valid inventory + change-plan pair; its `EXPECTED.md` pins `C010 preserves-refs-resolve` and `C011 waves-present`.                                                                                                                                                                 |
 | `fixtures/cross-folder-source/`                                           | A spec whose `sources:` points across folders; its `EXPECTED.md` pins `C009 broken-source-link` artifact-relative resolution.                                                                                                                                                        |
+| `fixtures/attention-economy/`                                             | Minimal and deferred specs, assessed and waived reviews, human decision capture, and receipt-backed evidence.                                                                                                                                                                      |
 
 The review-packet **reconcile** checks — `C012 coverage`, `C013 verify-evidence-binding`,
 `C014 do-not-change-touched` — are pinned as negative fixtures in
@@ -82,7 +82,7 @@ updates this producer note and the fixtures that exercise it in the same commit.
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | Block types (SOL form)     | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`                                                         |
 | Strength words             | must, must not, should, should not, may (SOL form: the same words uppercase)                                      |
-| Review results             | `Pass`, `Fail`, `Unverified`, `Blocked`                                                                           |
+| Review assessments         | `Supported`, `Unsupported`, `Unverified`, `Blocked`                                                                           |
 | Verification methods       | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`                        |
 | Check layers               | S (structure), P (prose), M (cross-references), V (verification), O (splitting work) — code form `SOL-<LAYER>NNN` |
 

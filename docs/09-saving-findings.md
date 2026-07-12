@@ -2,7 +2,7 @@
 
 Findings are either ephemeral or durable. Ephemeral findings — surprises, candidate issues,
 things the reviewer should see — ride the review packet's Candidate findings section
-when the review is multi-lens, or its Human attention section otherwise, and die with
+when the review is multi-lens, or its Findings section otherwise, and die with
 it. Durable lessons outlive the work, and they go where your harness will actually read
 them again:
 

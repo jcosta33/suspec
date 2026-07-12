@@ -54,14 +54,14 @@ structural omissions and inconsistent bindings visible:
 
 - every scoped requirement has a coverage row (nothing dropped silently)
 - every evidence command matches the spec's `Verify with:` line
-- every `Pass` carries evidence — an empty evidence cell can never read as `Pass`
+- every `Supported` carries evidence — an empty evidence cell can never read as `Supported`
 - every supported reference resolves
 
 plus per-artifact lint on specs, change plans, and review packets. The checker is
 `suspec check` — `suspec check <path>` for a spec or change plan,
 `suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the spec
 was split into one) for a review packet — facts and exit codes, no model in the loop, no
-review result rendered (level: enforced — suspec-cli). Every step also keeps a by-hand
+review decision rendered (level: enforced — suspec-cli). Every step also keeps a by-hand
 path; no step requires a tool (level: convention). The checker does not establish that
 recorded evidence is true; independent review still reruns and judges it.
 

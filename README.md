@@ -31,7 +31,7 @@ check catch what discipline alone misses.
 2. **The checker reinforces the method** — [suspec-cli](https://github.com/jcosta33/suspec-cli).
    `suspec check` runs deterministic checks over the artifacts you hand it:
    every scoped requirement has a coverage row, every evidence command matches the spec's
-   `Verify with:` line, every `Pass` carries evidence, every supported reference resolves —
+   `Verify with:` line, every `Supported` carries evidence, every supported reference resolves —
    plus per-artifact lint (level: enforced — suspec-cli). Zero model cost, deterministic
    structural facts. The checker verifies recorded shape and bindings; it does not prove
    that pasted evidence is true.
@@ -71,7 +71,7 @@ Exit codes are the API: `0` clean, `1` warning, `2` blocking (level: enforced �
 review packet gets the full floor —
 `suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the spec
 was split into one) —
-and a `Pass` with an empty evidence cell, a command that does not match the spec, or a
+and a `Supported` with an empty evidence cell, a command that does not match the spec, or a
 silent coverage gap comes back as a fact, not an opinion (level: enforced — suspec-cli).
 
 ## Where files live
@@ -144,8 +144,8 @@ those is true, don't adopt it.
 Against its neighbors: spec-first scaffolds generate plans. Trackers hold tickets. AI
 reviewers hunt bugs. An `AGENTS.md` alone carries standing facts, not per-change
 contracts. Suspec's distinct piece is the **deterministic check keyed to requirement
-IDs**: no model in the loop, facts and exit codes rather than review results — you own
-Pass/Fail. Around it sits the honesty rule — anything a tool doesn't enforce says so.
+IDs**: no model in the loop, facts and exit codes rather than acceptance. Agents assess
+evidence; humans accept, waive, defer, or request changes. Anything a tool does not enforce says so.
 
 ## Going deeper
 

@@ -27,18 +27,18 @@ hallucinated-completion hole the rule exists to close.
 
 ---
 
-## V2 — Pass with an empty Evidence cell (`pass-needs-evidence` / C016, hard error)
+## V2 — Supported with an empty Evidence cell (`supported-needs-evidence` / C016, hard error)
 
 A review packet's coverage table:
 
 ```markdown
-| ID     | Result | Evidence | Human attention |
-| ------ | ------ | -------- | --------------- |
-| AC-001 | Pass   |          | no              |
+| ID     | Assessment | Evidence |
+| ------ | ---------- | -------- |
+| AC-001 | Supported  |          |
 ```
 
-**Expected:** flagged — an empty Evidence cell means **Unverified**, never **Pass**.
-The row's correct content is `Unverified` plus a Human attention entry. Implemented as **C016**
+**Expected:** flagged — an empty Evidence cell means **Unverified**, never **Supported**.
+The row's correct content is `Unverified` plus a Findings or Open decisions entry. Implemented as **C016**
 (ADR-0097): blocking at check time — a structural contradiction, not a judgment call; the human
 owns what blocks a merge.
 
@@ -124,13 +124,13 @@ A task whose Affected areas list `src/auth/refresh.ts`, reviewed by a packet tha
 - `src/auth/refresh.ts`
 - `src/billing/invoice.ts`
 
-## Human attention
+## Findings
 
 None — all requirements pass.
 ```
 
 **Expected:** flagged — `src/billing/invoice.ts` is outside the task's Affected areas
-and no Human attention entry routes it. An out-of-scope change is an exception trigger;
+and no Findings or Open decisions entry routes it. An out-of-scope change is an exception trigger;
 the packet must surface it even when every requirement row is green.
 
 ---
@@ -176,26 +176,6 @@ Verify with: `npx jest sessions/expired`
 **Expected:** flagged as a split-candidate advisory — "must … and should …" in one requirement.
 Two strength words usually means two requirements; the report recommends a split, it does not
 perform one, and it never demands "exactly one" (ADR-0126: the requirement is at least one).
-
----
-
-## V10 — missing Non-goals section (C005 `non-goals-present`, warning)
-
-A spec whose sections are Intent · Requirements · Open questions · Affected areas — no
-Non-goals heading anywhere in the file.
-
-**Expected:** flagged — the Non-goals section is absent. An empty section under a present
-heading fires the same check: it must exist _and_ be non-empty.
-
----
-
-## V11 — missing Open questions section (C006 `open-questions-present`, warning)
-
-A spec whose sections are Intent · Non-goals · Requirements · Affected areas — no Open
-questions heading anywhere in the file.
-
-**Expected:** flagged — the section must exist even when it only says "none"; its absence
-hides whether ambiguity was resolved or never looked for.
 
 ---
 
@@ -316,7 +296,7 @@ includes that protected file:
 ```
 
 **Expected:** flagged — `src/auth/token-family.ts` is named in the task's Do-not-change
-list and the review packet reports it changed, so it must be routed to Human attention.
+list and the review packet reports it changed, so it must be routed to Findings or Open decisions.
 Distinct from V7 (out-of-scope drift): this file lies **inside** the declared Affected
 areas (`src/auth/`), so `outsideScope` does not catch it — touching an explicitly
 protected path is its own exception. Surfaces a fact, never a verdict.
@@ -332,11 +312,11 @@ and adds a row for `AC-009` (an id the source spec does not define):
 ```markdown
 ## Requirement coverage
 
-| ID     | Result | Evidence | Human attention |
-| ------ | ------ | -------- | --------------- |
-| AC-001 | Pass   | pasted   | no              |
-| AC-002 | Pass   | pasted   | no              |
-| AC-009 | Pass   | pasted   | no              |
+| ID     | Assessment | Evidence |
+| ------ | ---------- | -------- |
+| AC-001 | Supported  | pasted   |
+| AC-002 | Supported  | pasted   |
+| AC-009 | Supported  | pasted   |
 ```
 
 **Expected:** flagged — `AC-003` is in scope but has no coverage row (**uncovered**), and `AC-009`
@@ -348,7 +328,7 @@ draft's ids are work-in-progress, mirroring C007's ready gate). Surfaces facts, 
 ## V19 — a verify block's cmd disagrees with the named command (C013 `verify-evidence-binding`, hard error)
 
 A non-draft spec whose `AC-001` carries `` Verify with: `npm test -- auth-refresh.spec.ts` ``, reviewed
-by a packet whose `AC-001` Pass row carries a structured `verify` block (a fenced sibling, info-string
+by a packet whose `AC-001` Supported row carries a structured `verify` block (a fenced sibling, info-string
 `id=AC-001 cmd="npm test -- other.spec.ts" result=pass`) recording a **different** command.
 
 **Expected:** flagged `cmd-mismatch` as a hard error — the block's recorded `cmd` does not
@@ -356,7 +336,7 @@ match the requirement's named Verify command. The comparison normalizes away sur
 a trailing `(parenthetical)` note,
 and whitespace, so the canon's own backtick-wrapped Verify-with form does **not** false-fire;
 only a genuine disagreement trips it. A block whose `cmd` matches and reads `result=pass` is
-consistent → no finding; a Pass row with only the free-form Evidence cell stays a warning, never
+consistent → no finding; a Supported row with only the free-form Evidence cell stays a warning, never
 machine-rejected. A consistency fact, never a verdict.
 
 ---
@@ -423,14 +403,14 @@ identifies as a different task:
 type: review
 id: REVIEW-checkout-expiry
 task: TASK-checkout-expiry-typo
-status: draft
+decision: pending
 ---
 
 ## Requirement coverage
 
-| ID     | Result | Evidence | Human attention |
-| ------ | ------ | -------- | --------------- |
-| AC-001 | Pass   | pasted   | no              |
+| ID     | Assessment | Evidence |
+| ------ | ---------- | -------- |
+| AC-001 | Supported  | pasted   |
 ```
 
 …checked as `suspec check review.md --spec spec.md --task task.md`, where `task.md`'s frontmatter

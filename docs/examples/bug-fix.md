@@ -73,22 +73,22 @@ under `## Execution`.
 type: review
 id: REVIEW-payment-timeout-retry
 pr: none yet
-status: needs-human
+decision: pending
 ---
 
 ## Requirement coverage
 
-| ID | Result | Evidence | Human attention |
-| --- | --- | --- | --- |
-| AC-003 | Pass | `npm run test:integration -- payment-timeout-retry` -> failed before fix, passed after fix | yes |
+| ID | Assessment | Evidence |
+| --- | --- | --- |
+| AC-003 | Supported | `npm run test:integration -- payment-timeout-retry` -> failed before fix, passed after fix |
 
 Reran: AC-003 - integration test after fix; pass reproduced.
 
-## Human attention
+## Findings
 
 1. Money path: inspect retry path and idempotency lookup before merge.
 
-## Suggested decision
+## Open decisions
 
 Merge after human inspection of the money-path note.
 ```
@@ -102,9 +102,9 @@ suspec check ~/.claude/notes/payments-api/payment-timeout-retry-review.md \
 
 This exits with an advisory warning (exit 1) as shown: the coverage row, the pasted
 evidence, and the spec's own `Verify with:` command all agree, but a free-form Evidence
-cell can't be machine-matched, so C013 routes it to human attention — add a `verify`
+cell can't be machine-matched, so C013 routes it to a human — add a `verify`
 block ([ADR-0083](../adrs/0083-verify-evidence-reconcile.md)) to machine-confirm it and
-exit clean instead. It exits blocking (2) if AC-003 were marked `Pass` with an empty
+exit clean instead. It exits blocking (2) if AC-003 were marked `Supported` with an empty
 evidence cell.
 
 ### Close

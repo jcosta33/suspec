@@ -27,7 +27,7 @@ C002 duplicate.
 | --------------------------------- | ------ | ---------------------------------------------------------- | --------------------- |
 | C004 `one-strength-word`          | AC-001 | pass — exactly one "must" (the bundling hides behind it)   | —                     |
 | Writing-rules watchlist           | AC-001 | flagged — bundling connectives joining separable behaviors | advisory (convention) |
-| C001–C003, C005, C006, C008, C009 | —      | pass                                                       | —                     |
+| C001–C003, C008, C009 | —      | pass                                                       | —                     |
 
 C007 does not apply: the spec is `status: draft`.
 
@@ -72,10 +72,9 @@ two files is wrong (the anti-fork rule).
 
 | Check              | Where                      | Expected result                                                          |
 | ------------------ | -------------------------- | ------------------------------------------------------------------------ |
-| `pass-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                           |
-| `pass-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Pass |
+| `supported-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                           |
+| `supported-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Supported |
 | `no-open-critical` | task and review            | pass — the open question is non-blocking                                 |
-| `trigger-coverage` | review Human attention     | pass — names the unverified row and the DB write surface                 |
 
 _Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
 unchecked and it claims no completion; the rule binds completion claims, not open work._

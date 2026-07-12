@@ -77,7 +77,7 @@ One slice's standing instructions — scope, evidence rules, when to stop and as
 
 - [ ] Every changed file is in Affected areas or listed as an exception.
 - [ ] AC-001 has fresh Verify evidence after the final edit.
-- [ ] Findings and blocked questions are recorded; no review result was issued.
+- [ ] Findings and blocked questions are recorded; no review decision was issued.
 ```
 
 The full shape is documented in [artifact formats](reference/artifact-formats.md).
