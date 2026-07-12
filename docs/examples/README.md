@@ -5,7 +5,7 @@ These examples show complete Suspec chains, each proportioned to its own risk.
 Read in this order:
 
 1. [Large PR review](large-pr-review.md) - review by exception: the review packet does the work, not the worker's claim.
-2. [Feature from ticket](feature-from-ticket.md) - the full spec -> optional split -> review -> check flow.
+2. [Feature from ticket](feature-from-ticket.md) - spec -> implementation -> review -> check, without an unearned task split.
 3. [Bug fix](bug-fix.md) - the trivial one-line-spec path, escalating only when the fix surprises you.
 
 They are examples, not templates — the write-spec, split-work, implement-task,

@@ -11,7 +11,7 @@ hand. Rows citing core checks (C-codes) pin what suspec-cli's `suspec check` mus
 
 **Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
 share one `id:` — they are one spec written on both surfaces (this directory's equivalence
-pair), not two specs. A real workspace keeps only one, so the pair itself never counts as a
+pair), not two specs. A real run keeps only one form, so the pair itself never counts as a
 C002 duplicate.
 
 ## Seeded defects
@@ -72,11 +72,6 @@ though only the SOL surface has a code that names it.
 | `verify-evidence-binding` (C013) | review rows AC-001, AC-002 | **fires** (warning) — each Pass row carries only a free-form Evidence cell, no structured `verify` block, so the free-form-only advisory routes it to human attention rather than machine-rejecting it (the source spec is `status: ready`, so C013 is in scope for this domain — unlike the draft-spec domains) |
 | `no-open-critical` | review                     | **does not fire** — the open blocking question is correctly reflected as `status: blocked`; the rule guards terminal statuses. Counterfactual: the same packet at `status: pass` would fire it |
 | `trigger-coverage` | review Human attention     | pass — names the contradiction, the blocked question, the unverified row, and the security-sensitive path                                                                                      |
-
-## finding.md
-
-Valid: one claim, evidence, applies/does-not-apply bounds, and future guidance, with `from:`
-and `related:` resolving to this fixture's review and spec ids.
 
 _Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
 unchecked and it claims no completion; the rule binds completion claims, not open work._

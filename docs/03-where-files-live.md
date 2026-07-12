@@ -65,9 +65,9 @@ See [saving findings](09-saving-findings.md) for the memory route.
 
 ## Drift rule
 
-Code can prove a spec wrong. It does not silently update the spec. When code and intent
-diverge, do one of three things: re-run the verification, amend the spec, or fix the
-code.
+Code can prove a working spec wrong. It does not silently update intent. During live work,
+when code and intent diverge, re-run the verification and then update the active spec or
+fix the code. After close, code and the project's durable records are authoritative.
 
 ## Related
 

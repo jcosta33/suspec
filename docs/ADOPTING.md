@@ -1,46 +1,50 @@
 # Adopting Suspec
 
-Adopting is one install. Nothing lands in your repo.
+Adopting begins with the global skill install. Nothing lands in your repo.
 
 ## Setup
 
-1. Install the skill family, once, globally:
+1. Install the skill family, once, globally for your runner (Codex shown):
 
    ```bash
-   npx skills add jcosta33/suspec-skills -g
+   npx skills add jcosta33/suspec-skills -g -a codex
    ```
 
    That is a complete install: the skills carry the methodology — authoring specs,
    splitting work, implementing, reviewing, saving findings — and the artifact shapes
-   (level: convention). Universal skills live at the user level; repo-specific guides
-   (your commands, your conventions) stay committed in the repo they describe, and the
-   two tiers never overlap (level: convention).
+   (level: convention). Repo-specific guides — your commands, architecture, and
+   conventions — stay committed in the repository they describe; they do not fork the
+   globally installed methodology.
 
-2. Optional: install the reference CLI,
-   [suspec-cli](https://github.com/jcosta33/suspec-cli), for the deterministic checks.
-   One command:
+2. Add the reference CLI,
+   [suspec-cli](https://github.com/jcosta33/suspec-cli), when deterministic checks will
+   improve review. It is not published; install it from source with Node.js 22.6 or newer:
+
+   ```bash
+   git clone https://github.com/jcosta33/suspec-cli
+   cd suspec-cli
+   npm install
+   npm run build
+   npm link
+   ```
+
+   Then run:
 
    ```bash
    suspec check <path>
    ```
 
-   It reads exactly the files you hand it, by full path, and resolves nothing else — the
-   exceptions are three reference checks: source refs and citation anchors resolve
-   against the artifact's own directory (`sources.md` is the spec's sibling file), and
-   a change plan's `SPEC-id#AC-NNN` refs resolve one level beside the plan — one level
-   above the plan's own directory, scanning that parent's sibling directories for a
-   `spec.md` file — no setup, no config, no
-   footprint, though the plan must live in its own directory with each referenced spec
-   in a sibling directory (a flat layout fails the check) (level: enforced —
-   suspec-cli).
-
-Use symlinks only when your platform handles them reliably; on Windows, copying the
-skills folder is safer.
+   It reads exactly the files you hand it, accepting full paths or paths relative to the
+   process's current working directory. Source paths and citation files resolve from the
+   spec's own directory using the paths its frontmatter names. C010
+   scans `spec.md` in each immediate child directory of the change plan directory's
+   parent, including the plan's own directory; it never walks deeper. No setup, config,
+   or repository footprint is required (level: enforced — suspec-cli).
 
 ## First useful change
 
 Start small and run the whole loop once. The loop is proportioned to feature-sized work —
-a trivial fix earns a one-line inline spec and no files at all; see
+a trivial fix earns one-line inline intent and no files at all; see
 [the bug-fix example](examples/bug-fix.md) for that shorter path.
 
 1. Author a spec through the skill: requirements with `AC-NNN` ids, each with a
@@ -50,7 +54,7 @@ a trivial fix earns a one-line inline spec and no files at all; see
    harness best). You choose the exact spot; keep it out of the repo unless the
    project's own governance says otherwise, and carry the file's full path forward —
    every later step names artifacts by explicit path.
-2. Lint it: `suspec check <path>`.
+2. When using the checker, lint it: `suspec check <path>`.
 3. Implement — your agent works from the spec by path, runs every verify command, and
    pastes real output.
 4. Review — an independent reviewer builds the review packet against the spec, then runs
@@ -86,12 +90,14 @@ artifacts, unless the project's own governance says otherwise.
 
 ## Teams
 
-The checks contract is data — `checks/checks.yaml` in this repo. A team that wants its
-own standards reshapes the contract to match: tighten a severity, drop a check, add a
-convention. The CLI checks whatever contract it ships; the honesty floor's value is that
-it is deterministic, not that it is universal.
+The checks contract is data — `checks/checks.yaml` in this repo — and the CLI ships its
+own matching implementation. A team can decide which reported levels block CI and can
+layer project-specific checks beside it. Changing Suspec's check definitions requires a
+corresponding CLI change; editing a local copy of `checks.yaml` does not reconfigure the
+installed checker.
 
 ## Updating
 
-Re-run `npx skills add jcosta33/suspec-skills -g` — the skill family updates in one
+Re-run `npx skills add jcosta33/suspec-skills -g -a codex` (substituting your runner's
+agent ID) — the skill family updates in one
 place, for every repo at once.

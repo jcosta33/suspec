@@ -49,12 +49,13 @@ parallel tasks on one write area conflict.
 3. Run every Verify item and paste the real output — a claim without output counts as
    unverified.
 4. Before finishing, re-read your own diff as a skeptic: what would a reviewer flag?
-5. Leave a summary: changed files, commands run with output, and anything learned worth
-   saving as a finding.
+5. Leave a summary: changed files, commands run with output, and candidate lessons for
+   independent review.
 
 ## Findings
 
-- Candidate: the order record and inventory ledger share one write area — see `finding.md`.
+- Candidate: the order record and inventory ledger share one write area. The reviewer
+  verifies and routes any durable lesson.
 
 ## Run summary
 

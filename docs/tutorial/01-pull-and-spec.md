@@ -1,6 +1,6 @@
 # Spec
 
-This page produces one file: a spec.
+This page produces a spec.
 
 Scenario:
 

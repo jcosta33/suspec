@@ -1,10 +1,10 @@
 #!/bin/sh
 # lint-product-citations.sh — the ADR-0113 product-vs-docs citation gate (method-gate 0113-product-citations).
 #
-# Product surfaces (what a user installs and reads) must not carry the workspace's internal
+# Product surfaces (what a user installs and reads) must not carry the canon's internal
 # provenance markers. Those markers are how the Suspec repo records WHY a decision was made
 # (ADR-NNNN), what audit surfaced a fact (AUDIT-...), and where a primary source lives
-# (github / doi.org URLs). They belong in the docs/specs/ADRs of the Suspec workspace, NOT in
+# (github / doi.org URLs). They belong in the canon docs or ADRs, NOT in
 # the shipped skill guides, agent definitions, templates, hooks, or generated runner files — a
 # user reading product prose should see the rule, not the citation trail behind it.
 #
@@ -23,8 +23,7 @@
 # The linted set, per repo (sibling repos under /Users/josecosta/dev by default):
 #   suspec-skills/skills/<name>/SKILL.md          + that skill's references/*.md
 #   suspec-agents/agents/*.md                     (top-level agent definitions)
-#   suspec-agents/.codex/agents/*.toml            (generated Codex agent definitions)
-#   suspec-starter-kit/AGENTS.md, templates/*.md, hooks/*, .agents/skills/<name>/SKILL.md
+#   suspec-agents/.codex/agents/*.toml            (hand-maintained Codex agent projections)
 #   top-level product READMEs in the family        (README carve-out: repo/install links allowed)
 #
 # Forbidden patterns (extended regex):
@@ -36,7 +35,7 @@
 # Usage:
 #   scripts/lint-product-citations.sh [REPO_PARENT_DIR]
 #     REPO_PARENT_DIR  directory holding the sibling repos (suspec-skills, suspec-agents, …).
-#                      Defaults to /Users/josecosta/dev. Pass a temp dir to self-test a seed.
+#                      Defaults to this repository's parent. Pass a temp dir to self-test a seed.
 #
 # Exit: 0 when every linted file is clean; 1 on any forbidden citation; 2 on a usage/scope error.
 set -eu
@@ -82,10 +81,8 @@ repo_dir() {
 SUSPEC_MAIN_DIR=$(repo_dir suspec)
 SUSPEC_SKILLS_DIR=$(repo_dir suspec-skills)
 SUSPEC_AGENTS_DIR=$(repo_dir suspec-agents)
-SUSPEC_KIT_DIR=$(repo_dir suspec-starter-kit)
 SUSPEC_MCP_DIR=$(repo_dir suspec-mcp)
 SUSPEC_CLI_DIR=$(repo_dir suspec-cli)
-SUSPEC_BENCH_DIR=$(repo_dir suspec-bench)
 
 body_files=$(
     # suspec-skills: each skill's SKILL.md + that skill's references/*.md
@@ -97,23 +94,9 @@ body_files=$(
     if [ -d "$SUSPEC_AGENTS_DIR/agents" ]; then
         find "$SUSPEC_AGENTS_DIR/agents" -maxdepth 1 -type f -name '*.md'
     fi
-    # suspec-agents: generated Codex agent definitions are product output, too.
+# suspec-agents: hand-maintained Codex projections are product output, too.
     if [ -d "$SUSPEC_AGENTS_DIR/.codex/agents" ]; then
         find "$SUSPEC_AGENTS_DIR/.codex/agents" -maxdepth 1 -type f -name '*.toml'
-    fi
-    # suspec-starter-kit: standing instructions, templates, hooks, and bundled skill guides
-    if [ -f "$SUSPEC_KIT_DIR/AGENTS.md" ]; then
-        printf '%s\n' "$SUSPEC_KIT_DIR/AGENTS.md"
-    fi
-    if [ -d "$SUSPEC_KIT_DIR/templates" ]; then
-        find "$SUSPEC_KIT_DIR/templates" -maxdepth 1 -type f -name '*.md'
-    fi
-    if [ -d "$SUSPEC_KIT_DIR/hooks" ]; then
-        find "$SUSPEC_KIT_DIR/hooks" -maxdepth 1 -type f \
-            \( -name '*.md' -o -name 'pre-commit' -o -name '*.yml' -o -name '*.yaml' \)
-    fi
-    if [ -d "$SUSPEC_KIT_DIR/.agents/skills" ]; then
-        find "$SUSPEC_KIT_DIR/.agents/skills" -type f -name 'SKILL.md'
     fi
     :
 )
@@ -125,10 +108,8 @@ readme_files=$(
         "$SUSPEC_MAIN_DIR/README.md" \
         "$SUSPEC_SKILLS_DIR/README.md" \
         "$SUSPEC_AGENTS_DIR/README.md" \
-        "$SUSPEC_KIT_DIR/README.md" \
         "$SUSPEC_MCP_DIR/README.md" \
-        "$SUSPEC_CLI_DIR/README.md" \
-        "$SUSPEC_BENCH_DIR/README.md"
+        "$SUSPEC_CLI_DIR/README.md"
     do
         if [ -f "$r" ]; then printf '%s\n' "$r"; fi
     done
@@ -165,10 +146,10 @@ if [ -n "$hits" ]; then
     echo "lint-product-citations: FAIL — forbidden citations in product files:" >&2
     printf '%s\n' "$hits" >&2
     echo "" >&2
-    echo "  Product bodies/templates must not carry workspace provenance markers" >&2
+    echo "  Product bodies/templates must not carry internal provenance markers" >&2
     echo "  (ADR-NNNN, AUDIT-…, github/doi.org URLs). Top-level product READMEs may" >&2
     echo "  link to repos/install instructions, but not to ADR/AUDIT/DOI citations." >&2
-    echo "  Move the citation to the suspec workspace docs and state only the rule in" >&2
+    echo "  Move the citation to the canon docs and state only the rule in" >&2
     echo "  the product file." >&2
     exit 1
 fi

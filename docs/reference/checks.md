@@ -9,14 +9,15 @@ exactly the files it is handed — the primary artifact's kind from its own fron
 `type:`, companions as explicit flags — and resolves nothing else.
 
 ```
-suspec check <path>                                                # spec or change plan
-suspec check <review-path> --spec <spec-path> [--task <task-path>] # review packet
-suspec check --contract                                            # the contract as JSON
+suspec check <path>                                             # spec or change plan
+suspec check <review-path> --spec <spec-path>                  # review packet
+suspec check <review-path> --spec <spec-path> --task <task-path> # split-task review
+suspec check --contract                                         # the contract as JSON
 ```
 
 Exit codes are the API: `0` clean · `1` warning · `2` blocking. A review packet always
-needs `--spec`; `--task` is required iff the review names a `task:` (the task is an
-optional split slice — a task-less 1:1 review reconciles spec-keyed, against the spec's
+needs `--spec`; `--task` is required iff the review names a `task:` (the task is a
+split slice; a task-less 1:1 review reconciles spec-keyed, against the spec's
 full requirement set). A missing required companion exits blocking naming the flag — the
 strongest checks never silently degrade — and a `--task` the review never references is
 refused as a wiring mistake. The human owns what blocks a merge.
@@ -36,24 +37,24 @@ This docs repo enforces nothing by itself.
 
 | ID | Name | Check | Severity |
 | --- | --- | --- | --- |
-| C001 | `unique-ids` | Requirement IDs are unique within a file. | hard |
-| C002 | `duplicate-id` | No other file checked in the same invocation uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard |
-| C003 | `verify-with` | Every requirement has `Verify with:` or `VERIFY BY`. | hard |
+| C001 | `unique-ids` | Requirement IDs are unique within a file. | hard-error |
+| C002 | `duplicate-id` | No other file checked in the same invocation uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard-error |
+| C003 | `verify-with` | Every requirement has `Verify with:` or `VERIFY BY`. | hard-error |
 | C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate (advice, ADR-0126). SOL `INTERFACE` (IF-) is exempt — a signature declaration has no strength-word slot (ADR-0127). | warning |
 | C005 | `non-goals-present` | Non-goals section exists and is non-empty. | warning |
 | C006 | `open-questions-present` | Open questions section exists, even if it says `None`. | warning |
-| C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard |
+| C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard-error |
 | C008 | `sources-named` | Frontmatter `sources:` names at least one origin. | warning |
-| C009 | `broken-source-link` | Path-shaped source refs resolve against the spec's own directory (artifact-relative). Bare tracker IDs are exempt. | hard |
-| C010 | `preserves-refs-resolve` | Change-plan `preserves:` entries resolve to requirements or `PG-NNN`; `SPEC-id#AC-NNN` refs resolve against the plan's sibling specs. | hard |
+| C009 | `broken-source-link` | Path-shaped source refs resolve against the spec's own directory (artifact-relative). Bare tracker IDs are exempt. | hard-error |
+| C010 | `preserves-refs-resolve` | Change-plan `preserves:` entries resolve to requirements or `PG-NNN`; `SPEC-id#AC-NNN` refs resolve against the plan's sibling specs. | hard-error |
 | C011 | `waves-present` | Migration, rewrite, and schema-change plans have waves with verify steps. | warning |
 | C012 | `coverage` | Review coverage rows match the task scope and source spec. | warning |
-| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row result — a **consistency** check (nothing re-runs the command). A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard) |
-| C014 | `do-not-change-touched` | Changed files are reconciled against `Do not change`. | warning |
+| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row result — a **consistency** check (nothing re-runs the command). A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard-error) |
+| C014 | `do-not-change-touched` | Reviewer compares changed files with `Do not change`; published in the contract but checklist-only because the CLI has no live diff. | warning |
 | C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`, itself resolved against the spec's own directory. | warning |
-| C016 | `pass-needs-evidence` | A `Pass` row with empty evidence is invalid. | hard |
+| C016 | `pass-needs-evidence` | A `Pass` row with empty evidence is invalid. | hard-error |
 | C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. | warning |
-| C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard |
+| C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard-error |
 
 C018 is a reserved ID — it is not minted for a new check.
 

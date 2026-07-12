@@ -1,74 +1,32 @@
 # Drift
 
-Drift is a mismatch between intent and evidence.
+Drift matters while work is live: the implementation, evidence, or scope no longer agrees
+with the intent being reviewed.
 
-It happens when a requirement, code path, or verify command changes after a prior `Pass`.
+## Common forms
 
-## Drift triggers
+- requirement text changed after evidence was captured
+- the named Verify command changed
+- code under review changed after the reviewer reran it
+- changed files moved outside the declared scope
+- a task no longer matches its source spec
+- a hand-maintained agent projection or generated fixture no longer matches its canonical source
 
-Old evidence becomes stale when:
+## Reconcile live work
 
-- requirement text changes
-- non-goals change
-- `Verify with:` changes
-- exercised code changes
-- the command target changes
-- the evidence path no longer exists
+1. Stop using stale evidence.
+2. Identify which source changed: intent, code, task scope, or canonical agent definition.
+3. Update the live working artifact when intent changed, or fix the implementation when
+   code drifted.
+4. Rerun affected verification against the final state.
+5. Review the revised state; do not carry forward an earlier result.
 
-## Result
+Suspec does not maintain a repository-wide spec baseline after close. Later work starts
+from current code, tests, project decisions, and the new request. Old working artifacts do
+not require review-on-touch maintenance.
 
-A drifted `Pass` is no longer trustworthy: mark it `Unverified` until it is re-checked,
-then update it to whatever the fresh evidence shows.
+Agent projections are different because they are shipped product output. Their canonical source
+remains durable; a projection that no longer matches it is live drift and must be reconciled before
+handoff.
 
-Do not keep the old `Pass` silently.
-
-## Resolution
-
-Pick one:
-
-- re-run the verification
-- amend the requirement
-- fix the code
-
-Do not let code redefine intent without an amendment.
-
-## Amending a living spec
-
-A spec is a living organism: amend the original rather than write a new one (ADR-0108).
-
-- **Review on touch.** When a change touches a spec's evidence path, amend the spec in the same
-  change — the moment its code moves is the moment to fix its intent. Amendment is change-triggered;
-  there is no scheduled spec audit.
-- **Amend vs supersede.** Amend an AC's text in place as the feature evolves (it keeps its id); mark
-  an AC superseded in place when it is retired; mint a new spec (and set the old one's
-  `superseded_by`) only when a whole feature is replaced.
-- **Status.** A spec moves `ready → active` once it is in use and being amended; `superseded` only on
-  whole-feature replacement. This is the spec's **lifecycle maturity** (`draft → ready → active →
-  superseded`), not its workflow position (in-progress / in-review / done) — that lives with the
-  task and the review, never in the spec's status.
-
-## Evidence path
-
-The evidence path is what the check actually exercised.
-
-Examples:
-
-- test file
-- integration route
-- API contract
-- migration script
-- browser path
-
-If later work edits that path, review the old evidence for staleness.
-
-## Scope
-
-Only declared drift needs action.
-
-Do not reopen unrelated old work unless the current change touches its evidence path or requirement.
-
-## Related
-
-- [Source authority](source-authority.md)
-- [Reviewing output](../08-reviewing-output.md)
-- [Artifact formats](artifact-formats.md)
+Related: [lineage](lineage.md) · [reviewing output](../08-reviewing-output.md)

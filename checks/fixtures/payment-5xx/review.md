@@ -35,8 +35,8 @@ contradicts itself, and its blocking question is still open.
    work should not have been prepared past it, and it cannot close while the question stands.
 3. AC-003 has an empty Evidence cell, so the row reads Unverified — never Pass. Its `no-retry`
    case was never run; running it against this diff would fail by construction.
-4. `server/src/payments/charge.ts` is security-sensitive (it moves money). Spot-checked the
-   AC-001 row by re-running `npm test -- payment-idempotency.spec.ts` locally: same output.
+4. `server/src/payments/charge.ts` is security-sensitive (it moves money). Re-ran the
+   AC-001 verification with `npm test -- payment-idempotency.spec.ts` locally: same output.
 
 ## Suggested decision
 

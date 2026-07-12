@@ -47,12 +47,13 @@ Implement or preserve:
 3. Run every Verify item and paste the real output — a claim without output counts as
    unverified.
 4. Before finishing, re-read your own diff as a skeptic: what would a reviewer flag?
-5. Leave a summary: changed files, commands run with output, and anything learned worth
-   saving as a finding.
+5. Leave a summary: changed files, commands run with output, and candidate lessons for
+   independent review.
 
 ## Findings
 
-- Candidate: the provider is idempotent only after the key is persisted — see `finding.md`.
+- Candidate: the provider is idempotent only after the key is persisted. The reviewer
+  must verify this before routing it to memory or a project channel.
 
 ## Run summary
 

@@ -1,45 +1,35 @@
-# Lineage — what Suspec keeps from heavyweight engineering
+# Lineage
 
-Suspec is lean, but the needs it serves are old. Requirements specifications, design descriptions,
-verification plans, technical reviews, traceability, and change control all solved a real coordination
-problem: many people, long durations, changing requirements, and the need to know both what was
-*intended* and what was actually *verified*. The durable lesson was never "write lots of documents" —
-it was **make intent, verification, and change control explicit**. Standards say as much: the amount of
-formality is meant to scale with the work, and "documents" may be files, models, or records, not paper.
+Lineage makes each live handoff explicit without a store or discovery system.
 
-Suspec keeps those **functions** and collapses the **forms** — one authoritative living spec plus
-machine-captured execution, review-carried findings, and small decision records, instead of a document stack.
-The table maps each legacy function to where it lives now.
+```text
+request/source -> working spec -> implementation -> review -> findings decision
+                         \
+                          -> split task(s), when decomposition is earned
+```
 
-| Legacy practice | Function it served | In Suspec |
-| --- | --- | --- |
-| Requirements specification | verifiable intent, stably-identified | the **spec** — acceptance criteria with stable ids + a `Verify with:` line each ([[ISO29148]]) |
-| Design description | communicate design to stakeholders | the spec's design notes; a **decision** record when the trade-off is durable ([[ISO42010]] — decisions + rationale are required architecture elements) |
-| Verification & validation plan | what will be checked, and how | the spec's `Verify with:` lines + the review's evidence ([[ISO29148]]) |
-| Technical review / inspection | structured gating, not a comment thread | the **review** packet — requirement coverage + human-attention, independent of the author |
-| Traceability matrix | requirement ↔ evidence | generated from ids: the review's coverage table + the spec's `## Execution` digest, not a hand-kept matrix |
-| Anomaly / defect report | one durable problem record | a **finding** — ephemeral, riding the review packet; durable ones become a native memory, no id assigned |
-| Change-control record | manage the baseline deliberately | the living spec's status lifecycle + supersession ([[ISO42010]]); ADRs supersede, never rewrite ([[NYGARDADR]] / [[MADR]]) |
-| Architecture Decision Record | short, durable rationale for one choice | a **decision** — kept verbatim, marked superseded with a pointer |
-| Build / test / CI output | raw execution record | run output is transitory ([[GHRETENTION]] / [[GLRETENTION]]); its durable residue is the spec's `## Execution` |
-| Literate programming | explain intent close to the executable form | the spec is the human-readable anchor of the change |
+## Relationships
 
-Two disciplines carry the weight that separate paperwork used to:
+- A spec names its upstream source in frontmatter.
+- A task names its source spec or change plan and copies only its assigned IDs.
+- A review is checked against an explicitly passed spec. When it names a task, that task
+  is also passed explicitly and narrows coverage scope.
+- Execution and review evidence name the requirement and command they support.
+- A durable finding names durable evidence and moves to native memory or a project channel.
 
-- **Review is participation, not a sign-off.** Coverage and substantive engagement predict quality;
-  a rubber-stamp does not ([[MCINTOSH14]]).
-- **A review check earns blocking only when it is precise.** A noisy check gets ignored; the bar is a
-  low effective-false-positive rate ([[GOOGLESA]]) — which is why a check earns hard-error severity
-  only once measured. The checker itself is shipped (level: enforced — suspec-cli, see
-  [principles](principles.md)); what stays advisory is gate ownership — checks yield facts and exit
-  codes, and the human decides what blocks a merge.
+IDs support reconciliation inside the live work; they do not create a global registry.
+Requirement IDs are spec-scoped, so cross-spec references use `SPEC-id#AC-NNN`.
 
-What Suspec deliberately does **not** revive: a separate document per change, a hand-maintained
-traceability matrix, a routine standalone test plan, or a generic detached review checklist. Those are
-the forms that rot ([[DOCROT]]) and duplicate ([[DOCPERSPECTIVE]]) — the measured failure modes a lean
-record set exists to avoid.
+## Paths
 
-## Related
+Every producer states where it wrote an artifact. Every consumer receives its full path.
+The checker reads only primary paths and companions it is handed, plus its documented
+artifact-relative reference lookups.
 
-- [Principles](principles.md) · [Drift](drift.md) · [Artifact formats](artifact-formats.md)
-- [Sources](../research/sources.md) — the evidence each claim above resolves to
+## After close
+
+The working chain can expire. Code, tests, ADRs, issues, PRs, maintained docs, and supported
+native memory are the durable lineage. Suspec does not promote or reconcile a separate
+artifact record.
+
+Related: [where files live](../03-where-files-live.md) · [CLI](cli.md)

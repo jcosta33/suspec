@@ -1,61 +1,32 @@
 # Local checks
 
-Suspec core checks are generic.
+Suspec's checker validates generic artifact facts. Project-specific verification stays in
+the repository that owns the code.
 
-Project-specific checks belong to the project.
+## Resolve commands
 
-## Ownership
+Read the repository's `AGENTS.md`, contributor guide, and package manifest. Use the exact
+commands they define for build, tests, lint, type checking, formatting, architecture,
+security, and benchmarks.
 
-| Layer | Owns |
-| --- | --- |
-| Suspec CLI | generic artifact checks (`suspec check`) |
-| Code repo | build, test, lint, typecheck |
-| Local scripts | project-specific predicates |
+A spec's `Verify with:` line can name a literal command or a project command slot. A slot
+is useful only when the repository maps it to a real command; an unresolved slot leaves the
+claim unverified.
 
-Core stays portable. Product checks stay local.
+## Evidence
 
-## Name the predicate
+Run the command after the final relevant edit and paste its real output or link the exact
+CI job. A script can report exit status and facts. It cannot decide that a requirement is
+Pass, Unverified, or Blocked; the reviewer makes that judgment against the requirement.
 
-Name checks after what they prove.
+## Layering
 
-| Avoid | Use |
-| --- | --- |
-| `no-regressions-check` | `baseline-regression-check` |
-| `complete-review` | `declared-scope-coverage` |
-| `correctness-check` | `artifact-shape-check` |
+- repository tools verify code behavior and quality
+- `suspec check` verifies artifact structure and evidence binding
+- independent review judges whether the evidence demonstrates intent
+- a human owns merge policy
 
-A local script proves only its predicate.
+Do not rebuild repository linters inside Suspec. Reference their outputs and keep their
+configuration with the code.
 
-It can prove:
-
-- declared artifacts exist
-- declared commands ran
-- snapshots match
-- declared scope was touched
-- parseable structure is valid
-
-It cannot prove:
-
-- no regressions anywhere
-- complete correctness
-- behavior outside the declared evidence path
-
-Anything outside the predicate is `Unverified`, `Blocked`, or Human attention.
-
-## Honesty level
-
-Mark local checks honestly:
-
-- convention
-- checklist
-- toolable
-- enforced by this team's gate
-
-If a script cannot run, it returns `Unverified` or `Blocked`. It does not guess `Pass`.
-
-## Related
-
-- [Checks](checks.md)
-- [CLI reference](cli.md)
-- [Source authority](source-authority.md)
-- [Reviewing output](../08-reviewing-output.md)
+Related: [checks](checks.md) · [CLI](cli.md)

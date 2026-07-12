@@ -16,9 +16,8 @@
 #   expect   the exact code a correct detector fires (none on a clean span).
 #   severity blocking | advisory | none — this fixture set's recording of the catalogue's
 #            hard-error | warning split for the code.
-#   reason   why this label is correct — hand-checkable, written to a Cohen's k >= 0.6
-#            inter-annotator floor (a second reviewer should assign the same label from
-#            the reason alone).
+#   reason   why this label is expected, written so a reviewer can challenge it from the
+#            item itself.
 #
 # Near-miss twins are paired on purpose: a problem span and its clean fix differ only by
 # the same-line observable criterion, so a detector that confuses them is caught.
@@ -168,7 +167,7 @@ items:
     severity: blocking
     reason: >-
       Lowercase "should" used where binding force is intended; informal modality. NORMALIZE
-      uppercases it to the correct modal (SHOULD, or MUST if the redirect is mandatory).
+      uppercases it to the correct modal (SHOULD, or MUST if the redirect is binding).
 
   # --- SOL-P007: negation ambiguity (bare MUST NOT, no paired affirmative) ---
 

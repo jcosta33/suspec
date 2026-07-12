@@ -10,7 +10,7 @@ What it earns its keep on is the honesty floor — the facts a lazy or dishonest
 cannot fake, at zero model cost:
 
 - **coverage-complete** — every in-scope requirement has a coverage row in the review
-- **command-matches** — the recorded evidence ran the command the spec named
+- **command-matches** — a structured evidence block names the same command as the spec
 - **pass-needs-evidence** — no `Pass` with an empty evidence cell
 - **ref-resolves** — every referenced artifact and anchor resolves
 
@@ -37,9 +37,10 @@ one process, not a second command.
 
 ## Argument semantics
 
-- **Path-agnostic, with three sibling-resolution exceptions** (level: enforced —
-  suspec-cli). The CLI reads exactly the files it is handed, by full path. It never resolves
-  a store, a config, or a repo root, or a workspace tree — except three reference checks,
+- **Path-agnostic, with narrow artifact-relative reference checks** (level: enforced —
+  suspec-cli). The CLI reads exactly the files it is handed, accepting absolute paths or
+  paths relative to the process's current working directory. It never resolves
+  a state location, config, repo root, or surrounding filesystem tree — except these reference checks,
   each of which resolves one level of sibling directory relative to the passed artifact:
   C009 and C015 (see the next bullet), and C010, which resolves a change plan's `preserves:
   SPEC-id#AC-NNN` refs by looking one level above the plan's own directory, then globbing
@@ -56,8 +57,9 @@ one process, not a second command.
   task, when it names one. Those companions are passed with `--spec` and `--task`; nothing
   is inferred or discovered.
 - **Reference checks resolve artifact-relative** (level: enforced — suspec-cli). Source
-  references and citation anchors resolve against the passed artifact's own directory —
-  `sources.md` is the spec's sibling — never against any root.
+  references and a named `sources.md` resolve from the passed artifact's own directory
+  using the relative paths in frontmatter, even when those paths climb folders. No root
+  is inferred.
 
 ## The missing-companion rule
 
@@ -83,18 +85,20 @@ stops there.
 ## `--json`
 
 Every invocation takes `--json`: the same facts, structured — check id, severity, message,
-location. `suspec check --contract` prints the checks contract itself as JSON (version plus
-check definitions), so other tools can consume the same definitions the checker runs.
+location. A single checked artifact emits one JSON document. A multi-artifact invocation
+emits one JSON document per line in input order: JSON Lines, not one array or one combined
+document. `suspec check --contract` prints one JSON document containing the contract
+version and check definitions.
 
 ## What the checker does not do
 
-- **No resolution.** It never finds files for you. Every path is given; nothing is
-  discovered, listed, or inferred — except the three reference checks' narrow
-  sibling-resolution (C009, C015, C010 — see Argument semantics above).
+- **No discovery.** It never finds primary artifacts or companions for you. Every input
+  path is explicit; only C009, C015, and C010 perform the bounded artifact-relative
+  reference lookups described above.
 - **No gate.** It does not decide "done". It reports facts and exit codes; the human
   decides what blocks a merge.
 - **No verdicts.** It never judges whether code is correct or a requirement is met. Review
-  results (`Pass` / `Fail` / `Unverified` / `Blocked`) are written by the reviewer; the
+  results (`Pass` / `Fail` / `Unverified` / `Blocked`) are written by the human reviewer; the
   checker verifies their shape and their binding to evidence, nothing more.
 - **No execution.** It does not run your verify commands, your tests, or any agent. It
   checks that recorded evidence matches what the spec named — not that the commands pass.

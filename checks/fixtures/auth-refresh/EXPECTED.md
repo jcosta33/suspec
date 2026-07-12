@@ -10,7 +10,7 @@ SOL-code rows are the reference contract, applied as a review checklist — use
 
 **Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
 share one `id:` — they are one spec written on both surfaces (this directory's equivalence
-pair), not two specs. A real workspace keeps only one, so the pair itself never counts as a
+pair), not two specs. A real run keeps only one form, so the pair itself never counts as a
 C002 duplicate.
 
 ## Seeded defects
@@ -68,11 +68,6 @@ files is wrong (the anti-fork rule).
 
 These are checklist-level rules; `suspec check`'s packet mode can flag the mechanical
 parts (the empty Evidence cell).
-
-## finding.md
-
-Valid: one claim, evidence, applies/does-not-apply bounds, and future guidance, with `from:`
-and `related:` resolving to this fixture's review and spec ids.
 
 _Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
 unchecked and it claims no completion; the rule binds completion claims, not open work._

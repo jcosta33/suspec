@@ -2,14 +2,16 @@
 
 A spec states intended behavior.
 
-Write a spec when:
+Write a spec when structured intent will change execution or make review possible:
 
-- behavior changes
 - an agent needs a clear contract
 - reviewers need an acceptance bar
 - a ticket is vague or partial
+- several requirements or boundaries must stay aligned
 
-Skip a new spec when an existing accepted spec already covers the work. **Amend that spec in place** — a spec is a living document: edit the requirement (it keeps its id), let its status move to `active`, and mint a new spec only when a whole feature is replaced.
+For a trivial change, state intent and verification inline. A spec is working scaffold for
+the live change, not a durable parallel source of truth; code, tests, ADRs, issues, and PRs
+carry the lasting record.
 
 ## Minimum shape
 
@@ -67,10 +69,8 @@ Move uncertainty to **Open questions** — framed as a decision (options and a r
 
 ## Non-goals
 
-Use non-goals to stop scope creep. Write them in three parts: the prohibition, what to do
-instead, and the escape hatch — blocked by the boundary? stop and ask. A bare "do not" is
-measured weak; prohibition plus a stop option cuts violations by an order of magnitude
-([[IMPOSSIBLE]](research/sources.md#IMPOSSIBLE), [[OVEREAGER]](research/sources.md#OVEREAGER)).
+Use non-goals to stop scope creep. Name the boundary, what to do instead, and the escape
+hatch: when the boundary blocks the work, stop and ask rather than editing past it.
 
 Good non-goals name likely misunderstandings:
 
@@ -98,21 +98,17 @@ Use `ready` only when:
 
 ## Execution
 
-Append-only run record on the spec. The implementer adds one dated entry per change-cycle: the
-changed files, evidence, and blocked questions for that run. An entry may be plain prose, or a
-structured change-record carrying **Scope** (the ACs touched), **Coverage** (each in-scope AC
-mapped to the evidence that closed it), and **Pins** (`reviewed-sha:` + `evidence-hash:`, written
-at close) — see [ADR-0110](adrs/0110-execution-change-record.md). This is the durable residue once
-the ephemeral review evaporates.
+When one implementer works directly from the spec, use `## Execution` for this run's
+changed files, verify output, and blocked questions. If the work is split into task
+packets, each task carries its own run notes instead. These notes serve the live review;
+they are not a durable lifecycle record.
 
-## Optional SOL form (experimental)
+## Structured SOL form
 
-Plain markdown is the default — and in practice the only form this project's own specs still
-use. SOL, an EARS-like structured syntax for high-risk requirements, remains available behind
-`format: sol` as an **experimental annex**: the human-side evidence for controlled syntax is real,
-the LLM-side evidence is absent, and our own usage abandoned it. Details, honestly labeled:
-[structured requirements](reference/structured-requirements.md). Do not mix plain `AC-NNN`
-headings and SOL blocks in one spec.
+Plain markdown is the default. A spec can select the stricter EARS-like SOL syntax with
+`format: sol` when controlled clauses make ambiguity cheaper to detect. Both forms encode
+the same requirement record. See [structured requirements](reference/structured-requirements.md),
+and do not mix plain `AC-NNN` headings with SOL blocks in one spec.
 
 ## Checks
 

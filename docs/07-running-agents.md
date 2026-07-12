@@ -1,7 +1,7 @@
 # Running agents
 
-Suspec does not run agents. It gives them a spec by default, or a task packet when work
-is split — named by explicit path.
+Suspec does not run agents. It hands them the working artifact the change earned — a
+spec, or a task packet when work is split — by explicit path.
 
 Any worker can use a Suspec packet:
 
@@ -75,9 +75,8 @@ The returned spec `## Execution` entry, or task packet when split, contains:
 - out-of-scope edits named
 - blocked questions named
 - candidate findings listed
-- a Provenance line, optional, for delegated or worker-run work: sources read, guide
-  loaded, worker identity, isolation mode (worktree, shared tree, or patch-only).
-  Lead-run or trivial work omits it. Evidence for review, not a trust token.
+- for delegated work, a Provenance line when it helps review: sources read, guide loaded,
+  worker identity, and isolation mode. Treat it as evidence to inspect, not a trust token.
 
 Example:
 

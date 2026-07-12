@@ -5,7 +5,7 @@ Use extra structure only when the work needs it.
 The expanded loop:
 
 ```text
-inventory -> spec -> change plan -> (task) -> implement -> review
+inventory -> spec -> change plan -> task split when needed -> implement -> review
 ```
 
 Inventory and change plan are artifact kinds like any other: written by their skills,
@@ -33,7 +33,7 @@ Include:
 - public interfaces
 - existing tests
 - unknowns
-- risks
+- observed constraints
 
 Every structural claim needs a file or line reference.
 
@@ -70,7 +70,8 @@ preserves:
   - SPEC-checkout#AC-001
 ```
 
-Use `PG-NNN` only for plan-local guarantees. If a `PG-NNN` becomes permanent behavior, amend the spec.
+Use `PG-NNN` only for plan-local guarantees. If the guarantee describes lasting behavior,
+encode it in the durable layer that owns it — usually a test, public contract, or ADR.
 
 ## Waves
 
@@ -95,24 +96,20 @@ Increase review depth when work has:
 - migrations or destructive operations
 - weak or missing tests
 
-## Re-baseline
+## Reconcile live drift
 
-When changes ship without artifacts — a hotfix, a fast iteration — your specs stop
-describing what was built. Reality and the artifacts disagree. Re-baseline to make them
-true again:
+Suspec does not maintain a repository-wide spec baseline. During live work, if code or new
+evidence contradicts the working spec, stop and decide which is wrong. Update the active
+spec when intent changed; update the code when implementation drifted; record a project
+decision through the project's normal channel when the choice must outlive the work.
 
-- inventory the current code, reading what is there, not the stale spec
-- audit the gap: which requirements reality outran, what shipped with no spec
-- revise each drifted spec to match what was built, or discard it; where the code is
-  wrong instead, that is a finding
-- save what the drift taught — see [saving findings](09-saving-findings.md)
-
-This is the same machinery as adopting an existing codebase — inventory first — pointed
-at your own specs that went stale.
+After close, code and its durable project records are authoritative. A later change starts
+from those current sources rather than reviving old working artifacts.
 
 ## When not to use this
 
-Do not write inventory or a change plan for a small, local feature with clear code and clear tests. Use the normal loop.
+Do not write inventory or a change plan for a small, local feature with clear code and
+clear tests. Use the keys at the weight the work earns.
 
 ## Related
 

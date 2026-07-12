@@ -13,7 +13,7 @@ Retrying a payment after a timeout can double charge the customer.
 
 ## The trivial path: one line, no file
 
-A fix this small doesn't earn a committed spec. The "spec" is one line, inline in the
+A fix this small doesn't earn a spec file. The "spec" is one line, inline in the
 task dispatch or your own working note:
 
 > Fix: a payment retry after a timeout, with the same idempotency key, must not create a
@@ -38,9 +38,10 @@ charge means changing the idempotency lookup itself, not just the retry path, an
 lookup is shared with settlement reconciliation. A blast radius wider than the ticket is
 the signal to escalate, not a blanket rule that bugs always need a spec.
 
-### Spec amendment
+### Working spec
 
-Existing spec: `SPEC-payments`, e.g. `~/.claude/notes/payments-api/payments-spec.md`.
+Write a working spec for the wider change, e.g.
+`~/.claude/notes/payments-api/payments-spec.md`.
 
 Add:
 
@@ -59,44 +60,9 @@ Non-goal:
 - No change to idempotency-key format.
 ```
 
-### Task
-
-`~/.claude/notes/payments-api/payment-timeout-retry-task.md`
-
-```markdown
----
-type: task
-id: TASK-payment-timeout-retry
-source:
-  - SPEC-payments
-scope: [AC-003]
-status: review-ready
----
-
-## Scope
-
-- AC-003 - retry after timeout does not create a second charge.
-
-## Do not change
-
-- idempotency-key format
-- settlement reconciliation logic
-
-## Verify
-
-- [x] `npm run test:integration -- payment-timeout-retry` (AC-003)
-
-      1 failed before fix
-      1 passed after fix
-
-## Run summary
-
-- Changed files: `src/payments/retry.ts`, `test/integration/payment-timeout-retry.test.ts`
-- Verify results:
-  - `npm run test:integration -- payment-timeout-retry` (AC-003): PASS, output above
-- Out-of-scope edits: none
-- Blocked questions: none
-```
+One requirement and one worker do not earn a task split. The implementer works from the
+spec's full path and records changed files, red-before-green output, and blocked questions
+under `## Execution`.
 
 ### Review
 
@@ -106,7 +72,6 @@ status: review-ready
 ---
 type: review
 id: REVIEW-payment-timeout-retry
-task: TASK-payment-timeout-retry
 pr: none yet
 status: needs-human
 ---
@@ -117,7 +82,7 @@ status: needs-human
 | --- | --- | --- | --- |
 | AC-003 | Pass | `npm run test:integration -- payment-timeout-retry` -> failed before fix, passed after fix | yes |
 
-Spot-checked: AC-003 - reran integration test after fix; pass reproduced.
+Reran: AC-003 - integration test after fix; pass reproduced.
 
 ## Human attention
 
@@ -132,8 +97,7 @@ Check it:
 
 ```bash
 suspec check ~/.claude/notes/payments-api/payment-timeout-retry-review.md \
-  --spec ~/.claude/notes/payments-api/payments-spec.md \
-  --task ~/.claude/notes/payments-api/payment-timeout-retry-task.md
+  --spec ~/.claude/notes/payments-api/payments-spec.md
 ```
 
 This exits with an advisory warning (exit 1) as shown: the coverage row, the pasted
@@ -150,8 +114,8 @@ The idempotency-lookup sharing was worth remembering — save it as a native mem
 ```markdown
 ## Payment timeout retries reuse the idempotency record, not a new charge
 
-Verified: `npm run test:integration -- payment-timeout-retry` -> failed before, passed after
-(payment-timeout-retry-review.md, AC-003)
+Verified: `test/integration/payment-timeout-retry.test.ts` and
+`npm run test:integration -- payment-timeout-retry` -> failed before, passed after.
 
 Applies to: payment timeout retry handling.
 Does not apply to: retries with a different idempotency key.

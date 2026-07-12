@@ -16,7 +16,7 @@ format: sol
 
 Plain markdown is the default. SOL is useful for high-risk specs or specs you want a parser to read.
 
-## One model, two surfaces
+## Shared model across plain and SOL surfaces
 
 Plain specs and SOL specs produce the same requirement record:
 
@@ -142,7 +142,7 @@ A spec with a blocking question stays `draft`.
 | `MUST NOT` | forbidden |
 | `SHOULD` | default; needs reason or exception |
 | `SHOULD NOT` | default prohibition; needs reason or exception |
-| `MAY` | optional |
+| `MAY` | permitted |
 
 Do not use `SHALL` as a strength word.
 

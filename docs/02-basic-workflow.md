@@ -2,7 +2,7 @@
 
 ## The trivial path first
 
-Most changes are small. For a trivial fix the whole spec is one line, stated inline —
+Most changes are small. For a trivial fix the whole intent is one line, stated inline —
 in the conversation, not in a file:
 
 ```text
@@ -13,7 +13,7 @@ Verify with: pnpm test:run auth-refresh-expired-token
 Implement, run the verify command, paste the output. Done. No file, no packet, no check
 run. Proportional rigor means the structure below exists for the work that earns it —
 never as a toll on the work that doesn't (level: convention). Even at this weight the
-three keys are present: intent is the one-line fix, review is you reading the pasted
+keys are present: intent is the one-line fix, review is you reading the pasted
 output, findings is the deliberate call that nothing durable was learned.
 
 ## The full loop
@@ -47,7 +47,7 @@ Every step above keeps a by-hand path; no step requires a tool (level: conventio
 
 ## The keys
 
-Three parts of the loop — **intent**, **review**, **findings** — are present on
+The loop's keys — **intent**, **review**, **findings** — are present on
 virtually every change, at whatever weight the change earns:
 
 - **Intent** — every change starts by stating what must become true, even when the next
@@ -70,18 +70,15 @@ proportionally, never a station to pass through. The spec (the structured form i
 graduates into) and the deterministic check are the scaffold the full loop above already
 shows; the rest:
 
-- **Task** — cut only when one spec splits into **parallel slices**. The common 1:1
-  case has no task packet: the implementer works from the spec. See
+- **Task** — cut only when a spec has separately dispatchable parallel/context slices, or a
+  change plan defines separately dispatchable sequenced waves. Size alone does not create a
+  task; the common 1:1 case works directly from the source. See
   [creating tasks](06-creating-tasks.md).
 - **Inventory** — map existing code before brownfield work: observed modules,
   interfaces, tests, unknowns, with file references. Skip when the code is understood.
 - **Change plan** — for migrations, rewrites, schema changes, high-risk refactors:
   preservation guarantees, waves, verification per wave, rollback. See
   [brownfield work and change plans](05-brownfield-and-change-plans.md).
-- **Intake** — capture the upstream ask verbatim when work starts from a ticket or
-  thread and you want the original preserved. Otherwise the spec names its source
-  directly (a URL, an issue, or `self`).
-
 Implementation is neither key nor scaffold — it is the work itself, the thing the loop
 exists to serve. No key depends on scaffold (level: convention).
 
@@ -89,9 +86,9 @@ exists to serve. No key depends on scaffold (level: convention).
 
 | Work | Path |
 | --- | --- |
-| Trivial fix | one-line inline spec -> implement -> verify -> done |
+| Trivial fix | one-line intent -> implement -> verify -> done |
 | Small feature | spec -> implement -> review -> check |
-| Bug fix against an existing spec | amend the spec -> implement -> review -> check |
+| Bug fix | state the intended correction -> implement -> verify -> review |
 | Brownfield change | inventory -> spec -> implement -> review -> check |
 | Migration or rewrite | inventory -> spec -> change plan -> wave tasks -> reviews |
 | PR that already exists | write the acceptance bar as a spec -> review against it |

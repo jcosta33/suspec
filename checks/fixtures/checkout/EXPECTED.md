@@ -11,7 +11,7 @@ your installed version implements.
 
 **Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
 share one `id:` — they are one spec written on both surfaces (this directory's equivalence
-pair), not two specs. A real workspace keeps only one, so the pair itself never counts as a
+pair), not two specs. A real run keeps only one form, so the pair itself never counts as a
 C002 duplicate.
 
 ## Seeded defects
@@ -76,12 +76,6 @@ two files is wrong (the anti-fork rule).
 | `pass-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Pass |
 | `no-open-critical` | task and review            | pass — the open question is non-blocking                                 |
 | `trigger-coverage` | review Human attention     | pass — names the unverified row and the DB write surface                 |
-
-## finding.md
-
-Valid: one claim, evidence, applies/does-not-apply bounds, and future guidance. This finding
-(`FINDING-shared-write-area`) is also a named source of the change plan in
-`../transformation/change-plan.md`.
 
 _Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
 unchecked and it claims no completion; the rule binds completion claims, not open work._

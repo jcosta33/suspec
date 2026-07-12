@@ -1,8 +1,9 @@
 # Creating tasks
 
-A task packet is the **split slice** — cut only when one spec becomes several parallel
-pieces. For the common 1:1 case there is no task: the implementer works from the spec and
-fills its `## Execution` section.
+A task packet is the **split slice** — cut only when a spec has multiple independently
+dispatchable parallel/context slices, or a change plan defines separately dispatchable
+sequenced waves. Size alone does not create a task. For the common 1:1 case there is no
+packet: the implementer works from the source and fills its `## Execution` section.
 
 A task does not add requirements. It copies a scope-subset from a spec or change plan.
 
@@ -28,7 +29,16 @@ status: ready
 
 ## Source
 
-- `/Users/you/agent-notes/shop-api/spec-checkout.md`
+- Spec: `/Users/you/agent-notes/shop-api/spec-checkout.md`
+- Source commit: `3f2c9ab`
+
+### Requirement snapshot
+
+#### AC-001 - Expired sessions return `409 SESSION_EXPIRED`
+
+Expired checkout sessions must return `409 SESSION_EXPIRED` before any charge call.
+
+Verify with: `npm run test:integration -- expired-session`
 
 ## Scope
 
@@ -50,6 +60,24 @@ status: ready
 ## Agent instructions
 
 One slice's standing instructions — scope, evidence rules, when to stop and ask.
+
+## Findings
+
+- None yet.
+
+## Run summary
+
+- Status: not started
+- Changed files: none
+- Verify evidence: not run
+- Scope drift: none
+- Blocked questions: none
+
+## Self-review
+
+- [ ] Every changed file is in Affected areas or listed as an exception.
+- [ ] AC-001 has fresh Verify evidence after the final edit.
+- [ ] Findings and blocked questions are recorded; no review result was issued.
 ```
 
 The full shape is documented in [artifact formats](reference/artifact-formats.md).
@@ -66,12 +94,12 @@ Good tasks:
 - have runnable verification
 - can be reviewed without reading a huge diff
 
-Split tasks when:
+Use separate slices when the source already defines independently dispatchable work:
 
-- files overlap but behaviors differ
-- refactor and behavior change are mixed
-- one command cannot verify the work
-- parallel work would write the same files
+- a change plan has waves with distinct checkpoints and rollback boundaries
+- a prerequisite refactor must land before a behavior change
+- parallel or per-context work has disjoint write surfaces
+- one behavior must be implemented and verified independently in several repositories or platforms
 
 ## Do not change
 

@@ -31,8 +31,8 @@ surfaces an error instead of hanging. AC-002 shipped without a named test and is
 
 1. AC-002 has an empty Evidence cell, so the row reads Unverified — never Pass. The spec
    names no verification for it; decide: add the test, or accept the gap on the record.
-2. `web/src/http/client.ts` is a risky file — every request flows through it. Spot-checked
-   the AC-001 row by re-running `npm test -- auth-refresh.spec.ts` locally: same output.
+2. `web/src/http/client.ts` is a risky file — every request flows through it. Re-ran
+   the AC-001 verification with `npm test -- auth-refresh.spec.ts` locally: same output.
 3. No out-of-scope changes, public-interface changes, DB migrations, or security-sensitive
    edits; one finding candidate (refresh fan-out) recorded; no blocked questions.
 

@@ -1,85 +1,40 @@
 # Source authority
 
-Source authority decides which written intent governs when artifacts conflict.
+Authority depends on the claim and the moment. No fixed numerical rank can replace checking
+whether a source owns the fact being asserted.
 
-Tools may flag conflicts. People resolve them.
+## Live implementation work
 
-## Minimum model
+- The current user request and project governance own intent and boundaries.
+- The active working spec makes that intent verifiable when the work earns one.
+- Current code, tests, schemas, and runtime output own present behavior.
+- A split task narrows scope but cannot override its source spec.
+- Worker summaries and review packets are claims until independently checked.
 
-Use these rules first:
+## External claims
 
-- Specs state intended behavior.
-- Code can falsify a spec, not silently amend it.
-- Review rows judge against current spec text and evidence.
-- Changed requirements or changed exercised code make old evidence stale.
-- Findings inform future work but are not requirements until written into a spec.
+Prefer the closest primary source that can support the exact statement:
 
-## Artifact rank
+- official specification or issuing authority for a standard
+- source code, release notes, or product documentation for product behavior
+- original paper and dataset for measured effects
+- first-party announcement for a vendor claim, labeled as vendor evidence
 
-| Rank | Artifact |
-| --- | --- |
-| 1 | accepted ADR |
-| 2 | approved spec |
-| 3 | reviewed audit |
-| 4 | reviewed research |
-| 5 | task notes |
-| 6 | chat |
+Use secondary synthesis to locate primary evidence or to summarize a body of work, not to
+upgrade an unsupported claim. Marketing pages, reviews, anecdotes, and synthetic respondents
+remain limited evidence even when several repeat the same number.
 
-Drafts rank one step below their accepted tier.
+## Conflicts
 
-## Domain rank
+When sources disagree, do not average them. State the conflict, check recency and scope, and
+route the unresolved choice to the person who owns it. During live work, reconcile intent
+and implementation before review closes. After close, durable project layers remain
+authoritative; old working artifacts do not.
 
-| Rank | Domain |
-| --- | --- |
-| 1 | enforced policy |
-| 2 | compliance |
-| 3 | security |
-| 4 | architecture |
-| 5 | product |
-| 6 | team |
-| 7 | task scoping |
-| 8 | memory |
+## Citation fit
 
-## Conflict rule
+A citation supports only the claim it directly establishes. Preserve population, date,
+method, uncertainty, and known limitations with measured results. Label design guidance,
+vendor projections, preprints, and inference honestly.
 
-1. If either statement is enforced-policy, compliance, or security, higher domain wins.
-2. Otherwise, higher artifact rank wins.
-3. If artifact rank ties, higher domain rank wins.
-4. If both ranks tie, resolve by amendment.
-
-The losing statement is not deleted. Reconcile it.
-
-## Approval
-
-These edits need the governing owner:
-
-- add, remove, or renumber a requirement
-- change actor, trigger, strength, outcome, or non-goal
-- change a public interface
-- resolve a blocking open question
-- add, remove, or repoint `Verify with:`
-- accept manual evidence where automated evidence was expected
-- approve, supersede, or amend an ADR
-- write a finding into a spec requirement
-
-Meaning-preserving cleanup does not need the same approval.
-
-## High-oversight work
-
-Use named human review for:
-
-- critical-risk work
-- destructive operations
-- migrations
-- shared databases
-- public interfaces
-- security-sensitive changes
-
-Waivers in this band need a named human, reason, affected rows, and expiry.
-
-## Related
-
-- [Drift](drift.md)
-- [Distillation](distillation.md)
-- [Checks](checks.md)
-- [Reviewing output](../08-reviewing-output.md)
+Related: [principles](principles.md) · [research sources](../research/sources.md)

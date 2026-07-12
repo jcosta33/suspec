@@ -6,7 +6,7 @@ title: Move the inventory ledger out of db/orders
 status: draft
 kind: schema-change
 owner: checkout-team
-sources: [INV-checkout-storage, FINDING-shared-write-area]
+sources: [INV-checkout-storage]
 preserves: [SPEC-checkout#AC-002, SPEC-checkout#AC-003]
 created: 2026-06-11
 ---
@@ -20,8 +20,8 @@ work and ledger work stop sharing one write area.
 
 ## Why this change is needed
 
-INV-checkout-storage: the ledger lives inside the orders schema, so every orders migration
-locks the ledger; FINDING-shared-write-area shows that two tasks on one write area conflict.
+INV-checkout-storage shows that the ledger lives inside the orders schema and that both
+checkout paths write the same area, so parallel changes would conflict.
 
 ## Baseline
 
@@ -41,8 +41,9 @@ locks the ledger; FINDING-shared-write-area shows that two tasks on one write ar
 | SPEC-checkout#AC-003 | A successful charge still appends the ledger entry | `npm test -- inventory.spec.ts` |
 | PG-001 | The nightly reconciliation job returns the same rows before and after | `npm test -- reconcile.spec.ts` (new) |
 
-PG-001 has no spec id — the reconciliation contract was never specced; a spec amendment is
-owed.
+PG-001 is plan-local because the reconciliation behavior is not part of the working
+checkout spec. If it must become a durable public contract, encode it in the project layer
+that owns that behavior.
 
 ## Non-goals
 

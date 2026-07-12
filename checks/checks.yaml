@@ -31,7 +31,7 @@ version: 0.16.0 # contract version of this file; bump on any rule change
 spec_form:
   default: simple
   selector: "format: sol" # frontmatter key, per file; absent = simple form
-  frontmatter: [type, id, title, status, owner, sources] # + the optional `format` key above
+  frontmatter: [type, id, title, status, owner, sources] # + `format` when the spec selects SOL
 
 # --- Core checks ---------------------------------------------------------------
 # Mirrors the "Core checks" table in docs/reference/checks.md, row for row.
@@ -58,7 +58,7 @@ core_checks:
   - { id: C009, name: broken-source-link, severity: hard-error } # path-shaped refs only, resolved against the spec's own directory (artifact-relative); bare tracker ids exempt
   - { id: C010, name: preserves-refs-resolve, severity: hard-error } # change plan: preserves: + guarantee-table ids resolve (PG-NNN = plan-local); SPEC-x#AC-NNN refs resolve against the plan's sibling specs
   - { id: C011, name: waves-present, severity: warning } # change plan: kind in {migration, rewrite, schema-change} => non-empty waves, each naming a verify step
-  - { id: C012, name: coverage, severity: warning } # review packet: in-scope ids covered, no orphan rows; the in-scope set is the task's declared scope when the review names a task, else the spec's full requirement id set (the task is an optional split slice); non-draft source spec only (ADR-0079)
+  - { id: C012, name: coverage, severity: warning } # review packet: in-scope ids covered, no orphan rows; the in-scope set is the task's declared scope when the review names a split task, else the spec's full requirement id set; non-draft source spec only (ADR-0079)
   - { id: C013, name: verify-evidence-binding, severity: warning } # review packet: a verify block's cmd matches the requirement's named Verify command + result=pass; non-draft source spec only. Nominal severity warning, but a CMD-MISMATCH is blocking at check time — a recorded cmd that disagrees with the spec's named command is a structural contradiction (ADR-0129); the other faces stay advisory. The check confirms the recorded command's CONSISTENCY, never that it ran — nothing re-executes it.
   - { id: C014, name: do-not-change-touched, severity: warning } # review packet: a Changed-files entry matches a task's Do-not-change entry (same matcher + {{placeholder}} skip as Affected areas); distinct from outsideScope; surfaced to Human attention (ADR-0086). Checklist level — it needs the live diff, so the reviewer's own re-run is the honest backstop (the reference's notes); no checker computes it
   - { id: C015, name: citation-resolves, severity: warning } # spec: an inline [[KEY]] citation resolves to a matching <a id="KEY"> anchor in the sources.md the spec's frontmatter names, resolved against the spec's own directory; skips when no sources.md is resolvable (no false-flag); v0 = dangling-anchor only (ADR-0087)
@@ -159,7 +159,7 @@ review_file:
       rule: >-
         Keyed on the task packet's declared `scope` as the in-scope id set when
         the review names a task, else on the source spec's full requirement id
-        set (the task is an optional split slice; a task-less 1:1 review
+        set (the task is a split slice; a task-less 1:1 review
         reconciles spec-keyed): every in-scope requirement id has a coverage
         row (an in-scope id with no row reads uncovered), and every coverage
         row names an id present in the source spec (a row naming an id absent

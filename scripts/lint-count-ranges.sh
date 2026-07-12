@@ -39,14 +39,14 @@ export LC_ALL
 ENDASH=$(printf '\342\200\223')
 RANGE_RE="0[0-9][0-9][0-9][[:space:]]*(-|${ENDASH})[[:space:]]*0[0-9][0-9][0-9]"
 
-# The family roots to scan. Default to the standard sibling layout; override with SUSPEC_FAMILY_ROOTS.
+# The family roots to scan. Pass their parent directory or override with SUSPEC_FAMILY_ROOTS.
 if [ -n "${SUSPEC_FAMILY_ROOTS:-}" ]; then
     ROOTS="$SUSPEC_FAMILY_ROOTS"
 else
-    # Resolve suspec's repo root from this script's location, then its siblings.
+    # Resolve this repo from the script and current siblings by public repository name.
     SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
     SUSPEC_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
-    PARENT=$(CDPATH= cd -- "$SUSPEC_ROOT/.." && pwd)
+    PARENT=${1:-$(CDPATH= cd -- "$SUSPEC_ROOT/.." && pwd)}
     repo_dir() {
         name=$1
         if [ -d "$PARENT/$name" ]; then
@@ -65,7 +65,7 @@ else
         done
     }
     roots="$SUSPEC_ROOT"
-    for name in suspec-agents suspec-works suspec-starter-kit; do
+    for name in suspec-agents suspec-cli suspec-mcp suspec-skills; do
         dir=$(repo_dir "$name")
         [ -n "$dir" ] && roots="$roots $dir"
     done

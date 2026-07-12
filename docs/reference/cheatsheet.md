@@ -9,15 +9,16 @@ intent ──▶ spec ──▶ implement ──▶ review ──▶ check ─�
 The keys — intent, review, findings — are present on virtually every change, at whatever
 weight it earns. The scaffold — the spec intent graduates into, the task split, inventory,
 change plan, the deterministic check — is erected when the work earns it: cut task packets
-only when the work splits or wants an explicit hand-off. Findings saves what the work
-taught: durable lessons become native memories ([memory](memory.md)).
+only when one source must split into coordinated slices. The findings key decides what the
+work taught: durable lessons become native memories or project records
+([memory](memory.md)).
 
 ## Proportional rigor
 
 Use the least structure that changes execution or reviewability: a trivial fix gets a
-one-line inline spec and no file; a feature gets a lean spec with requirements and
-acceptance criteria; large work extends rather than pads. The rungs and when to climb:
-[rigor ladder](rigor-escalation.md).
+one-line inline intent and no file; a feature gets a lean spec with requirements and
+acceptance criteria; large work extends rather than pads. Escalation cues:
+[proportional rigor](rigor-escalation.md).
 
 ## Artifacts
 
@@ -26,10 +27,11 @@ acceptance criteria; large work extends rather than pads. The rungs and when to 
 | spec | intent, non-goals, requirements (`AC-NNN` + `Verify with:`), open questions |
 | task packet | one scoped slice of a spec, for hand-off |
 | review packet | requirement coverage, evidence, human attention |
+| inventory | observed modules, interfaces, tests, constraints, unknowns |
 | change plan | baseline, target, preservation guarantees, verified waves |
-| finding | one lesson; a durable one becomes a native memory |
 
-Shapes: [artifact formats](artifact-formats.md).
+Findings are not a file type. Ephemeral observations ride run/review notes; durable lessons
+go to native memory or project channels. Shapes: [artifact formats](artifact-formats.md).
 
 ## Where files go
 
@@ -100,12 +102,14 @@ Route to Human attention:
 ## Checks
 
 ```bash
-suspec check <artifact> [<artifact>...]                            # spec / change-plan (exit = max)
-suspec check <review-path> --spec <spec-path> [--task <task-path>] # review packet
-suspec check --contract                                            # the checks contract as JSON
+suspec check <artifact> [<artifact>...]                         # spec / change-plan
+suspec check <review-path> --spec <spec-path>                  # review packet
+suspec check <review-path> --spec <spec-path> --task <task-path> # split-task review
+suspec check --contract                                         # checks contract JSON
 ```
 
 Several spec/change-plan paths in one `check` call also run a cross-file duplicate-id check
 (C002) over the set. Exit `0` clean · `1` warning · `2` blocking. A review checked without a
 required companion is a blocking error (exit 2). The checker reports facts, never verdicts —
-the human owns the result. Full reference: [CLI](cli.md) · the contract: [checks](checks.md).
+the human owns the result. Multi-artifact `--json` output is JSON Lines. Full reference:
+[CLI](cli.md) · the contract: [checks](checks.md).

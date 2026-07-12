@@ -4,7 +4,7 @@ _Advanced design note — maintainer rationale; not needed to use Suspec._
 
 Test data for [the checks reference](../docs/reference/checks.md), consumed by suspec-cli.
 Every check in that reference is a claim about what a correct checker reports on a given
-file; this directory pins those reports as fixtures, per the two-way severity split
+file; this directory pins those reports as fixtures, per the severity split
 (hard error / warning). suspec-cli's `suspec check` is the reference consumer — a
 path-agnostic checker that reads exactly the files it is handed; its test suite pins the
 contract table and a subset of these fixtures as oracles, conditional on a sibling canon
@@ -14,11 +14,11 @@ checks, compare against the pinned expectation.
 **Nothing in this directory runs.** It is data, not a runner: Suspec ships the contract
 ([`checks.yaml`](./checks.yaml)) and the fixtures that test it, never the checker.
 
-## The two evidence rules
+## Evidence rules
 
 Checklist level — review is expected to inspect both; `suspec check` on a review packet
-(`suspec check <review-path> --spec <spec-path> [--task <task-path>]` — `--task` required
-iff the review names a `task:`) flags the mechanical parts:
+(`suspec check <review-path> --spec <spec-path>`, adding `--task <task-path>` when the
+review names a split task) flags the mechanical parts:
 
 - **`non-empty-paste`** — a completion claim binds to pasted output or a CI link, never a
   bare "tests passed" [[EVIBOUND]](../docs/research/sources.md#EVIBOUND). In a review
@@ -33,8 +33,8 @@ iff the review names a `task:`) flags the mechanical parts:
 | [`checks.yaml`](./checks.yaml)                                            | The checks contract as data: spec-form selector, core check list with severities, task and review packet schemas, the evidence rules, advisory command slots, placeholder namespaces.                                                                                                |
 | [`fixtures/conformant-task.md`](./fixtures/conformant-task.md)            | A task packet that passes every task check — the positive oracle.                                                                                                                                                                                                                    |
 | [`fixtures/violations.md`](./fixtures/violations.md)                      | One minimal negative fixture per violation class, each with the check it trips and the expected report.                                                                                                                                                                              |
-| `fixtures/auth-refresh/` · `fixtures/payment-5xx/` · `fixtures/checkout/` | Three end-to-end domains: the spec in both forms (the equivalence pair), a task packet, a review packet, a finding, and an `EXPECTED.md` pinning what a checker must report for the spec, change-plan, and review-checklist checks (C001–C011 + the content rules) at each artifact. |
-| [`fixtures/prose-fixtures/`](./fixtures/prose-fixtures/README.md)             | The labeled writing-rules fixture set: prose spans with ground-truth labels for the advisory watchlist, plus the precision/recall baseline any detector is scored against.                                                                                                                |
+| `fixtures/auth-refresh/` · `fixtures/payment-5xx/` · `fixtures/checkout/` | End-to-end scenarios: a spec in both forms, a task packet, a review packet, and an `EXPECTED.md` pinning the relevant checker and review facts. |
+| [`fixtures/prose-fixtures/`](./fixtures/prose-fixtures/README.md)          | Labeled prose spans for evaluating an advisory writing-rules detector. |
 | `fixtures/intake/`                                                        | One valid intake snapshot; the expectation is pinned in the file's trailing note.                                                                                                                                                                                                    |
 | `fixtures/transformation/`                                                | A valid inventory + change-plan pair; its `EXPECTED.md` pins `C010 preserves-refs-resolve` and `C011 waves-present`.                                                                                                                                                                 |
 | `fixtures/cross-folder-source/`                                           | A spec whose `sources:` points across folders; its `EXPECTED.md` pins `C009 broken-source-link` artifact-relative resolution.                                                                                                                                                        |
@@ -48,11 +48,11 @@ implementation per [ADR-0079](../docs/adrs/0079-c012-coverage-check.md) /
 [ADR-0086](../docs/adrs/0086-deterministic-review-scanning-decision.md), not in the domain `EXPECTED.md`
 files (which key on the spec/change-plan side).
 
-## The three domains and the examples they mirror
+## Scenario fixtures and examples
 
-Each fixture domain covers the same ground as one worked example in `docs/examples/` —
-the example teaches the workflow; the fixture pins the checker results over equivalent
-artifacts:
+Each fixture scenario covers related ground to a worked example in `docs/examples/`.
+Examples teach the workflow; fixtures pin checker behavior rather than reproducing the
+same artifact chain:
 
 | Fixture domain           | Worked example                                                 |
 | ------------------------ | -------------------------------------------------------------- |
@@ -68,7 +68,7 @@ same requirement record, and every check keys on the record, never the surface
 (see [structured requirements](../docs/reference/structured-requirements.md)). Each
 domain therefore ships the **same spec in both forms**, and its `EXPECTED.md` pins that
 a checker extracts the identical record set — same requirement IDs, same strength words,
-same verification references — from either file. If the two forms ever drift into
+same verification references — from either file. If the plain and SOL forms ever drift into
 different check behavior, these pairs are the fixtures that catch it.
 
 ## Reference values (reconciliation) — producer note
@@ -82,7 +82,7 @@ updates this producer note and the fixtures that exercise it in the same commit.
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | Block types (SOL form)     | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`                                                         |
 | Strength words             | must, must not, should, should not, may (SOL form: the same words uppercase)                                      |
-| Review results             | core: Pass, Fail, Unverified, Blocked · lifecycle: Waived, Stale, Contradicted                                    |
+| Review results             | `Pass`, `Fail`, `Unverified`, `Blocked`                                                                           |
 | Verification methods       | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`                        |
 | Check layers               | S (structure), P (prose), M (cross-references), V (verification), O (splitting work) — code form `SOL-<LAYER>NNN` |
 
@@ -90,10 +90,9 @@ Reconciliation duties this note carries:
 
 - The core check IDs and severities in [`checks.yaml`](./checks.yaml) match
   [the checks reference](../docs/reference/checks.md) row for row.
-- The task and review section lists in [`checks.yaml`](./checks.yaml) are the
-  minimum-required subset of the artifact shapes in
-  [artifact formats](../docs/reference/artifact-formats.md) — an artifact may carry
-  additional, uncontracted headings; the contract lists only what the checks read.
+- The task and review section lists in [`checks.yaml`](./checks.yaml) are the core subset
+  of [artifact formats](../docs/reference/artifact-formats.md). Conditional headings can
+  appear when the work earns them; the contract lists only what checks read.
 - Every fixture's pinned expectation agrees with both; a fixture that disagrees means
   the contract, the prose, or the fixture is wrong — find out which before shipping.
 
@@ -109,6 +108,6 @@ Reconciliation duties this note carries:
    must produce exactly the named check at the named severity.
 4. Run over each domain's artifacts and compare against its `EXPECTED.md` — including
    the equivalence pair, where both spec forms must yield the same record set.
-5. Score any writing-rules detector against
-   [`fixtures/prose-fixtures/labeled.yaml`](./fixtures/prose-fixtures/labeled.yaml) and check
-   it against the baseline in [its README](./fixtures/prose-fixtures/README.md).
+5. Compare any writing-rules detector against the labels in
+   [`fixtures/prose-fixtures/labeled.yaml`](./fixtures/prose-fixtures/labeled.yaml), reporting
+   precision, recall, and mismatched codes without asserting an unevaluated target.

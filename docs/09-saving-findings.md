@@ -1,16 +1,17 @@
 # Saving findings
 
-Findings come in two lifetimes. Ephemeral findings — surprises, candidate issues,
+Findings are either ephemeral or durable. Ephemeral findings — surprises, candidate issues,
 things the reviewer should see — ride the review packet's Candidate findings section
 when the review is multi-lens, or its Human attention section otherwise, and die with
 it. Durable lessons outlive the work, and they go where your harness will actually read
 them again:
 
-A durable lesson becomes a native memory: write it the way your harness records memories
-(a memory file, CLAUDE.md, whatever your runner provides), one claim per memory, the
-evidence attached, under a searchable title. Suspec adds no parallel findings store — if
-the lesson belongs to the team rather than to you, raise it through the project's own
-channels (an issue, an ADR, a test).
+A durable lesson becomes a native memory only when the harness provides a memory surface.
+Use that surface's documented API or convention; do not invent a memory file. Record one
+claim with its evidence and boundaries under a searchable title. Suspec adds no parallel
+findings store. If no native memory exists, or the lesson belongs to the team, use the
+project's own channels — an issue, ADR, test, or maintained documentation — or leave the
+task-local observation ephemeral.
 
 Save a lesson when it will matter again. Do not save task-local scratch.
 
@@ -66,20 +67,19 @@ A finding without evidence is an opinion.
 
 Some discoveries have a better home than your memory:
 
-- intended behavior -> spec amendment
+- intended behavior that must outlive the change -> a test, public contract, ADR, or maintained documentation
 - a decision with tradeoffs -> an ADR, through the project's own process
 - a defect or team-facing lesson -> an issue
 - behavior worth locking in -> a test
 - a term definition -> the project's glossary
 
-A finding does not weaken a requirement. If the finding contradicts the spec, reconcile
-the spec.
+A finding does not weaken a requirement. During live work, reconcile a contradiction
+between the finding, the working spec, and the code before review closes.
 
 ## Retrieval
 
-Retrieval is your harness's job — its memory surface is indexed and loaded by the
-runner itself, which is exactly why the lesson goes there. Help it: name memories for
-the words a future reader will search.
+Retrieval behavior belongs to the harness and varies by product. Use only a supported
+memory surface, and name memories for the words a future reader is likely to search.
 
 ## Related
 

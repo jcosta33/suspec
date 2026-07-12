@@ -1,78 +1,24 @@
 # Principles
 
-These rules resolve conflicts in the docs.
+- **Skills are the product.** Tools reinforce the method; they do not carry it.
+- **Keys stay light.** Every change states intent, receives review, and decides what it
+  taught. Weight scales with the work.
+- **Scaffold must earn its place.** Specs, task splits, inventories, change plans, and the
+  checker appear only when they change execution or reviewability.
+- **Code stays king.** Working artifacts are transient; durable truth belongs in code,
+  tests, maintained project records, and supported native memory.
+- **Paths are explicit.** Producers carry full paths forward; consumers do not discover a
+  store or workspace.
+- **Tasks decompose.** A task narrows existing IDs; it never invents requirements.
+- **Evidence precedes Pass.** Worker claims are review inputs, not proof.
+- **Review is independent.** The implementer does not issue the review result.
+- **Checks report facts.** Exit codes and diagnostics never become merge authority.
+- **Every step works by hand.** CLI, MCP, and agent definitions are reinforcement.
+- **Claims fit sources.** External evidence supports the exact claim and carries its limits.
+- **History stays in ADRs.** Current docs speak from the present design; accepted ADR bodies
+  preserve decision history.
 
-## 1. No runtime in this repo
+When principles conflict, protect explicit intent, evidence integrity, and human authority
+before convenience.
 
-This repo is markdown and documentation.
-
-Tool behavior described here is a contract for optional tooling, not proof that this repo runs it.
-
-Use precise wording:
-
-- good: `suspec check can report...`
-- bad: `Suspec enforces...`
-
-## 2. Conventions are not enforcement
-
-Every rule has an honesty level:
-
-- convention
-- checklist
-- toolable
-- enforced
-
-This docs repo enforces nothing.
-
-Teams can enforce rules in CI or hooks. That is the team's gate.
-
-## 3. Code can falsify intent, not amend it
-
-Specs and decisions state intent.
-
-Code and tests show reality.
-
-When they disagree:
-
-- re-run evidence
-- amend the spec
-- fix the code
-
-Do not let changed code silently redefine the requirement.
-
-## 4. Evidence beats shape
-
-A valid-looking file is not evidence.
-
-A `Pass` needs:
-
-- pasted output
-- CI link
-- named manual observation
-
-Empty evidence means `Unverified`.
-
-## 5. Provider neutral
-
-Suspec artifacts are plain markdown.
-
-They must work with any agent or human who can read files.
-
-Do not make one provider's behavior a framework requirement.
-
-## 6. Claims need sources
-
-Load-bearing empirical claims cite `docs/research/sources.md`.
-
-If a claim has no source, label it as design rationale or remove it.
-
-Rejected sources are not cited.
-
-## Related
-
-- [Source authority](source-authority.md)
-- [Drift](drift.md)
-- [Checks](checks.md)
-- [Output economy](output-economy.md)
-- [Lineage](lineage.md)
-- [ADRs](../adrs/README.md)
+Related: [basic workflow](../02-basic-workflow.md) · [source authority](source-authority.md)

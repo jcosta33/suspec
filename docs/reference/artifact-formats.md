@@ -6,7 +6,7 @@ The `type:` field identifies the artifact. Kind is read from frontmatter, never 
 filename or location — where the files live is your choice
 ([where files live](../03-where-files-live.md)).
 
-## Core types
+## Live-work records
 
 | Type | ID prefix |
 | --- | --- |
@@ -15,14 +15,14 @@ filename or location — where the files live is your choice
 | `task` | `TASK-` |
 | `review` | `REVIEW-` |
 
-## Conditional types
+## Structural-work records
 
 | Type | ID prefix |
 | --- | --- |
 | `inventory` | `INV-` |
 | `change-plan` | `CHANGE-` |
 
-## Advanced types
+## Other skill outputs
 
 | Type | Use |
 | --- | --- |
@@ -72,7 +72,7 @@ Sections:
 - Open questions
 - Affected areas
 - Dropped from sources, when needed
-- Execution — append-only run record, one dated entry per change-cycle
+- Execution — current run notes when no task split exists
 
 Each requirement has:
 
@@ -80,9 +80,9 @@ Each requirement has:
 - one behavior
 - `Verify with:`
 
-`## Execution` holds the run record. An entry may be prose or a structured change-record carrying
-`Scope`, `Coverage` (AC→evidence), and `Pins` (`reviewed-sha:` + `evidence-hash:`) — see
-[ADR-0110](../adrs/0110-execution-change-record.md).
+`## Execution` holds changed files, verify output, scope drift, and blocked questions for
+the live run. When work is split, those notes live in each task packet instead. Execution
+notes are review input, not a durable append-only history.
 
 ## Task
 
@@ -99,7 +99,8 @@ status: ready
 
 Sections:
 
-- Source
+- Source — full spec path, source commit, and a verbatim snapshot of every scoped requirement plus
+  its `Verify with:` line
 - Scope
 - Do not change
 - Affected areas
@@ -107,7 +108,7 @@ Sections:
 - Agent instructions
 - Findings
 - Run summary
-- Self-review, when the packet carries one
+- Self-review
 
 Every verify item names a requirement id.
 
@@ -142,7 +143,7 @@ Sections:
 
 - Summary
 - Review plan, for a lead-orchestrated review
-- Candidate findings, for a multi-lens review (optional)
+- Candidate findings, for a multi-lens review
 - Changed files
 - Requirement coverage
 - Change-plan coverage, when relevant
@@ -170,7 +171,8 @@ A `Pass` needs evidence.
 
 Findings are not a standalone artifact — there is no `finding` type, no `FINDING-` id, no
 file to write. Ephemeral findings ride the review packet's Candidate findings section
-(above) and die with it. A durable finding becomes a native harness memory instead — one
+(above) for a multi-lens review, or its Human attention section otherwise, and die with
+it. A durable finding becomes a native harness memory instead — one
 claim, its evidence, a searchable title, no id assigned ([memory](memory.md),
 [saving findings](../09-saving-findings.md)).
 
@@ -185,7 +187,7 @@ Sections:
 - Interfaces
 - Tests
 - Unknowns
-- Risks
+- Observed constraints
 
 No prescriptions.
 
@@ -210,7 +212,7 @@ Every wave names verification.
 - Accepted decisions are superseded, not rewritten.
 - Requirement IDs are spec-scoped.
 - Cross-spec references use `SPEC-id#AC-NNN`.
-- Code can falsify a spec; it does not amend it.
+- During live work, code can falsify a working spec; reconcile the intent before close.
 
 ## Related
 

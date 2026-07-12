@@ -25,22 +25,27 @@ Use a fresh session, another agent, or a human reviewer.
 
 The independent judgment is the invariant; the formal packet scales with risk. A substantial or high-diffusion change gets the full packet below; a trivial change the owner verified needs the judgment, not the paperwork.
 
-When the change warrants more than one pass, escalate to a **rotating (Revolver) review**: a lead cycles a pool of distinct stances — requirement correctness, verification/evidence, maintainability/design by default; security, migration, performance, and others as the change warrants — **one reviewer at a time on cheap models**, reading the cited spec (and the run summary as the evidence index), applying the legitimate fixes between rounds, and re-reviewing the revised change until a rotation surfaces nothing new. A lens reviewer returns findings and evidence only and never renders the status or suggested decision.
+When the change warrants more than one pass, escalate to a **rotating (Revolver) review**.
+The lead derives distinct stances from the target's actual requirements, trust boundaries,
+failure modes, and changed surfaces — never from a default menu. Run one reviewer at a
+time, apply legitimate fixes between rounds, and make each next reviewer inspect the
+revised change. A reviewer returns findings and evidence only; the lead reconciles them,
+and the human owns the decision.
 
 ## Review packet
 
 The reviewer writes the packet beside their own native artifacts, per the
-[placement rule](03-where-files-live.md), and it names the spec — and the task, when one
-exists — it reconciles against. The full section list — including Review plan and
-Candidate findings for a lead-orchestrated or multi-lens review, and Open decisions when
-relevant — is documented in [artifact formats](reference/artifact-formats.md); the checks
-contract's own required/optional split is narrower (Summary, Changed files, Requirement
-coverage, Human attention, Suggested decision required; Change-plan coverage and Task
-status optional, the latter recommended but not required).
+[placement rule](03-where-files-live.md). The packet is checked against the spec passed explicitly
+through `--spec`; it names only `task:` when split work exists. An agent reviewer drafts findings and evidence with the
+coverage Result cells empty and `status: draft`; the human reviewer fills the results,
+status, waivers, and suggested decision. [Artifact formats](reference/artifact-formats.md)
+defines the core packet and the conditional sections earned by a change plan, multi-pass
+review, open decision, or split task.
 
 ## Coverage table
 
-One row per scoped requirement:
+One row per scoped requirement. This is a human-finalized row; an agent draft leaves the
+Result cell empty:
 
 ```markdown
 | ID | Result | Evidence | Human attention |
@@ -72,16 +77,18 @@ Invalid evidence:
 - a screenshot with no stated check
 - a claim that a command was run, without output or link
 
-The worker's paste is a claim, not evidence: the reviewer re-runs the checks and pastes
-their own output. Staleness is the reviewer's to own the same way — read the diff and
-confirm the evidence was produced against the code being judged, not an earlier state.
+The worker's paste is a claim, not evidence: the independent reviewer re-runs the checks and
+pastes their own output. Staleness is the reviewer's to own the same way — read the diff and
+confirm the evidence was produced against the code being judged, not an earlier state. An agent
+records those facts; the human assigns the Result.
 
 ## The deterministic check
 
-When the packet is written, run the floor:
+When the human has finalized the packet, run the floor:
 
 ```bash
-suspec check <review-path> --spec <spec-path> [--task <task-path>]
+suspec check <review-path> --spec <spec-path>
+suspec check <review-path> --spec <spec-path> --task <task-path>
 ```
 
 Companions are explicit: the checker reads exactly the files it is handed, and a review
@@ -116,14 +123,14 @@ Route anything a reviewer must inspect:
 
 If no trigger applies, say `None`.
 
-## Spot-check
+## Rerun evidence
 
-Spot-check at least one green row.
-
-Record what you checked:
+Rerun every applicable Verify item against the code being judged. When a command cannot
+be rerun, name the reason and leave the row `Unverified` unless a directly inspectable CI
+run or named manual observation supplies the evidence. Record each rerun:
 
 ```markdown
-Spot-checked: AC-001 - reran `npm test -- expired-session`; output matched the evidence row.
+Reran AC-001: `npm test -- expired-session`; output matched the evidence row.
 ```
 
 ## Suggested decision
@@ -138,8 +145,8 @@ Use the table:
 | Any Blocked | Do not merge |
 | Fail or Unverified waived by owner | Merge with waiver |
 
-The suggested decision is a suggestion. The human owns the decision — no packet, check,
-or agent merges anything.
+Only the human reviewer writes the suggested decision. No packet, check, or agent merges
+anything.
 
 Waivers name:
 
@@ -158,7 +165,8 @@ Use:
 - `blocked`
 - `needs-human`
 
-The status is about the review packet, not the PR platform state.
+The status is about the review packet, not the PR platform state. Agent-authored drafts stay
+`draft`; a human reviewer sets every other value.
 
 ## App-run evidence
 

@@ -68,14 +68,15 @@ Implement or preserve:
    counts as unverified.
 4. Before finishing, re-read your own diff as a skeptic: what would a
    reviewer flag?
-5. Leave a summary: changed files, commands run with output, and anything
-   learned worth saving as a finding.
+5. Leave a summary: changed files, commands run with output, and candidate
+   lessons for independent review.
 
 ## Findings
 
 - The CLI arg parser lowercases flag names before dispatch, so any future flag
   must be registered in lowercase (`--json`, never `--JSON`) or it silently
-  falls through to the default formatter. Worth saving to `findings/` at Close.
+  falls through to the default formatter. Candidate for native memory after
+  review, if the behavior is verified and remains useful.
 
 ## Run summary
 

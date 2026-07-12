@@ -1,7 +1,7 @@
 # Example: feature from ticket
 
-Goal: turn one ticket into a reviewed feature — the full spec -> optional split ->
-review -> check flow.
+Goal: turn one ticket into a reviewed feature — spec -> implementation -> review ->
+check, with no scaffold the work does not earn.
 
 ## Ticket
 
@@ -66,16 +66,15 @@ Lint it:
 suspec check ~/.claude/notes/reports-app/report-csv-spec.md
 ```
 
-## Task (optional split)
+## Task split
 
 One requirement, one worker — this is the common 1:1 case
 ([creating tasks](../06-creating-tasks.md)), so this example skips the task packet: the
 review below reconciles straight against the spec. If a wider version of this feature
 landed three export formats in parallel, a task per format would keep the workers off
-each other's files — see [bug fix](bug-fix.md) and [large PR review](large-pr-review.md)
-for that worked shape.
+each other's files — see [large PR review](large-pr-review.md) for a split-task shape.
 
-## Review
+## Human-finalized review
 
 `~/.claude/notes/reports-app/report-csv-review.md`
 
@@ -93,7 +92,7 @@ status: pass
 | --- | --- | --- | --- |
 | AC-001 | Pass | `npm run test:e2e -- report-csv-export` -> `1 passed` | no |
 
-Spot-checked: AC-001 - reran the e2e test; output matched.
+Reran: AC-001 - the e2e test output matched.
 
 ## Human attention
 
@@ -119,12 +118,11 @@ it and exit clean instead.
 
 ## Close
 
-No durable lesson beyond the spec itself — nothing to save as a memory here. The spec
-and review have served their purpose; the exported CSV code and its test are what
-remain.
+No durable lesson emerged, so nothing is saved as memory. The spec and review served the
+live work; the exported CSV code and its test remain.
 
 ## Lesson
 
-The review coverage row is the important artifact. It binds the ticket's acceptance
-criterion to evidence — everything upstream of it (the ticket, the spec) exists to make
-that row possible to write honestly.
+Intent was explicit, review bound it to evidence, and the findings decision was "nothing
+durable learned." The spec and checker were scaffold that made this feature cheaper to
+judge; the task split was not.

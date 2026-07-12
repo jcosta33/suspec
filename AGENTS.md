@@ -9,7 +9,7 @@ checkable names its checker (the reference implementation is `suspec check`, fro
 `suspec-cli`, a sibling repo); everything else is convention or review checklist, and
 says so.
 
-- `docs/` — the product: a numbered happy path (`01`–`10`), `reference/` (the deep layer:
+- `docs/` — the product: a numbered guide, `reference/` (the deep layer:
   structured requirements, checks, artifact formats, CLI reference, memory, glossary),
   `examples/` (flagship walkthroughs; `large-pr-review.md` is the demo),
   `ADOPTING.md`, `adrs/` (the decision ledger), `research/sources.md` (the evidence
@@ -18,22 +18,22 @@ says so.
   `docs/reference/checks.md`; suspec-cli's oracle). `.agents/` — a small dev-skills subset
   (see `.agents/SKILLS-MANIFEST.md`).
 - The methodology itself — the skill family (authoring, splitting, implementing,
-  reviewing, and finding disciplines) — lives in `../suspec-skills` and installs
+  reviewing, and findings disciplines) — lives in the `suspec-skills` repository and installs
   globally. Adopter repos take nothing; the CLI seeds nothing.
 
 ## Working on this repo
 
-Specs, reviews, and findings for changes to this repo live beside the developer's own
-native artifacts, per the methodology itself — artifacts are named by explicit path, so
-read the spec or task packet you are given by the path you are given. Accepted framework
-decisions land here, in `docs/adrs/`.
+Working artifacts for changes to this repo live beside the developer's own native
+artifacts — read the spec or task packet at the explicit path you are given. Durable
+lessons go to native harness memory or the project's normal channels. Accepted framework
+decisions land in `docs/adrs/`.
 
 ## Startup
 
 1. Read the current task/request first; load only the skill or reference it names.
 2. Treat the ADRs (`docs/adrs/`) as the recorded intent for every format and vocabulary rule.
 3. Map every completion claim to evidence — paste real output; a claim without it is unverified.
-4. Adversarial self-review before declaring done (ADR-0056): re-read your own diff as a skeptic;
+4. Self-review before declaring done: re-read your own diff against the request and evidence;
    never self-issue a review verdict.
 
 ## Universal rules
@@ -43,11 +43,9 @@ decisions land here, in `docs/adrs/`.
 - **Honesty framework (ADR-0063).** Rules carry a level: convention · checklist · toolable
   (names suspec-cli's command) · enforced (only with a shipped tool). Never
   write enforcement-sounding claims without a level.
-- **Vocabulary tiers (ADR-0057).** User tier (README, `docs/01–10`, `docs/examples/`):
-  step · requirement/AC · evidence · review result (Pass/Fail/Unverified/Blocked) ·
-  checks · structured requirements · writing rules · save a finding. Reference tier
-  may also use the precise internal terms (pass, obligation, proof, verdict, SOL codes);
-  `docs/reference/glossary.md` maps both directions.
+- **Current vocabulary.** Intent, review, and findings are the keys. Specs, task splits,
+  inventories, change plans, and the checker are scaffold pulled in when work earns them.
+  The checker reports facts and severity levels; only a human owns a review result.
 - **No counts ceremony.** Do not hardcode closed-set cardinalities in public/current prose.
   List values when they help the reader; keep maintainer reconciliation in the source
   contract instead of duplicate count registries.
@@ -65,10 +63,10 @@ decisions land here, in `docs/adrs/`.
 ## Pointers
 
 - Decisions: `docs/adrs/README.md` — the complete immutable ledger
-- The skill catalog (global install): `../suspec-skills` (github.com/jcosta33/suspec-skills —
-  `npx skills add jcosta33/suspec-skills -g`)
-- Claude Code agent catalog: `../suspec-agents` (github.com/jcosta33/suspec-agents — ADR-0092;
-  Claude-Code-first worker definitions + the delegation hook; honest scope: toolable/partial)
+- The skill catalog (global install): github.com/jcosta33/suspec-skills —
+  `npx skills add jcosta33/suspec-skills -g -a codex`
+- Claude Code agent catalog: github.com/jcosta33/suspec-agents —
+  Claude-Code-first worker definitions + the delegation hook; honest scope: toolable/partial
 - Dev skills (the small subset for working on this repo): `.agents/skills/` — see
   `.agents/SKILLS-MANIFEST.md`
 - Evidence: `docs/research/sources.md` (verified / caveated / rejected — never cite rejected)
@@ -91,8 +89,9 @@ follow their own branching; isolation for parallel work is ordinary git practice
 
 <!-- suspec:start -->
 
-This repository is worked with the Suspec methodology: specs, reviews, and findings live
-beside the developer's own native artifacts, outside the repo, named by explicit path.
-The deterministic checker is `suspec check <path>`.
+This repository is worked with the Suspec methodology: working artifacts live beside the
+developer's own native artifacts, outside the repo, and flow by explicit path. Durable
+lessons use native harness memory or the project's normal channels. The deterministic
+checker is `suspec check <path>`.
 
 <!-- suspec:end -->

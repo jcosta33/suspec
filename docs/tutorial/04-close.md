@@ -1,56 +1,44 @@
 # Close
 
-Start only after review is `pass`, or an owner accepts a waiver.
+Close starts after the human accepts the review result. It does not produce another
+Suspec artifact.
 
-Close does not produce a Suspec artifact. The spec, task, and review have already served
-their purpose — they got you an evidenced, independently-checked decision. What close
-adds is durable memory, and it costs one file write, in your own harness.
+## 1. Decide whether anything is durable
 
-## 1. Save the finding, as a memory
-
-Not every review teaches something worth remembering next time. This one does: the fix
-reveals that expired checkout sessions are a distinct, expected case, not a server
-error. Write it the way your harness records memories — a memory file, `CLAUDE.md`,
-whatever your runner provides — one claim per memory, the evidence attached, under a
-searchable title. Suspec adds no parallel findings store — if the lesson belongs to the
-team rather than to you, raise it through the project's own channels (an issue, an ADR,
-a test).
-
-Illustrative entry, in whatever your harness's memory format is:
+The review surfaced one reusable lesson: expired checkout sessions are an expected client
+case, not a server outage. If the harness provides native memory, record the lesson through
+that supported surface:
 
 ```markdown
 ## Expired checkout sessions return 409, not a 5xx
 
-Verified: `npm run test:integration -- expired-session` -> 3 passed, 3 total
-(checkout-expiry-review.md, AC-001)
+Verified by `test/integration/expired-session.test.ts` and
+`npm run test:integration -- expired-session`.
 
 Applies to: checkout session expiry.
-Does not apply to: other checkout validation failures, non-checkout sessions.
+Does not apply to: other checkout validation failures or non-checkout sessions.
 ```
 
-## 2. Leave the rest where it landed
+Do not invent a memory file when the harness has no memory surface. Route a team-facing
+lesson through the project's own issue, ADR, test, or maintained documentation instead.
 
-The spec, task, and review files stay wherever you placed them in step 1 — nothing
-promotes, nothing moves, nothing gets deleted on a timer. If you want them gone once the
-lesson is captured, delete them yourself; if you want them around as a record of how
-this feature was decided, keep them. Either way, the code, the tests, and the memory you
-just wrote are what other people and future sessions actually see.
+## 2. Let working artifacts remain transient
 
-## Artifact chain
+The spec and review stay wherever the harness placed them until they are no longer useful.
+Suspec moves nothing and owns no cleanup lifecycle. Code, tests, project decisions, and a
+supported native memory are the durable layers.
 
-| Step | Artifact |
+## What this walkthrough used
+
+| Moment | Record |
 | --- | --- |
-| Spec | `checkout-expiry-spec.md` |
-| Task | `checkout-expiry-task.md` |
-| Implement | task `## Run summary` |
+| Intent | `checkout-expiry-spec.md` |
+| Implementation evidence | spec `## Execution` |
 | Review | `checkout-expiry-review.md` |
-| Close | a native memory entry — no new file in this scheme |
+| Findings decision | native memory when supported; otherwise a project channel or nothing |
 
-## What you skipped
+No task split, inventory, or change plan was needed. The work earned a spec and a checked
+review; the remaining scaffold stayed out.
 
-No task split was strictly necessary — this is a one-worker feature, cut for the
-tutorial only to show the shape. No inventory or change plan was needed because this is
-one small feature, not structural work.
-
-Use [brownfield work and change plans](../05-brownfield-and-change-plans.md) for
-structural work.
+Use [brownfield work and change plans](../05-brownfield-and-change-plans.md) for structural
+work.

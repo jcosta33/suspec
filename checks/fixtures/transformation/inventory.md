@@ -37,7 +37,7 @@ the payment provider integration.
 | One submitted cart produces exactly one order row and one ledger row | `api/tests/order-record.spec.ts`, `api/tests/inventory.spec.ts` (green on main) |
 | The reconciliation job joins orders to ledger inside one schema | `jobs/reconcile.sql:14` — `JOIN inventory_ledger USING (order_id)` |
 
-## Known risks
+## Observed constraints
 
 - The ledger lives in the orders schema, so every orders migration locks the ledger too.
 - The reconciliation SQL silently depends on both tables sharing a schema.

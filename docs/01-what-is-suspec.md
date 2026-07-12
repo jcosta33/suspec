@@ -3,9 +3,9 @@
 Suspec is an opinionated methodology for working with coding agents, shipped as a
 globally installed skill family.
 
-The skills structure the agent's working artifacts — the spec that states intent, the
-optional task split, the review packet that reconciles the result, the findings worth
-keeping — so that plans stop being freeform prose and review claims stop being vibes.
+The skills structure agent work around intent, review, and findings. When work earns
+scaffold, they add a spec, task split, inventory, change plan, or deterministic check so
+plans stop being freeform prose and review claims stop being vibes.
 A small CLI reinforces the discipline with deterministic checks. Your agent writes the
 code; Suspec shapes the work around it.
 
@@ -13,10 +13,10 @@ It gives you:
 
 - an inline, zero-file path for changes too small to need a spec
 - specs with requirements and acceptance criteria, sized to the work
-- optional task packets when one spec splits into parallel slices
+- task packets for separately dispatchable spec slices or change-plan waves
 - review packets that reconcile evidence against the spec, requirement by requirement
 - a discipline for saving durable lessons where your harness actually reads them
-- a deterministic checker — `suspec check` — over any of these artifacts
+- a deterministic checker — `suspec check` — over specs, change plans, and reviews
 
 It does not replace your agent, your harness's plan mode, your issue tracker, PRs, CI,
 or your docs site.
@@ -26,11 +26,11 @@ or your docs site.
 The least structure that changes execution or reviewability — this rule is existential,
 not decorative (level: convention):
 
-- A **trivial fix** gets a one-line inline spec and no file at all.
-- A **feature** gets a lean spec: a handful of requirements with IDs and `Verify with:`
+- A **trivial fix** gets one-line inline intent and no file at all.
+- A **feature** gets a lean spec: a small set of requirements with IDs and `Verify with:`
   lines, non-goals, acceptance criteria.
-- **Large work** extends the spec — inventory, change plan, task packets — rather than
-  padding it.
+- **Large work** extends rather than pads: inventory and a change plan when needed, with
+  task packets only for separately dispatchable slices.
 
 Seen through the loop: intent, review, and findings are the **keys** — present on
 virtually every change, at whatever weight it earns. The rest — the spec intent

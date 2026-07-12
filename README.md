@@ -3,11 +3,11 @@
 **An opinionated methodology for working with coding agents — shipped as skills, backed
 by a deterministic checker.**
 
-Suspec structures the working artifacts of agent-assisted coding: the spec that states
-intent, the optional task split, the review that reconciles the result, the findings worth
-keeping. The methodology installs as a global skill family; a small CLI provides the
-honesty floor — deterministic checks a lazy or dishonest reviewer cannot fake. Plain
-markdown, any agent, and your repos take nothing.
+Suspec structures agent-assisted coding around intent, review, and findings.
+When work earns more structure, skills add scaffold such as a spec, a task split, an
+inventory, or a change plan. The methodology installs as a global skill family; a small
+CLI provides the honesty floor — deterministic checks a lazy or dishonest reviewer
+cannot fake. Plain markdown works with any agent, and your repositories take nothing.
 
 ## The problem
 
@@ -24,14 +24,12 @@ check catch what discipline alone misses.
 
 ## What Suspec is
 
-Two pieces, one optional:
-
-1. **The skill family** — the methodology itself, installed once, globally
-   (`npx skills add jcosta33/suspec-skills -g`). Skills for authoring specs, splitting
+1. **The skill family is the product** — installed once, globally for your runner
+   (`npx skills add jcosta33/suspec-skills -g -a codex` for Codex). Skills for authoring specs, splitting
    work, implementing against a spec, building review packets, and saving findings. A
    capable harness plus the skills is a complete install (level: convention).
-2. **The checker** — [suspec-cli](https://github.com/jcosta33/suspec-cli), optional.
-   One command, `suspec check`, runs deterministic checks over the artifacts you hand it:
+2. **The checker reinforces the method** — [suspec-cli](https://github.com/jcosta33/suspec-cli).
+   `suspec check` runs deterministic checks over the artifacts you hand it:
    every scoped requirement has a coverage row, every evidence command matches the spec's
    `Verify with:` line, every `Pass` carries evidence, every reference resolves — plus
    per-artifact lint (level: enforced — suspec-cli). Zero model cost, no judgment calls,
@@ -41,11 +39,12 @@ Every step keeps a by-hand path; no step requires a tool (level: convention).
 
 ## Sixty seconds
 
-Install the methodology, and optionally the checker:
+Install the methodology for your runner (Codex shown). Add the checker when deterministic
+reconciliation would help:
 
 ```bash
-npx skills add jcosta33/suspec-skills -g    # the skill family
-# optional: install suspec-cli — github.com/jcosta33/suspec-cli
+npx skills add jcosta33/suspec-skills -g -a codex    # the skill family
+# checker: github.com/jcosta33/suspec-cli
 ```
 
 Most changes stop right there: state the fix and its verify command inline, implement,
@@ -87,7 +86,7 @@ Details: [where files live](docs/03-where-files-live.md).
 ## Proportional rigor
 
 The least structure that changes execution or reviewability. A trivial fix gets a
-one-line inline spec and no file. A feature gets a lean spec — a handful of requirements,
+one-line inline intent and no file. A feature gets a lean spec — a small set of requirements,
 non-goals, acceptance criteria. Large work extends the spec rather than padding it.
 Intent, review, and findings are the keys — present on virtually every change, at
 whatever weight it earns; the rest is scaffold, erected when the work earns it. No
@@ -97,24 +96,23 @@ Suspec coexists with your harness's native plan mode — it never modifies, repl
 races it. Native planning stays for the work that suits it; Suspec artifacts appear
 alongside, when the work earns them (level: convention).
 
-## Two skill tiers
+## Global skills, local guidance
 
-Universal Suspec skills (the methodology: authoring, reviewing, stances) install globally
-and update in one place. Repo-specific guides (your commands, your conventions) stay
-committed in the repo they describe. The two tiers never overlap, so a guide cannot skew
-against the methodology it rides on (level: convention).
+Suspec skills install globally and update in one place. Repo-specific guides — commands,
+architecture, and conventions — stay committed in the repo they describe. A local guide
+describes its repository; it does not fork the methodology (level: convention).
 
 ## Which repo do I want?
 
 | You want to…                                                                  | Go to                                                                                                    |
 | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **install the methodology** — the global skill family                         | [suspec-skills](https://github.com/jcosta33/suspec-skills) — `npx skills add jcosta33/suspec-skills -g`  |
+| **install the methodology** — the global skill family                         | [suspec-skills](https://github.com/jcosta33/suspec-skills) — `npx skills add jcosta33/suspec-skills -g -a codex` (Codex) |
 | **add the deterministic checks** — the reference checker                      | [suspec-cli](https://github.com/jcosta33/suspec-cli) — `suspec check`                                    |
 | **understand the method** — formats, the checks contract, the decision ledger | **this repo** — `docs/` (the numbered happy path), `docs/reference/`, `docs/adrs/`                       |
 | **delegate to subagents** — review / audit / spec-author worker definitions   | [suspec-agents](https://github.com/jcosta33/suspec-agents) — Claude Code agent definitions               |
 
-Most people install the skills, optionally the CLI, and never read this repo cover to
-cover.
+Most people install the skills, add the CLI when its checks pay for themselves, and never
+read this repo cover to cover.
 
 ## Is / is not
 
@@ -146,7 +144,7 @@ Against its neighbors: spec-first scaffolds generate plans. Trackers hold ticket
 reviewers hunt bugs. An `AGENTS.md` alone carries standing facts, not per-change
 contracts. Suspec's distinct piece is the **deterministic check keyed to requirement
 IDs**: no model in the loop, facts and exit codes rather than review results — you own
-Pass/Fail. Around it sits one honesty rule — anything a tool doesn't enforce says so.
+Pass/Fail. Around it sits the honesty rule — anything a tool doesn't enforce says so.
 
 ## Going deeper
 

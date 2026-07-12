@@ -34,7 +34,7 @@ The inventory test was never run in this change set — AC-003 is unverified.
    `npm test -- inventory.spec.ts` and paste the output before merging.
 2. DB migration in the diff (`0007_add_inventory_ledger.sql`) — a trigger-list item; it puts
    the ledger inside `db/orders`, the write area the spec's open question flags.
-3. Spot-checked the AC-002 row by re-running `npm test -- order-record.spec.ts` locally:
+3. Re-ran the AC-002 verification with `npm test -- order-record.spec.ts` locally:
    same output. No out-of-scope changes, public-interface changes, or security-sensitive
    edits; one finding candidate recorded; no blocked questions.
 

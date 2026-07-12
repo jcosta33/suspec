@@ -1,149 +1,49 @@
 # Review stances
 
-A stance is a reading posture.
+A stance is a bounded question a reviewer asks of the current target. It is a procedure,
+not a tone or default role menu.
 
-It changes what the reviewer looks for. It does not change the artifact format.
+## Derive from the target
 
-## Stance shape
+Inspect the spec, diff, trust boundaries, data flow, failure modes, and verification gaps.
+Name distinct stances that can expose different classes of error in this change. A stance
+earns a slot only when it owns a concrete surface and can state what evidence would refute
+the work.
 
-Each stance states:
+Examples are intentionally not prescribed. A payment migration, parser change, public API,
+and documentation rewrite require different questions. Reusing a familiar label without a
+target-specific threat or invariant adds ceremony, not coverage.
 
-- use for
-- focus
-- refuses
+## Reviewer contract
 
-## Stances
+Each reviewer receives:
 
-### Architect
+- the current target and source spec by explicit path
+- one stance and its bounded question
+- relevant verification output as an index, not proof
+- read/write permissions
+- a return contract: actionable findings with evidence, or no finding
 
-Use for specs.
+The reviewer does not issue the final review result.
 
-Focus:
+## Revolver Review
 
-- intent over implementation
-- verifiable requirements
-- existing boundaries before new ones
+For substantial work:
 
-Refuses:
+1. Derive a diverse stance pool from the target.
+2. Run one reviewer at a time.
+3. Reconcile the finding and apply a legitimate fix before the next round.
+4. Make every next reviewer inspect the revised state.
+5. Complete a full rotation, then repeat only while a rotation finds new relevant issues
+   and the cycle bound has not been reached.
 
-- hidden algorithms in requirements
-- uncheckable requirements
+Model variety can be used as a practical hedge, but it is not evidence that failures are
+independent. Judge the review by surfaced defects and rerun checks, not model labels.
 
-### Skeptic
+## Focused methods
 
-Use for review.
+Use `bulletproof` for hostile scrutiny of an important claim, decision, spec, plan, or
+finding. Use `security-review` when trust boundaries or dangerous sinks are reachable.
+These methods define procedures; they do not replace independent review or human authority.
 
-Focus:
-
-- refute completion claims
-- rerun or inspect evidence
-- treat worker summaries as claims, not proof
-
-Refuses:
-
-- `tests passed` with no output
-- implementer judging own work
-- softened findings to avoid blocking
-
-### Market Research
-
-Use for market, customer, competitor, or UX-pattern research.
-
-Focus:
-
-- traceable evidence synthesis
-- observation, claim, inference, and recommendation separated
-- confidence graded by source quality, recency, and fit
-
-Refuses:
-
-- pattern claims from one example
-- synthetic respondents presented as customer evidence
-- market-size claims without formulas, units, dates, and sensitivity
-
-### Challenger
-
-Use before committing to a proposal.
-
-Focus:
-
-- pressure-test assumptions
-- steelman alternatives
-- cite external counterexamples or checks
-
-Refuses:
-
-- strawman alternatives
-- re-deciding the proposal inside the challenge
-
-### Auditor
-
-Use for audits.
-
-Focus:
-
-- present-state observations
-- file and line evidence
-- severity by blast radius
-
-Refuses:
-
-- prescriptions inside findings
-- structural claims without search or inspection
-
-### Researcher
-
-Use for depth research.
-
-Focus:
-
-- primary sources
-- evidence before claim
-- no decision
-
-Refuses:
-
-- recommendations disguised as research
-- secondary sources when primary sources exist
-
-### Documentarian
-
-Use for human-facing docs.
-
-Focus:
-
-- one reader question
-- one Diataxis frame
-- examples run as written
-- claims tied to source
-
-Refuses:
-
-- unrun examples
-- mixed tutorial/reference/how-to/explanation
-
-## Judge independence
-
-When judgment is model-based:
-
-- implementer and reviewer are different
-- avoid same-lineage judge when possible
-- use two independent judges for high-risk work
-
-Deterministic checks do not count as the implementer judging itself.
-
-## Distinct lenses
-
-When using multiple reviewers, give each a different focus:
-
-- correctness
-- maintainability/design
-- security/reproduction
-
-Do not repeat the same read twice unless the risk calls for redundancy.
-
-## Related
-
-- [Rigor ladder](rigor-escalation.md)
-- [Reviewing output](../08-reviewing-output.md)
-- [Agent guides](agent-guides.md)
+Related: [reviewing output](../08-reviewing-output.md) · [agent guides](agent-guides.md)

@@ -1,25 +1,27 @@
 # Integrations
 
-Suspec uses markdown. Any tool that can read files can use it — and every integration on
-this page is optional: the methodology is the skills, every step keeps a by-hand path,
-and no step requires a tool (level: convention).
+Suspec uses markdown. Any tool that can read files can use it. The methodology is the
+skills; every step keeps a by-hand path, and each integration below reinforces work that
+can still be done without it (level: convention).
 
 ## The CLI
 
 [suspec-cli](https://github.com/jcosta33/suspec-cli) is the deterministic checker — the
-honesty floor. It is path-agnostic: it reads exactly the files it is handed by full
-path, never resolves a location, a config, a repo root, or a workspace tree. The
-exceptions are three reference checks: source refs and citation anchors resolve against
-the artifact's own directory (`sources.md` is the spec's sibling file), and a change
-plan's `SPEC-id#AC-NNN` refs resolve one level beside the plan — one level above the
-plan's own directory, scanning that parent's sibling directories for a `spec.md` file — a flat layout, with the plan and its spec as sibling
-files in one folder, fails the check (level: enforced — suspec-cli).
+honesty floor. It is path-agnostic: it reads exactly the files it is handed by an absolute
+or current-working-directory-relative path, never resolves a location, config, repo root,
+or surrounding filesystem tree. These reference checks are artifact-relative: source
+paths and citation files resolve from the spec's
+directory using the paths its frontmatter names. For a change plan, C010 scans `spec.md`
+in each immediate child directory of the plan directory's parent, including the plan's
+own directory. A plan and `spec.md` in one directory therefore work; deeper trees are not
+searched (level: enforced — suspec-cli).
 
 The surface:
 
 ```bash
 suspec check <path>                                           # spec or change plan
-suspec check <review-path> --spec <spec-path> [--task <task-path>]   # review packet
+suspec check <review-path> --spec <spec-path>                       # review packet
+suspec check <review-path> --spec <spec-path> --task <task-path>    # split-task review
 suspec check --contract                                       # the checks contract as JSON
 ```
 
@@ -44,8 +46,8 @@ can run shell commands does not need it.
 ## Agent catalogs
 
 [suspec-agents](https://github.com/jcosta33/suspec-agents) carries Claude Code worker
-definitions — reviewer, auditor, spec author, and friends — for developers who delegate
-to subagents. The [artifact index](artifact-registry.md) lists the current set.
+definitions — reviewer, auditor, spec author, and related roles — for developers who
+delegate to subagents. Its README lists the current definitions.
 
 ## Agents
 
@@ -59,7 +61,7 @@ Common setup:
 
 | Tool | Integration |
 | --- | --- |
-| Claude Code | reads `AGENTS.md`; optional `CLAUDE.md` symlink |
+| Claude Code | reads `AGENTS.md`; can share it through a `CLAUDE.md` symlink |
 | Codex | reads `AGENTS.md` and the spec/task paths in the prompt |
 | Cursor | read the spec or task packet in chat, or attach the file |
 | GitHub Copilot | paste or link the spec or task packet |
@@ -75,7 +77,7 @@ Use Suspec for the working contract:
 
 1. Capture the ticket as an intake file when you want the original preserved — manual
    copy-paste is the mechanism — or point the spec's `sources` straight at the ticket URL.
-2. Write or amend a spec.
+2. Write a working spec when the change earns structured intent.
 3. Link the PR and the review outcome back to the tracker.
 
 ## PRs and CI
