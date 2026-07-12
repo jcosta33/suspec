@@ -20,7 +20,7 @@
 # the same string inside a code comment or a test fixture, so code files are OUT OF SCOPE here —
 # they are reviewed by a human, not linted by this gate.
 #
-# The linted set, per repo (sibling repos under /Users/josecosta/dev by default):
+# The linted set, per repo (sibling repos under this repository's parent by default):
 #   suspec-skills/skills/<name>/SKILL.md          + that skill's references/*.md
 #   suspec-agents/agents/*.md                     (top-level agent definitions)
 #   suspec-agents/.codex/agents/*.toml            (hand-maintained Codex agent projections)
@@ -46,7 +46,7 @@ DEV_DIR="${1:-$(CDPATH= cd -- "$SCRIPT_DIR/../.." && pwd)}"
 if [ ! -d "$DEV_DIR" ]; then
     echo "lint-product-citations: not a directory: $DEV_DIR" >&2
     echo "  Pass the directory that holds the sibling repos (suspec-skills, suspec-agents, …)," >&2
-    echo "  or run with no argument to use the default (/Users/josecosta/dev)." >&2
+    echo "  or run with no argument to use this repository's parent directory." >&2
     exit 2
 fi
 
