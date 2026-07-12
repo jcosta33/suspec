@@ -6,8 +6,8 @@ model, never renders a verdict, and never decides what merges. The methodology i
 in the skill family; every step keeps a by-hand path, and no step requires this tool
 (level: convention — [ADR-0134](../adrs/0134-self-contained-spine.md)).
 
-What it earns its keep on is the honesty floor — the facts a lazy or dishonest reviewer
-cannot fake, at zero model cost:
+What it earns its keep on is the honesty floor — structural facts the checker can verify
+at zero model cost:
 
 - **coverage-complete** — every in-scope requirement has a coverage row in the review
 - **command-matches** — a structured evidence block names the same command as the spec
