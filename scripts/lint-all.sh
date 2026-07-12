@@ -7,6 +7,7 @@
 #
 #   lint-product-citations.sh   no ADR/AUDIT/source-URL citations in product bodies
 #   lint-count-ranges.sh        no hardcoded count-bearing ADR ranges in bootstrap prose
+#   lint-skill-mirrors.sh       local maintainer skill subset matches suspec-skills byte for byte
 #
 # The suspec-cli spec-side check (0116, active spec → `## Execution`) ships in `suspec check`, not here.
 # Per ADR-0077, wiring these into a given repo's CI is that repo's call; this script is what CI would run.
@@ -19,7 +20,7 @@ HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DEV_DIR="${1:-$(CDPATH= cd -- "$HERE/../.." && pwd)}"
 
 rc=0
-for gate in lint-product-citations lint-count-ranges; do
+for gate in lint-product-citations lint-count-ranges lint-skill-mirrors; do
     echo "--- $gate ---"
     if ! sh "$HERE/$gate.sh" "$DEV_DIR"; then
         rc=1

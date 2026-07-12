@@ -8,7 +8,10 @@ description: Back every command-verifiable completion claim with verbatim pasted
 
 ## Purpose
 
-Eliminate hallucinated completion. Coding agents are pattern-completers; the pattern of "successful task" includes confident-sounding completion language ("✅ all tests pass") that the agent will produce regardless of whether the underlying claim is true. Empirical proof is the structural defence: the agent cannot complete the pattern without first pasting evidence the pattern is true.
+Eliminate hallucinated completion. Coding agents are pattern-completers; the pattern of a successful
+task includes confident completion language that can appear whether or not the underlying claim is
+true. Empirical proof is the structural defence: the agent cannot complete that pattern without
+first pasting evidence the claim is true.
 
 ## Resolving the project's commands
 
@@ -18,13 +21,14 @@ Before pasting any "verification output", resolve the actual commands this proje
 
 ### 1. Don't assume success
 
-Writing the code is 10% of the job; verifying it works in *the current environment* is the other 90%. An unrun command's output is a guess, so run it before claiming what it says.
+Writing code does not establish how it behaves in *the current environment*. An unrun command's
+output is a guess, so run it before claiming what it says.
 
 ### 2. Verbatim pasting
 
-When recording command-backed completion claims, paste the *verbatim* output. No paraphrasing or
-summarising — a summary is unfalsifiable, so it does not satisfy the gate. Use a fenced code block.
-Include the runner's summary plus its timing or exit conditions.
+When recording command-backed completion claims, paste the *verbatim* output. An agent-written
+paraphrase is unfalsifiable, so it does not satisfy the gate. Use a fenced code block. Include the
+runner's own summary plus its timing or exit conditions.
 
 ### 3. One verification per claim
 
@@ -41,9 +45,12 @@ performed the manual check and what they observed; or cite the exact file and li
 invent command output for a non-command check. If the required evidence is unavailable, state the gap
 and do not make the completion claim.
 
-### 4. Re-run after every change
+### 4. Re-run after every relevant change
 
-Verifications go stale fast: if you make a change after a verification, that verification no longer describes the current code, so re-run and re-paste. This matters especially during refactors and migrations, where you validate repeatedly as you go.
+Verifications go stale when a later change can affect the claim they support. Re-run and re-paste
+those checks after the relevant edit. Unrelated evidence stays valid: a prose-only edit does not
+invalidate an already-recorded binary benchmark, while an implementation edit does invalidate its
+test and build results.
 
 ### 5. Run yourself; do not trust upstream
 
@@ -58,29 +65,33 @@ Use raw fenced code blocks for output. Don't transform the output (no quoting, n
 
 ## What proof looks like
 
-### ✅ Good — verbatim pasted output
+### Good — verbatim pasted output
 
 ````markdown
-- `npm test` (last 2 lines):
+- `npm test`:
 
   ```
-  ✓ 247 files passed
+  Test suites: all passed
   Done in 12.4s
   ```
 
-- `npx jest` (last 2 lines):
+  Exit: `0`
+
+- `npx jest`:
 
   ```
-  Tests:       189 passed, 189 total
+  Tests:       all passed
   Time:        4.832 s
   ```
+
+  Exit: `0`
 ````
 
-### ❌ Bad — paraphrased
+### Bad — paraphrased
 
 ```markdown
-- Validation (last 2 lines): Everything passes ✅
-- Tests (last 2 lines): All 189 tests green
+- Validation: Everything passes
+- Tests: All tests are green
 ```
 
 The paraphrase is *plausible*. It might even be *true*. But treat it as unverified — paraphrase doesn't satisfy the gate.
@@ -95,20 +106,21 @@ The paraphrase is *plausible*. It might even be *true*. But treat it as unverifi
 ## Anti-patterns
 
 - "Tests pass; trust me"
-- Pasting the *first* two lines instead of the last two (the gate asks for the *summary*)
+- Pasting a startup banner while omitting the runner summary and recorded exit status
 - Re-using a stale verification output (run before a change; pasting after)
 - Trusting the worker's command output instead of rerunning a runnable check
 - Skipping the verification because "the diff is obviously correct"
 
 ## Common evasions and the response
 
-The three most frequent evasions are inline below. The full catalogue lives at [`references/evasions.md`](./references/evasions.md) — pull it up if a different evasion surfaces in conversation.
+Common evasions are inline below. The larger catalogue lives at
+[`references/evasions.md`](./references/evasions.md) — pull it up when another evasion surfaces.
 
-| 🚩 Evasion                                         | Response                                                |
-| -------------------------------------------------- | ------------------------------------------------------- |
-| "I already ran it earlier in the session."         | Re-run after every change. The earlier run is stale.    |
-| "It's obvious from the diff that the test passes." | Diff doesn't run tests. Run the tests; paste the output.|
-| "The CI will catch it."                            | Future CI is not evidence; cite a completed run or run it locally. |
+| Evasion                                            | Response                                                             |
+| -------------------------------------------------- | -------------------------------------------------------------------- |
+| "I already ran it earlier in the session."         | Re-run if a later change can affect that result.                      |
+| "It's obvious from the diff that the test passes." | Diff doesn't run tests. Run the tests; paste the output.              |
+| "The CI will catch it."                            | Future CI is not evidence; cite a completed run or run it locally.   |
 
 ## Type-specific applications
 
@@ -124,11 +136,12 @@ The empirical-proof discipline is universal, but each kind of work emphasises di
 ## Gotchas
 
 - Pasting a pre-edit run as if it were current — re-run after the last edit, or the paste describes code that no longer exists.
-- Summarising "all green" instead of the verbatim tail — the summary is the one part nobody can check.
+- Summarising "all green" instead of pasting the runner's own summary and recorded exit status.
 - When reviewing, accepting the author's pasted output instead of re-running a runnable check — their
   paste is the claim under review. Inspect non-command evidence directly.
 - Pasting output from a different command or scope than the claim (e.g. one test file's output behind a "full suite passes" claim) — the proof must cover exactly what the claim asserts.
 
 ## Bundled resources
 
-- [`references/evasions.md`](./references/evasions.md) — the full catalogue of common evasions and their responses (the body keeps the top three inline; the rest live here).
+- [`references/evasions.md`](./references/evasions.md) — the larger catalogue of common evasions
+  and their responses.

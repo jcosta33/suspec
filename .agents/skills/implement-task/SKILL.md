@@ -2,13 +2,13 @@
 name: implement-task
 type: agent-guide
 description: >-
-    Implement Suspec requirements: read the sources first, stay inside scope, run
-    every Verify item and paste real output, self-review your diff before
-    handoff. ALWAYS apply when given a task packet (`type: task`) or asked to
-    implement against a spec's requirements. Do not edit outside the controlling
-    scope, claim a result without pasted output, or write a review result on
-    your own work. Skip for writing specs, reviewing another agent's output, and
-    splitting work into tasks.
+  Implement Suspec requirements: read the sources first, stay inside scope, run
+  every Verify item and paste real output, self-review your diff before
+  handoff. ALWAYS apply when given a task packet (`type: task`) or asked to
+  implement against a spec's requirements. Do not edit outside the controlling
+  scope, claim a result without pasted output, or write a review result on
+  your own work. Skip for writing specs, reviewing another agent's output, and
+  splitting work into tasks.
 ---
 
 # Implement a task
@@ -27,15 +27,15 @@ review packet inspects — nothing enforces them at edit time.
    plan when one governs. For 1:1 work, read the direct spec and every source it names. Read all of
    them at the explicit paths from the dispatch before touching code. _Why: the controlling artifact
    says what to do; its sources say why and how success will be judged._
-2. **One worktree (or branch) per run.** Keep this run's changes isolated so
-   parallel tasks stay write-disjoint and the reviewer sees one clean diff.
+2. **Isolate concurrent runs.** When tasks run in parallel, give each one a separate worktree or
+   branch so their writes cannot collide. Otherwise follow the repository's normal branch flow.
 3. **Stay in scope.** Implement the ACs the controlling artifact lists — no more. If a
    requirement cannot be met as written, or your change seems to need a
    non-goal or Do not change area, stop and say what you need and why —
    never improvise past the boundary or work around it — stop and ask. _Why: an
    improvised interpretation is a decision nobody made, landing where it is most
-   expensive to find — in the code; a bare prohibition is measured weak, and the
-   stop-and-ask hatch is the measured-effective half of a scope wall._
+   expensive to find — in the code; a boundary with an explicit stop-and-ask path remains
+   actionable when the work reaches it._
 4. **No out-of-scope edits.** "While I'm here" fixes belong in your summary as
    finding candidates, not in the diff. If an out-of-scope edit is truly
    unavoidable (a broken import on your path), keep it minimal and list every
@@ -50,8 +50,8 @@ review packet inspects — nothing enforces them at edit time.
    in `AGENTS.md`, ask which command to run — never guess; if it cannot be
    resolved, the item is Unverified. _Why: confident prose comes out whether or not the claim is true;
    pasted output is what a reviewer can re-check._
-6. **Re-run after your last change.** Output pasted before a later edit is
-   stale and no longer covers the claim.
+6. **Re-run after your last relevant change.** Output pasted before an edit that can affect its
+   claim is stale and no longer covers that claim.
 7. **Adversarially self-review your diff before handoff.** Re-read it as a
    hostile reviewer: which path did you not exercise (edge, error,
    concurrency)? What changed that the spec did not ask for? Which callers of
@@ -63,12 +63,12 @@ review packet inspects — nothing enforces them at edit time.
    own path, never a copy. Either
    way: changed files, one line per Verify command citing its pasted output,
    anything that could not be met as written, out-of-scope edits if any,
-   blocked questions. For a split task, also drop durable discoveries in the
+   blocked questions. For a split task, also put candidate discoveries in the
    task's `## Findings`. The spec carries no `## Findings` section — for 1:1
    work, note durable discoveries in the Execution entry's prose instead, and
-   let the review step route them into `## Candidate findings` for a multi-lens review,
-   or `## Human attention` otherwise (see review-output). Findings ride the task or review packet; durable
-   ones become native memories (see save-findings).
+   let the review step route them into `## Candidate findings` for a multi-lens review or
+   `## Human attention` otherwise. Findings ride the task or review packet; only evidence-backed,
+   durable lessons move into native memory or the project's normal channels at close.
 9. **Never write a review result on your own work.** Self-review yields fixes
    and notes — never a Pass. The review packet is filled by someone who did
    not write the diff. _Why: authors favor their own output; independence is
@@ -107,7 +107,7 @@ Before declaring the task done:
 - [ ] Every Verify item ran after your final edit, output pasted.
 - [ ] The diff contains only in-scope changes — or every exception is listed
       in the summary.
-- [ ] You hunted at least one path you had not exercised
+- [ ] You checked relevant paths the implementation had not exercised
       (edge / error / concurrency) and recorded what you found.
 - [ ] Anything you could not meet as written is reported, not silently
       adapted.

@@ -73,9 +73,9 @@ decisions land in `docs/adrs/`.
 
 ## Commands
 
-| Slot | Command | Resolves                                             |
-| ---- | ------- | ---------------------------------------------------- |
-| —    | (none)  | markdown-only repo; coherence is checked by review |
+| Slot     | Command                       | Resolves                                                |
+| -------- | ----------------------------- | ------------------------------------------------------- |
+| cmdCheck | `sh scripts/lint-all.sh`      | product prose, bootstrap counts, and local skill parity |
 
 ## Workflow
 
