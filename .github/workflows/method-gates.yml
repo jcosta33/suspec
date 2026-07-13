@@ -3,8 +3,8 @@ name: method-gates
 # Public-surface checks run over the current Suspec repositories. They report documentation
 # hygiene failures; adopters choose which checks belong in their own CI.
 
-# Push and PR runs protect this repository's immutable history. Cross-family checks are dispatched
-# with explicit refs because five default branches cannot move atomically.
+# Push and PR runs protect this repository's history and current local surfaces. Cross-family checks
+# are dispatched with explicit refs because five default branches cannot move atomically.
 on:
   push:
     branches: [main]
@@ -32,7 +32,7 @@ permissions:
   contents: read
 
 jobs:
-  history:
+  local-gates:
     if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
@@ -42,6 +42,11 @@ jobs:
         env:
           SUSPEC_HISTORY_BASE: "${{ github.event.pull_request.base.sha || github.event.before }}"
         run: sh scripts/lint-accepted-adrs.sh
+
+      - name: Current Canon surfaces
+        run: |
+          sh scripts/lint-product-citations.sh "$(dirname "$GITHUB_WORKSPACE")"
+          SUSPEC_FAMILY_ROOTS="$GITHUB_WORKSPACE" sh scripts/lint-count-ranges.sh
 
   method-gates:
     if: github.event_name == 'workflow_dispatch'

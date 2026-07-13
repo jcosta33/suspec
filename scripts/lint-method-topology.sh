@@ -107,6 +107,27 @@ test -x "$skills/scripts/lint-released-changelog.sh" || {
   echo "skills released changelog gate is missing or not executable" >&2
   exit 1
 }
+test -x "$skills/scripts/lint-current.sh" || {
+  echo "skills current-surface gate is missing or not executable" >&2
+  exit 1
+}
+grep -Fq 'sh repo/scripts/lint-current.sh repo' "$skills/.github/workflows/method-gates.yml" || {
+  echo "skills event workflow omits the current-surface gate" >&2
+  exit 1
+}
+grep -Fq 'SUSPEC_FAMILY_ROOTS="$GITHUB_WORKSPACE" sh scripts/lint-count-ranges.sh' \
+  "$canon/.github/workflows/method-gates.yml" || {
+  echo "canon event workflow omits current local surfaces" >&2
+  exit 1
+}
+grep -Fq 'SUSPEC_CANON:' "$cli/.github/workflows/gate.yml" || {
+  echo "CLI integration workflow can skip an unresolved canon" >&2
+  exit 1
+}
+grep -Fq 'SUSPEC_BIN:' "$mcp/.github/workflows/gate.yml" || {
+  echo "MCP integration workflow can skip an unresolved CLI" >&2
+  exit 1
+}
 
 formats="$canon/docs/reference/artifact-formats.md"
 require_writer() {
@@ -137,7 +158,8 @@ done
 stale_methods='concise-output|revolver-review|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|market-research|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr|write-audit|write-bug-report|write-change-plan|write-documentation|write-feature|write-fix|write-inventory|write-migration|write-performance|write-prd|write-refactor|write-research|write-rewrite|write-rfc|write-testing'
 if grep -RniE --exclude-dir=adrs "(^|[^[:alnum:]-])($stale_methods)([^[:alnum:]-]|$)" \
   "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$canon/checks" \
-  "$skills/README.md" "$skills/skills" "$agents/README.md" "$agents/AGENTS.md" \
+  "$skills/README.md" "$skills/AGENTS.md" "$skills/docs" "$skills/skills" \
+  "$agents/README.md" "$agents/AGENTS.md" \
   "$cli/README.md" "$cli/AGENTS.md" "$cli/docs" "$cli/src" "$mcp/README.md" "$mcp/src" "$mcp/test"; then
   echo "stale current method name" >&2
   exit 1
@@ -150,7 +172,8 @@ if printf '%s\n' "$unreleased" | grep -Ei "(^|[^[:alnum:]-])($stale_methods)([^[
 fi
 
 if grep -RniE --exclude-dir=adrs 'suspec-agents|canonical agent|Codex projection|agents/suspec-' \
-  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$skills/README.md" "$skills/skills"; then
+  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" \
+  "$skills/README.md" "$skills/AGENTS.md" "$skills/docs" "$skills/skills"; then
   echo "custom agent catalog survives on a current surface" >&2
   exit 1
 fi
