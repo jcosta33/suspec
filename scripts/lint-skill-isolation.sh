@@ -5,7 +5,8 @@ PARENT=${1:-$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)}
 skills="$PARENT/corpus-skills"
 [ -d "$skills" ] || skills="$PARENT/suspec-skills"
 
-artifact_writers='bulletproof demolition disrespec revolver sus-audit sus-change-plan sus-inventory sus-research sus-review sus-spec sus-task triple-check'
+artifact_handlers='bulletproof demolition disrespec revolver sus-audit sus-change-plan sus-inventory sus-research sus-review sus-spec sus-task triple-check'
+artifact_creators='bulletproof demolition revolver sus-audit sus-change-plan sus-inventory sus-research sus-review sus-spec sus-task triple-check'
 
 relative_markdown_links() {
   grep -oE ']\((\.\.?/)[^)]*\)' | sed -E 's/^]\((.*)\)$/\1/'
@@ -50,18 +51,19 @@ for file in "$skills"/skills/*/SKILL.md; do
 
   flattened=$(tr '\n' ' ' < "$file")
   if grep -qiE 'picker|structured choices|human-readable choices|Delete, Leave, or Promote' "$file"; then
-    printf '%s\n' "$flattened" | grep -Fqi 'Without a picker, render the same numbered options plus `Other`.' || {
-      echo "structured choice lacks a no-picker fallback in $name" >&2
+    protocol='Every choice uses the native picker with automatic `Other`. Without one, render the same numbered options plus `Other`. Never ask a bare question.'
+    printf '%s\n' "$flattened" | grep -Fq "$protocol" || {
+      echo "global choice protocol missing in $name" >&2
+      exit 1
+    }
+    test "$(grep -Fc 'Every choice uses the native picker with automatic `Other`.' "$file")" = 1 || {
+      echo "choice protocol must appear exactly once in $name" >&2
       exit 1
     }
   fi
-  if printf '%s\n' "$flattened" | grep -Fq 'Delete, Leave, or Promote'; then
-    lifecycle_tail=${flattened#*"Delete, Leave, or Promote"}
-    printf '%s\n' "$lifecycle_tail" |
-      grep -Fq 'Without a picker, render the same numbered options plus `Other`.' || {
-      echo "disposition choice lacks its own no-picker fallback in $name" >&2
-      exit 1
-    }
+  if grep -Fq 'Without a picker' "$file"; then
+    echo "choice-local fallback duplicates the global protocol in $name" >&2
+    exit 1
   fi
 
   if grep -q 'After creating an artifact successfully' "$file"; then
@@ -69,17 +71,20 @@ for file in "$skills"/skills/*/SKILL.md; do
     exit 1
   fi
 
-  case " $artifact_writers " in
+  case " $artifact_creators " in
     *" $name "*)
-      if [ "$name" != disrespec ]; then
-        grep -Fq '~/.agents/artifacts/<workspace>/' "$file" || {
-          echo "neutral artifact root missing in $name" >&2
-          exit 1
-        }
-        for term in absolute repository vendor temporary; do
-          grep -qi "$term" "$file" || { echo "incomplete placement rule in $name: $term" >&2; exit 1; }
-        done
-      fi
+      grep -Fq '~/.agents/artifacts/<workspace>/' "$file" || {
+        echo "neutral artifact root missing in $name" >&2
+        exit 1
+      }
+      for term in absolute repository vendor temporary; do
+        grep -qi "$term" "$file" || { echo "incomplete placement rule in $name: $term" >&2; exit 1; }
+      done
+      ;;
+  esac
+
+  case " $artifact_handlers " in
+    *" $name "*)
       for term in delete leave promote sidecar; do
         grep -qi "$term" "$file" || { echo "incomplete artifact disposition in $name: $term" >&2; exit 1; }
       done
@@ -117,6 +122,47 @@ for file in "$skills"/skills/*/SKILL.md; do
   esac
 done
 
+grep -Fq 'Never author or place a new artifact' "$skills/skills/disrespec/SKILL.md" || {
+  echo "disrespec may create an unplaced artifact" >&2
+  exit 1
+}
+grep -Fq 'requested or required by the active workflow' "$skills/skills/dissect/SKILL.md" || {
+  echo "dissect overlaps workflow-required inventory" >&2
+  exit 1
+}
+for phrase in '**Sanitize and retry**' '**Cancel**' 'Change nothing until the human selects.'; do
+  grep -Fq "$phrase" "$skills/skills/promote/SKILL.md" || {
+    echo "promote sensitive-content decision missing: $phrase" >&2
+    exit 1
+  }
+done
+
+writer_types='bulletproof:inspection demolition:inspection revolver:inspection triple-check:inspection sus-spec:spec sus-task:task sus-review:review sus-inventory:inventory sus-change-plan:change-plan sus-audit:audit sus-research:research'
+for pair in $writer_types; do
+  writer=${pair%%:*}
+  expected_type=${pair#*:}
+  actual_types=$(grep -RohE 'type: (spec|task|review|inventory|change-plan|audit|research|inspection)' \
+    "$skills/skills/$writer" | sort -u)
+  test "$actual_types" = "type: $expected_type" || {
+    echo "artifact type ownership drift in $writer: $actual_types" >&2
+    exit 1
+  }
+done
+
+for method in bulletproof demolition revolver triple-check; do
+  actual_methods=$(grep -ohE 'method: (bulletproof|demolition|revolver|triple-check)' \
+    "$skills/skills/$method/SKILL.md" | sort -u)
+  test "$actual_methods" = "method: $method" || {
+    echo "inspection method ownership drift in $method: $actual_methods" >&2
+    exit 1
+  }
+done
+grep -Fq 'Make the first body line exactly: `Advocacy exercise, not evidence.`' \
+  "$skills/skills/demolition/SKILL.md" || {
+  echo "demolition quarantine banner missing" >&2
+  exit 1
+}
+
 grep -Fq 'For a compact check with no inspection artifact' "$skills/skills/bulletproof/SKILL.md" || {
   echo "bulletproof compact handoff missing" >&2
   exit 1
@@ -140,7 +186,7 @@ for phrase in 'non-empty transient artifact-and-sidecar set created or consumed 
   }
 done
 
-grep -Fq 'Never activate merely because another skill writes an artifact' \
+grep -Fq 'activate merely because another skill writes one' \
   "$skills/skills/disrespec/SKILL.md" || {
   echo "disrespec blanket activation returned" >&2
   exit 1

@@ -43,16 +43,18 @@ expected_agents='.gitignore
 AGENTS.md
 LICENSE
 README.md'
-actual_agents=$(find "$agents" -mindepth 1 ! -path "$agents/.git" ! -path "$agents/.git/*" -type f -exec basename {} \; | sort)
+actual_agents=$(find "$agents" -mindepth 1 -maxdepth 1 ! -name .git -exec basename {} \; | sort)
 test "$actual_agents" = "$expected_agents" || {
   echo "agent tombstone file drift" >&2
   printf 'expected:\n%s\nactual:\n%s\n' "$expected_agents" "$actual_agents" >&2
   exit 1
 }
-if find "$agents" -mindepth 1 ! -path "$agents/.git" ! -path "$agents/.git/*" -type d | grep -q .; then
-  echo "agent tombstone contains a directory" >&2
-  exit 1
-fi
+for entry in $expected_agents; do
+  test -f "$agents/$entry" && test ! -L "$agents/$entry" || {
+    echo "agent tombstone entry is not a regular file: $entry" >&2
+    exit 1
+  }
+done
 
 for workflow in \
   "$canon/.github/workflows/method-gates.yml" \
@@ -68,6 +70,10 @@ for workflow in \
     echo "workflow lacks explicit integration-snapshot sibling refs: $workflow" >&2
     exit 1
   }
+  grep -Fq "if: github.event_name == 'workflow_dispatch'" "$workflow" || {
+    echo "cross-family gate is not dispatch-only: $workflow" >&2
+    exit 1
+  }
 done
 grep -Fq 'SUSPEC_HISTORY_BASE:' "$canon/.github/workflows/method-gates.yml" || {
   echo "canon workflow lacks base-relative ADR history verification" >&2
@@ -75,6 +81,27 @@ grep -Fq 'SUSPEC_HISTORY_BASE:' "$canon/.github/workflows/method-gates.yml" || {
 }
 grep -Fq 'SUSPEC_SKILLS_HISTORY_BASE:' "$skills/.github/workflows/method-gates.yml" || {
   echo "skills workflow lacks base-relative changelog verification" >&2
+  exit 1
+}
+
+formats="$canon/docs/reference/artifact-formats.md"
+require_writer() {
+  type=$1
+  writer=$2
+  grep -Fq "| \`$type\` | \`$writer\` |" "$formats" || {
+    echo "artifact writer ownership drift: $type -> $writer" >&2
+    exit 1
+  }
+}
+require_writer spec sus-spec
+require_writer task sus-task
+require_writer review sus-review
+require_writer inventory sus-inventory
+require_writer change-plan sus-change-plan
+require_writer audit sus-audit
+require_writer research sus-research
+grep -Fq '| `inspection` | inspection method |' "$formats" || {
+  echo "inspection writer ownership drift" >&2
   exit 1
 }
 

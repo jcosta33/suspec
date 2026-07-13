@@ -143,7 +143,8 @@ task_file:
         body matches `^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$`
         case-insensitively. A fence is an unfilled placeholder when its entire
         trimmed body matches `^(pending|tbd|todo|\?\?\?|\{\{[^}\r\n]+\}\})\.?$`
-        case-insensitively; it also fails.
+        case-insensitively; it also fails. Non-fenced placeholders fail even
+        inside inline code; fenced command output remains untouched evidence.
     - id: closed-task-resolved # implemented as core check C024
       applies_to: whole packet (frontmatter status + every section)
       severity: hard-error

@@ -9,7 +9,9 @@ This ledger is the index. It carries a row for **every** ADR — kept, amended, 
 
 ## Governance (Nygard immutability)
 
-> An accepted ADR **MUST NOT** be edited in place. "Amending" a decision means publishing a **new, superseding ADR**; the original keeps its body and gains only a `Superseded by ADR-NNNN` status line. Rewriting an ADR destroys the historical record that makes the chain auditable.
+> An accepted ADR **MUST NOT** be edited in place. "Amending" a decision means publishing a **new,
+> superseding ADR**; the original remains byte-identical and only its ledger row gains the new
+> disposition. Rewriting an ADR destroys the historical record that makes the chain auditable.
 
 Two consequences of that rule govern this ledger:
 
@@ -180,8 +182,8 @@ Two consequences of that rule govern this ledger:
 | [0148](./0148-agent-neutral-artifact-workspace.md) | Ordinary Suspec artifacts use the agent-neutral `~/.agents/artifacts/<workspace>/` root | **New (canon → skills/agents) — accepted (2026-07-12)** — narrows 0141 and 0147; keeps explicit paths, zero repository footprint, and durable-only promotion; narrowed by [0150](./0150-action-first-artifact-disposition.md) (explicit per-run disposition replaces indefinite accumulation without lifecycle state) |
 | [0149](./0149-skills-state-rules-directly.md) | Skills state every required rule directly and work when installed alone | **New (canon → skills) - accepted (2026-07-12)** - narrows 0016, 0134, and 0145; retires named spines and byte-parity gates; narrowed by [0150](./0150-action-first-artifact-disposition.md) (artifact-producing skills state lifecycle-close disposition directly); narrowed by [0151](./0151-skill-agent-artifact-economy.md) (the standalone catalog is reduced to the current method and artifact-author set) |
 | [0150](./0150-action-first-artifact-disposition.md) | Action requests trigger action; transient artifact sets receive a delete, leave, or promote choice at lifecycle close | **New (canon -> skills) - accepted (2026-07-13)** - narrows 0145, 0147, 0148, and 0149 without adding lifecycle state or cleanup machinery |
-| [0151](./0151-skill-agent-artifact-economy.md) | A small standalone skill catalog, native fresh subagents, and a closed owned artifact set | **New (canon -> skills/agents) - accepted (2026-07-13)** - supersedes 0114; narrows 0030, 0061, 0092, 0098, 0099, 0140, 0144, 0146, and 0149 |
-| [0152](./0152-deterministic-contract-tightening.md) | Strict frontmatter, explicit artifact types, direct task checks, and an honest deterministic catalog | **New (canon -> CLI) - accepted (2026-07-13)** - narrows 0059, 0066, 0086, and 0097; checks contract 0.18.0 |
+| [0151](./0151-skill-agent-artifact-economy.md) | A small standalone skill catalog, native fresh subagents, and a closed owned artifact set | **New (canon -> skills/agents) - accepted (2026-07-13)** - supersedes 0114; narrows 0030, 0061, 0092, 0098, 0099, 0140, 0144, 0146, and 0149; narrowed by [0154](./0154-spec-backed-tasks-and-review-closure.md) (task packets retain one governing requirement authority) |
+| [0152](./0152-deterministic-contract-tightening.md) | Strict frontmatter, explicit artifact types, direct task checks, and an honest deterministic catalog | **New (canon -> CLI) - accepted (2026-07-13)** - narrows 0059, 0066, 0086, and 0097; checks contract 0.18.0; narrowed by [0154](./0154-spec-backed-tasks-and-review-closure.md) (exact C023/C024, task authority, and unnumbered review shape; version unchanged) |
 | [0153](./0153-mcp-parity-and-compatibility.md) | Multi-path MCP checking, exact runtime compatibility, and a lean response envelope | **New (canon -> MCP) - accepted (2026-07-13)** - narrows 0085 and 0143 |
 | [0154](./0154-spec-backed-tasks-and-review-closure.md) | Spec-backed tasks, visible evidence forms, and mechanically closed review decisions | **New (canon -> skills/CLI) - accepted (2026-07-13)** - narrows 0151 and 0152; checks contract remains 0.18.0 |
 
