@@ -47,9 +47,8 @@ decisions land in `docs/adrs/`.
   research, and inspections. Evidence receipts and run notes are untyped sidecars. Artifacts are
   scaffold pulled in only when work earns them.
   The checker reports facts and severity levels; only a human owns a review result.
-- **No counts ceremony.** Do not hardcode closed-set cardinalities in public/current prose.
-  List values when they help the reader; keep maintainer reconciliation in the source
-  contract instead of duplicate count registries.
+- **No inventory-count ceremony.** Do not publish totals for repositories, skills, artifacts, or
+  other changing sets. State behavior-defining floors and caps wherever execution depends on them.
 - **Citations are contextual.** Every load-bearing empirical claim cites a verified entry
   inline — the `[[KEY]]` form linking the matching anchor in `docs/research/sources.md` — and the citation moves with the claim.
   Non-verified sources never carry a MUST-level claim; fact-shaped statements without a

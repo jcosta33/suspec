@@ -25,7 +25,7 @@ its picker replaces path-only handoff. The agent selects no option; inaction is 
 | `change-plan` | `sus-change-plan` | a staged structural transformation | `CHANGE-` |
 | `audit` | `sus-audit` | evidenced present-state risks | `AUDIT-` |
 | `research` | `sus-research` | evidence for one decision-informing question | `RESEARCH-` |
-| `inspection` | inspection method | one method applied to one target | none required |
+| `inspection` | `bulletproof`, `demolition`, or `triple-check` | one method applied to one target | none required |
 
 No other `type:` value is a Suspec artifact. Project records such as issues, decision records,
 product documents, and release documentation keep their project-native formats.
@@ -166,15 +166,15 @@ and Change-plan coverage.
 
 Compact implementation proof does not create an inspection artifact. It records the command,
 numeric exit, and decisive raw output in the implementation handoff. Substantive Bulletproof,
-Demolition, Revolver, and Triple-check runs use this artifact:
+Demolition, and Triple-check runs use this artifact. Revolver creates no artifact or sidecar.
 
 Frontmatter:
 
 ```yaml
 type: inspection
-method: bulletproof # bulletproof | demolition | revolver | triple-check
+method: bulletproof # bulletproof | demolition | triple-check
 target: path-or-stable-identifier
-mode: inspect       # optional; inspect | refine
+mode: inspect       # optional; Triple-check only: inspect | refine
 ```
 
 An inspection records method output, not a ship verdict or lifecycle status. Substantive

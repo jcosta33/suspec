@@ -145,10 +145,20 @@ require_writer inventory sus-inventory
 require_writer change-plan sus-change-plan
 require_writer audit sus-audit
 require_writer research sus-research
-grep -Fq '| `inspection` | inspection method |' "$formats" || {
+grep -Fq '| `inspection` | `bulletproof`, `demolition`, or `triple-check` |' "$formats" || {
   echo "inspection writer ownership drift" >&2
   exit 1
 }
+revolver_text=$(tr '\n' ' ' < "$skills/skills/revolver/SKILL.md" | tr -s ' ')
+for phrase in 'Create no artifact or sidecar.' 'at least six materially distinct stances' \
+  'Adjudicate every finding before dispatching the next reviewer' \
+  'Never carry an unresolved material finding into the next stance.' \
+  'One complete rotation is mandatory.'; do
+  printf '%s\n' "$revolver_text" | grep -Fq "$phrase" || {
+    echo "revolver sequential-resolution contract missing: $phrase" >&2
+    exit 1
+  }
+done
 
 for required in $expected; do
   test -f "$skills/skills/$required/SKILL.md" || { echo "missing skill: $required" >&2; exit 1; }

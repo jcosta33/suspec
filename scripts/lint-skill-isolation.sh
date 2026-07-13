@@ -5,8 +5,8 @@ PARENT=${1:-$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)}
 skills="$PARENT/corpus-skills"
 [ -d "$skills" ] || skills="$PARENT/suspec-skills"
 
-artifact_handlers='bulletproof demolition disrespec revolver sus-audit sus-change-plan sus-inventory sus-research sus-review sus-spec sus-task triple-check'
-artifact_creators='bulletproof demolition revolver sus-audit sus-change-plan sus-inventory sus-research sus-review sus-spec sus-task triple-check'
+artifact_handlers='bulletproof demolition disrespec sus-audit sus-change-plan sus-inventory sus-research sus-review sus-spec sus-task triple-check'
+artifact_creators='bulletproof demolition sus-audit sus-change-plan sus-inventory sus-research sus-review sus-spec sus-task triple-check'
 
 relative_markdown_links() {
   grep -oE ']\((\.\.?/)[^)]*\)' | sed -E 's/^]\((.*)\)$/\1/'
@@ -171,7 +171,7 @@ for phrase in '**Sanitize and retry**' '**Cancel**' 'Change nothing until the hu
   }
 done
 
-writer_types='bulletproof:inspection demolition:inspection revolver:inspection triple-check:inspection sus-spec:spec sus-task:task sus-review:review sus-inventory:inventory sus-change-plan:change-plan sus-audit:audit sus-research:research'
+writer_types='bulletproof:inspection demolition:inspection triple-check:inspection sus-spec:spec sus-task:task sus-review:review sus-inventory:inventory sus-change-plan:change-plan sus-audit:audit sus-research:research'
 for pair in $writer_types; do
   writer=${pair%%:*}
   expected_type=${pair#*:}
@@ -182,14 +182,14 @@ for pair in $writer_types; do
   }
 done
 
-for method in bulletproof demolition revolver triple-check; do
+for method in bulletproof demolition triple-check; do
   actual_methods=$(declaration_values "$skills/skills/$method" method)
   test "$actual_methods" = "$method" || {
     echo "inspection method ownership drift in $method: $actual_methods" >&2
     exit 1
   }
 done
-for method in revolver triple-check; do
+for method in triple-check; do
   method_text=$(tr '\n' ' ' < "$skills/skills/$method/SKILL.md" | tr -s ' ')
   for phrase in 'A substantive run requires that artifact.' \
     'An explicit no-write or chat-only request conflicts with this method.' \
@@ -200,6 +200,24 @@ for method in revolver triple-check; do
     }
   done
 done
+revolver_text=$(tr '\n' ' ' < "$skills/skills/revolver/SKILL.md" | tr -s ' ')
+for phrase in 'Create no artifact or sidecar.' 'at least six materially distinct stances' \
+  'Adjudicate every finding before dispatching the next reviewer' \
+  'Never carry an unresolved material finding into the next stance.' \
+  'One complete rotation is mandatory.'; do
+  printf '%s\n' "$revolver_text" | grep -Fq "$phrase" || {
+    echo "revolver sequential-resolution contract missing: $phrase" >&2
+    exit 1
+  }
+done
+test -z "$(declaration_values "$skills/skills/revolver" type)" || {
+  echo "revolver must not own an artifact type" >&2
+  exit 1
+}
+test -z "$(declaration_values "$skills/skills/revolver" method)" || {
+  echo "revolver must not declare an artifact method" >&2
+  exit 1
+}
 grep -Fq 'Skip targeted code-path tracing without an explicit three-pass request.' \
   "$skills/skills/triple-check/SKILL.md" || {
   echo "triple-check overlaps targeted dissection" >&2
@@ -260,7 +278,7 @@ grep -Fq 'activate merely because another skill writes one' \
   echo "disrespec blanket activation returned" >&2
   exit 1
 }
-for method in bulletproof demolition revolver triple-check; do
+for method in bulletproof demolition triple-check; do
   grep -Fq 'target: <path-or-stable-identifier>' "$skills/skills/$method/SKILL.md" || {
     echo "inspection target frontmatter missing in $method" >&2
     exit 1

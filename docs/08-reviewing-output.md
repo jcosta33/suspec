@@ -101,9 +101,9 @@ close picker replaces the path-only return. The agent selects no option; inactio
 
 ## Escalation
 
-Use `revolver` for broad, risk-derived inspection. Use `triple-check` for three deep,
-independent top-tier passes. Both default to read-only inspect mode; refine mode requires an
-explicit request and only the orchestrator edits.
+Use `revolver` to drive broad risk through at least six target-derived stances, one fresh reviewer at
+a time. The orchestrator addresses every stance before the next reviewer sees the current target;
+Revolver creates no artifact. Use `triple-check` for three deep, independent top-tier passes.
 
 ## Related
 

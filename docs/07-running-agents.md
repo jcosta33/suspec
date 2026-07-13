@@ -45,7 +45,8 @@ Run authoring, implementation, and review as different sessions:
 - **Spec/task author** — writes the spec, change plan, and split task packets when needed.
 - **Implementer** — executes one spec or task slice; reads the spec and any task; the scoped requirements are the boundary; does not change requirements.
 - **Reviewer** - inspects a fixed target in a fresh context and returns findings or requirement assessments without editing it.
-- **Orchestrator** - dispatches the chosen inspection method and writes artifacts; it applies verified fixes only when refine mode was explicitly requested.
+- **Orchestrator** - dispatches the chosen method. During Revolver it adjudicates and addresses every
+  stance before dispatching the next; it writes only when the selected workflow requires an artifact.
 - **Human/owner** — owns the decision.
 
 The reviewer is not the implementer. The spec or task author may review the implementation, as long as they did not implement it.
