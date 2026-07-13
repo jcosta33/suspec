@@ -54,6 +54,18 @@ if find "$agents" -mindepth 1 ! -path "$agents/.git" ! -path "$agents/.git/*" -t
   exit 1
 fi
 
+for workflow in \
+  "$canon/.github/workflows/method-gates.yml" \
+  "$skills/.github/workflows/method-gates.yml" \
+  "$cli/.github/workflows/gate.yml" \
+  "$mcp/.github/workflows/gate.yml"; do
+  test -f "$workflow" || { echo "missing family method gate: $workflow" >&2; exit 1; }
+  grep -Fq 'scripts/lint-all.sh' "$workflow" || {
+    echo "workflow does not run the family method gate: $workflow" >&2
+    exit 1
+  }
+done
+
 for required in $expected; do
   test -f "$skills/skills/$required/SKILL.md" || { echo "missing skill: $required" >&2; exit 1; }
   grep -q "^name: $required$" "$skills/skills/$required/SKILL.md" || { echo "name drift: $required" >&2; exit 1; }
