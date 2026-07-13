@@ -1,76 +1,21 @@
-<!-- checks fixture — expected results pinned in EXPECTED.md (this file) -->
+<!-- checks fixture: expected results -->
 
-# payment-5xx — expected check results
+# payment-5xx
 
-Checks fixture for [the check catalogue](../../../docs/reference/checks.md): payment
-provider 5xx handling, with two seeded defects — a pair of contradictory requirements, and
-an open blocking question in a spec marked `status: ready`. The results below are known by
-hand. Rows citing core checks (C-codes) pin what suspec-cli's `suspec check` must report
-(toolable); SOL-code rows are the reference contract, applied as a review checklist — use
-`suspec check --contract` to confirm what your installed version implements.
+The plain and SOL specs represent the same three requirement IDs and one blocking question. Both
+seed one deterministic defect: the spec is `ready` while that question remains open. Check each spec
+separately because they intentionally share `id: SPEC-payment-5xx`.
 
-**Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
-share one `id:` — they are one spec written on both surfaces (this directory's equivalence
-pair), not two specs. A real run keeps only one form, so the pair itself never counts as a
-C002 duplicate.
+| Invocation target | Exit | Diagnostics |
+| --- | --- | --- |
+| `spec.md` | 2 | C007 blocking question at `status: ready` |
+| `spec.sol.md` | 2 | C007 blocking question at `status: ready` |
+| `task.md` | 0 | none |
+| `review.md` with `spec.md` and `task.md` | 1 | C013 warning on Supported AC-001 and AC-002 rows carrying free-form evidence only |
 
-## Seeded defects
+AC-002 requires a retry while AC-003 forbids it under the same condition. The checker does not
+detect that contradiction or reject task creation after a blocking question; both remain human
+review defects.
 
-| Where                         | Defect                                                                          |
-| ----------------------------- | ------------------------------------------------------------------------------- |
-| AC-002 vs AC-003 (both files) | Same actor, same trigger, opposed strength words — must retry vs must not retry |
-| Open questions (both files)   | A blocking question is unresolved while the spec claims `status: ready`         |
-
-## spec.md (plain form)
-
-| Check                  | Where          | Expected result                                                        | Severity   |
-| ---------------------- | -------------- | ---------------------------------------------------------------------- | ---------- |
-| C007 `no-tbd-at-ready` | Open questions | **fires** — an unresolved blocking question remains at `status: ready` | hard error |
-| C001–C004, C008, C009  | —              | pass                                                                   | —          |
-
-No core check keys on the contradiction in plain form — catching AC-002 vs AC-003 is a
-review checklist item there. That gap is exactly what the stricter surface buys below.
-
-## spec.sol.md (`format: sol`)
-
-| Check                          | Where           | Expected result                                            | Severity   |
-| ------------------------------ | --------------- | ---------------------------------------------------------- | ---------- |
-| C007 `no-tbd-at-ready`         | Q-001           | **fires** — core checks apply to both surfaces             | hard error |
-| SOL-M002                       | AC-002 / AC-003 | **fires** — same actor and trigger, opposed strength words | hard error |
-| Every other SOL code (in-file) | —               | pass                                                       | —          |
-
-## At task-splitting
-
-`task.md` exists even though Q-001 is open and blocking — that is the third pinned result:
-splitting work past an unresolved blocking question fires SOL-O003 (hard error). Answer or
-downgrade the question first; preparing tasks past it commits a guess.
-
-## Equivalence assertion
-
-`spec.md` and `spec.sol.md` encode identical requirement records:
-
-| id     | strength | statement                                                                                                    | verification                                                                                       |
-| ------ | -------- | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| AC-001 | must     | When the same idempotency key is submitted twice, the payments service captures at most one charge.          | `payment-idempotency.spec.ts#at-most-one-capture` — plain: unresolved note · SOL: resolved binding |
-| AC-002 | must     | When the provider returns a 5xx, the payments service retries the charge once with the same idempotency key. | `payment-retry.spec.ts#retries-once`                                                               |
-| AC-003 | must not | When the provider returns a 5xx, the payments service does not retry the charge.                             | `payment-retry.spec.ts#no-retry`                                                                   |
-
-Spec-level record: same intent, non-goals, one blocking open question, affected areas, and
-sources in both files (SOL records the question as `QUESTION Q-001 [blocking]`; plain form
-as a "Blocking:" bullet — same record). The SOL `WRITES` and `RISK` clauses are metadata
-refinement. A checker that reads different records out of the two files is wrong (the
-anti-fork rule) — including the contradiction: it must be present in both record sets, even
-though only the SOL surface has a code that names it.
-
-## task.md and review.md
-
-| Check              | Where                      | Expected result                                                                                                                                                                                |
-| ------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `supported-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                                                                                                                                                 |
-| `supported-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Supported                                                                                                                       |
-| `coverage` (C012)  | review vs spec scope       | pass — every in-scope AC has a coverage row and no row is orphaned (the source spec is `status: ready`, so C012 is in scope for this domain — unlike the draft-spec domains) |
-| `verify-evidence-binding` (C013) | review rows AC-001, AC-002 | **fires** (warning) — each Supported row carries only a free-form Evidence cell, no structured `verify` block, so the free-form-only advisory routes it to a human rather than machine-rejecting it (the source spec is `status: ready`, so C013 is in scope for this domain — unlike the draft-spec domains) |
-| `no-open-critical` | review                     | **does not fire** — the open decision is correctly reflected as `decision: deferred`; the rule forbids every non-empty Open decisions section at acceptance. Counterfactual: the same packet at `decision: accepted` would fire it |
-| C022 `task-shape` | task | pass — frontmatter and required sections are valid |
-
-_Task-side note: C023 `task-evidence` passes because `## Verify` contains the exact `CI:` URL._
+The parser paths must expose AC-001, AC-002, and AC-003 with a non-empty named verification command
+for each requirement.

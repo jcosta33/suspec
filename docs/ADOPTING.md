@@ -27,9 +27,9 @@ Adopting begins with the global skill install. Nothing lands in your repo.
    ```bash
    git clone https://github.com/jcosta33/suspec-cli
    cd suspec-cli
-    pnpm install --frozen-lockfile
-    pnpm build
-    pnpm link --global
+   pnpm install --frozen-lockfile
+   pnpm build
+   pnpm link --global
    ```
 
    Then run:

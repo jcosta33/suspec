@@ -1,17 +1,15 @@
 #!/bin/sh
 # lint-all.sh — run every current public-surface check over the Suspec family.
 #
-# A single entry point for the scriptable gates. Each is a RECORD/CHECK, not an executor
-# (ADR-0077): it reads and reports, edits nothing. Aggregates: exits 0 only if every gate is clean,
-# else non-zero (the first failing gate's findings are printed above).
+# A single read-only entry point for the scriptable gates. It exits zero only when every gate is
+# clean; failures remain visible above the aggregate result.
 #
 #   lint-product-citations.sh   no ADR/AUDIT/source-URL citations in product bodies
 #   lint-count-ranges.sh        no hardcoded count-bearing ADR ranges in bootstrap prose
 #   lint-accepted-adrs.sh       every numbered accepted ADR matches the frozen digest
 #   lint-released-changelog.sh  released skill-catalog history matches the frozen digest
-#   lint-method-topology.sh     exact skill set, current names, checks contract, no custom agents
-#   lint-skill-isolation.sh     standalone skill bodies and artifact lifecycle rules
-#   lint-skill-catalog.sh       skill metadata and catalog coverage
+#   lint-method-topology.sh     cross-repository ownership and contract coherence
+#   lint-skill-isolation.sh     delegates to the skills repository's local structural gate
 #
 # Each repository decides whether to wire these checks into CI; this script is the shared entry point.
 #
@@ -23,7 +21,7 @@ HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DEV_DIR="${1:-$(CDPATH= cd -- "$HERE/../.." && pwd)}"
 
 rc=0
-for gate in lint-product-citations lint-count-ranges lint-accepted-adrs lint-released-changelog lint-method-topology lint-skill-isolation lint-skill-catalog; do
+for gate in lint-product-citations lint-count-ranges lint-accepted-adrs lint-released-changelog lint-method-topology lint-skill-isolation; do
     echo "--- $gate ---"
     if ! sh "$HERE/$gate.sh" "$DEV_DIR"; then
         rc=1

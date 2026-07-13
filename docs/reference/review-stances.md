@@ -33,15 +33,15 @@ For substantial work:
 1. Derive at least six distinct stances justified by the target. Use no canned menu or fixed upper
    limit.
 2. Fix the stance pool and order, then run one fresh reviewer at a time without prior reviewer prose.
-3. After each stance, the orchestrator verifies every finding and fixes, rejects, or stops for a
-   human decision. Reviewers never edit.
+3. After each stance, the orchestrator verifies every finding and fixes, rejects, or names the
+   concrete blocker and stops. Reviewers never edit.
 4. Dispatch nothing else while a material finding remains unresolved. The next reviewer sees the
    addressed target, including every prior fix.
 5. Complete a full rotation. Repeat only after a rotation produces a new supported finding, and stop
    after a quiet rotation or the hard three-cycle cap.
 
 Revolver creates no artifact. Its final chat handoff contains only material changes, verification,
-trust-relevant rejected findings, and unresolved human choices.
+trust-relevant rejected findings, and concrete blockers.
 
 Model variety can be used as a practical hedge, but it is not evidence that failures are
 independent. Judge the review by surfaced defects and rerun checks, not model labels.

@@ -68,8 +68,8 @@ A review packet's coverage table:
 ```
 
 **Expected:** flagged — an empty Evidence cell means **Unverified**, never **Supported**.
-The row's correct content is `Unverified` plus a Findings or Open decisions entry. Implemented as **C016**
-(ADR-0097): blocking at check time — a structural contradiction, not a judgment call; the human
+The row's correct content is `Unverified` plus a Findings or Open decisions entry. Implemented as
+**C016**: blocking at check time — a structural contradiction, not a judgment call; the human
 owns what blocks a merge.
 
 ---
@@ -239,7 +239,7 @@ PG-003 blocks `decision: accepted`. C012, C013, and waiver reconciliation ignore
 
 ---
 
-## V24 — inexact SOL QUESTION marker (SOL-S007, hard error)
+## V24 — inexact SOL QUESTION marker (blocking parse error)
 
 Each header is malformed:
 
@@ -249,12 +249,12 @@ QUESTION Q-002 [Blocking]:
 QUESTION Q-003 [deferred]:
 ```
 
-**Expected:** SOL-S007 fires. The only accepted headers use exact lowercase `[blocking]` or
-`[non-blocking]`, followed immediately by `:`.
+**Expected:** parsing fails. The only accepted headers use exact lowercase `[blocking]` or
+`[non-blocking]`, followed immediately by `:`. No separate SOL check code is emitted.
 
 ---
 
-## V7 — out-of-scope change unflagged (`trigger-coverage`, warning)
+## V7 — out-of-scope change (review checklist)
 
 A task whose Affected areas list `src/auth/refresh.ts`, reviewed by a packet that says:
 
@@ -269,9 +269,9 @@ A task whose Affected areas list `src/auth/refresh.ts`, reviewed by a packet tha
 None — all requirements pass.
 ```
 
-**Expected:** flagged — `src/billing/invoice.ts` is outside the task's Affected areas
-and no Findings or Open decisions entry routes it. An out-of-scope change is an exception trigger;
-the packet must surface it even when every requirement row is green.
+**Expected:** the reviewer flags `src/billing/invoice.ts` because it is outside the task's Affected
+areas and no Findings or Open decisions entry routes it. The deterministic checker receives no diff
+and does not claim this result.
 
 ---
 
@@ -296,7 +296,7 @@ id: SPEC-checkout
 ```
 
 **Expected:** flagged — two files claim `SPEC-checkout`, so every cross-reference to that
-id is ambiguous. Requirement ids stay spec-scoped (ADR-0080): `AC-NNN` may recur freely in
+id is ambiguous. Requirement ids are spec-scoped: `AC-NNN` may recur freely in
 another spec (a cross-spec reference qualifies as `SPEC-x#AC-NNN`); a duplicated id inside one
 file is C001, not C002.
 
@@ -315,7 +315,7 @@ Verify with: `npx jest sessions/expired`
 
 **Expected:** flagged as a split-candidate advisory — "must … and should …" in one requirement.
 Two strength words usually means two requirements; the report recommends a split, it does not
-perform one, and it never demands "exactly one" (ADR-0126: the requirement is at least one).
+perform one, and it never demands "exactly one"; the requirement needs at least one.
 
 ---
 
@@ -495,7 +495,7 @@ When the token expires, the client must refresh it.
 Verify with: `npm test -- refresh`
 ```
 
-**Expected:** flagged — `AC-004a` is not a legal requirement id (the `AC-NNN` shape is digits-only, per ADR-0058's frozen format), so the parser
+**Expected:** flagged — `AC-004a` is not a legal requirement id (`AC-NNN` is digits-only), so the parser
 reads the heading as plain prose: the requirement silently vanishes from scope and coverage, and a
 checker would report "clean" while an AC is invisible. The warning makes the disappearance visible.
 The fix is a digits-only id — a split requirement gets its own number (`AC-007`), not a suffix.
@@ -530,6 +530,6 @@ task packet it was handed, so C012/C013/C016 would key on the wrong slice; witho
 typo'd/renamed task ref silently bypasses the honesty checks. Blocking (structural, like C016).
 Deliberately narrow — the check keys on the `task:` ref only; the spec's identity is the reviewer's
 call, and a task-less review (no `task:` frontmatter) is out of C020's scope entirely (it reconciles
-spec-keyed, with no `--task`). Minted in ADR-0128; explicit-companion scope per ADR-0143. (A review
+spec-keyed, with no `--task`). (A review
 that names a task but is checked with no `--task` never reaches this check: the missing flag is
 itself a blocking usage error.)

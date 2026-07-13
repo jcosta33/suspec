@@ -187,6 +187,7 @@ Two consequences of that rule govern this ledger:
 | [0153](./0153-mcp-parity-and-compatibility.md) | Multi-path MCP checking, exact runtime compatibility, and a lean response envelope | **New (canon -> MCP) - accepted (2026-07-13)** - narrows 0085 and 0143 |
 | [0154](./0154-spec-backed-tasks-and-review-closure.md) | Spec-backed tasks, visible evidence forms, and mechanically closed review decisions | **New (canon -> skills/CLI) - accepted (2026-07-13)** - narrows 0151 and 0152; checks contract remains 0.18.0 |
 | [0155](./0155-revolver-sequential-resolution.md) | Revolver is an artifact-free sequential resolution loop with a target-derived stance floor | **New (canon -> skills) - accepted (2026-07-13)** - narrows 0117 and 0146; restores the operative 0132/0133 mechanism |
+| [0156](./0156-fixed-methods-stop-on-blockers.md) | Fixed methods execute and stop on concrete blockers without generic decision menus | **New (canon -> skills) - accepted (2026-07-13)** - narrows 0145 and 0155 |
 
 ## The new kernel ADRs (0027+), by topic
 

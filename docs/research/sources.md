@@ -503,9 +503,11 @@ explicit path, not Aider-directory adjacency.
 
 ## Rejected — DO NOT CITE (fabricated / misattributed / unconfirmed)
 
-The skill-authoring literature attributes load-bearing figures to these arXiv ids. **Direct fetch (June 2026) found each id resolves to an unrelated paper.** They are recorded here so the fabrication is never re-introduced (per this ledger's reject discipline).
+The skill-authoring literature attributes load-bearing figures to these arXiv ids. **Direct fetch
+(June 2026) found each id resolves to an unrelated paper.** They are recorded here so the
+fabrication is never re-introduced.
 
-> **Invariant (ADR-0090):** a Rejected entry MUST NOT carry an `<a id="…">` anchor. Because rejected entries are anchor-less by construction, any spec `[[KEY]]` citing one **dangles** and the C015 `citation-resolves` check ([ADR-0087](../adrs/0087-citation-anchor-check.md)) surfaces it — the high-precision safeguard that makes a separate "cited a Rejected source" tier check unnecessary (ADR-0090). Do not add an anchor to a rejected entry; doing so would silently make a forbidden citation resolve clean.
+Rejected entries carry no `<a id="...">` anchor. Do not cite them or add anchors to them.
 
 | Circulating claim | Cited as | What the id actually is | Verdict |
 | --- | --- | --- | --- |

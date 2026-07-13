@@ -64,14 +64,14 @@ below. A present value outside its declared set is a blocking contract error.
 | C001 | `unique-ids` | Requirement IDs are unique within a file. | hard-error |
 | C002 | `duplicate-id` | No other file checked in the same invocation uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard-error |
 | C003 | `verify-with` | Every requirement has a non-empty `Verify with:` or `VERIFY BY`. | hard-error |
-| C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate (advice, ADR-0126). SOL `INTERFACE` (IF-) is exempt — a signature declaration has no strength-word slot (ADR-0127). | warning |
+| C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate. SOL `INTERFACE` (`IF-`) is exempt because it is a declaration. | warning |
 | C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard-error |
 | C008 | `sources-named` | Frontmatter `sources:` names at least one origin. | warning |
 | C009 | `broken-source-link` | Path-shaped source refs resolve against the spec's own directory (artifact-relative). Bare tracker IDs are exempt. | hard-error |
 | C010 | `preserves-refs-resolve` | Change-plan `preserves:` entries resolve to requirements or `PG-NNN`; `SPEC-id#AC-NNN` refs resolve against the plan's sibling specs. | hard-error |
 | C011 | `waves-present` | Migration, rewrite, and schema-change plans have waves with verify steps. | warning |
 | C012 | `coverage` | Requirement coverage rows match the task scope and ready source spec. Change-plan coverage is outside C012. | warning |
-| C013 | `verify-evidence-binding` | Structured `verify` blocks in Requirement coverage match the requirement command and row assessment — a **consistency** check (nothing re-runs the command). Change-plan coverage is outside C013. A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard-error) |
+| C013 | `verify-evidence-binding` | Structured `verify` blocks in Requirement coverage match the requirement command and row assessment — a **consistency** check (nothing re-runs the command). Change-plan coverage is outside C013. A command mismatch is blocking; the other faces stay advisory. | warning (command mismatch: hard-error) |
 | C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`, itself resolved against the spec's own directory. | warning |
 | C016 | `supported-needs-evidence` | A `Supported` row with empty evidence is invalid. | hard-error |
 | C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. | warning |
@@ -87,7 +87,7 @@ Notes:
 
 - `AC-NNN` IDs are unique within a spec, not across files. Cross-spec references use `SPEC-id#AC-NNN`.
 - A `Verify with:` command that does not exist yet is not a spec defect. The requirement is `Unverified` until evidence exists.
-- The oversized-packet size band is specified-not-shipped (ADR-0097). Diff size is a reviewer judgment; no band is asserted.
+- Diff size remains reviewer judgment; no packet-size threshold is asserted.
 - The review-packet checks run against the companions the reviewer hands the checker — the
   review is never checked shallowly by accident, because a missing required companion is a
   blocking usage error, not a silent skip. C012 keys on the task's declared `scope` when the
@@ -129,112 +129,13 @@ These words are allowed only when the same line makes them checkable.
 | bundling | and, or, and/or | split requirements |
 | vague references | it, this, above | name the thing |
 
-## SOL checks
+## SOL syntax
 
-SOL-specific checks apply only to specs with `format: sol`.
+Specs with `format: sol` use SOL requirement openers and the same C checks listed above. The parser
+also rejects malformed `QUESTION` headers. Suspec publishes no separate SOL check-code family.
 
-The core C checks apply to both plain and SOL specs.
-
-SOL-specific codes are the reference contract. Use `suspec check --contract` to confirm
-which core checks are implemented in your installed version.
-
-### Structure
-
-| Code | Check |
-| --- | --- |
-| SOL-S001 | trigger without actor line |
-| SOL-S002 | unknown block type or clause |
-| SOL-S003 | actor line missing strength word |
-| SOL-S004 | duplicate block ID |
-| SOL-S005 | ID prefix does not match block type |
-| SOL-S006 | `SHOULD` or `SHOULD NOT` lacks `BECAUSE` or `EXCEPT` |
-| SOL-S007 | malformed header, including a `QUESTION` marker other than exact lowercase `[blocking]` or `[non-blocking]` |
-| SOL-S008 | metadata or prose before first control line |
-| SOL-S010 | unknown metadata field |
-| SOL-S011 | recognized block type with no ID |
-| SOL-S012 | required spec section missing or out of order |
-| SOL-S013 | hidden control or homoglyph characters |
-| SOL-S014 | required clause missing |
-
-### Prose
-
-| Code | Check |
-| --- | --- |
-| SOL-P001 | condition has no consequence |
-| SOL-P002 | actor missing |
-| SOL-P003 | strength word missing or lowercase |
-| SOL-P004 | multiple behaviors in one clause |
-| SOL-P005 | watchlist word without same-line criterion |
-| SOL-P006 | undefined term |
-| SOL-P007 | bare `MUST NOT` with no affirmative behavior |
-| SOL-P008 | uncertainty left in requirement prose |
-| SOL-P050 | pronoun has no unique antecedent |
-| SOL-P051 | passive voice hides actor |
-| SOL-P052 | sentence is too long |
-| SOL-P053 | not present tense / active voice |
-| SOL-P054 | decorative phrase adds no constraint |
-| SOL-P055 | repeated context adds nothing |
-| SOL-P056 | comparative has no baseline |
-| SOL-P057 | term drifts from glossary |
-| SOL-P058 | `SHALL` used as a strength word |
-
-### Cross-reference
-
-| Code | Check |
-| --- | --- |
-| SOL-M001 | actor, object, surface, or ID resolves nowhere |
-| SOL-M002 | direct contradiction |
-| SOL-M003 | `DEPENDS ON`, `IMPLEMENTS`, or `PRESERVES` reference missing |
-| SOL-M004 | lower-authority file weakens higher-authority requirement |
-
-### Verification
-
-| Code | Check |
-| --- | --- |
-| SOL-V001 | requirement, constraint, invariant, or interface lacks `VERIFY BY` |
-| SOL-V002 | `VERIFY BY` target does not resolve |
-| SOL-V003 | evidence cannot observe the claim |
-| SOL-V004 | support recorded against changed text or code |
-| SOL-V005 | invalid result or lifecycle marker |
-| SOL-V006 | interface not verified by contract check |
-| SOL-V007 | lifecycle marker on wrong result |
-| SOL-V008 | required binding has no result |
-| SOL-V009 | unknown evidence type |
-| SOL-V010 | manual or waived result lacks named human |
-| SOL-V011 | evidence does not state what it exercised |
-
-### Splitting
-
-| Code | Check |
-| --- | --- |
-| SOL-O001 | parallel tasks write same files |
-| SOL-O002 | dependency cycle |
-| SOL-O003 | blocking question reaches task split |
-| SOL-O004 | requirement lacks write/read scope |
-| SOL-O005 | task writes outside scope |
-| SOL-O006 | imported file duplicates policy requirement |
-| SOL-O007 | requirement assigned to no task |
-| SOL-O008 | requirement assigned to two implementing tasks |
-
-## Severity split
-
-Hard:
-
-- C001, C002, C003, C007, C009, C010, C016, C020, C021, C022, C023, C024
-- all SOL-S
-- SOL-P001-SOL-P008
-- all SOL-M
-- SOL-V001, SOL-V002, SOL-V004-SOL-V010
-- SOL-O001, SOL-O002, SOL-O003, SOL-O005, SOL-O007, SOL-O008
-
-Warning:
-
-- C004, C008, C011, C012, C013, C015, C019
-- SOL-P050-SOL-P058
-- SOL-V003, SOL-V011
-- SOL-O004, SOL-O006
-
-Teams may treat any warning as blocking by policy.
+See [structured requirements](structured-requirements.md) for the exact parsed syntax. Teams may
+treat any warning as blocking by policy.
 
 ## Related
 

@@ -1,82 +1,19 @@
-<!-- checks fixture — expected results pinned in EXPECTED.md (this file) -->
+<!-- checks fixture: expected results -->
 
-# checkout — expected check results
+# checkout
 
-Checks fixture for [the check catalogue](../../../docs/reference/checks.md): cart submission
-and checkout, with two seeded defects — a bundled requirement, and two requirements sharing
-one write area. The results below are known by hand. Rows citing core checks (C-codes) pin
-what suspec-cli's `suspec check` must report (toolable); SOL-code rows are the reference
-contract, applied as a review checklist — use `suspec check --contract` to confirm what
-your installed version implements.
+The plain and SOL specs represent the same three requirement IDs. Check each spec separately because
+they intentionally share `id: SPEC-checkout`.
 
-**Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
-share one `id:` — they are one spec written on both surfaces (this directory's equivalence
-pair), not two specs. A real run keeps only one form, so the pair itself never counts as a
-C002 duplicate.
+| Invocation target | Exit | Diagnostics |
+| --- | --- | --- |
+| `spec.md` | 0 | none |
+| `spec.sol.md` | 0 | none |
+| `task.md` | 0 | none |
+| `review.md` with `spec.md` and `task.md` | 1 | C013 warning on Supported AC-001 and AC-002 rows carrying free-form evidence only |
 
-## Seeded defects
+AC-001 bundles validation, charging, and email. AC-002 and AC-003 share a write area. Those are human
+review and task-splitting concerns; no deterministic check claims them.
 
-| Where                        | Defect                                                                             |
-| ---------------------------- | ---------------------------------------------------------------------------------- |
-| AC-001 (both files)          | Three separable behaviors bundled into one requirement (validate · charge · email) |
-| AC-002 + AC-003 (both files) | Both write `db/orders` — one write area shared by two requirements                 |
-
-## spec.md (plain form)
-
-| Check                             | Where  | Expected result                                            | Severity              |
-| --------------------------------- | ------ | ---------------------------------------------------------- | --------------------- |
-| C004 `one-strength-word`          | AC-001 | pass — exactly one "must" (the bundling hides behind it)   | —                     |
-| Writing-rules watchlist           | AC-001 | flagged — bundling connectives joining separable behaviors | advisory (convention) |
-| C001–C003, C008, C009 | —      | pass                                                       | —                     |
-
-C007 applies and passes: the spec is `status: ready`; its open question is explicitly non-blocking.
-
-The shared write area has no core check code in plain form: it surfaces only as the
-Affected-areas note and the open question, for a reviewer to catch (checklist).
-
-## spec.sol.md (`format: sol`)
-
-| Check                          | Where  | Expected result                                       | Severity   |
-| ------------------------------ | ------ | ----------------------------------------------------- | ---------- |
-| SOL-P004                       | AC-001 | **fires** — several separable behaviors in one clause | hard error |
-| Every other SOL code (in-file) | —      | pass                                                  | —          |
-
-Same defect, two surfaces: the bundling is advisory in plain form and SOL-P004 (hard error)
-in SOL form — choosing `format: sol` is choosing the stricter bar. The fix is the same in
-both: split AC-001 into one requirement per behavior, each with its own verification.
-
-## At task-splitting
-
-AC-002 and AC-003 share the write area `db/orders` — explicit `WRITES` clauses in SOL form,
-prose in plain form. Splitting them into two **parallel** tasks fires SOL-O001 (hard error):
-two parallel tasks writing the same files. The shipped `task.md` is the safe resolution —
-one task owns both requirements, so SOL-O001 does not fire on this fixture as shipped.
-
-## Equivalence assertion
-
-`spec.md` and `spec.sol.md` encode identical requirement records:
-
-| id     | strength | statement                                                                                                                                   | verification                                                               |
-| ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| AC-001 | must     | When the shopper submits the cart, the checkout service validates the cart and charges the card and emails the receipt (the seeded bundle). | `checkout.spec.ts#submit` — plain: unresolved note · SOL: resolved binding |
-| AC-002 | must     | When the charge succeeds, the checkout service writes the order record.                                                                     | `order-record.spec.ts#writes-order`                                        |
-| AC-003 | must     | When the charge succeeds, the checkout service appends the inventory ledger entry.                                                          | `inventory.spec.ts#writes-ledger`                                          |
-
-Spec-level record: same intent, non-goals, one non-blocking open question, affected areas,
-and sources in both files (SOL records the question as a `QUESTION` block; plain form as a
-bullet — same record). The SOL `WRITES` clauses are metadata refinement; plain form carries
-the same surfaces under Affected areas. A checker that reads different records out of the
-two files is wrong (the anti-fork rule).
-
-## task.md and review.md
-
-| Check              | Where                      | Expected result                                                          |
-| ------------------ | -------------------------- | ------------------------------------------------------------------------ |
-| `supported-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                           |
-| `supported-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Supported |
-| `coverage` (C012) | review vs spec scope | pass — every in-scope AC has one Requirement coverage row |
-| `verify-evidence-binding` (C013) | Supported review rows | fires at warning — the ready spec makes C013 applicable and the evidence is free-form |
-| C022 `task-shape` | task | pass — frontmatter and required sections are valid |
-| `no-open-critical` | review | pass — the pending review may retain its non-empty Open decisions section |
-
-_Task-side note: C023 `task-evidence` passes because `## Verify` contains the exact `CI:` URL._
+The parser paths must expose AC-001, AC-002, and AC-003 with a non-empty named verification command
+for each requirement.

@@ -60,5 +60,5 @@ parallel tasks on one write area conflict.
 
 ## Run summary
 
-- (unfilled at this packet's `review-ready` stage — the closing digest lands here; a missing
-  section at `closed` is the V16 hard error)
+- (unfilled at this packet's `review-ready` stage — the closing digest lands here; C022 rejects a
+  missing section)

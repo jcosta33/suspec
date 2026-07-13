@@ -1,40 +1,12 @@
 # Structured requirements (SOL)
 
-> **Experimental annex.** SOL is shipped and parsed (`format: sol`), but it sits outside the
-> recommended path: controlled requirement syntax (EARS-style clauses) is an established
-> convention elsewhere ([[KIRO]](../research/sources.md#KIRO)), and design rationale — not a
-> measured result — is why SOL exists, and it has **no measured LLM-side result** of its own.
-> Use it if your risk profile wants it; nothing else in Suspec depends on it.
+> **Experimental annex.** SOL is parsed through `format: sol`, but plain Markdown is the
+> recommended spec form. SOL has no measured LLM-side result of its own. Use it only when its
+> stricter visual notation helps the work.
 
-SOL is the stricter spec form.
+SOL changes requirement openers. It does not create a second check catalog.
 
-Use it by adding this frontmatter:
-
-```yaml
-format: sol
-```
-
-Plain markdown is the default. SOL is useful for high-risk specs or specs you want a parser to read.
-
-## Shared model across plain and SOL surfaces
-
-Plain specs and SOL specs produce the same requirement record:
-
-```text
-{ id, strength, statement, verify_refs[], kind, edges[] }
-```
-
-Shared rules:
-
-- IDs are unique within a file.
-- Requirement IDs are spec-scoped.
-- Cross-spec references use `SPEC-id#AC-NNN`.
-- Every requirement needs verification.
-- Review consumes the same assessments: `Supported`, `Unsupported`, `Unverified`, `Blocked`.
-
-## Selector
-
-The frontmatter field is the selector. Filename suffixes carry no Suspec meaning.
+## Select SOL
 
 ```yaml
 ---
@@ -42,160 +14,90 @@ type: spec
 id: SPEC-auth-refresh
 status: draft
 format: sol
+sources: [ISSUE-123]
 ---
 ```
 
-## Block rules
+The `format` value is exact and case-sensitive. Filename suffixes carry no meaning.
 
-- Header is flush-left: `REQ AC-001:`.
-- Body runs until the next block header or heading — a blank line does not end it.
-- Keywords are uppercase and case-sensitive.
-- Condition text is opaque. No expression syntax.
-- Do not put blank lines inside a block: the parser folds whatever follows into the
-  same body instead of stopping, so stray text gets absorbed silently.
+## Parsed syntax
 
-## Block types
+The checker recognizes these flush-left openers only when `format: sol` is present:
 
-| Block | ID prefix | Use |
-| --- | --- | --- |
-| `REQ` | `AC-` | required behavior |
-| `CONSTRAINT` | `C-` | solution boundary |
-| `INVARIANT` | `I-` | always-held property |
-| `INTERFACE` | `IF-` | declared boundary |
-| `QUESTION` | `Q-` | unresolved ambiguity |
+```text
+REQ AC-001:
+CONSTRAINT C-001:
+INVARIANT I-001:
+INTERFACE IF-001:
+```
 
-## REQ
+The opener keyword is exact and uppercase. The ID shape is uppercase letters or digits, a hyphen,
+then digits. Use `AC-`, `C-`, `I-`, and `IF-` as shown; the parser does not enforce keyword-to-prefix
+matching.
+
+The body continues until another recognized SOL opener or a Markdown heading at level 1-3. Blank
+lines do not close it. Fenced examples are ignored as structure and evidence.
+
+A non-empty line beginning with `VERIFY BY` supplies the same verification-command field that plain
+specs supply with `Verify with:`:
 
 ```sol
 REQ AC-001:
-WHEN the user submits the signup form
-AND the email field is empty
+WHEN the user submits an empty email
 THE client MUST show "Email is required"
-AND THE client MUST NOT send a signup request
-VERIFY BY test:cmdTest:signup-empty-email
-DEPENDS ON AC-000
-WRITES src/signup/**
-RISK medium
+VERIFY BY npm test -- signup-empty-email
 ```
 
-Rules:
+The checker treats the remaining body as text. It does not parse a method grammar, metadata clauses,
+dependency edges, actors, triggers, contradictions, or task splits.
 
-- Conditions use `WHERE`, `WHILE`, `WHEN`, or `IF`.
-- `THE <actor> <STRENGTH> <response>` is required.
-- `AND THE ...` adds another consequence under the same condition.
-- `SHOULD` and `SHOULD NOT` need `BECAUSE` or `EXCEPT`.
-- `VERIFY BY` is required.
+## Questions
 
-## CONSTRAINT
-
-```sol
-CONSTRAINT C-001:
-THE auth client MUST NOT import from `server/*`
-BECAUSE the client bundle must not embed server-only secrets
-VERIFY BY static:cmdLint:dependency-boundary-check
-AFFECTS src/auth/**
-```
-
-Use constraints for how requirements may be satisfied.
-
-## INVARIANT
-
-```sol
-INVARIANT I-001:
-A user MUST NOT have more than one active refresh token family
-VERIFY BY property:cmdTest:token-family-invariant
-```
-
-Use invariants for properties that must hold across states.
-
-## INTERFACE
-
-```sol
-INTERFACE IF-001:
-`refreshSession` RETURNS `Session | AuthExpired`
-ACCEPTS:
-  - `refreshToken: string`
-ERRORS:
-  - network-timeout
-  - invalid-refresh-token
-OWNED BY auth-client
-VERIFY BY contract:cmdContract:refresh-session-contract
-```
-
-Interfaces use contract verification.
-
-## QUESTION
+Question headers are exact:
 
 ```sol
 QUESTION Q-001 [blocking]:
-Should expired sessions redirect to `/login` or show inline re-auth?
-AFFECTS AC-001
+Should expired sessions redirect or show inline re-auth?
+
+QUESTION Q-002 [non-blocking]:
+Which telemetry label should be preferred?
 ```
 
-The header marker is required and exact: lowercase `[blocking]` or `[non-blocking]`, followed
-immediately by `:`. Missing markers, different casing, and every other marker are malformed
-headers (SOL-S007). A spec with a blocking question stays `draft`.
+Only lowercase `[blocking]` and `[non-blocking]` are accepted. Any other line beginning with
+`QUESTION` is a parse error. A blocking question prevents `status: ready` through C007.
 
-## Strength words
+Questions are not requirement records and do not enter review coverage.
 
-| Word | Meaning |
-| --- | --- |
-| `MUST` | required |
-| `MUST NOT` | forbidden |
-| `SHOULD` | default; needs reason or exception |
-| `SHOULD NOT` | default prohibition; needs reason or exception |
-| `MAY` | permitted |
+## Authoring convention
 
-Do not use `SHALL` as a strength word.
+The parser does not enforce these clauses, but this compact shape keeps SOL readable:
 
-## VERIFY BY
+```sol
+CONSTRAINT C-001:
+THE auth client MUST NOT import from server-only modules
+BECAUSE client bundles cannot contain server secrets
+VERIFY BY pnpm lint
 
-```text
-VERIFY BY <method>[:<scope>]:<adapter>:<artifact>[#<selector>]
+INVARIANT I-001:
+A user MUST NOT have more than one active refresh-token family
+VERIFY BY pnpm test -- token-family
+
+INTERFACE IF-001:
+refreshSession accepts a refresh token and returns Session or AuthExpired
+VERIFY BY pnpm test -- refresh-session-contract
 ```
 
-Methods:
+Use `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` for obligations. Keep one behavior per
+requirement. State optional dependency, affected-area, or risk notes as ordinary body text only when
+they help a human reader.
 
-- `static`
-- `test`
-- `contract`
-- `property`
-- `model`
-- `perf`
-- `security`
-- `manual`
-- `monitor`
+## Checks
 
-For `test`, scope may be `unit`, `integration`, or `e2e`.
+SOL and plain requirements enter the same structural check record: ID, source line, body, and named
+verification command. The implemented [core checks](checks.md#core-checks) then apply to both forms.
 
-Adapters name commands the project itself defines — its own test, lint, or contract
-runners. Suspec resolves nothing; the adapter label tells the reader which project command
-proves the requirement.
-
-## Metadata
-
-| Clause | Use |
-| --- | --- |
-| `DEPENDS ON` | ordering |
-| `WRITES` | write surface |
-| `READS` | read surface |
-| `AFFECTS` | impacted IDs or paths |
-| `RISK` | `low`, `medium`, `high`, or `critical` |
-
-Metadata informs splitting and review. It does not add behavior.
-
-## Check status
-
-Core checks apply to SOL specs.
-
-SOL-specific checks are the contract in [checks](checks.md).
-
-Treat them as checklist items unless the checks contract (`suspec check --contract`) lists
-them as implemented.
-
-## Versioning
-
-SOL is unversioned. `format: sol` is the parser hook.
+SOL adds one parser error for malformed `QUESTION` headers. No `SOL-S`, `SOL-P`, `SOL-M`, `SOL-V`, or
+`SOL-O` checker codes are implemented or published as contract.
 
 ## Related
 

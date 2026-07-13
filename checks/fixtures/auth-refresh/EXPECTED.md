@@ -1,74 +1,25 @@
-<!-- checks fixture — expected results pinned in EXPECTED.md (this file) -->
+<!-- checks fixture: expected results -->
 
-# auth-refresh — expected check results
+# auth-refresh
 
-Checks fixture for [the check catalogue](../../../docs/reference/checks.md): silent token
-refresh on 401, with two seeded spec defects. The results below are known by hand. Rows
-citing core checks (C-codes) pin what suspec-cli's `suspec check` must report (toolable);
-SOL-code rows are the reference contract, applied as a review checklist — use
-`suspec check --contract` to confirm what your installed version implements.
+The plain and SOL specs represent the same three requirement IDs. Both seed one deterministic
+defect: AC-002 has no verification command. Check each spec separately because they intentionally
+share `id: SPEC-auth-refresh`.
 
-**Check scope.** Each file is checked standalone. `spec.md` and `spec.sol.md` intentionally
-share one `id:` — they are one spec written on both surfaces (this directory's equivalence
-pair), not two specs. A real run keeps only one form, so the pair itself never counts as a
-C002 duplicate.
+| Invocation target | Exit | Diagnostics |
+| --- | --- | --- |
+| `spec.md` | 2 | C003 on AC-002 |
+| `spec.sol.md` | 2 | C003 on AC-002 |
+| `task.md` | 0 | none |
+| `review.md` with `spec.md` and `task.md` | 1 | C013 warning on Supported AC-001 and AC-003 rows carrying free-form evidence only |
 
-## Seeded defects
+The writing watchlist flags AC-003's "handle ... gracefully" in both forms. That is a human
+checklist result, not a deterministic diagnostic.
 
-| Where               | Defect                                                          |
-| ------------------- | --------------------------------------------------------------- |
-| AC-002 (both files) | No verification line                                            |
-| AC-003 (both files) | "handle … gracefully" — watchlist words, no same-line criterion |
+The parser paths must expose the same IDs and named verification commands:
 
-## spec.md (plain form)
-
-| Check                             | Where  | Expected result                                                                            | Severity              |
-| --------------------------------- | ------ | ------------------------------------------------------------------------------------------ | --------------------- |
-| C003 `verify-with`                | AC-002 | **fires** — no `Verify with:` line                                                         | hard error            |
-| Writing-rules watchlist           | AC-003 | flagged — vague verb plus non-verifiable quality; nothing on the line says how to check it | advisory (convention) |
-| C001, C002, C004, C008, C009 | —      | pass                                                                                       | —                     |
-
-C007 applies and passes: the spec is `status: ready` with no blocking open question.
-
-## spec.sol.md (`format: sol`)
-
-| Check                | Where  | Expected result                                                   | Severity   |
-| -------------------- | ------ | ----------------------------------------------------------------- | ---------- |
-| SOL-V001             | AC-002 | **fires** — no `VERIFY BY`                                        | hard error |
-| SOL-P005             | AC-003 | **fires** — watchlist word with no same-line observable criterion | hard error |
-| Every other SOL code | —      | pass                                                              | —          |
-
-The same two defects on two surfaces: C003 and SOL-V001 are one rule asked of two forms.
-Note the asymmetry on AC-003 — the watchlist hit is advisory in plain form, while SOL-P005
-is a hard error: choosing `format: sol` is choosing the stricter bar.
-
-## Equivalence assertion
-
-`spec.md` and `spec.sol.md` encode identical requirement records:
-
-| id     | strength | statement                                                                                                                              | verification                                                                                  |
-| ------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| AC-001 | must     | When a request returns 401 and a refresh token is present, the auth client replays the original request once with a refreshed session. | `auth-refresh.spec.ts#replays-after-refresh` — plain: unresolved note · SOL: resolved binding |
-| AC-002 | must     | When the refresh token is itself expired, the auth client redirects to `/login`.                                                       | none in either form (the seeded defect)                                                       |
-| AC-003 | must     | When the refresh request times out, the auth client handles the failure gracefully.                                                    | `auth-refresh.spec.ts#timeout`                                                                |
-
-Spec-level record: same intent, non-goals, open questions (none), affected areas, and
-sources in both files. The SOL `WRITES` clauses are metadata refinement — plain form carries
-the same paths under Affected areas. A checker that reads different records out of the two
-files is wrong (the anti-fork rule).
-
-## task.md and review.md
-
-| Check              | Where                      | Expected result                                                          |
-| ------------------ | -------------------------- | ------------------------------------------------------------------------ |
-| `supported-needs-evidence` (C016)  | review rows AC-001, AC-003 | pass — output pasted or linked                                           |
-| `supported-needs-evidence` (C016)  | review row AC-002          | the Evidence cell is empty, so the row reads **Unverified** — never Supported |
-| `coverage` (C012) | review vs spec scope | pass — every in-scope AC has one Requirement coverage row |
-| `verify-evidence-binding` (C013) | Supported review rows | fires at warning — the ready spec makes C013 applicable and the evidence is free-form |
-| C022 `task-shape` | task | pass — frontmatter and required sections are valid |
-| `no-open-critical` | review | pass — the pending review may retain its non-empty Open decisions section |
-
-These are checklist-level rules; `suspec check`'s packet mode can flag the mechanical
-parts (the empty Evidence cell).
-
-_Task-side note: C023 `task-evidence` passes because `## Verify` contains the exact `CI:` URL._
+| ID | Plain | SOL |
+| --- | --- | --- |
+| AC-001 | `auth-refresh.spec.ts#replays-after-refresh` | `test:cmdTest:auth-refresh.spec.ts#replays-after-refresh` |
+| AC-002 | none | none |
+| AC-003 | `auth-refresh.spec.ts#timeout` | `test:cmdTest:auth-refresh.spec.ts#timeout` |

@@ -39,7 +39,6 @@ review names a split task) flags the mechanical parts:
 | [`fixtures/conformant-task.md`](./fixtures/conformant-task.md)            | A task packet that passes every task check — the positive oracle.                                                                                                                                                                                                                    |
 | [`fixtures/violations.md`](./fixtures/violations.md)                      | One minimal negative fixture per violation class, each with the check it trips and the expected report.                                                                                                                                                                              |
 | `fixtures/auth-refresh/` · `fixtures/payment-5xx/` · `fixtures/checkout/` | End-to-end scenarios: a spec in both forms, a task packet, a review packet, and an `EXPECTED.md` pinning the relevant checker and review facts. |
-| [`fixtures/prose-fixtures/`](./fixtures/prose-fixtures/README.md)          | Labeled prose spans for evaluating an advisory writing-rules detector. |
 | `fixtures/transformation/`                                                | A valid inventory + change-plan pair; its `EXPECTED.md` pins `C010 preserves-refs-resolve` and `C011 waves-present`.                                                                                                                                                                 |
 | `fixtures/cross-folder-source/`                                           | A spec whose `sources:` points across folders; its `EXPECTED.md` pins `C009 broken-source-link` artifact-relative resolution.                                                                                                                                                        |
 | `fixtures/attention-economy/`                                             | Minimal and deferred specs, assessed and waived reviews, human decision capture, and receipt-backed evidence.                                                                                                                                                                      |
@@ -61,16 +60,12 @@ same artifact chain:
 | `fixtures/payment-5xx/`  | [bug-fix](../docs/examples/bug-fix.md)                         |
 | `fixtures/checkout/`     | [large-pr-review](../docs/examples/large-pr-review.md)         |
 
-## The equivalence pairs (the anti-fork proof)
+## Plain and SOL pairs
 
-A spec is written in plain structured markdown by default, or in the stricter SOL
-notation per file via frontmatter `format: sol` — but both surfaces encode one and the
-same requirement record, and every check keys on the record, never the surface
-(see [structured requirements](../docs/reference/structured-requirements.md)). Each
-domain therefore ships the **same spec in both forms**, and its `EXPECTED.md` pins that
-a checker extracts the identical record set — same requirement IDs, same strength words,
-same verification references — from either file. If the plain and SOL forms ever drift into
-different check behavior, these pairs are the fixtures that catch it.
+A spec uses plain structured Markdown by default or SOL openers through `format: sol`. Both parser
+paths produce the structural fields consumed by the same C checks: requirement ID, source line,
+body, and named verification command. Each domain pair pins the same implemented diagnostic result
+for equivalent plain and SOL inputs. The pair makes no claim about unimplemented semantic parsing.
 
 ## Reference values (reconciliation) — producer note
 
@@ -85,8 +80,6 @@ updates this producer note and the fixtures that exercise it in the same commit.
 | Strength words             | must, must not, should, should not, may (SOL form: the same words uppercase)                                      |
 | Review assessments         | `Supported`, `Unsupported`, `Unverified`, `Blocked`                                                                           |
 | Artifact types             | `spec`, `task`, `review`, `inventory`, `change-plan`, `audit`, `research`, `inspection` |
-| Verification methods       | `static`, `test`, `contract`, `property`, `model`, `perf`, `security`, `manual`, `monitor`                        |
-| Check layers               | S (structure), P (prose), M (cross-references), V (verification), O (splitting work) — code form `SOL-<LAYER>NNN` |
 
 Reconciliation duties this note carries:
 
@@ -101,14 +94,10 @@ Reconciliation duties this note carries:
 ## How a checker uses this directory
 
 1. Read the rules from [`checks.yaml`](./checks.yaml). The
-   [checks reference](../docs/reference/checks.md) must agree over the core checks and packet schemas;
-   the SOL catalogue is prose-only and lives in the reference).
+   [checks reference](../docs/reference/checks.md) must agree over the core checks and packet schemas.
 2. Run over [`fixtures/conformant-task.md`](./fixtures/conformant-task.md): the expected
    report is empty.
 3. Run over each snippet in [`fixtures/violations.md`](./fixtures/violations.md): each
    must produce exactly the named check at the named severity.
-4. Run over each domain's artifacts and compare against its `EXPECTED.md` — including
-   the equivalence pair, where both spec forms must yield the same record set.
-5. Compare any writing-rules detector against the labels in
-   [`fixtures/prose-fixtures/labeled.yaml`](./fixtures/prose-fixtures/labeled.yaml), reporting
-   precision, recall, and mismatched codes without asserting an unevaluated target.
+4. Run over each domain's artifacts and compare against its `EXPECTED.md`, including the plain/SOL
+   pair's implemented diagnostics.

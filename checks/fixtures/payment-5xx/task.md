@@ -10,8 +10,8 @@ status: review-ready
 
 # Task: Payment provider 5xx handling
 
-<!-- Seeded defect carrier: this task was prepared while the spec's blocking question was
-     still open — the situation EXPECTED.md pins as SOL-O003 at task-splitting. -->
+<!-- Human-review defect carrier: this task was prepared while the spec's blocking question was
+     still open. The deterministic checker does not claim to detect task-split timing. -->
 
 ## Source
 
@@ -58,5 +58,5 @@ Implement or preserve:
 
 ## Run summary
 
-- (unfilled at this packet's `review-ready` stage — the closing digest lands here; a missing
-  section at `closed` is the V16 hard error)
+- (unfilled at this packet's `review-ready` stage — the closing digest lands here; C022 rejects a
+  missing section)
