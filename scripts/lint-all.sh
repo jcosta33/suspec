@@ -7,7 +7,8 @@
 #
 #   lint-product-citations.sh   no ADR/AUDIT/source-URL citations in product bodies
 #   lint-count-ranges.sh        no hardcoded count-bearing ADR ranges in bootstrap prose
-#   lint-accepted-adrs.sh       accepted ADR bodies 0001-0154 match the frozen digest
+#   lint-accepted-adrs.sh       every numbered accepted ADR matches the frozen digest
+#   lint-released-changelog.sh  released skill-catalog history matches the frozen digest
 #   lint-method-topology.sh     exact skill set, current names, checks contract, no custom agents
 #   lint-skill-isolation.sh     standalone skill bodies and artifact lifecycle rules
 #   lint-skill-catalog.sh       skill metadata and catalog coverage
@@ -22,7 +23,7 @@ HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DEV_DIR="${1:-$(CDPATH= cd -- "$HERE/../.." && pwd)}"
 
 rc=0
-for gate in lint-product-citations lint-count-ranges lint-accepted-adrs lint-method-topology lint-skill-isolation lint-skill-catalog; do
+for gate in lint-product-citations lint-count-ranges lint-accepted-adrs lint-released-changelog lint-method-topology lint-skill-isolation lint-skill-catalog; do
     echo "--- $gate ---"
     if ! sh "$HERE/$gate.sh" "$DEV_DIR"; then
         rc=1

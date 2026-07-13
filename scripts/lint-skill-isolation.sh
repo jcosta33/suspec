@@ -48,6 +48,14 @@ for file in "$skills"/skills/*/SKILL.md; do
     }
   done
 
+  flattened=$(tr '\n' ' ' < "$file")
+  if grep -qiE 'picker|structured choices|human-readable choices|Delete, Leave, or Promote' "$file"; then
+    printf '%s\n' "$flattened" | grep -Fqi 'Without a picker, render the same numbered options plus `Other`.' || {
+      echo "structured choice lacks a no-picker fallback in $name" >&2
+      exit 1
+    }
+  fi
+
   if grep -q 'After creating an artifact successfully' "$file"; then
     echo "obsolete artifact-only handoff in $name" >&2
     exit 1
@@ -55,7 +63,6 @@ for file in "$skills"/skills/*/SKILL.md; do
 
   case " $artifact_writers " in
     *" $name "*)
-      flattened=$(tr '\n' ' ' < "$file")
       if [ "$name" != disrespec ]; then
         grep -Fq '~/.agents/artifacts/<workspace>/' "$file" || {
           echo "neutral artifact root missing in $name" >&2
@@ -100,6 +107,29 @@ for file in "$skills"/skills/*/SKILL.md; do
       }
       ;;
   esac
+done
+
+grep -Fq 'For a compact check with no inspection artifact' "$skills/skills/bulletproof/SKILL.md" || {
+  echo "bulletproof compact handoff missing" >&2
+  exit 1
+}
+remember=$(tr '\n' ' ' < "$skills/skills/remember/SKILL.md")
+for phrase in 'non-empty transient artifact set created or consumed by the active work' \
+  'Repository-native and other durable inputs never enter disposition' \
+  'no downstream step needs any member or sidecar'; do
+  printf '%s\n' "$remember" | grep -Fqi "$phrase" || {
+    echo "remember lifecycle guard missing: $phrase" >&2
+    exit 1
+  }
+done
+execution=$(tr '\n' ' ' < "$skills/docs/execution.md")
+for phrase in 'non-empty transient artifact-and-sidecar set created or consumed by the active work' \
+  'Repository-native and other durable inputs never enter disposition' \
+  'no earlier prompt and no downstream consumer'; do
+  printf '%s\n' "$execution" | grep -Fqi "$phrase" || {
+    echo "execution lifecycle guard missing: $phrase" >&2
+    exit 1
+  }
 done
 
 grep -Fq 'Never activate merely because another skill writes an artifact' \
