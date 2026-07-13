@@ -43,8 +43,8 @@ decisions land in `docs/adrs/`.
 - **Honesty framework (ADR-0063).** Rules carry a level: convention · checklist · toolable
   (names suspec-cli's command) · enforced (only with a shipped tool). Never
   write enforcement-sounding claims without a level.
-- **Current vocabulary.** Suspec owns specs, tasks, reviews, inventories, change plans, audits,
-  research, and inspections. Evidence receipts and run notes are untyped sidecars. Artifacts are
+- **Current vocabulary.** Suspec owns specs, tasks, reviews, inventories, change plans, audits, and
+  research. Evidence receipts and run notes are untyped sidecars. Artifacts are
   scaffold pulled in only when work earns them.
   The checker reports facts and severity levels; only a human owns a review result.
 - **No inventory-count ceremony.** Do not publish totals for repositories, skills, artifacts, or

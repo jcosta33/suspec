@@ -13,8 +13,8 @@ artifact status or lifecycle registry. Decision history lives in the [ADR ledger
 
 ## Working artifacts
 
-The current shapes for specs, tasks, reviews, inventories, change plans, audits, research, and
-inspections are defined in [artifact formats](reference/artifact-formats.md). Skills
+The current shapes for specs, tasks, reviews, inventories, change plans, audits, and research are
+defined in [artifact formats](reference/artifact-formats.md). Skills
 place them in the agent-neutral artifact workspace and carry their absolute paths through
 each handoff.
 

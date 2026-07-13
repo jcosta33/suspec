@@ -46,7 +46,7 @@ one process, not a second command.
   deeper or accepts another filename. Every other check has no opinion on file placement.
 - **Kind from frontmatter.** The primary artifact's kind is read from its own required `type:`
   frontmatter, never from its filename or location. Missing and unknown types are blocking usage
-  errors. `inventory`, `audit`, `research`, and `inspection` are recognized and return
+  errors. `inventory`, `audit`, and `research` are recognized and return
   `checked: false`; `spec`, `task`, `review`, and `change-plan` have checker faces.
 - **Report identity is explicit.** Every per-artifact JSON report repeats its recognized `type`.
   Checked faces carry diagnostics; unchecked types carry `checked: false`. The optional final
@@ -126,7 +126,7 @@ version and check definitions.
 `suspec-mcp` adapts checking for shell-less runners. `suspec_check` accepts a non-empty array of
 absolute primary paths and preserves input order through one CLI invocation, including C002. One
 review target may add explicit `specPath` and `taskPath` companions. The adapter validates every
-CLI payload and requires checks contract `0.18.0` (level: toolable - suspec-mcp).
+CLI payload and requires checks contract `0.19.0` (level: toolable - suspec-mcp).
 
 ## Related
 

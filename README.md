@@ -25,8 +25,9 @@ check catch what discipline alone misses.
 ## What Suspec is
 
 1. **The skill family is the product** — installed once, globally for your runner
-   (`npx skills add jcosta33/suspec-skills -g -a codex` for Codex). Standalone methods inspect,
-   compress, promote, and preserve lessons; canonical authors produce the owned artifacts. A
+   (`npx skills add jcosta33/suspec-skills -g -a codex` for Codex). Standalone methods verify,
+   attack, dissect, compress, fork ambiguity, promote, and preserve lessons; canonical authors
+   produce the owned artifacts. A
    capable harness plus the skills is a complete install (level: convention).
 2. **The checker reinforces the method** — [suspec-cli](https://github.com/jcosta33/suspec-cli).
    `suspec check` runs deterministic checks over specs, tasks, reviews, and change plans:
@@ -42,7 +43,7 @@ Every step keeps a by-hand path; no step requires a tool (level: convention).
 
 | Universal methods | Canonical artifact authors |
 | --- | --- |
-| `bulletproof`, `demolition`, `dissect`, `disrespec` | `sus-spec`, `sus-task`, `sus-review` |
+| `bulletproof`, `demolition`, `dissect`, `disrespec`, `fork-me` | `sus-spec`, `sus-task`, `sus-review` |
 | `revolver`, `triple-check`, `promote`, `remember` | `sus-inventory`, `sus-change-plan`, `sus-audit`, `sus-research` |
 
 Each skill works when installed alone. Native harness workers implement code and provide fresh

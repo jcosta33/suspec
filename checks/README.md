@@ -79,7 +79,7 @@ updates this producer note and the fixtures that exercise it in the same commit.
 | Block types (SOL form)     | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`                                                         |
 | Strength words             | must, must not, should, should not, may (SOL form: the same words uppercase)                                      |
 | Review assessments         | `Supported`, `Unsupported`, `Unverified`, `Blocked`                                                                           |
-| Artifact types             | `spec`, `task`, `review`, `inventory`, `change-plan`, `audit`, `research`, `inspection` |
+| Artifact types             | `spec`, `task`, `review`, `inventory`, `change-plan`, `audit`, `research` |
 
 Reconciliation duties this note carries:
 

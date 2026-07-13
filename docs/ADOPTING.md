@@ -10,7 +10,7 @@ Adopting begins with the global skill install. Nothing lands in your repo.
    npx skills add jcosta33/suspec-skills -g -a codex
    ```
 
-   That is a complete install: the standalone skills carry inspection methods, artifact authors,
+   That is a complete install: the standalone skills carry verification methods, artifact authors,
    promotion, concise writing, and durable-lesson routing
    (level: convention). Repo-specific guides — your commands, architecture, and
    conventions — stay committed in the repository they describe; they do not fork the
@@ -51,8 +51,8 @@ Start small and run the whole loop once. The loop is proportioned to feature-siz
 a trivial fix earns one-line inline intent and no files at all; see
 [the bug-fix example](examples/bug-fix.md) for that shorter path.
 
-Ordinary conversation and direct action create no Suspec artifact. The applicable workflow still
-creates any artifact it requires as a live input; the user need not ask for a file by name.
+Only `sus-*` artifact authors create Suspec artifacts. They create one when requested or
+required as a live workflow input.
 
 1. Author a spec through the skill: intent and requirements with `AC-NNN` ids, each with a
    `Verify with:` line. Add non-goals or other sections only when they carry information. Place the file under

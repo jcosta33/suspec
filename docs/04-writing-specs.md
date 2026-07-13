@@ -44,11 +44,9 @@ uses a binding word, and ends with `Verify with:`. Keep uncertainty out of requi
 
 ## Decision gate
 
-Investigate discoverable facts before asking. Resolve reversible, convention-bound details.
-For material behavior, public contracts, security tradeoffs, costly choices, conflicting
-authority, or irreversible actions, use the harness picker: recommendation first, three
-genuine options by default, two for binary choices, one-sentence tradeoffs, and `Other`.
-Without a picker, render the same numbered choices plus `Other`. Never ask a bare question.
+Resolve discoverable facts and reversible conventions. Fork every remaining ambiguity through the
+harness-native picker: recommendation first, at least three genuine options, each reason and cost
+stated plainly, plus `Other`. An unavailable picker blocks dependent work.
 
 Batch only independent decisions. Record unresolved decisions under `Open questions`, keep
 the spec `draft`, and block dependent work. `ready` means no blocking decision or unresolved

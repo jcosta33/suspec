@@ -15,9 +15,8 @@ A dispatch prompt names:
 - required commands
 - the expected return shape
 
-Workers never discover Suspec artifacts. A review receives its spec and optional task paths. An
-implementation receives its spec and, when work is split, its task path. An inspection receives
-one fixed target.
+Workers receive explicit inputs. A review receives its spec and optional task paths. Implementation
+receives its spec and, when split, its task path. A universal method receives one fixed target.
 
 ## Independence
 

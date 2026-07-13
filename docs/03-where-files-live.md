@@ -92,7 +92,6 @@ already own it:
 | a lesson | a review finding or run note | native memory, an issue, or a test |
 | a split slice | a task | nothing; the spec stays the contract |
 | a change strategy | an inventory and change plan | the code and project records that land it |
-| an inspection | an inspection plus optional sidecars | verified fixes and project records |
 
 See [saving findings](09-saving-findings.md) for the memory route. Whole-document
 promotion uses `promote`: discover the project's durable destinations, select

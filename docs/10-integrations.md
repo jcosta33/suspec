@@ -42,7 +42,7 @@ The full surface and the checks it runs: [CLI reference](reference/cli.md) and
 `suspec_check`, `suspec_get_checks`, and the checks-contract resource. `suspec_check` accepts a
 non-empty array of absolute primary paths, preserves input order, and passes the set through one CLI
 invocation so C002 remains available. One review target may add explicit `specPath` and `taskPath`
-companions. The server validates every CLI payload and requires checks contract `0.18.0`. Its
+companions. The server validates every CLI payload and requires checks contract `0.19.0`. Its
 response envelope is `ok`, `source`, `data`, optional `note`, and `responseFormat`. An agent that can
 run shell commands does not need MCP.
 

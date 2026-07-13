@@ -122,10 +122,6 @@ require_writer inventory sus-inventory
 require_writer change-plan sus-change-plan
 require_writer audit sus-audit
 require_writer research sus-research
-grep -Fq '| `inspection` | `bulletproof`, `demolition`, or `triple-check` |' "$formats" || {
-  echo "inspection writer ownership drift" >&2
-  exit 1
-}
 stale_methods='concise-output|revolver-review|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|market-research|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr|write-audit|write-bug-report|write-change-plan|write-documentation|write-feature|write-fix|write-inventory|write-migration|write-performance|write-prd|write-refactor|write-research|write-rewrite|write-rfc|write-testing'
 if grep -RniE --exclude-dir=adrs "(^|[^[:alnum:]-])($stale_methods)([^[:alnum:]-]|$)" \
   "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$canon/checks" \
@@ -141,7 +137,7 @@ if grep -RniE --exclude-dir=adrs 'suspec-agents|canonical agent|Codex projection
   exit 1
 fi
 
-grep -q '^version: 0\.18\.0' "$canon/checks/checks.yaml" || {
+grep -q '^version: 0\.19\.0' "$canon/checks/checks.yaml" || {
   echo "checks contract version drift" >&2
   exit 1
 }
@@ -173,7 +169,7 @@ grep -Fq '  checked: [spec, task, review, change-plan]' "$canon/checks/checks.ya
   echo "checked artifact matrix drift" >&2
   exit 1
 }
-grep -Fq '  recognized_unchecked: [inventory, audit, research, inspection]' "$canon/checks/checks.yaml" || {
+grep -Fq '  recognized_unchecked: [inventory, audit, research]' "$canon/checks/checks.yaml" || {
   echo "unchecked artifact matrix drift" >&2
   exit 1
 }

@@ -31,7 +31,6 @@ acceptance criteria; large work extends rather than pads. Escalation cues:
 | change plan | baseline, target, preservation guarantees, verified waves |
 | audit | evidenced present-state risks |
 | research | evidence for one decision-informing question |
-| inspection | one method applied to one target |
 
 Evidence receipts and run notes are untyped sidecars. Findings are not a file type. Ephemeral
 observations ride run/review notes; durable lessons go to native memory or project channels.

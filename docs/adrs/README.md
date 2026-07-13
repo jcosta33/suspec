@@ -188,6 +188,7 @@ Two consequences of that rule govern this ledger:
 | [0154](./0154-spec-backed-tasks-and-review-closure.md) | Spec-backed tasks, visible evidence forms, and mechanically closed review decisions | **New (canon -> skills/CLI) - accepted (2026-07-13)** - narrows 0151 and 0152; checks contract remains 0.18.0 |
 | [0155](./0155-revolver-sequential-resolution.md) | Revolver is an artifact-free sequential resolution loop with a target-derived stance floor | **New (canon -> skills) - accepted (2026-07-13)** - narrows 0117 and 0146; restores the operative 0132/0133 mechanism |
 | [0156](./0156-fixed-methods-stop-on-blockers.md) | Fixed methods execute and stop on concrete blockers without generic decision menus | **New (canon -> skills) - accepted (2026-07-13)** - narrows 0145 and 0155 |
+| [0157](./0157-ruthless-skills-and-closed-artifact-authorship.md) | Ruthless economical skill prose, universal ambiguity forks, closed artifact authorship, and sequential inspection repair | **New (canon -> skills/CLI/MCP) - accepted (2026-07-13)** - narrows 0145, 0146, 0149-0152, 0155, and 0156; checks contract 0.19.0 |
 
 ## The new kernel ADRs (0027+), by topic
 

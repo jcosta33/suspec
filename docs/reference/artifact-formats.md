@@ -8,11 +8,9 @@ filename or location. Ordinary artifacts live under the agent-neutral
 `~/.agents/artifacts/<workspace>/` root and move into a project only through explicit promotion
 ([where files live](../03-where-files-live.md)).
 
-Ordinary conversation and direct action create no Suspec artifact. Create one when the user requests
-it or the applicable Suspec workflow requires it as a live input. When no downstream step needs the
-transient set, the final consumer asks whether to delete, leave, promote, or choose `Other` for
-every artifact and sidecar. Disposition is a human action, not frontmatter or lifecycle state, and
-its picker replaces path-only handoff. The agent selects no option; inaction is not Leave.
+Only the artifact authors below create Suspec artifacts. When no downstream step needs the
+transient set, the workflow requires one human disposition for every artifact and sidecar: Delete,
+Leave, or Promote. Disposition is not frontmatter or lifecycle state.
 
 ## Types
 
@@ -25,7 +23,6 @@ its picker replaces path-only handoff. The agent selects no option; inaction is 
 | `change-plan` | `sus-change-plan` | a staged structural transformation | `CHANGE-` |
 | `audit` | `sus-audit` | evidenced present-state risks | `AUDIT-` |
 | `research` | `sus-research` | evidence for one decision-informing question | `RESEARCH-` |
-| `inspection` | `bulletproof`, `demolition`, or `triple-check` | one method applied to one target | none required |
 
 No other `type:` value is a Suspec artifact. Project records such as issues, decision records,
 product documents, and release documentation keep their project-native formats.
@@ -161,25 +158,6 @@ coverage. Resolve the dependency or defer the review.
 C012 coverage reconciliation, C013 structured command binding, and waivers read Requirement
 coverage only. C016 evidence and the accepted-review `Blocked` rule read both Requirement coverage
 and Change-plan coverage.
-
-## Inspection
-
-Compact implementation proof does not create an inspection artifact. It records the command,
-numeric exit, and decisive raw output in the implementation handoff. Substantive Bulletproof,
-Demolition, and Triple-check runs use this artifact. Revolver creates no artifact or sidecar.
-
-Frontmatter:
-
-```yaml
-type: inspection
-method: bulletproof # bulletproof | demolition | triple-check
-target: path-or-stable-identifier
-mode: inspect       # optional; Triple-check only: inspect | refine
-```
-
-An inspection records method output, not a ship verdict or lifecycle status. Substantive
-runs always write one. Large evidence and round logs use adjacent sidecars. A Demolition
-artifact opens with `Advocacy exercise, not evidence.`
 
 ## Evidence receipt
 
