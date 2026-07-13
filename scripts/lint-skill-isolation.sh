@@ -55,6 +55,7 @@ for file in "$skills"/skills/*/SKILL.md; do
 
   case " $artifact_writers " in
     *" $name "*)
+      flattened=$(tr '\n' ' ' < "$file")
       if [ "$name" != disrespec ]; then
         grep -Fq '~/.agents/artifacts/<workspace>/' "$file" || {
           echo "neutral artifact root missing in $name" >&2
@@ -71,7 +72,7 @@ for file in "$skills"/skills/*/SKILL.md; do
         echo "artifact close occurs at the wrong time in $name" >&2
         exit 1
       }
-      grep -qiE 'inaction is not Leave|never choose|do not choose|human chooses' "$file" || {
+      printf '%s\n' "$flattened" | grep -qiE 'inaction is not Leave|never choose|do not choose|human chooses' || {
         echo "agent may choose artifact disposition in $name" >&2
         exit 1
       }
@@ -83,8 +84,30 @@ for file in "$skills"/skills/*/SKILL.md; do
         echo "required artifact may be skipped in $name" >&2
         exit 1
       }
+      for phrase in 'final consumer' 'no earlier disposition prompt occurred' 'created or consumed by the active work'; do
+        printf '%s\n' "$flattened" | grep -Fqi "$phrase" || {
+          echo "artifact disposition is not composition-safe in $name: $phrase" >&2
+          exit 1
+        }
+      done
       ;;
   esac
 done
+
+grep -Fq 'Never activate merely because another skill writes an artifact' \
+  "$skills/skills/disrespec/SKILL.md" || {
+  echo "disrespec blanket activation returned" >&2
+  exit 1
+}
+for method in bulletproof demolition revolver triple-check; do
+  grep -Fq 'target: <path-or-stable-identifier>' "$skills/skills/$method/SKILL.md" || {
+    echo "inspection target frontmatter missing in $method" >&2
+    exit 1
+  }
+done
+grep -Fq 'unique `SPEC-`-prefixed `id`' "$skills/skills/sus-spec/SKILL.md" || {
+  echo "sus-spec id prefix missing" >&2
+  exit 1
+}
 
 echo "lint-skill-isolation: OK"
