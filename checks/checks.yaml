@@ -29,6 +29,13 @@ artifact_types:
   missing_type: hard-error
   unknown_type: hard-error
 
+check_reports:
+  checked: [type, level, path, diagnostics]
+  unchecked: [type, level, path, checked]
+  unchecked_value: false
+  file_set: [level, path, diagnostics]
+  file_set_path: "(file set)"
+
 frontmatter:
   opening_delimiter: first logical line after optional UTF-8 BOM
   closing_delimiter: required
@@ -37,6 +44,7 @@ frontmatter:
   scalar_coercion: none
   comments: allowed outside quoted values
   allow_extra_keys: true
+  common_scalar_fields: [type, id]
   reject:
     - duplicate keys
     - unbalanced quotes or brackets
@@ -143,8 +151,10 @@ task_file:
         body matches `^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$`
         case-insensitively. A fence is an unfilled placeholder when its entire
         trimmed body matches `^(pending|tbd|todo|\?\?\?|\{\{[^}\r\n]+\}\})\.?$`
-        case-insensitively; it also fails. Non-fenced placeholders fail even
-        inside inline code; fenced command output remains untouched evidence.
+        case-insensitively; any such fence fails even when another fence has
+        output. Non-fenced `pending`, `TBD`, `TODO`, `???`, and `{{...}}`
+        placeholders fail case-insensitively, including inside inline code;
+        other fenced command output remains untouched evidence.
     - id: closed-task-resolved # implemented as core check C024
       applies_to: whole packet (frontmatter status + every section)
       severity: hard-error
@@ -153,7 +163,8 @@ task_file:
         non-empty canonical blocking label after an unordered (`-`, `*`, `+`) or
         ordered (`N.`) list marker: `Blocked questions:`, `Blocking:`, or
         `Open question (blocking):`. The values `none` and `n/a`, matched
-        case-insensitively after trimming, are resolved and do not fail.
+        case-insensitively after trimming, are resolved and do not fail. HTML
+        comments and fenced output are excluded; inline code remains live text.
 
 # --- The review packet ----------------------------------------------------------
 # The review packet's required shape (the human-facing reference is

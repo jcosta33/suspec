@@ -56,6 +56,18 @@ for entry in $expected_agents; do
   }
 done
 
+dispatch_only_siblings() {
+  awk '
+    /^  [[:alnum:]_-]+:$/ { job = $0; dispatch = 0 }
+    /^    if: github\.event_name == '\''workflow_dispatch'\''$/ { dispatch = 1 }
+    /repository: jcosta33\/suspec/ && !dispatch {
+      print "sibling checkout outside dispatch-only job " job ": " $0 > "/dev/stderr"
+      bad = 1
+    }
+    END { exit bad }
+  ' "$1"
+}
+
 for workflow in \
   "$canon/.github/workflows/method-gates.yml" \
   "$skills/.github/workflows/method-gates.yml" \
@@ -74,6 +86,10 @@ for workflow in \
     echo "cross-family gate is not dispatch-only: $workflow" >&2
     exit 1
   }
+  dispatch_only_siblings "$workflow" || {
+    echo "event-local job depends on a sibling repository: $workflow" >&2
+    exit 1
+  }
 done
 grep -Fq 'SUSPEC_HISTORY_BASE:' "$canon/.github/workflows/method-gates.yml" || {
   echo "canon workflow lacks base-relative ADR history verification" >&2
@@ -81,6 +97,14 @@ grep -Fq 'SUSPEC_HISTORY_BASE:' "$canon/.github/workflows/method-gates.yml" || {
 }
 grep -Fq 'SUSPEC_SKILLS_HISTORY_BASE:' "$skills/.github/workflows/method-gates.yml" || {
   echo "skills workflow lacks base-relative changelog verification" >&2
+  exit 1
+}
+grep -Fq 'run: sh repo/scripts/lint-released-changelog.sh' "$skills/.github/workflows/method-gates.yml" || {
+  echo "skills workflow does not own its released changelog gate" >&2
+  exit 1
+}
+test -x "$skills/scripts/lint-released-changelog.sh" || {
+  echo "skills released changelog gate is missing or not executable" >&2
   exit 1
 }
 
@@ -168,8 +192,24 @@ grep -Fq '  recognized_unchecked: [inventory, audit, research, inspection]' "$ca
   echo "unchecked artifact matrix drift" >&2
   exit 1
 }
+grep -Fq '  checked: [type, level, path, diagnostics]' "$canon/checks/checks.yaml" || {
+  echo "checked report discriminator drift" >&2
+  exit 1
+}
+grep -Fq '  unchecked: [type, level, path, checked]' "$canon/checks/checks.yaml" || {
+  echo "unchecked report discriminator drift" >&2
+  exit 1
+}
+grep -Fq '  file_set: [level, path, diagnostics]' "$canon/checks/checks.yaml" || {
+  echo "file-set report shape drift" >&2
+  exit 1
+}
 grep -q '^  missing_type: hard-error$' "$canon/checks/checks.yaml" || { echo "missing-type policy drift" >&2; exit 1; }
 grep -q '^  unknown_type: hard-error$' "$canon/checks/checks.yaml" || { echo "unknown-type policy drift" >&2; exit 1; }
+grep -Fq '  common_scalar_fields: [type, id]' "$canon/checks/checks.yaml" || {
+  echo "common frontmatter field-shape drift" >&2
+  exit 1
+}
 grep -q '^  source_spec_status: ready' "$canon/checks/checks.yaml" || {
   echo "ready source-spec review gate missing" >&2
   exit 1

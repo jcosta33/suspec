@@ -39,6 +39,10 @@ This docs repo enforces nothing by itself.
 faces. `inventory`, `audit`, `research`, and `inspection` are recognized and return
 `checked: false`. A missing or unknown type is a blocking usage error.
 
+Each checked JSON report repeats its checked artifact `type` with `level`, `path`, and
+`diagnostics`. An unchecked report repeats its type and carries `checked: false`. Only the optional
+`(file set)` C002 report has no artifact type.
+
 Frontmatter accepts one strict subset: an optional UTF-8 BOM; required opening and closing `---`;
 top-level keys matching `[A-Za-z0-9_-]+`; string scalars; flat inline or block string lists; and
 comments outside quotes. Strings are never coerced to booleans, numbers, or null. Duplicate keys,
@@ -46,8 +50,9 @@ malformed quotes or brackets, nesting, maps, multiline scalars, anchors, aliases
 heads, and scalar/list field-shape mismatches are blocking parse errors. Unknown extra keys are
 allowed when they obey the subset.
 
-Field shapes are exact: spec `sources`; task `source` and `scope`; review `waivers`; and
-change-plan `sources` and `preserves` are lists. Their other defined fields are scalars.
+Field shapes are exact: `type` and `id` are scalars on every recognized artifact; spec `sources`;
+task `source` and `scope`; review `waivers`; and change-plan `sources` and `preserves` are lists.
+Their other defined fields are scalars.
 Declared option values are exact and case-sensitive. Spec status is `draft` or `ready`; optional
 spec format is `sol`; task status, review decision, and coverage assessment use the closed sets
 below. A present value outside its declared set is a blocking contract error.
@@ -73,8 +78,8 @@ below. A present value outside its declared set is a blocking contract error.
 | C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard-error |
 | C021 | `intent-present` | A spec has a non-empty `## Intent`. | hard-error |
 | C022 | `task-shape` | Task type, non-empty ID/source/scope, field shapes, status, and exactly-once required H2 sections match the contract. | hard-error |
-| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`; a claim-only fence and placeholders fail. | hard-error |
-| C024 | `closed-task-resolved` | A closed task contains no `TBD`, `TODO`, `???`, or non-empty canonical blocker labeled `Blocked questions:`, `Blocking:`, or `Open question (blocking):` after an unordered or ordered list marker; `none` and `n/a` are resolved. | hard-error |
+| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`; any placeholder fence fails even beside valid output, and visible placeholders fail case-insensitively. | hard-error |
+| C024 | `closed-task-resolved` | A closed task contains no `TBD`, `TODO`, `???`, or non-empty canonical blocker labeled `Blocked questions:`, `Blocking:`, or `Open question (blocking):` after an unordered or ordered list marker; `none` and `n/a` are resolved. Fences and comments are excluded; inline code is live text. | hard-error |
 
 C005, C006, C014, and C017 are retired and never reused. C018 is reserved.
 
@@ -100,8 +105,8 @@ Notes:
 | Check | Rule |
 | --- | --- |
 | C022 `task-shape` | Required task frontmatter and sections have valid shapes. |
-| C023 `task-evidence` | No evidence check at `ready`/`running`; at `review-ready`/`closed`, require numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`. A fence is claim-only only when its entire trimmed body matches `^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$` case-insensitively; claim-only fences and placeholders fail. |
-| C024 `closed-task-resolved` | A closed task has no non-empty canonical blocker after an unordered or ordered list marker; `none` and `n/a` are resolved values. |
+| C023 `task-evidence` | No evidence check at `ready`/`running`; at `review-ready`/`closed`, require numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`. A fence is claim-only only when its entire trimmed body matches `^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$` case-insensitively. Any exact placeholder fence fails even beside valid output; visible placeholders fail case-insensitively. |
+| C024 `closed-task-resolved` | A closed task has no non-empty canonical blocker after an unordered or ordered list marker; `none` and `n/a` are resolved values. Fences and comments are excluded; inline code is checked. |
 | Review structure (unnumbered) | The source spec is exactly `ready`; review ID and `Requirement coverage` are non-empty; decision and assessment values use their declared enums. `Change-plan coverage`, when present, is parsed with the same columns and assessment enum. |
 | `no-open-critical` | An accepted review has no non-empty `Open decisions` section. |
 | `accepted-no-blocked` | An accepted review has no `Blocked` assessment in requirement or change-plan coverage; Blocked cannot be waived. |

@@ -48,6 +48,9 @@ one process, not a second command.
   frontmatter, never from its filename or location. Missing and unknown types are blocking usage
   errors. `inventory`, `audit`, `research`, and `inspection` are recognized and return
   `checked: false`; `spec`, `task`, `review`, and `change-plan` have checker faces.
+- **Report identity is explicit.** Every per-artifact JSON report repeats its recognized `type`.
+  Checked faces carry diagnostics; unchecked types carry `checked: false`. The optional final
+  `(file set)` C002 report is not an artifact and carries no type.
 - **Strict frontmatter.** The parser accepts string scalars and flat string lists under top-level
   keys, with an optional UTF-8 BOM and comments outside quotes. It rejects malformed delimiters,
   duplicate keys, nesting, multiline values, YAML tags/references, empty list heads, and field-shape
