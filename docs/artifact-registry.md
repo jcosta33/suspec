@@ -1,7 +1,7 @@
 # Surface index
 
-This index answers one question: which repository owns each current Suspec surface?
-Decision history lives in the [ADR ledger](adrs/README.md).
+This index answers one question: which repository owns each current Suspec surface? It is not an
+artifact status or lifecycle registry. Decision history lives in the [ADR ledger](adrs/README.md).
 
 | Surface | Owner | Authority |
 | --- | --- | --- |

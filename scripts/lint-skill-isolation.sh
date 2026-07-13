@@ -55,6 +55,14 @@ for file in "$skills"/skills/*/SKILL.md; do
       exit 1
     }
   fi
+  if printf '%s\n' "$flattened" | grep -Fq 'Delete, Leave, or Promote'; then
+    lifecycle_tail=${flattened#*"Delete, Leave, or Promote"}
+    printf '%s\n' "$lifecycle_tail" |
+      grep -Fq 'Without a picker, render the same numbered options plus `Other`.' || {
+      echo "disposition choice lacks its own no-picker fallback in $name" >&2
+      exit 1
+    }
+  fi
 
   if grep -q 'After creating an artifact successfully' "$file"; then
     echo "obsolete artifact-only handoff in $name" >&2

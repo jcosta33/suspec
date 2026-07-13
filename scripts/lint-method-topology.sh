@@ -64,7 +64,19 @@ for workflow in \
     echo "workflow does not run the family method gate: $workflow" >&2
     exit 1
   }
+  grep -Fq 'ref: "${{ inputs.' "$workflow" || {
+    echo "workflow lacks explicit integration-snapshot sibling refs: $workflow" >&2
+    exit 1
+  }
 done
+grep -Fq 'SUSPEC_HISTORY_BASE:' "$canon/.github/workflows/method-gates.yml" || {
+  echo "canon workflow lacks base-relative ADR history verification" >&2
+  exit 1
+}
+grep -Fq 'SUSPEC_SKILLS_HISTORY_BASE:' "$skills/.github/workflows/method-gates.yml" || {
+  echo "skills workflow lacks base-relative changelog verification" >&2
+  exit 1
+}
 
 for required in $expected; do
   test -f "$skills/skills/$required/SKILL.md" || { echo "missing skill: $required" >&2; exit 1; }

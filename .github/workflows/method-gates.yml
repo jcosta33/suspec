@@ -10,6 +10,23 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      skills_ref:
+        description: suspec-skills ref for an integration snapshot
+        required: false
+        default: main
+      agents_ref:
+        description: suspec-agents ref for an integration snapshot
+        required: false
+        default: main
+      cli_ref:
+        description: suspec-cli ref for an integration snapshot
+        required: false
+        default: main
+      mcp_ref:
+        description: suspec-mcp ref for an integration snapshot
+        required: false
+        default: main
 
 permissions:
   contents: read
@@ -19,11 +36,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Check out the current family under one parent so cross-repo scans share a root.
-      - { name: suspec,              uses: actions/checkout@v4, with: { path: family/suspec } }
-      - { name: suspec-skills,       uses: actions/checkout@v4, with: { repository: jcosta33/suspec-skills,       path: family/suspec-skills } }
-      - { name: suspec-agents,       uses: actions/checkout@v4, with: { repository: jcosta33/suspec-agents,       path: family/suspec-agents } }
-      - { name: suspec-mcp,          uses: actions/checkout@v4, with: { repository: jcosta33/suspec-mcp,          path: family/suspec-mcp } }
-      - { name: suspec-cli,          uses: actions/checkout@v4, with: { repository: jcosta33/suspec-cli,          path: family/suspec-cli } }
+      - { name: suspec, uses: actions/checkout@v4, with: { path: family/suspec, fetch-depth: 0 } }
+      - { name: suspec-skills, uses: actions/checkout@v4, with: { repository: jcosta33/suspec-skills, ref: "${{ inputs.skills_ref || 'main' }}", path: family/suspec-skills } }
+      - { name: suspec-agents, uses: actions/checkout@v4, with: { repository: jcosta33/suspec-agents, ref: "${{ inputs.agents_ref || 'main' }}", path: family/suspec-agents } }
+      - { name: suspec-mcp, uses: actions/checkout@v4, with: { repository: jcosta33/suspec-mcp, ref: "${{ inputs.mcp_ref || 'main' }}", path: family/suspec-mcp } }
+      - { name: suspec-cli, uses: actions/checkout@v4, with: { repository: jcosta33/suspec-cli, ref: "${{ inputs.cli_ref || 'main' }}", path: family/suspec-cli } }
+
+      - name: Accepted ADR history
+        env:
+          SUSPEC_HISTORY_BASE: "${{ github.event.pull_request.base.sha || github.event.before }}"
+        run: sh family/suspec/scripts/lint-accepted-adrs.sh
 
       - name: Method gates
         run: sh family/suspec/scripts/lint-all.sh "$GITHUB_WORKSPACE/family"

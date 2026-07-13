@@ -39,6 +39,9 @@ surface increased activation ambiguity, maintenance cost, and user ceremony.
 
 ## Narrowed decisions
 
+- [ADR-0114](./0114-retired-artifact-registry.md) is superseded. Suspec keeps no exhaustive
+  active/retired/relocated status registry. Exact topology and stale-name gates inspect current
+  repository surfaces directly; `docs/artifact-registry.md` remains only a surface-ownership index.
 - [ADR-0030](./0030-unified-artifact-set.md), [ADR-0061](./0061-intake-artifact.md), and
   [ADR-0144](./0144-keys-and-scaffold.md): the current owned artifact set is the list above.
 - [ADR-0092](./0092-suspec-agents-member.md), [ADR-0098](./0098-codex-emitter-and-universal-layer.md),
