@@ -1,39 +1,16 @@
-# Surface index
+# Surface ownership
 
-This index answers one question: which repository owns each current Suspec surface? It is not an
-artifact status or lifecycle registry. Decision history lives in the [ADR ledger](adrs/README.md).
+| Surface                                  | Authority                                                                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Method procedures and artifact authoring | each `SKILL.md` in [suspec-skills](https://github.com/jcosta33/suspec-skills)                                      |
+| Deterministic checking                   | `suspec check` in [suspec-cli](https://github.com/jcosta33/suspec-cli)                                             |
+| Shell-less checking                      | `suspec_check`, `suspec_get_checks`, and `suspec://checks` in [suspec-mcp](https://github.com/jcosta33/suspec-mcp) |
+| Human method and format reference        | this repository's `docs/`                                                                                          |
+| Machine checks contract                  | `checks/checks.yaml`                                                                                               |
 
-| Surface | Owner | Authority |
-| --- | --- | --- |
-| Methodology and artifact-authoring procedures | [suspec-skills](https://github.com/jcosta33/suspec-skills) | each skill's `SKILL.md` |
-| Deterministic checker | [suspec-cli](https://github.com/jcosta33/suspec-cli) | `suspec check` and its JSON/exit-code contract |
-| Shell-less checker adapter | [suspec-mcp](https://github.com/jcosta33/suspec-mcp) | `suspec_check`, `suspec_get_checks`, and `suspec://checks` |
-| Human-readable method, formats, and check reference | this repository | `docs/` and `docs/reference/` |
-| Machine-readable checks contract | this repository | `checks/checks.yaml` |
+[Artifact formats](reference/artifact-formats.md) define current working documents. Skills carry
+their absolute paths through each handoff. Findings are not an artifact type: transient observations
+stay with live work; durable lessons move to native memory or project-owned records.
 
-## Working artifacts
-
-The current shapes for specs, tasks, reviews, inventories, change plans, audits, and research are
-defined in [artifact formats](reference/artifact-formats.md). Skills
-place them in the agent-neutral artifact workspace and carry their absolute paths through
-each handoff.
-
-An ADR decides a shape or method. The human reference explains it. Each standalone skill implements
-the procedure locally. `checks/checks.yaml` owns only the deterministic subset a checker can enforce.
-Changing any of those contracts starts from a new ADR, then updates every reinforcement surface.
-
-Findings are a key in the work, not a standalone artifact type. Ephemeral observations
-stay in run or review notes; durable lessons go to native harness memory or the project's
-normal channels.
-
-## Installation
-
-Install the methodology from the skill catalog for your runner (Codex shown):
-
-```bash
-npx skills add jcosta33/suspec-skills -g -a codex
-```
-
-The checker and MCP adapter are optional reinforcement surfaces. Each repository documents its
-own installation and runtime requirements. Fresh harness-native subagents provide isolation when
-the work needs it.
+An ADR records a decision. Reference explains it. Skills execute it. The checks contract owns only
+the deterministic subset. Change a contract across every affected owner in one reviewed change.

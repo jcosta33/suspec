@@ -1,40 +1,28 @@
 # Source authority
 
-Authority depends on the claim and the moment. No fixed numerical rank can replace checking
-whether a source owns the fact being asserted.
+Authority depends on the claim and current scope, not a fixed rank.
 
-## Live implementation work
+## Live work
 
-- The current user request and project governance own intent and boundaries.
-- The active working spec makes that intent verifiable when the work earns one.
+- User intent and project governance own requirements and boundaries.
+- A working spec makes that intent verifiable.
 - Current code, tests, schemas, and runtime output own present behavior.
-- A split task narrows scope but cannot override its source spec.
-- Worker summaries and review packets are claims until independently checked.
+- A task narrows but cannot override its spec.
+- Worker summaries and reviews remain claims until checked.
 
 ## External claims
 
-Prefer the closest primary source that can support the exact statement:
+Use the closest primary source competent for the exact claim: issuing authority, specification, source
+code, release notes, product documentation, original paper, or dataset. Label first-party vendor
+claims as vendor evidence.
 
-- official specification or issuing authority for a standard
-- source code, release notes, or product documentation for product behavior
-- original paper and dataset for measured effects
-- first-party announcement for a vendor claim, labeled as vendor evidence
+Secondary synthesis may locate or summarize primary evidence. Marketing, reviews, anecdotes, and
+synthetic respondents remain limited evidence regardless of repetition.
 
-Use secondary synthesis to locate primary evidence or to summarize a body of work, not to
-upgrade an unsupported claim. Marketing pages, reviews, anecdotes, and synthetic respondents
-remain limited evidence even when several repeat the same number.
+When sources conflict, state the conflict and compare recency, population, method, and scope. Never
+average disagreement into certainty. Route unresolved choices to their owner.
 
-## Conflicts
-
-When sources disagree, do not average them. State the conflict, check recency and scope, and
-route the unresolved choice to the person who owns it. During live work, reconcile intent
-and implementation before review closes. After close, durable project layers remain
-authoritative; old working artifacts do not.
-
-## Citation fit
-
-A citation supports only the claim it directly establishes. Preserve population, date,
-method, uncertainty, and known limitations with measured results. Label design guidance,
-vendor projections, preprints, and inference honestly.
+A citation supports only what it directly establishes. Preserve date, population, method, uncertainty,
+and limitations. Label guidance, projections, preprints, and inference.
 
 Related: [principles](principles.md) · [research sources](../research/sources.md)

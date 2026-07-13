@@ -1,25 +1,17 @@
 # Principles
 
-- **Skills are the product.** Tools reinforce the method; they do not carry it.
-- **Keys stay light.** Every change states intent, receives review, and decides what it
-  taught. Weight scales with the work.
-- **Scaffold must earn its place.** Specs, task splits, inventories, change plans, and the
-  checker appear only when they change execution or reviewability.
-- **Code stays king.** Working artifacts are transient; durable truth belongs in code,
-  tests, maintained project records, and supported native memory.
-- **Paths are explicit.** Producers carry absolute paths forward; consumers do not discover a
-  store or workspace.
-- **Tasks decompose.** A task narrows existing IDs; it never invents requirements.
-- **Evidence precedes assessment.** Worker claims are review inputs, not proof.
-- **Review is independent.** The implementer does not assess their own work; the human decides.
-- **Checks report facts.** Exit codes and diagnostics never become merge authority.
-- **Every step works by hand.** CLI and MCP are optional reinforcement; native subagents provide
-  isolation when needed.
-- **Claims fit sources.** External evidence supports the exact claim and carries its limits.
-- **History stays in ADRs.** Current docs speak from the present design; accepted ADR bodies
-  preserve decision history.
+- **Skills carry the method.** Tools reinforce it.
+- **Use proportional rigor.** Intent, review, and findings stay; scaffold must earn its cost.
+- **Keep durable truth native.** Code, tests, project records, and supported memory outlive working
+  artifacts.
+- **Carry explicit paths.** Consumers discover no store.
+- **Tasks narrow.** They never invent requirements.
+- **Prove before assessment.** Worker claims are inputs, not evidence.
+- **Separate review.** Implementers cannot accept their own work.
+- **Keep decisions human.** Diagnostics and recommendations never become authority.
+- **Preserve source limits.** Claims cannot exceed evidence.
+- **Keep history historical.** Current docs describe the product; ADRs preserve change.
 
-When principles conflict, protect explicit intent, evidence integrity, and human authority
-before convenience.
+When principles conflict, protect explicit intent, evidence integrity, and human authority.
 
-Related: [basic workflow](../02-basic-workflow.md) · [source authority](source-authority.md)
+Related: [workflow](../02-basic-workflow.md) · [source authority](source-authority.md)

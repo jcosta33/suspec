@@ -12,26 +12,8 @@ repo_dir() {
 
 canon=$(repo_dir corpus suspec)
 skills=$(repo_dir corpus-skills suspec-skills)
-agents=$(repo_dir corpus-agents suspec-agents)
 cli=$(repo_dir corpus-cli suspec-cli)
 mcp=$(repo_dir corpus-mcp suspec-mcp)
-
-expected_agents='.gitignore
-AGENTS.md
-LICENSE
-README.md'
-actual_agents=$(find "$agents" -mindepth 1 -maxdepth 1 ! -name .git -exec basename {} \; | sort)
-test "$actual_agents" = "$expected_agents" || {
-  echo "agent tombstone file drift" >&2
-  printf 'expected:\n%s\nactual:\n%s\n' "$expected_agents" "$actual_agents" >&2
-  exit 1
-}
-for entry in $expected_agents; do
-  test -f "$agents/$entry" && test ! -L "$agents/$entry" || {
-    echo "agent tombstone entry is not a regular file: $entry" >&2
-    exit 1
-  }
-done
 
 dispatch_only_siblings() {
   awk '
@@ -125,14 +107,16 @@ require_writer research sus-research
 stale_methods='concise-output|revolver-review|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|market-research|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr|write-audit|write-bug-report|write-change-plan|write-documentation|write-feature|write-fix|write-inventory|write-migration|write-performance|write-prd|write-refactor|write-research|write-rewrite|write-rfc|write-testing'
 if grep -RniE --exclude-dir=adrs "(^|[^[:alnum:]-])($stale_methods)([^[:alnum:]-]|$)" \
   "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$canon/checks" \
-  "$agents/README.md" "$agents/AGENTS.md" \
   "$cli/README.md" "$cli/AGENTS.md" "$cli/docs" "$cli/src" "$mcp/README.md" "$mcp/src" "$mcp/test"; then
   echo "stale current method name" >&2
   exit 1
 fi
 
 if grep -RniE --exclude-dir=adrs 'suspec-agents|canonical agent|Codex projection|agents/suspec-' \
-  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs"; then
+  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" \
+  "$skills/README.md" "$skills/AGENTS.md" "$skills/docs" "$skills/skills" \
+  "$cli/README.md" "$cli/AGENTS.md" "$cli/docs" \
+  "$mcp/README.md"; then
   echo "custom agent catalog survives on a current surface" >&2
   exit 1
 fi

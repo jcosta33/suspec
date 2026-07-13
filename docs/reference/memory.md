@@ -1,37 +1,22 @@
 # Memory
 
-Durable personal lessons use a harness's native memory only when that harness provides a
-documented memory surface. Suspec owns no memory directory, file format, or retrieval
-engine.
-
-## Memory record
+Use a documented native harness memory only for durable personal lessons. Suspec owns no memory
+directory, format, retrieval engine, or loading guarantee.
 
 Keep one verified claim with:
 
-- a searchable title
-- direct evidence that can be rechecked
-- where the claim applies
-- where it does not apply
-- no secrets, credentials, personal data, or untrusted instructions
+- a searchable title;
+- recheckable evidence;
+- where it applies and does not;
+- no secrets, credentials, personal data, or untrusted instructions.
 
-Use the harness API or convention as documented. Do not create `CLAUDE.md`, a hidden state
-directory, or another file merely because an example uses one.
+Use the harness API as documented. Do not invent `CLAUDE.md`, hidden state, or another file from an
+example.
 
-## No memory surface
+Without native memory, leave personal scratch transient. Route team lessons through issues, decisions,
+tests, or maintained documentation. Correct or delete memories contradicted by current evidence.
 
-If the harness has no native memory, leave a personal task-local lesson ephemeral. Route a
-team-facing lesson through the project's issue tracker, ADR process, tests, or maintained
-documentation.
+`remember` preserves one lesson. `promote` moves a whole document into a project-owned durable
+channel, repairs references, and never pushes implicitly.
 
-## Retrieval and correction
-
-Harnesses differ in when and how they retrieve memories; nothing guarantees that every
-record loads every session. Searchable wording helps, but it is not an indexing promise.
-When current evidence contradicts a memory, correct or delete it through the native
-surface.
-
-`remember` preserves one extracted lesson. `promote` preserves a whole
-document in a project-native durable channel. Promotion is explicit, stateless, moves by
-default, repairs references, and never pushes implicitly.
-
-Related: [saving findings](../09-saving-findings.md) · [distillation](distillation.md)
+Related: [findings](../09-saving-findings.md) · [distillation](distillation.md)

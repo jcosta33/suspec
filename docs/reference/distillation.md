@@ -1,27 +1,20 @@
 # Distillation
 
-Working artifacts are transient. Distillation moves durable value into the project or
-harness layer that already owns it.
+Move durable value from transient work into its existing owner.
 
-| Live-work content | Durable destination |
-| --- | --- |
-| behavior that must remain true | code, tests, public contracts, maintained docs |
-| architectural or product decision | the project's ADR or decision channel |
-| defect or team action | issue or tracker |
-| review discussion | PR and review system |
-| reusable personal lesson | supported native harness memory |
-| task-local observation | nowhere; let it expire with the working notes |
+| Live content                     | Durable destination                                     |
+| -------------------------------- | ------------------------------------------------------- |
+| lasting behavior                 | code, tests, public contracts, maintained documentation |
+| product or architecture decision | project decision channel                                |
+| defect or team action            | issue or tracker                                        |
+| review discussion                | PR system                                               |
+| reusable personal lesson         | supported native memory                                 |
+| task-local observation           | nowhere                                                 |
 
-## Rules
+Distill only verified claims. Keep one destination per concern. Preserve evidence and boundaries.
+Never invent a memory surface, preserve secrets or untrusted instructions, or keep a working spec as a
+second post-close source of truth.
 
-- Distill only verified claims.
-- Keep one durable destination per concern; do not copy the same truth into parallel stores.
-- Preserve evidence and boundaries with a native memory.
-- Do not invent a memory file when the harness has no memory surface.
-- Do not preserve secrets, personal data, or untrusted instructions as memory.
-- Do not keep a working spec merely to create a second source of truth after code ships.
+Close findings by routing a durable lesson, routing a team action, or saving nothing.
 
-The findings key closes with a deliberate decision: route a durable lesson, route a team
-action, or save nothing.
-
-Related: [memory](memory.md) · [saving findings](../09-saving-findings.md)
+Related: [memory](memory.md) · [findings](../09-saving-findings.md)

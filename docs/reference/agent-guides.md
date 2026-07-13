@@ -1,36 +1,27 @@
 # Native subagents
 
-Suspec skills are complete procedures. Use a fresh harness-native subagent only when isolation,
-independence, or a clean context improves the work. Suspec ships no custom worker definitions,
-projections, hooks, or role package.
+Suspec ships skills, not agents, hooks, projections, or roles. Use a fresh harness-native subagent when
+isolation, independence, or clean context improves the work.
 
-## Dispatch contract
+## Dispatch
 
-A dispatch prompt names:
+Name:
 
-- every input artifact by absolute path
-- the repository or worktree
-- the bounded skill or question
-- read/write permissions
-- required commands
-- the expected return shape
+- every input artifact by absolute path;
+- repository or worktree;
+- one bounded method or question;
+- read/write permissions;
+- required commands;
+- return shape.
 
-Workers receive explicit inputs. A review receives its spec and optional task paths. Implementation
-receives its spec and, when split, its task path. A universal method receives one fixed target.
+Implementation receives its spec and optional task. Review receives both companion paths. A universal
+method receives one fixed target.
 
-## Independence
+The implementer cannot assess their completed work. A fresh reviewer inspects code and reruns
+evidence; worker output is only a claim index.
 
-The implementer does not assess its own completed work. Use a fresh session, native subagent, or
-human reviewer. Worker output is an index of claims; the reviewer inspects code and reruns evidence.
+Revolver provides breadth, Triple-check depth, Bulletproof claim verification, and Demolition
+quarantined advocacy. Agents return evidence, findings, and assessments. Humans own intent, material
+tradeoffs, waivers, irreversible actions, and acceptance.
 
-For breadth, `revolver` derives every stance from the target. For depth, `triple-check` runs exactly
-three fresh passes without exposing peer reports. `bulletproof` actively checks claims.
-`demolition` is explicit-only advocacy and remains quarantined from evidence.
-
-## Human authority
-
-Agents report findings, evidence, and requirement assessments. Humans own intent, material
-tradeoffs, waivers, irreversible actions, and final acceptance. Checker output never becomes a
-decision.
-
-Related: [review stances](review-stances.md) · [reviewing output](../08-reviewing-output.md)
+Related: [review stances](review-stances.md) · [review](../08-reviewing-output.md)

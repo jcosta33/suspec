@@ -1,31 +1,21 @@
 # Drift
 
-Drift matters while work is live: the implementation, evidence, or scope no longer agrees
-with the intent being reviewed.
+Drift exists when live implementation, evidence, scope, or contract no longer matches the intent under
+review.
 
-## Common forms
+Common cases:
 
-- requirement text changed after evidence was captured
-- the named Verify command changed
-- code under review changed after the reviewer reran it
-- changed files moved outside the declared scope
-- a task no longer matches its source spec
-- a generated fixture no longer matches the checks contract
+- requirements or verification changed after evidence;
+- judged code changed after review;
+- edits escaped declared scope;
+- a task diverged from its spec;
+- fixtures diverged from the checks contract.
 
-## Reconcile live work
+Stop using stale evidence. Identify the changed authority, reconcile intent or implementation, rerun
+affected verification against the final state, and review again.
 
-1. Stop using stale evidence.
-2. Identify which source changed: intent, code, task scope, or checks contract.
-3. Update the live working artifact when intent changed, or fix the implementation when
-   code drifted.
-4. Rerun affected verification against the final state.
-5. Review the revised state; do not carry forward an earlier result.
+Suspec maintains no repository-wide spec baseline after close. Later work starts from current code,
+tests, project decisions, and the new request. Contract fixtures remain shipped evidence and must
+match the current contract.
 
-Suspec does not maintain a repository-wide spec baseline after close. Later work starts
-from current code, tests, project decisions, and the new request. Old working artifacts do
-not require review-on-touch maintenance.
-
-Contract fixtures are shipped evidence. A fixture that no longer matches the checks contract is
-live drift and must be reconciled before handoff.
-
-Related: [lineage](lineage.md) · [reviewing output](../08-reviewing-output.md)
+Related: [lineage](lineage.md) · [review](../08-reviewing-output.md)

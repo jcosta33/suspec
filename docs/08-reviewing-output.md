@@ -1,16 +1,9 @@
-# Reviewing output
+# Review
 
-`sus-review` reconciles finished work against the spec. A task, when present, only scopes the
-requirements and indexes evidence. The agent assesses evidence; the human accepts, requests
-changes, defers, or waives.
+`sus-review` independently reconciles finished work against a ready spec. A task narrows scope and
+indexes evidence; it cannot replace the spec. The implementer cannot review their own work.
 
-Use an independent session, agent, or human. The implementer does not assess their own work.
-Begin only when the source spec's status is exactly `ready`; a draft, missing, or unknown status
-blocks review.
-
-## Review artifact
-
-Write it in the agent-neutral artifact workspace:
+## Shape
 
 ```markdown
 ---
@@ -25,38 +18,37 @@ decision: pending
 
 ## Requirement coverage
 
-| ID | Assessment | Evidence |
-| --- | --- | --- |
-| AC-001 | Supported | `3 passed` — `evidence-checkout.md#E-001` |
-| AC-002 | Unverified | CI run is unavailable. |
+| ID     | Assessment | Evidence                                  |
+| ------ | ---------- | ----------------------------------------- |
+| AC-001 | Supported  | `3 passed` — `evidence-checkout.md#E-001` |
+| AC-002 | Unverified | CI run is unavailable.                    |
 ```
 
-The review ID and `Requirement coverage` are required and non-empty. Add changed files, findings, open
-decisions, or change-plan coverage only when they carry information.
+The review ID and non-empty `Requirement coverage` table are required. Add changed files, findings,
+open decisions, or change-plan coverage only when they carry information.
 
-Assessments:
+| Assessment    | Meaning                               |
+| ------------- | ------------------------------------- |
+| `Supported`   | evidence demonstrates the requirement |
+| `Unsupported` | evidence demonstrates failure         |
+| `Unverified`  | evidence is missing or insufficient   |
+| `Blocked`     | a dependency prevents assessment      |
 
-- `Supported`: evidence demonstrates the requirement.
-- `Unsupported`: evidence demonstrates the requirement is not met.
-- `Unverified`: evidence is missing or insufficient.
-- `Blocked`: a dependency prevents assessment.
+The agent leaves `decision: pending`. Valid decisions are `pending`, `accepted`,
+`changes-requested`, and `deferred`.
 
-An agent writes every assessment and leaves `decision: pending`.
-
-The decision is one of `pending`, `accepted`, `changes-requested`, or `deferred`; assessments use
-only the four values above; other option values are blocking errors. When a task executes a
-change-plan wave, `Change-plan coverage` is parsed with the same columns and assessment values.
-C016 and the accepted-review `Blocked` rule apply to both tables. C012, C013, and waivers remain
-Requirement coverage only.
+When a task executes a change-plan wave, `Change-plan coverage` uses the same columns and assessments.
+C016 and the accepted-review Blocked rule apply to both coverage tables. C012, C013, and waivers apply
+only to Requirement coverage.
 
 ## Evidence
 
-Rerun every applicable `Verify with:` command against the state being judged. Treat worker
-output as a claim. Short decisive output appears once in the review. When raw output would
-dominate it, write an adjacent [evidence receipt](reference/artifact-formats.md#evidence-receipt)
-and link the stable anchor beside the decisive verbatim excerpt.
+Rerun every applicable `Verify with:` command against the judged state. Worker output remains a claim.
+Keep short decisive output once. Move dominating raw output into an adjacent
+[evidence receipt](reference/artifact-formats.md#evidence-receipt) and link its stable anchor beside a
+verbatim excerpt.
 
-Structured command records remain valid:
+A structured record may bind the command:
 
 ````markdown
 ```verify id=AC-001 cmd="npm test -- expired-session" result=pass
@@ -65,47 +57,41 @@ Full output: `evidence-checkout.md#E-001`
 ```
 ````
 
-The info string records command consistency. It does not prove the body or issue a verdict.
+Its info string records consistency; it does not prove the body or issue a verdict.
 
-## Deterministic check
+## Check
 
 ```bash
 suspec check <review-path> --spec <spec-path>
 suspec check <review-path> --spec <spec-path> --task <task-path>
 ```
 
-The checker reports coverage, command binding, evidence presence, reference resolution, and
-severity. It never accepts work. `Supported` with empty evidence is C016
-`supported-needs-evidence` and blocks at check time.
+The checker reports coverage, command binding, evidence presence, references, and severity. C016
+blocks `Supported` with empty evidence. The checker never accepts work.
 
 ## Human decision
 
-After assessment, present a state-aware picker. Recommend from the evidence:
+After assessment, recommend:
 
-- all rows supported and no open blocker: `Accept`
-- unsupported rows or material findings: `Request changes`
-- blocked rows or unresolved material decisions: `Defer`
-- unsupported or unverified rows the owner deliberately accepts: `Accept with waivers`
+- **Accept:** every row is supported and no blocker remains.
+- **Request changes:** unsupported rows or material findings remain.
+- **Defer:** blocked rows or unresolved material decisions remain.
+- **Accept with waivers:** the owner deliberately accepts unsupported or unverified requirements.
 
-Write the selection to `decision: accepted | changes-requested | deferred`. `waivers` is absent
-before acceptance and absent from an accepted review with no Unsupported or Unverified rows. For
-acceptance with waivers, list exactly once every `Unsupported` or `Unverified` Requirement coverage
-ID, with no duplicates and no
-`Supported` or `Blocked` ID, then record owner, reason, and follow-up where
-the project keeps decision context. An accepted review cannot retain a non-empty `Open decisions`
-section or any `Blocked` assessment in requirement or change-plan coverage. Resolve the dependency
-or defer the review; `Blocked` cannot be waived. Return the artifact link without restating it.
-The review remains live through findings routing and any requested fixes; the final consumer asks
-whether to delete, leave, promote, or choose `Other` for the complete transient artifact set. That
-close picker replaces the path-only return. The agent selects no option; inaction is not Leave.
+Write the human selection to `decision`. For accepted work, `waivers` is absent unless Requirement
+coverage contains `Unsupported` or `Unverified`. Then list every such ID exactly once, no others,
+and record owner, reason, and follow-up in the project's decision channel.
 
-## Escalation
+Accepted reviews contain no `Blocked` assessment or non-empty `Open decisions`. Blocked work cannot
+be waived.
 
-Use `revolver` to drive broad risk through at least six target-derived stances, one fresh reviewer at
-a time. The orchestrator addresses every stance before the next reviewer sees the current target;
-Revolver creates no artifact. Use `triple-check` for three deep, independent top-tier passes.
+The review remains live through findings and requested fixes. Close its complete transient set only
+after no downstream step needs it; see [artifact close](03-where-files-live.md#close).
 
-## Related
+For broad risk, Revolver runs at least six target-derived stances sequentially and resolves each
+before the next. For narrow depth, Triple-check runs exactly three fresh top-tier passes. Neither
+creates an artifact.
 
-- Next: [Saving findings](09-saving-findings.md)
-- Previous: [Running agents](07-running-agents.md)
+Exact review contract: [artifact formats](reference/artifact-formats.md).
+
+Next: [findings and memory](09-saving-findings.md). Previous: [execution](07-running-agents.md).

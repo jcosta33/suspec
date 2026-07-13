@@ -1,95 +1,45 @@
 # What is Suspec?
 
-Suspec is an opinionated methodology for working with coding agents, shipped as a
-globally installed skill family.
+Suspec is a skill-delivered method for directing and checking coding agents. Your harness writes code.
+Suspec structures intent, evidence, review, and human decisions around it.
 
-The skills structure agent work around intent, review, and findings. When work earns
-scaffold, they add a spec, task split, inventory, change plan, or deterministic check so
-plans stop being freeform prose and review claims stop being vibes.
-A small CLI reinforces the discipline with deterministic checks. Your agent writes the
-code; Suspec shapes the work around it.
+It provides:
 
-It gives you:
+- an inline path for work too small to need a file;
+- specs with verifiable requirements;
+- task packets for separately dispatchable slices;
+- inventories and change plans for structural work;
+- independent reviews reconciled requirement by requirement;
+- durable-lesson routing to native memory or project records;
+- deterministic checks over recorded structure.
 
-- an inline, zero-file path for changes too small to need a spec
-- specs with intent and verifiable requirements, sized to the work
-- spec-backed task packets for separately dispatchable slices, including change-plan waves
-- review packets that reconcile evidence against the spec, requirement by requirement
-- a discipline for saving durable lessons where your harness actually reads them
-- a deterministic checker — `suspec check` — over specs, tasks, change plans, and reviews
-
-It does not replace your agent, your harness's plan mode, your issue tracker, PRs, CI,
-or your docs site.
+It does not replace plan mode, project instructions, issue trackers, PRs, CI, tests, or human
+acceptance.
 
 ## Proportional rigor
 
-The least structure that changes execution or reviewability — this rule is existential,
-not decorative (level: convention):
+Use the least structure that changes execution or review:
 
-- A **trivial fix** gets one-line inline intent and no file at all.
-- A **feature** gets a lean spec: intent plus requirements with IDs and `Verify with:` lines.
-  Other sections appear only when they carry information.
-- **Large work** extends rather than pads: inventory and a change plan when needed, with
-  task packets only for separately dispatchable slices.
+- State a trivial fix and its verification inline.
+- Write a spec when intent needs a working contract.
+- Add inventory, change planning, or task splitting only when the work demands them.
+- Escalate review with risk.
 
-Seen through the loop: intent, review, and findings are the **keys** — present on
-virtually every change, at whatever weight it earns. The rest — the spec intent
-graduates into, task packets, inventory, change plans, the deterministic checker — is
-**scaffold**, erected around the keys when the work earns it (level: convention).
+Intent, review, and findings remain constant. Everything else is optional scaffold.
 
-How you entered the work (a ticket, a chat message, your own idea) never sets the
-ceremony level. The work does.
+## Boundaries
 
-## Coexists with native planning
+Suspec artifacts are transient. Code, tests, decisions, issues, PRs, maintained documentation, and
+supported native memory hold durable truth. Suspec neither intercepts native plans nor creates a
+repository-local store.
 
-Suspec never modifies, replaces, or races your harness's own plan mode. If lightweight
-native planning serves the change, use it and stop there. Suspec artifacts are produced
-alongside, by skills, when the work earns them — a contract the agent implements against
-and a reviewer reconciles against, not a second planner (level: convention).
+The CLI checks structural facts without a model. It does not prove recorded evidence true or render a
+review decision. Independent review judges evidence; humans accept, waive, defer, or request changes.
 
-## The honesty floor
+## Fit
 
-Review claims are where agent work goes wrong quietly. The deterministic checks make
-structural omissions and inconsistent bindings visible:
+Use Suspec when a change outgrows direct attention, several workers share it, or intent and proof must
+be reconstructed later. Skip it when native planning, project instructions, tests, and direct review
+already make the work obvious.
 
-- every scoped requirement has a coverage row (nothing dropped silently)
-- every evidence command matches the spec's `Verify with:` line
-- every `Supported` carries evidence — an empty evidence cell can never read as `Supported`
-- every supported reference resolves
-
-plus per-artifact lint on specs, tasks, change plans, and review packets. The checker is
-`suspec check` — `suspec check <path>` for a spec, task, or change plan,
-`suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the spec
-was split into one) for a review packet — facts and exit codes, no model in the loop, no
-review decision rendered (level: enforced — suspec-cli). Every step also keeps a by-hand
-path; no step requires a tool (level: convention). The checker does not establish that
-recorded evidence is true; independent review still reruns and judges it.
-
-## Code is king
-
-Suspec artifacts are transient working files. They are never committed to the repos you
-work on unless the project's own governance says otherwise, and nothing durable is
-supposed to live in them: a decision becomes an ADR,
-behavior becomes tests, a lesson becomes a native harness memory, the discussion lives
-on the PR. The durable record stays in the layers that already own it (level: convention).
-
-## Who should not use it
-
-If you work alone, in a codebase you know, on changes small enough to read whole — native
-plan mode, an `AGENTS.md`, and your test suite already cover most of this, at zero
-ceremony. On tractable, clearly-specified work a capable agent tends to reach the same
-result with or without the structure, so the structure mostly adds process rather than
-catching problems your existing tools miss. Suspec starts paying when the diff outgrows
-your attention, when more than one person or agent touches the work, or when someone must
-later reconstruct what was intended and what was proven. Until one of those is true,
-don't adopt it.
-
-## Start here
-
-1. Read [the basic workflow](02-basic-workflow.md).
-2. Check [where files live](03-where-files-live.md).
-3. Walk [the tutorial](tutorial/README.md).
-
-## Related
-
-Next: [The basic workflow](02-basic-workflow.md)
+Next: [workflow](02-basic-workflow.md).

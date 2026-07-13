@@ -1,11 +1,6 @@
-# Example: large PR review
+# Large PR review
 
-Goal: review a broad agent-authored checkout refactor by requirement and exception,
-without trusting either the worker summary or a green aggregate CI run.
-
-## Situation
-
-The PR implements one slice of a larger checkout spec. The working inputs already exist:
+A checkout refactor implements one split task backed by:
 
 ```text
 ~/.agents/artifacts/shop-api/checkout/spec.md
@@ -13,25 +8,18 @@ The PR implements one slice of a larger checkout spec. The working inputs alread
 ~/.agents/artifacts/shop-api/checkout/session-refactor-task.md
 ```
 
-The task names its source spec, scoped requirements, affected areas, and `Do not change`
-paths. It names the change plan only for wave and preservation context; the spec remains the
-requirement authority for the task and review. The worker claims:
+The task scopes requirements and names the change plan for wave context. The spec remains requirement
+authority. The worker claims:
 
 ```text
 All checkout session behaviors preserved.
 ```
 
-The reviewer treats that sentence as a claim. They read the spec and task by absolute path,
-inspect the actual changed files, and rerun every applicable Verify command against the
-PR state.
+Treat that as a claim. Inspect changed files and rerun every applicable command.
 
-## Review packet
+## Review
 
-Place the packet in the agent-neutral artifact workspace:
-
-```text
-~/.agents/artifacts/shop-api/checkout/session-refactor-review.md
-```
+`~/.agents/artifacts/shop-api/checkout/session-refactor-review.md`:
 
 ````markdown
 ---
@@ -51,18 +39,18 @@ decision: changes-requested
 
 ## Requirement coverage
 
-| ID | Assessment | Evidence |
-| --- | --- | --- |
-| AC-001 | Supported | `npm run test:integration -- active-session` -> `1 passed` |
+| ID     | Assessment  | Evidence                                                               |
+| ------ | ----------- | ---------------------------------------------------------------------- |
+| AC-001 | Supported   | `npm run test:integration -- active-session` -> `1 passed`             |
 | AC-002 | Unsupported | `npm run test:integration -- expired-session` -> expected 409, got 500 |
-| AC-003 | Supported | `npm run test:integration -- missing-session` -> `1 passed` |
-| AC-004 | Supported | `npm run test:integration -- provider-failure` -> `1 passed` |
+| AC-003 | Supported   | `npm run test:integration -- missing-session` -> `1 passed`            |
+| AC-004 | Supported   | `npm run test:integration -- provider-failure` -> `1 passed`           |
 
 ## Change-plan coverage
 
-| ID | Assessment | Evidence |
-| --- | --- | --- |
-| PG-001 | Supported | `npm run test:integration -- active-session` -> `1 passed` |
+| ID     | Assessment | Evidence                                                   |
+| ------ | ---------- | ---------------------------------------------------------- |
+| PG-001 | Supported  | `npm run test:integration -- active-session` -> `1 passed` |
 
 ```verify id=AC-001 cmd="npm run test:integration -- active-session" result=pass
 1 passed
@@ -83,15 +71,12 @@ received 500
 
 ## Findings
 
-1. AC-002 fails: expired sessions now return 500.
-2. Checkout charge ordering changed on a money path.
+1. AC-002 fails: expired sessions return 500.
+2. Charge ordering changed on a money path.
 3. `src/retry.ts` is outside the task's affected areas.
-
 ````
 
-## Deterministic check
-
-Pass both companions explicitly because this review covers a split task:
+Check both companions:
 
 ```bash
 suspec check ~/.agents/artifacts/shop-api/checkout/session-refactor-review.md \
@@ -99,52 +84,18 @@ suspec check ~/.agents/artifacts/shop-api/checkout/session-refactor-review.md \
   --task ~/.agents/artifacts/shop-api/checkout/session-refactor-task.md
 ```
 
-The checker reconciles identities, coverage, evidence presence, and structured command
-bindings. It does not convert the unsupported row into acceptance. A structurally clean
-packet can still carry `decision: changes-requested` because the human review decision and the
-check's severity level answer different questions.
+The packet may be structurally clean while correctly requesting changes. The checker reports facts;
+the human decision answers a different question.
 
-## Revise and review again
-
-The implementer fixes the expired-session regression inside the same task scope, removes
-the unrelated retry edit, and pastes the new output. The next reviewer reads the revised
-state and replaces claims only when their own evidence supports them:
+The implementer fixes AC-002 within scope, removes the retry edit, and records fresh output. A fresh
+reviewer replaces AC-002 only after rerunning proof:
 
 ```markdown
-| ID | Assessment | Evidence |
-| --- | --- | --- |
-| AC-002 | Supported | `npm run test:integration -- expired-session` -> `1 passed` |
+| ID     | Assessment | Evidence                                                    |
+| ------ | ---------- | ----------------------------------------------------------- |
+| AC-002 | Supported  | `npm run test:integration -- expired-session` -> `1 passed` |
 ```
 
-Run the same explicit check again after the final review edit. Earlier output is stale.
-
-## Close
-
-The regression is worth preserving because broad checkout CI did not expose it. Use `remember`
-only if the harness provides native memory, and cite durable evidence:
-
-```markdown
-## Checkout refactors require the expired-session integration case
-
-Verified by `test/integration/expired-session.test.ts` and
-`npm run test:integration -- expired-session`.
-
-Applies to: checkout session state refactors.
-Does not apply to: changes outside checkout session handling.
-```
-
-Once the spec, task, review, and evidence sidecars have no downstream consumer, present one
-disposition choice covering all of them:
-
-1. **Delete (recommended)** — the accepted code, tests, and saved lesson hold the durable value.
-2. **Leave** — keep the transient files for near-term reuse.
-3. **Promote** — move selected files into a project-owned durable destination.
-4. **Other** — state another disposition for the complete set.
-
-Execute the human selection.
-
-## Lesson
-
-The packet was an index, not proof. Independent reruns exposed a failed requirement, a
-risky path, and an out-of-scope edit that the worker summary and aggregate CI did not
-make reviewable.
+Rerun the explicit check after the final review edit. Earlier output is stale. Preserve the verified
+expired-session regression lesson through native memory when useful, then
+[close the complete transient set](../03-where-files-live.md#close).

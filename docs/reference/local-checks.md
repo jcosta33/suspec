@@ -1,32 +1,21 @@
 # Local checks
 
-Suspec's checker validates generic artifact facts. Project-specific verification stays in
-the repository that owns the code.
+Project repositories own code verification. Suspec checks generic artifact facts.
 
-## Resolve commands
+Resolve exact build, test, lint, type, format, architecture, security, and benchmark commands from the
+repository's instructions and manifests. A `Verify with:` slot without a real project mapping remains
+unverified.
 
-Read the repository's `AGENTS.md`, contributor guide, and package manifest. Use the exact
-commands they define for build, tests, lint, type checking, formatting, architecture,
-security, and benchmarks.
+Run commands after the final relevant edit. Preserve raw output or the exact CI job. Tools report exit
+status and facts; independent review decides whether evidence supports a requirement.
 
-A spec's `Verify with:` line can name a literal command or a project command slot. A slot
-is useful only when the repository maps it to a real command; an unresolved slot leaves the
-claim unverified.
+| Layer                          | Owner                       |
+| ------------------------------ | --------------------------- |
+| code behavior and quality      | repository tools            |
+| artifact structure and binding | `suspec check`              |
+| evidence judgment              | independent reviewer        |
+| merge policy                   | human or project governance |
 
-## Evidence
-
-Run the command after the final relevant edit and paste its real output or link the exact
-CI job. A script can report exit status and facts. It cannot decide that a requirement is
-Supported, Unverified, or Blocked; the reviewer makes that judgment against the requirement.
-
-## Layering
-
-- repository tools verify code behavior and quality
-- `suspec check` verifies artifact structure and evidence binding
-- independent review judges whether the evidence demonstrates intent
-- a human owns merge policy
-
-Do not rebuild repository linters inside Suspec. Reference their outputs and keep their
-configuration with the code.
+Do not rebuild project linters inside Suspec.
 
 Related: [checks](checks.md) · [CLI](cli.md)
