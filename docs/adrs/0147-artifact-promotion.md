@@ -16,15 +16,15 @@ recreate retired infrastructure.
 
 ## Decision
 
-1. **Promotion is explicit and stateless.** `promote` discovers project-native durable
+1. **Promotion is explicit and stateless.** `promote-artifact` discovers project-native durable
    destinations, presents structured choices, sanitizes transient or private content, moves by
    default, repairs references, and validates. An already-durable artifact returns unchanged.
 2. **The project owns durability.** Promotion creates no registry, state field, CLI verb, MCP tool,
    Suspec directory, or lifecycle record. The human selects a project-native destination.
 3. **Git actions are separate choices.** Promotion may commit when selected. It never pushes
    implicitly. Sensitive content blocks promotion until the human selects sanitization or cancellation.
-4. **Promotion and findings remain distinct.** `remember` extracts durable lessons;
-   `promote` preserves a whole document.
+4. **Promotion and findings remain distinct.** `save-findings` extracts durable lessons;
+   `promote-artifact` preserves a whole document.
 
 ## Narrowed decisions
 

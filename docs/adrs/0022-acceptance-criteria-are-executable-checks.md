@@ -18,7 +18,7 @@ Each spec **acceptance criterion carries a check binding** — it is written so 
 - `command` — an `AGENTS.md > Commands` entry's output demonstrates it.
 - `manual` — interpretation is unavoidable; the criterion carries a one-line justification for why it cannot be a runnable check.
 
-`sus-spec` produces criteria in this form; `write-feature` maps each criterion → its check → pasted result in the self-review; `write-testing` turns `test`-bound criteria into oracles. The behaviour-preservation lanes (`refactor`, `migration`, `rewrite`) generalise `write-fix`'s fail-then-pass oracle: equivalence is shown by a check that would fail if behaviour changed, not only by "the existing suite still passes."
+`write-spec` produces criteria in this form; `write-feature` maps each criterion → its check → pasted result in the self-review; `write-testing` turns `test`-bound criteria into oracles. The behaviour-preservation lanes (`refactor`, `migration`, `rewrite`) generalise `write-fix`'s fail-then-pass oracle: equivalence is shown by a check that would fail if behaviour changed, not only by "the existing suite still passes."
 
 This scopes the "executable contract" language honestly: a Suspec spec is **prose whose acceptance criteria are meant to compile to checks**, with explicit `manual` exceptions — not a spec that directly generates an implementation.
 

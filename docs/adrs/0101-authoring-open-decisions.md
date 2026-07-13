@@ -13,7 +13,7 @@ updated: 2026-06-25
 When an authoring agent hits a genuine fork — a behavioral choice the artifact cannot settle on its
 own — the framework's handling is uneven. The **review template** does it well: `## Open decisions`
 ([ADR-0089](./0089-decision-handoff-open-decisions.md)) — 2–4 comparable options, the case FOR and
-AGAINST, a recommendation + why, what it blocks. The **spec authoring path** is thinner: `sus-spec`
+AGAINST, a recommendation + why, what it blocks. The **spec authoring path** is thinner: `write-spec`
 rule 7 routes ambiguity to a bare `## Open questions` list — no options, no recommendation. So whether
 the human receives a *decidable fork* or a *vague question* depends on which artifact is in hand. The
 good pattern already exists; it just isn't standard. (From the session deliberation; RFC-authoring-open-decisions.)
@@ -63,13 +63,13 @@ good pattern already exists; it just isn't standard. (From the session deliberat
 ## Propagation
 
 The kit spec template (upgrade the `## Open questions` guidance to options + a recommendation —
-**no rename**), the `sus-spec` guide (rule 7), and a note that `write-rfc` already complies and
+**no rename**), the `write-spec` guide (rule 7), and a note that `write-rfc` already complies and
 audit/PRD/research are exempt. suspec-agents worker definitions may wire the interactive prompt
 (Claude-Code only, marked non-portable). No review-packet or spec *format* break.
 
 ## Affected obligations / constraints
 
-- **Refines:** the `sus-spec` ambiguity rule and the spec template's `## Open questions` guidance.
+- **Refines:** the `write-spec` ambiguity rule and the spec template's `## Open questions` guidance.
 - **Reaffirms:** [ADR-0089](./0089-decision-handoff-open-decisions.md), the **frozen section list of
   [ADR-0058](./0058-two-tier-spec-format.md) (C006 untouched)**, and
   [ADR-0098](./0098-codex-emitter-and-universal-layer.md)'s no-travel boundary.

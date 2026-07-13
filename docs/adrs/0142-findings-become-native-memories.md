@@ -25,7 +25,7 @@ updated: 2026-07-10
 
 ## Decision
 
-1. **A durable lesson becomes a native memory.** The remember discipline guides the agent to
+1. **A durable lesson becomes a native memory.** The save-findings discipline guides the agent to
    write durable lessons the way its harness records memories — one claim per memory, the
    evidence attached, under a searchable title. Ephemeral findings ride the review packet and die
    with it. _Level: convention._
@@ -95,7 +95,7 @@ Accepted (2026-07-10). Supersedes
 - `docs/adrs/README.md` — ledger row + disposition flips (0123, 0137, 0032).
 - Canon: `docs/09-saving-findings.md` and `docs/reference/memory.md` rewritten around this
   decision.
-- corpus-skills: `remember` spine rewrite; the finding-triage lines in `sus-review` and
-  `sus-audit`.
+- corpus-skills: `save-findings` spine rewrite; the finding-triage lines in `review-output` and
+  `write-audit`.
 - corpus-cli: `promote`, finding store, and triage surface retire
   ([ADR-0143](./0143-path-agnostic-check-cli-contract.md)).

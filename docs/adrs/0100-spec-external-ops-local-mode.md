@@ -38,7 +38,7 @@ This is a third workspace mode alongside co-located and dedicated.
    ADR-0062 already sanctions), so the implementer's entire **write + command surface is one root**.
    The code repo's committed history stays pristine. _Level: convention._
 
-2. **Snapshot the spec slice into the task at split.** When `sus-task` cuts a task for this mode, it
+2. **Snapshot the spec slice into the task at split.** When `split-work` cuts a task for this mode, it
    **snapshots the relevant spec slice into the task packet**, stamped with the spec id +
    version/commit it was cut against, and places the task in the code repo's gitignored `.suspec/`. The
    implementer then reads **zero cross-repo** (fully single-root) and the spec **cannot drift mid-task**
@@ -62,7 +62,7 @@ This is a third workspace mode alongside co-located and dedicated.
   with the canonical pointer kept for provenance. Teaching the checker the cross-root/snapshot case is a
   **suspec-cli toolable follow-up** — named here, not shipped; no `checks.yaml` change lands with this
   ADR.
-- **The skill mechanism.** `sus-task` (emit the task into the code repo's `.suspec/` + snapshot/pin
+- **The skill mechanism.** `split-work` (emit the task into the code repo's `.suspec/` + snapshot/pin
   the spec slice) and `implement-task` (assume single-root; read the pinned snapshot; never write
   outside the code repo) carry the behavior. Specified here; the kit-guide edits are the follow-up.
 - **Re-snapshot policy.** If the canonical spec changes materially after a task is cut, **re-cut the
@@ -87,7 +87,7 @@ This is a third workspace mode alongside co-located and dedicated.
 ## Propagation
 
 `docs/03-where-files-live.md` (the third mode), `docs/ADOPTING.md` (its layout + the gitignored
-`.suspec/` + the snapshot), the kit `sus-task` + `implement-task` guides (the snapshot-at-split /
+`.suspec/` + the snapshot), the kit `split-work` + `implement-task` guides (the snapshot-at-split /
 single-root mechanism — the named follow-up), and the code-repo `AGENTS.md` pointer (a mode marker:
 commands + ops scratch in the code repo's gitignored `.suspec/`; never write canonical artifacts here).
 The cross-root C009/C012 check is a suspec-cli follow-up.

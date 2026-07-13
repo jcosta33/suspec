@@ -43,7 +43,7 @@ tiers) settled the principle — and **reframed the discriminator** from new-vs-
 ## Decision
 
 1. **Small, single-concern, untangled, refactor-separated is the primary task-decomposition rule**
-   (`docs/06-creating-tasks.md`, the `sus-task` guide). A task carries one concern; a refactor
+   (`docs/06-creating-tasks.md`, the `split-work` guide). A task carries one concern; a refactor
    lands in its own task/commit, separate from the behavior change it enables (the small-cleanup
    exception in [[GOOGLESMALLCL]] stands). _Level: convention._
 
@@ -79,7 +79,7 @@ tiers) settled the principle — and **reframed the discriminator** from new-vs-
 ## Propagation
 
 `docs/06-creating-tasks.md` (task-shaping rule + named oversized-packet flag), `docs/05-brownfield-and-change-plans.md`
-(risk-weighted review + Hindle caveat), the kit `sus-task` guide (the small/untangled lever),
+(risk-weighted review + Hindle caveat), the kit `split-work` guide (the small/untangled lever),
 `docs/research/sources.md` (the nine entries above). The `suspec-cli` oversized-packet check is the
 toolable follow-up (tracked in suspec-works #61 §B), not shipped by this ADR.
 

@@ -37,7 +37,7 @@ cost, and mutation authority. Persona-shaped tools blur those command contracts.
    commands; `persona-challenger` and `suspec-challenger` retire.
 7. **Every skill earns its place.** A skill needs distinct intent, trigger, procedure, output, and
    prevented failure. `implement-task` is fallback-only; specialized implementation skills carry
-   the packet contract without co-activating it. `sus-review`, `spec-check`, and `sus-audit`
+   the packet contract without co-activating it. `review-output`, `spec-check`, and `write-audit`
    retain their distinct purposes. Further removal requires structured human choice.
 
 ## Narrowed decisions

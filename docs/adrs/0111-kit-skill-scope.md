@@ -24,14 +24,14 @@ in a repo with no Suspec install found it trapped in the kit.
 
 - **Kit (required):** a skill that builds a Suspec **artifact type** — spec, task, review, finding,
   intake, inventory, change-plan, audit, research, RFC, PRD, bug-report — or runs a **core-loop method**
-  (Spec → Task → Run → Review → Close, incl. `sus-task`, `spec-check`). These are the concepts the
+  (Spec → Task → Run → Review → Close, incl. `split-work`, `spec-check`). These are the concepts the
   method is made of; a workspace can't follow Suspec without them.
 - **Catalog (suspec-skills):** a skill that encodes a **style, stance, or depth** that is *not itself a
   Suspec concept* — a way of doing the work, not a Suspec artifact. Suspec requires neither it nor any
   particular version of it.
 
 The test that decides the boundary case: *does Suspec mandate this thing, or a style of doing a
-mandated thing?* A review is mandated (kit: `sus-review` builds the packet); *adversarial* review is
+mandated thing?* A review is mandated (kit: `review-output` builds the packet); *adversarial* review is
 a style (catalog). **Relocate `adversarial-review` from the kit to suspec-skills.** This also explains,
 post-hoc, why the catalog's existing residents are correctly placed — `persona-skeptic`/`-challenger`/
 `-surveyor` (stances), `empirical-proof` (a discipline), the `write-fix`/`-refactor`/… depth guides:
@@ -44,7 +44,7 @@ none is a Suspec artifact type.
 - `adversarial-review` is installable into any repo (`npx skills add`), Suspec or not — its natural home.
   The skill moves intact; its best-in-class consolidation is a separate change (the Improvement Program
   WS-C, Wave 4).
-- `sus-review` (build the review packet — a Suspec concept) stays in the kit; the review *style*
+- `review-output` (build the review packet — a Suspec concept) stays in the kit; the review *style*
   leaves. No core-loop guide moves.
 - Accepted ADRs 0064/0075 are not edited (Nygard immutability); this ADR refines them and the README
   ledger carries the disposition.

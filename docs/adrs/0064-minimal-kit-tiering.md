@@ -19,18 +19,18 @@ focused skills over broad personas.
 ## Decision
 
 1. **Core copy surface = 12 files.** `templates/{spec, task, review, finding, status, intake, inventory,
-change-plan}.md` + `agent/AGENTS.md` + three focused agent guides: `agent/sus-spec/`,
-   `agent/implement-task/`, `agent/sus-review/` (SKILL.md carrier — auto-discoverable by agent CLIs,
+change-plan}.md` + `agent/AGENTS.md` + three focused agent guides: `agent/write-spec/`,
+   `agent/implement-task/`, `agent/review-output/` (SKILL.md carrier — auto-discoverable by agent CLIs,
    plainly readable by humans). Whole kit excluding `advanced/` ≤ 24 files.
-2. **The three guides absorb the cross-cutting disciplines.** `sus-spec` carries the architect stance
+2. **The three guides absorb the cross-cutting disciplines.** `write-spec` carries the architect stance
    (intent not implementation; survey before inventing) and the dropped-from-sources practice;
    `implement-task` carries scope discipline, evidence-or-it-didn't-happen, and adversarial self-review
-   before handoff; `sus-review` carries refute-by-default, the evidence rules, and the finding-saving
+   before handoff; `review-output` carries refute-by-default, the evidence rules, and the finding-saving
    close. No standalone persona files in the core kit.
 3. **Advanced tier (`starter-kit/advanced/`, all optional):** templates `{audit, bug, research, adr, rfc,
 prd, threat-model}.md`; reference cards `sol-reference.md` (the notation) and `checks-reference.md`;
-   guides `{sus-audit, sus-research, persona-surveyor, write-bug-report, write-prd, write-rfc,
-sus-change-plan, sus-inventory, spec-check, remember, sus-task}`. The audit template is
+   guides `{write-audit, write-research, persona-surveyor, write-bug-report, write-prd, write-rfc,
+write-change-plan, write-inventory, spec-check, save-findings, split-work}`. The audit template is
    flagged "recommended first taste for brownfield teams". **persona-surveyor stays a standalone guide**
    — its evidentiary discipline (three named instances; observation vs claim) is the one stance that does
    not fold cleanly.

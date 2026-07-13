@@ -28,7 +28,7 @@ core path where it defeats the kit's reason to exist.
    deletable folder. Adoption is one copy: `cp -r starter-kit/ <your-workspace>` (standalone
    repo or a folder in an existing project), then fill `AGENTS.md`.
 2. **Guides live at `.agents/skills/`, tool adapters are symlinks.** The three core guides
-   ship at `starter-kit/.agents/skills/{sus-spec,implement-task,sus-review}/` — the
+   ship at `starter-kit/.agents/skills/{write-spec,implement-task,review-output}/` — the
    workspace's own agent-tooling home, consistent with docs/03's "`.agents/` = agent tooling
    only". Tool-specific discovery is a symlink: `.claude/skills → ../.agents/skills` ships in
    the kit; other tools get a one-line equivalent in `AGENTS.md`. The pattern is the house

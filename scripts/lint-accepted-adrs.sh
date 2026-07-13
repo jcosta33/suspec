@@ -3,7 +3,7 @@ set -eu
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 EXPECTED_COUNT=152
-EXPECTED_DIGEST=e1714d5d0e3562677894f74fea462b715c23fa6dca5be7b283eff94f71998d67
+EXPECTED_DIGEST=b25703cdfa7c9fb075aee391cd49360283fdfc5b824818afaa8839839433d9f2
 
 files=$(git -C "$ROOT" ls-files 'docs/adrs/0*.md' |
   grep -E '^docs/adrs/(00[0-9]{2}|01[0-4][0-9]|015[0-4])-')
