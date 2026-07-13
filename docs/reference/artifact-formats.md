@@ -11,9 +11,8 @@ filename or location. Ordinary artifacts live under the agent-neutral
 Ordinary conversation and direct action create no Suspec artifact. Create one when the user requests
 it or the applicable Suspec workflow requires it as a live input. When no downstream step needs the
 transient set, the final consumer asks whether to delete, leave, promote, or choose `Other` for
-every artifact and
-sidecar. Disposition is a human action, not frontmatter or lifecycle state, and its picker replaces
-path-only handoff. The agent selects no option; inaction is not Leave.
+every artifact and sidecar. Disposition is a human action, not frontmatter or lifecycle state, and
+its picker replaces path-only handoff. The agent selects no option; inaction is not Leave.
 
 ## Types
 
@@ -53,6 +52,8 @@ Required sections:
 Add `Non-goals`, `Open questions`, `Affected areas`, `Dropped from sources`, or `Execution`
 only when the section carries information. A deferred decision keeps the spec `draft` and
 blocks dependent execution.
+Only a spec whose status is exactly `ready` can be dispatched or reviewed. A missing status,
+`draft`, or any other value blocks both transitions.
 
 Each requirement has:
 
@@ -115,7 +116,7 @@ decision: pending
 # waivers: [AC-002]          # required when an accepted review waives unsupported/unverified rows
 ```
 
-A task is always spec-backed: `source` names the spec that owns every scoped requirement.
+A task is always spec-backed: `source` names the ready spec that owns every scoped requirement.
 A change plan can add wave and preservation context, but it never replaces the source spec.
 
 A review reconciles against the **spec**, always passed explicitly via `--spec <path>` on
@@ -125,7 +126,8 @@ no `task:` (1:1, no task), on the whole spec. A task, when present, only
 scopes and indexes evidence — it is never the review's target. The review's frontmatter
 never names its own spec; only `task:` is read and validated by the checker.
 
-The review ID and `Requirement coverage` section are required and non-empty. Add `Changed files`, `Findings`, `Open decisions`,
+The source spec must still be exactly `ready` when review begins. The review ID and
+`Requirement coverage` section are required and non-empty. Add `Changed files`, `Findings`, `Open decisions`,
 `Change-plan coverage`, or method notes only when they carry information.
 
 Coverage rows use:
@@ -142,13 +144,20 @@ Assessments:
 - `Blocked`
 
 The decision enum is `pending`, `accepted`, `changes-requested`, or `deferred`. The assessment
-enum is exactly the four values above. `Supported` needs evidence. The agent writes assessments and
+enum is exactly the four values above; any other option value is a blocking error. When present,
+`Change-plan coverage` is parsed with the same columns and assessment enum. `Supported` needs
+evidence in either table. The agent writes assessments and
 leaves `decision: pending`. After a state-aware human picker, the selected decision is written as
 `accepted`, `changes-requested`, or `deferred`. `waivers` is absent before acceptance. At acceptance,
-when Unsupported or Unverified rows exist, it lists exactly every such requirement ID and no others;
+when Unsupported or Unverified Requirement coverage rows exist, it lists exactly once every such
+requirement ID and no others;
 otherwise it is absent. `Supported` and `Blocked` rows are not waivable. An accepted review has no
 non-empty `Open decisions` section and no `Blocked` assessment in requirement or change-plan
 coverage. Resolve the dependency or defer the review.
+
+C012 coverage reconciliation, C013 structured command binding, and waivers read Requirement
+coverage only. C016 evidence and the accepted-review `Blocked` rule read both Requirement coverage
+and Change-plan coverage.
 
 ## Inspection
 

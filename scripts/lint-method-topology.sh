@@ -12,6 +12,7 @@ repo_dir() {
 
 canon=$(repo_dir corpus suspec)
 skills=$(repo_dir corpus-skills suspec-skills)
+agents=$(repo_dir corpus-agents suspec-agents)
 
 expected='bulletproof
 demolition
@@ -36,13 +37,28 @@ test "$actual" = "$expected" || {
   exit 1
 }
 
+expected_agents='.gitignore
+AGENTS.md
+LICENSE
+README.md'
+actual_agents=$(find "$agents" -mindepth 1 ! -path "$agents/.git" ! -path "$agents/.git/*" -type f -exec basename {} \; | sort)
+test "$actual_agents" = "$expected_agents" || {
+  echo "agent tombstone file drift" >&2
+  printf 'expected:\n%s\nactual:\n%s\n' "$expected_agents" "$actual_agents" >&2
+  exit 1
+}
+if find "$agents" -mindepth 1 ! -path "$agents/.git" ! -path "$agents/.git/*" -type d | grep -q .; then
+  echo "agent tombstone contains a directory" >&2
+  exit 1
+fi
+
 for required in $expected; do
   test -f "$skills/skills/$required/SKILL.md" || { echo "missing skill: $required" >&2; exit 1; }
   grep -q "^name: $required$" "$skills/skills/$required/SKILL.md" || { echo "name drift: $required" >&2; exit 1; }
 done
 
 if grep -RniE --exclude-dir=adrs '(^|[^[:alnum:]-])(concise-output|revolver-review|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr)([^[:alnum:]-]|$)' \
-  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$canon/checks" "$skills/README.md" "$skills/skills"; then
+  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$canon/checks" "$skills/README.md" "$skills/skills" "$agents/README.md" "$agents/AGENTS.md"; then
   echo "stale current method name" >&2
   exit 1
 fi
@@ -60,6 +76,22 @@ grep -q '^version: 0\.18\.0' "$canon/checks/checks.yaml" || {
 for id in C021 C022 C023 C024; do
   grep -q "id: $id" "$canon/checks/checks.yaml" || { echo "missing check: $id" >&2; exit 1; }
 done
+grep -q '^  source_spec_status: ready' "$canon/checks/checks.yaml" || {
+  echo "ready source-spec review gate missing" >&2
+  exit 1
+}
+grep -q '^    sections: \[Requirement coverage, Change-plan coverage\]' "$canon/checks/checks.yaml" || {
+  echo "change-plan coverage parser contract missing" >&2
+  exit 1
+}
+grep -q 'duplicate waiver' "$canon/checks/checks.yaml" || {
+  echo "duplicate waiver rejection missing" >&2
+  exit 1
+}
+grep -Fq '^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$' "$canon/checks/checks.yaml" || {
+  echo "C023 claim-only predicate drift" >&2
+  exit 1
+}
 grep -q 'C014 is RETIRED' "$canon/checks/checks.yaml" || { echo "C014 retirement missing" >&2; exit 1; }
 if grep -qE '^  - \{ id: C014,' "$canon/checks/checks.yaml"; then
   echo "C014 still active" >&2

@@ -27,7 +27,8 @@ intent -> spec -> implement -> review packet -> check -> findings
 1. **Spec** — `sus-spec` turns intent into a lean spec: intent plus requirements
    with `AC-NNN` ids and `Verify with:` lines. Add other sections only when they carry
    information. Place the file in the [agent-neutral workspace](03-where-files-live.md),
-   carry its absolute path forward, and lint it: `suspec check <path>`.
+   carry its absolute path forward, and lint it: `suspec check <path>`. Set status to exactly
+   `ready` before implementation dispatch or review; `draft`, missing, and unknown values block both.
 2. **Implement** — a native harness worker or human works from the spec by explicit
    path, runs every verify command, and pastes real output into the spec's
    `## Execution` section. `Tests passed` without output is not evidence.

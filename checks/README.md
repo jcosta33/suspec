@@ -2,10 +2,11 @@
 
 _Advanced design note — maintainer rationale; not needed to use Suspec._
 
-Test data for the machine contract in [`checks.yaml`](./checks.yaml), consumed by suspec-cli.
-The [checks reference](../docs/reference/checks.md) explains that contract for humans. Every rule is a claim about what a correct checker reports on a given
-file; this directory pins those reports as fixtures, per the severity split
-(hard error / warning). suspec-cli's `suspec check` is the reference consumer — a
+Test data for the machine contract in [`checks.yaml`](./checks.yaml), consumed by suspec-cli. The
+[checks reference](../docs/reference/checks.md) explains that contract for humans. Every rule is a
+claim about what a correct checker reports on a given file; this directory pins those reports as
+fixtures, per the severity split
+(hard error / warning). suspec-cli's `suspec check` is the reference consumer — an
 explicit-path checker that reads exactly the files it is handed; its test suite pins the
 contract table and a subset of these fixtures as oracles, conditional on a sibling canon
 checkout — and a reviewer working by hand can use all of them the same way: apply the
@@ -22,7 +23,8 @@ review names a split task) flags the mechanical parts:
 
 - **C023 `task-evidence`** — `ready` and `running` tasks require no evidence. At
   `review-ready` or `closed`, `## Verify` contains a numeric exit status plus non-empty fenced raw
-  output, a CI link, or justified `n/a`; bare claims fail even when fenced, and placeholders fail
+  output, a CI link, or justified `n/a`; a claim-only fence fails only when its entire trimmed body
+  matches the contract predicate, and placeholders fail
   [[EVIBOUND]](../docs/research/sources.md#EVIBOUND). In a review packet, an empty Evidence cell
   means **Unverified**, never **Supported**.
 - **C024 `closed-task-resolved`** — a closed task has no non-empty `Blocked questions:`,

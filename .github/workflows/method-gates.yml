@@ -21,6 +21,7 @@ jobs:
       # Check out the current family under one parent so cross-repo scans share a root.
       - { name: suspec,              uses: actions/checkout@v4, with: { repository: jcosta33/suspec,              path: family/suspec } }
       - { name: suspec-skills,       uses: actions/checkout@v4, with: { repository: jcosta33/suspec-skills,       path: family/suspec-skills } }
+      - { name: suspec-agents,       uses: actions/checkout@v4, with: { repository: jcosta33/suspec-agents,       path: family/suspec-agents } }
       - { name: suspec-mcp,          uses: actions/checkout@v4, with: { repository: jcosta33/suspec-mcp,          path: family/suspec-mcp } }
       - { name: suspec-cli,          uses: actions/checkout@v4, with: { repository: jcosta33/suspec-cli,          path: family/suspec-cli } }
 

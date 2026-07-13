@@ -3,7 +3,7 @@
 type: spec
 id: SPEC-checkout
 title: Cart submission and checkout
-status: draft
+status: ready
 owner: checkout-team
 sources:
   - SHOP-2041

@@ -48,6 +48,9 @@ allowed when they obey the subset.
 
 Field shapes are exact: spec `sources`; task `source` and `scope`; review `waivers`; and
 change-plan `sources` and `preserves` are lists. Their other defined fields are scalars.
+Declared option values are exact and case-sensitive. Spec status is `draft` or `ready`; optional
+spec format is `sol`; task status, review decision, and coverage assessment use the closed sets
+below. A present value outside its declared set is a blocking contract error.
 
 ## Core checks
 
@@ -62,15 +65,15 @@ change-plan `sources` and `preserves` are lists. Their other defined fields are 
 | C009 | `broken-source-link` | Path-shaped source refs resolve against the spec's own directory (artifact-relative). Bare tracker IDs are exempt. | hard-error |
 | C010 | `preserves-refs-resolve` | Change-plan `preserves:` entries resolve to requirements or `PG-NNN`; `SPEC-id#AC-NNN` refs resolve against the plan's sibling specs. | hard-error |
 | C011 | `waves-present` | Migration, rewrite, and schema-change plans have waves with verify steps. | warning |
-| C012 | `coverage` | Review coverage rows match the task scope and source spec. | warning |
-| C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row assessment — a **consistency** check (nothing re-runs the command). A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard-error) |
+| C012 | `coverage` | Requirement coverage rows match the task scope and ready source spec. Change-plan coverage is outside C012. | warning |
+| C013 | `verify-evidence-binding` | Structured `verify` blocks in Requirement coverage match the requirement command and row assessment — a **consistency** check (nothing re-runs the command). Change-plan coverage is outside C013. A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard-error) |
 | C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`, itself resolved against the spec's own directory. | warning |
 | C016 | `supported-needs-evidence` | A `Supported` row with empty evidence is invalid. | hard-error |
 | C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. | warning |
 | C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard-error |
 | C021 | `intent-present` | A spec has a non-empty `## Intent`. | hard-error |
 | C022 | `task-shape` | Task type, non-empty ID/source/scope, field shapes, status, and exactly-once required H2 sections match the contract. | hard-error |
-| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`; fenced bare claims and placeholders fail. | hard-error |
+| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`; a claim-only fence and placeholders fail. | hard-error |
 | C024 | `closed-task-resolved` | A closed task contains no `TBD`, `TODO`, `???`, or non-empty canonical blocker labeled `Blocked questions:`, `Blocking:`, or `Open question (blocking):` after an unordered or ordered list marker; `none` and `n/a` are resolved. | hard-error |
 
 C005, C006, C014, and C017 are retired and never reused. C018 is reserved.
@@ -88,19 +91,22 @@ Notes:
   diff and remains a reviewer checklist item.
 - References resolve artifact-relative everywhere. A spec citing a file two folders up writes
   the relative path from its own directory (`../../sources/sup-204.md`); no root is ever inferred.
+- A task is dispatched, and any review begins, only when its source spec's status is exactly
+  `ready`. Draft, missing, and unknown statuses are blocking; C012 and C013 therefore never use a
+  draft exemption.
 
 ## Task and review packet checks
 
 | Check | Rule |
 | --- | --- |
 | C022 `task-shape` | Required task frontmatter and sections have valid shapes. |
-| C023 `task-evidence` | No evidence check at `ready`/`running`; at `review-ready`/`closed`, require numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`. Fenced bare claims and placeholders fail. |
+| C023 `task-evidence` | No evidence check at `ready`/`running`; at `review-ready`/`closed`, require numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`. A fence is claim-only only when its entire trimmed body matches `^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$` case-insensitively; claim-only fences and placeholders fail. |
 | C024 `closed-task-resolved` | A closed task has no non-empty canonical blocker after an unordered or ordered list marker; `none` and `n/a` are resolved values. |
-| Review structure (unnumbered) | Review ID and `Requirement coverage` are non-empty; decision and assessment values use their declared enums. |
+| Review structure (unnumbered) | The source spec is exactly `ready`; review ID and `Requirement coverage` are non-empty; decision and assessment values use their declared enums. `Change-plan coverage`, when present, is parsed with the same columns and assessment enum. |
 | `no-open-critical` | An accepted review has no non-empty `Open decisions` section. |
 | `accepted-no-blocked` | An accepted review has no `Blocked` assessment in requirement or change-plan coverage; Blocked cannot be waived. |
-| `accepted-waivers` | `waivers` appears only at acceptance and, when needed, exactly equals the Unsupported and Unverified requirement IDs; it is absent when there are no such rows. Supported and Blocked rows are not waivable. |
-| `verify-evidence-binding` | Structured evidence matches its requirement row and command. |
+| `accepted-waivers` | Requirement coverage only: `waivers` appears only at acceptance and, when needed, exactly equals the Unsupported and Unverified requirement IDs without duplicates; it is absent when there are no such rows. Supported and Blocked rows are not waivable. |
+| `verify-evidence-binding` | Requirement coverage only: structured evidence matches its requirement row and command. |
 
 ## Writing watchlist
 
@@ -137,7 +143,7 @@ which core checks are implemented in your installed version.
 | SOL-S004 | duplicate block ID |
 | SOL-S005 | ID prefix does not match block type |
 | SOL-S006 | `SHOULD` or `SHOULD NOT` lacks `BECAUSE` or `EXCEPT` |
-| SOL-S007 | malformed header |
+| SOL-S007 | malformed header, including a `QUESTION` marker other than exact lowercase `[blocking]` or `[non-blocking]` |
 | SOL-S008 | metadata or prose before first control line |
 | SOL-S010 | unknown metadata field |
 | SOL-S011 | recognized block type with no ID |

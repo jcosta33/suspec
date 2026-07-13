@@ -132,7 +132,9 @@ Should expired sessions redirect to `/login` or show inline re-auth?
 AFFECTS AC-001
 ```
 
-A spec with a blocking question stays `draft`.
+The header marker is required and exact: lowercase `[blocking]` or `[non-blocking]`, followed
+immediately by `:`. Missing markers, different casing, and every other marker are malformed
+headers (SOL-S007). A spec with a blocking question stays `draft`.
 
 ## Strength words
 

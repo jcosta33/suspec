@@ -7,6 +7,7 @@ packet: the implementer works from the source and fills its `## Execution` secti
 
 A task does not add requirements. It always copies a scope subset from a source spec. A change
 plan may add wave and preservation context, but it never replaces that spec.
+The source spec's status must be exactly `ready` before the packet is dispatched.
 
 Task packets are files like any other Suspec artifact: written by `sus-task`,
 placed in the agent-neutral workspace per the [placement rule](03-where-files-live.md),

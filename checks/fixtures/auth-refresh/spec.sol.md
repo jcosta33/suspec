@@ -3,7 +3,7 @@
 type: spec
 id: SPEC-auth-refresh
 title: Silent token refresh on 401
-status: draft
+status: ready
 owner: auth-team
 sources:
   - AUTH-731

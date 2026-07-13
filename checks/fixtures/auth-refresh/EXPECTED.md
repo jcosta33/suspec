@@ -28,7 +28,7 @@ C002 duplicate.
 | Writing-rules watchlist           | AC-003 | flagged — vague verb plus non-verifiable quality; nothing on the line says how to check it | advisory (convention) |
 | C001, C002, C004, C008, C009 | —      | pass                                                                                       | —                     |
 
-C007 does not apply: the spec is `status: draft`.
+C007 applies and passes: the spec is `status: ready` with no blocking open question.
 
 ## spec.sol.md (`format: sol`)
 
@@ -63,6 +63,8 @@ files is wrong (the anti-fork rule).
 | ------------------ | -------------------------- | ------------------------------------------------------------------------ |
 | `supported-needs-evidence` (C016)  | review rows AC-001, AC-003 | pass — output pasted or linked                                           |
 | `supported-needs-evidence` (C016)  | review row AC-002          | the Evidence cell is empty, so the row reads **Unverified** — never Supported |
+| `coverage` (C012) | review vs spec scope | pass — every in-scope AC has one Requirement coverage row |
+| `verify-evidence-binding` (C013) | Supported review rows | fires at warning — the ready spec makes C013 applicable and the evidence is free-form |
 | C022 `task-shape` | task | pass — frontmatter and required sections are valid |
 | `no-open-critical` | review | pass — the pending review may retain its non-empty Open decisions section |
 

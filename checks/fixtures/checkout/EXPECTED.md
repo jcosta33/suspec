@@ -29,7 +29,7 @@ C002 duplicate.
 | Writing-rules watchlist           | AC-001 | flagged — bundling connectives joining separable behaviors | advisory (convention) |
 | C001–C003, C008, C009 | —      | pass                                                       | —                     |
 
-C007 does not apply: the spec is `status: draft`.
+C007 applies and passes: the spec is `status: ready`; its open question is explicitly non-blocking.
 
 The shared write area has no core check code in plain form: it surfaces only as the
 Affected-areas note and the open question, for a reviewer to catch (checklist).
@@ -74,6 +74,8 @@ two files is wrong (the anti-fork rule).
 | ------------------ | -------------------------- | ------------------------------------------------------------------------ |
 | `supported-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                           |
 | `supported-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Supported |
+| `coverage` (C012) | review vs spec scope | pass — every in-scope AC has one Requirement coverage row |
+| `verify-evidence-binding` (C013) | Supported review rows | fires at warning — the ready spec makes C013 applicable and the evidence is free-form |
 | C022 `task-shape` | task | pass — frontmatter and required sections are valid |
 | `no-open-critical` | review | pass — the pending review may retain its non-empty Open decisions section |
 

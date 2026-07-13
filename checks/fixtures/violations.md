@@ -25,21 +25,24 @@ A `review-ready` task packet's Verify section, every box checked, no output anyw
 raw output with a numeric exit, a visible `CI:` or `CI link:` URL, or justified `n/a`. Bare claims do not satisfy the
 artifact-level check. The same section at `ready` or `running` does not run C023.
 
-A fenced bare claim also fails:
+A claim-only fence also fails even with a numeric exit:
 
 ````markdown
 ## Verify
 
 - [x] `npm test`
 
-  Exit: 0
+  Exit status: 0
 
   ```text
   All tests passed.
   ```
 ````
 
-**Expected:** C023 fires — fencing a completion claim does not turn it into raw command output.
+**Expected:** C023 fires — after trimming, the entire fence body matches the claim-only predicate
+`^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$` case-insensitively. A real output line such as
+`1 test passed` does not match that predicate and satisfies the fenced-output half when paired with
+a numeric `Exit status:`.
 
 A bare CI URL also fails:
 
@@ -194,7 +197,7 @@ waivers: [AC-001]
 type: review
 id: REVIEW-invalid-acceptance
 decision: accepted
-waivers: [AC-003]
+waivers: [AC-001, AC-001]
 ---
 
 ## Requirement coverage
@@ -210,11 +213,44 @@ waivers: [AC-003]
 - Decide whether to accept AC-001.
 ```
 
-**Expected:** the first packet fails for an empty ID, an invalid decision, and an empty required
+**Expected:** the first packet fails for an empty ID, an invalid decision option, and an empty required
 coverage section; waivers are forbidden before acceptance. The second fails because accepted
-waivers must be exactly `[AC-001]` and an accepted review cannot retain a non-empty Open decisions
+waivers contain a duplicate, and an accepted review cannot retain a non-empty Open decisions
 section or a `Blocked` assessment. `Partially supported` is outside the assessment enum; `Blocked`
 is valid before acceptance but cannot be waived or retained at acceptance.
+
+The same blocking option-value error applies to spec `status` outside `draft | ready`, optional
+spec `format` outside `sol`, and task `status` outside `ready | running | review-ready | closed`.
+
+A present Change-plan coverage table uses the same three columns and assessment options:
+
+```markdown
+## Change-plan coverage
+
+| ID | Assessment | Evidence |
+|---|---|---|
+| PG-001 | Supported | |
+| PG-002 | Partially supported | incomplete output |
+| PG-003 | Blocked | dependency unavailable |
+```
+
+**Expected:** the table is parsed. C016 fires for PG-001, the invalid assessment is blocking, and
+PG-003 blocks `decision: accepted`. C012, C013, and waiver reconciliation ignore all three rows.
+
+---
+
+## V24 — inexact SOL QUESTION marker (SOL-S007, hard error)
+
+Each header is malformed:
+
+```sol
+QUESTION Q-001:
+QUESTION Q-002 [Blocking]:
+QUESTION Q-003 [deferred]:
+```
+
+**Expected:** SOL-S007 fires. The only accepted headers use exact lowercase `[blocking]` or
+`[non-blocking]`, followed immediately by `:`.
 
 ---
 
@@ -376,9 +412,9 @@ summary indexes it.
 
 ---
 
-## V18 — coverage gaps against a non-draft spec (C012 `coverage`, warning)
+## V18 — coverage gaps against a ready spec (C012 `coverage`, warning)
 
-A non-draft spec `SPEC-x` (`status: ready`) defining `AC-001`, `AC-002`, `AC-003`; a task whose
+A ready spec `SPEC-x` defining `AC-001`, `AC-002`, `AC-003`; a task whose
 `scope` is `[AC-001, AC-002, AC-003]`; reviewed by a packet whose coverage table omits `AC-003`
 and adds a row for `AC-009` (an id the source spec does not define):
 
@@ -393,14 +429,14 @@ and adds a row for `AC-009` (an id the source spec does not define):
 ```
 
 **Expected:** flagged — `AC-003` is in scope but has no coverage row (**uncovered**), and `AC-009`
-names an id absent from the source spec (**orphan**). Scope-guarded to non-draft source specs (a
-draft's ids are work-in-progress, mirroring C007's ready gate). Surfaces facts, never a verdict.
+names an id absent from the source spec (**orphan**). Review requires the source spec to be exactly
+`ready`; draft, missing, and unknown statuses fail before C012. Surfaces facts, never a verdict.
 
 ---
 
 ## V19 — a verify block's cmd disagrees with the named command (C013 `verify-evidence-binding`, hard error)
 
-A non-draft spec whose `AC-001` carries `` Verify with: `npm test -- auth-refresh.spec.ts` ``, reviewed
+A ready spec whose `AC-001` carries `` Verify with: `npm test -- auth-refresh.spec.ts` ``, reviewed
 by a packet whose `AC-001` Supported row carries a structured `verify` block (a fenced sibling, info-string
 `id=AC-001 cmd="npm test -- other.spec.ts" result=pass`) recording a **different** command.
 

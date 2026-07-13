@@ -58,13 +58,16 @@ one process, not a second command.
   is inferred or discovered.
 - **Tasks remain spec-backed.** A task's `source` names the spec that owns its scoped
   requirements. Change-plan wave and preservation details are context, never replacement
-  requirement authority.
+  requirement authority. The spec status is exactly `ready` before task dispatch or review.
 - **Reference checks resolve artifact-relative** (level: enforced — suspec-cli). Source
   references and a named `sources.md` resolve from the passed artifact's own directory
   using the relative paths in frontmatter, even when those paths climb folders. No root
   is inferred.
 - **Unknown options fail before file reads.** A misspelled or unsupported flag is a usage error,
   never ignored and never treated as an artifact path.
+- **Option values are not options.** `--spec` and `--task` require a following non-option token.
+  End-of-input or another `--...` token reports `option <flag> requires a value` before help or
+  artifact loading; the next option is never consumed as a path.
 
 ## The missing-companion rule
 
@@ -105,8 +108,10 @@ version and check definitions.
 - **No acceptance.** It never accepts work. Review assessments (`Supported` / `Unsupported` /
   `Unverified` / `Blocked`) are written by the independent reviewer; the checker verifies their
   shape and evidence binding. Review IDs and Requirement coverage are non-empty; decision and
-  assessment enums are closed; waivers are accepted-only and exactly reconcile Unsupported and
-  Unverified requirement rows; accepted reviews have no non-empty Open decisions or Blocked
+  assessment enums are closed. Change-plan coverage is parsed with the same row shape; C016 and
+  accepted-review Blocked rejection apply to both tables. C012, C013, and waivers read Requirement
+  coverage only. Waivers are accepted-only, reject duplicates, and exactly reconcile Unsupported
+  and Unverified requirement rows; accepted reviews have no non-empty Open decisions or Blocked
   assessment. Blocked cannot be waived. The human owns the decision and waivers.
 - **No execution.** It does not run your verify commands, your tests, or any agent. It
   checks that recorded evidence matches what the spec named — not that the commands pass.
