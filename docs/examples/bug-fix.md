@@ -19,7 +19,7 @@ npm run test:integration -- payment-timeout-retry
 1 passed after the fix
 ```
 
-This local fix needs no artifact.
+This local fix needs no artifact. The bug is enough paperwork.
 
 ## Escalation
 
@@ -74,8 +74,8 @@ suspec check ~/.agents/artifacts/payments-api/payment-timeout-retry-review.md \
   --spec ~/.agents/artifacts/payments-api/payments-spec.md
 ```
 
-The checker validates coverage, evidence, and command consistency. The human decides whether the
-money-path finding permits acceptance.
+The checker validates coverage, evidence, and command consistency. It does not decide whether a
+money-path finding is acceptable. The human does.
 
 Preserve the verified shared-lookup lesson through native memory when useful. Then
 [close the transient set](../03-where-files-live.md#close).

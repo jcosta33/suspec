@@ -1,6 +1,7 @@
 # Source authority
 
-Authority depends on the claim and current scope, not a fixed rank.
+Authority belongs to the source competent for the claim in its current scope, not a fixed rank or the
+source with the nicest logo.
 
 ## Live work
 
@@ -17,10 +18,11 @@ code, release notes, product documentation, original paper, or dataset. Label fi
 claims as vendor evidence.
 
 Secondary synthesis may locate or summarize primary evidence. Marketing, reviews, anecdotes, and
-synthetic respondents remain limited evidence regardless of repetition.
+synthetic respondents do not become primary evidence through repetition.
 
 When sources conflict, state the conflict and compare recency, population, method, and scope. Never
-average disagreement into certainty. Route unresolved choices to their owner.
+average disagreement into certainty. Averaging cannot reconcile incompatible scopes. Route
+unresolved choices to their owner.
 
 A citation supports only what it directly establishes. Preserve date, population, method, uncertainty,
 and limitations. Label guidance, projections, preprints, and inference.

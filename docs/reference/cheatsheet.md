@@ -4,7 +4,7 @@
 intent -> spec -> implement -> review -> check -> findings
 ```
 
-Use the least structure that changes execution or reviewability. See
+Use the least structure that changes execution or reviewability. Everything else is rent. See
 [proportional rigor](rigor-escalation.md).
 
 ## Artifacts
@@ -47,8 +47,8 @@ Reverify after requirement text, commands, or exercised code changes.
 
 ## Evidence
 
-Use pasted command output, a visible labeled CI URL, or a named manual observation. A summary such as
-`tests passed` proves nothing.
+Use pasted command output, a visible labeled CI URL, or a named manual observation. `tests passed`
+proves only that someone typed `tests passed`.
 
 ## Review attention
 

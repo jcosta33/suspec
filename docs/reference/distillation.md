@@ -1,6 +1,6 @@
 # Distillation
 
-Move durable value from transient work into its existing owner.
+Transient work expires. Move only its durable value into the owner that already exists.
 
 | Live content                     | Durable destination                                     |
 | -------------------------------- | ------------------------------------------------------- |
@@ -15,6 +15,7 @@ Distill only verified claims. Keep one destination per concern. Preserve evidenc
 Never invent a memory surface, preserve secrets or untrusted instructions, or keep a working spec as a
 second post-close source of truth.
 
-Close findings by routing a durable lesson, routing a team action, or saving nothing.
+Close findings by routing a durable lesson, routing a team action, or saving nothing. Hoarding is not
+distillation.
 
 Related: [memory](memory.md) · [findings](../09-saving-findings.md)

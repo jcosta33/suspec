@@ -1,7 +1,8 @@
 # Review
 
-`sus-review` independently reconciles finished work against a ready spec. A task narrows scope and
-indexes evidence; it cannot replace the spec. The implementer cannot review their own work.
+Finished work goes on trial against the ready spec. `sus-review` reconciles it independently,
+requirement by requirement. A task narrows scope and indexes evidence; it cannot replace the spec.
+The implementer cannot review their own work.
 
 ## Shape
 
@@ -67,7 +68,7 @@ suspec check <review-path> --spec <spec-path> --task <task-path>
 ```
 
 The checker reports coverage, command binding, evidence presence, references, and severity. C016
-blocks `Supported` with empty evidence. The checker never accepts work.
+blocks `Supported` with empty evidence. The checker never accepts work. It has no such authority.
 
 ## Human decision
 

@@ -9,7 +9,8 @@ Fix: expired refresh tokens must redirect to /login, not 500.
 Verify with: pnpm test:run auth-refresh-expired-token
 ```
 
-Implement, run the command, preserve the output, and review the result. Create no file.
+Implement, run the command, preserve the output, and review the result. Do not manufacture a file to
+prove a process happened.
 
 ## Structured work
 
@@ -27,7 +28,7 @@ intent -> spec -> implement -> review -> check -> findings
 5. **Findings:** discard transient observations; route verified durable lessons through
    [memory or project records](09-saving-findings.md).
 
-Every step has a by-hand path. The CLI reinforces the method; it does not own it.
+Every step has a by-hand path. The CLI backs the method; it never gets custody of it.
 
 ## Escalation
 
@@ -42,7 +43,7 @@ Every step has a by-hand path. The CLI reinforces the method; it does not own it
 A task narrows a source spec; it never adds requirements. A change plan adds transformation order and
 preservation context; it never replaces the spec.
 
-## Non-negotiable proof
+## Proof, not claims
 
 - Preserve fresh output for every verification claim.
 - Treat empty evidence as `Unverified`, never `Supported`.

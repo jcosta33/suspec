@@ -64,7 +64,7 @@ Check it:
 suspec check ~/.agents/artifacts/shop-api/checkout-expiry-spec.md
 ```
 
-Without the CLI, verify `status: ready`, unique `AC-001`, a non-empty `Verify with:`, and only
-useful optional sections.
+Without the CLI, verify `status: ready`, unique `AC-001`, a non-empty `Verify with:`, and only useful
+optional sections. Empty ceremony still counts as empty.
 
 Next: [implement](02-task-and-run.md).

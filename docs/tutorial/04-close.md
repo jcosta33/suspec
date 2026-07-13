@@ -12,8 +12,8 @@ Applies to: checkout session expiry.
 Does not apply to: other checkout validation failures or non-checkout sessions.
 ```
 
-Without native memory, use the project's issue, decision, test, or maintained documentation, or save
-nothing.
+Without native memory, use the project's issue, decision, test, or maintained documentation. Saving
+nothing is valid.
 
 After the final consumer finishes, present one choice for the spec, review, and sidecars:
 
@@ -22,7 +22,8 @@ After the final consumer finishes, present one choice for the spec, review, and 
 3. **Promote:** sanitize and move durable project truth, repair references, and validate.
 4. **Other:** specify another disposition for the complete set.
 
-The human chooses. Silence is not Leave. Promotion never pushes or creates lifecycle state.
+The human chooses. Silence is not Leave, and a forgotten directory is not a retention policy.
+Promotion never pushes or creates lifecycle state.
 
 This run needed no task, inventory, or change plan. Structural work follows
 [inventories and change plans](../05-brownfield-and-change-plans.md).

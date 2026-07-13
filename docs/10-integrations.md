@@ -1,6 +1,7 @@
 # Integrations
 
-Suspec uses Markdown and explicit paths. Skills carry the method; integrations reinforce it.
+Integrations carry Suspec across tool boundaries. They do not become product owners. Skills carry the
+method; Markdown and explicit paths carry the work.
 
 ## CLI
 
@@ -20,7 +21,7 @@ required review companions block instead of weakening the check.
 Source and citation paths resolve from the spec directory. C010 scans `spec.md` in immediate child
 directories of the change-plan directory's parent, including the plan directory, and never deeper.
 
-The CLI reports facts, never acceptance. See [CLI reference](reference/cli.md) and
+The CLI reports facts. It blesses nothing. See [CLI reference](reference/cli.md) and
 [checks](reference/checks.md).
 
 ## MCP
@@ -43,7 +44,7 @@ Give any worker:
 - the spec and optional task by absolute path;
 - the repository or worktree.
 
-The UI and provider are replaceable. Suspec ships no custom agents.
+The UI and provider are replaceable by design. Suspec ships no custom agents.
 
 ## Project systems
 

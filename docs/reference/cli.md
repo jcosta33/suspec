@@ -1,7 +1,8 @@
 # The `suspec` CLI
 
-[suspec-cli](https://github.com/jcosta33/suspec-cli) is a read-only deterministic checker. It runs no
-model or verification command, writes nothing, and renders no acceptance decision.
+[suspec-cli](https://github.com/jcosta33/suspec-cli) is a read-only deterministic checker. Facts in,
+diagnostics out. It runs no model or verification command, writes nothing, and renders no acceptance
+decision.
 
 ## Commands
 
@@ -17,7 +18,7 @@ duplicate-ID reconciliation. Reviews run alone because companion flags belong to
 ## Inputs
 
 - Paths are absolute or relative to the process working directory.
-- Frontmatter `type:` selects the checker face; filenames and locations do not.
+- Frontmatter `type:` selects the checker face. Filenames and locations get no vote.
 - `spec`, `task`, `review`, and `change-plan` are checked.
 - `inventory`, `audit`, and `research` return `checked: false`.
 - Missing and unknown types block.
@@ -31,7 +32,8 @@ values, tags, references, empty list heads, coercion, and field-shape mismatches
 
 ## Reference resolution
 
-The CLI discovers no repository, configuration, store, primary artifact, or companion.
+Discovery is not part of the deal. The CLI finds no repository, configuration, store, primary
+artifact, or companion.
 
 - C009 and C015 resolve named paths from the spec directory.
 - C010 resolves `SPEC-id#AC-NNN` against `spec.md` in the plan directory and immediate sibling
@@ -49,7 +51,8 @@ The CLI discovers no repository, configuration, store, primary artifact, or comp
 `suspec check --contract` emits the contract version and definitions.
 
 The checker verifies structure, coverage, command binding, evidence presence, and references. It does
-not run commands, prove evidence, compare live diffs, set merge policy, or accept work.
+not run commands, prove evidence, compare live diffs, set merge policy, or accept work. A parser is
+not a manager.
 
 Exact check behavior: [checks](checks.md). Runtime installation and implementation:
 [suspec-cli README](https://github.com/jcosta33/suspec-cli).

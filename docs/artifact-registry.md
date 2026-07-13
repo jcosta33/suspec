@@ -8,9 +8,11 @@
 | Human method and format reference        | this repository's `docs/`                                                                                          |
 | Machine checks contract                  | `checks/checks.yaml`                                                                                               |
 
-[Artifact formats](reference/artifact-formats.md) define current working documents. Skills carry
-their absolute paths through each handoff. Findings are not an artifact type: transient observations
-stay with live work; durable lessons move to native memory or project-owned records.
+[Artifact formats](reference/artifact-formats.md) define current working documents. No hidden store
+does the handoff for you. Skills carry their absolute paths through each handoff. Findings are not an
+artifact type: transient observations stay with live work; durable lessons move to native memory or
+project-owned records.
 
 An ADR records a decision. Reference explains it. Skills execute it. The checks contract owns only
-the deterministic subset. Change a contract across every affected owner in one reviewed change.
+the deterministic subset. Split ownership is not permission for split truth: change every affected
+owner together.

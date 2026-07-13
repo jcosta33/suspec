@@ -1,10 +1,10 @@
 # Suspec
 
-**An opinionated method for directing and checking coding agents.**
+**Put coding agents on rails. Keep humans on the decisions.**
 
-Suspec ships as standalone skills. They force explicit intent, evidence, review, and human decisions.
-A deterministic CLI catches structural omissions without a model. Your harness writes the code.
-Plain Markdown keeps the work portable and leaves the repository untouched.
+Suspec ships as standalone skills: explicit intent in, evidence out, human decisions where they
+matter. A deterministic CLI catches structural holes without a model. Your harness writes the code.
+Plain Markdown keeps the work portable and the repository clean.
 
 ## Install
 
@@ -19,7 +19,7 @@ deterministic checks improve review.
 
 ## Use the least structure that pays
 
-A trivial fix needs no file:
+A trivial fix needs no file. Paperwork is not progress:
 
 ```text
 Fix: expired refresh tokens must redirect to /login, not 500.
@@ -52,13 +52,13 @@ suspec check <review-path> --spec <spec-path> --task <task-path>
 ```
 
 Exit `0` is clean, `1` is warning, and `2` is blocking. The checker verifies recorded structure,
-coverage, command binding, evidence presence, and references. It does not prove evidence true or
-decide whether work is accepted.
+coverage, command binding, evidence presence, and references. It reports facts. It does not bless the
+work.
 
 ## Method
 
-Every change states intent, receives review, and decides what it taught. Extra scaffold must earn its
-cost:
+Every change states intent, receives review, and decides what it taught. Extra scaffold must pay for
+itself:
 
 - a spec when one precise sentence cannot govern the work;
 - a task when one spec must split into separately dispatchable slices;

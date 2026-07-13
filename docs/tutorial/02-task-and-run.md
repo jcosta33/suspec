@@ -1,6 +1,7 @@
 # Implement
 
-One requirement and one worker do not justify a task. Dispatch the spec directly:
+One requirement and one worker do not justify a task. There is nothing to split. Dispatch the spec
+directly:
 
 ```text
 Read ~/.agents/artifacts/shop-api/checkout-expiry-spec.md and implement AC-001.
@@ -25,7 +26,8 @@ After the final edit, append:
 - Findings: expired checkout sessions are an expected client case, not an outage signal
 ```
 
-The output is illustrative. A real run preserves exact output after the final edit.
+The output is illustrative. A real run preserves exact output after the final edit. Yesterday's green
+run is not today's evidence.
 
 Before review, confirm changed files, fresh output, scope drift, blockers, and findings are explicit.
 When one spec truly splits, follow [task creation](../06-creating-tasks.md).

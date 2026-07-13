@@ -15,7 +15,7 @@ authority. The worker claims:
 All checkout session behaviors preserved.
 ```
 
-Treat that as a claim. Inspect changed files and rerun every applicable command.
+Treat that as a claim, because it is one. Inspect changed files and rerun every applicable command.
 
 ## Review
 
@@ -84,8 +84,8 @@ suspec check ~/.agents/artifacts/shop-api/checkout/session-refactor-review.md \
   --task ~/.agents/artifacts/shop-api/checkout/session-refactor-task.md
 ```
 
-The packet may be structurally clean while correctly requesting changes. The checker reports facts;
-the human decision answers a different question.
+The packet may be structurally clean while correctly requesting changes. Clean structure is not clean
+code. The checker reports facts; the human decision answers a different question.
 
 The implementer fixes AC-002 within scope, removes the retry edit, and records fresh output. A fresh
 reviewer replaces AC-002 only after rerunning proof:

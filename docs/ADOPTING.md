@@ -8,8 +8,8 @@ Install globally for your harness (Codex shown):
 npx skills add jcosta33/suspec-skills -g -a codex
 ```
 
-This is a complete install. Repository commands, architecture, and policy remain in that repository's
-native instructions.
+This is the complete install. Suspec does not annex the repository: its commands, architecture, and
+policy stay in native instructions.
 
 Re-running `npx skills add` updates present entries but does not remove names absent from the source.
 After a catalog removal, delete only obsolete Suspec entries with
@@ -47,8 +47,8 @@ configuration. Exact behavior: [CLI reference](reference/cli.md).
 7. After the final consumer finishes, choose Delete, Leave, or Promote for the complete transient
    artifact set.
 
-A trivial fix skips the files: state intent and verification inline. See the
-[bug-fix example](examples/bug-fix.md) and [tutorial](tutorial/README.md).
+A trivial fix skips the files. Do not bill obvious work for ceremony. State intent and verification
+inline. See the [bug-fix example](examples/bug-fix.md) and [tutorial](tutorial/README.md).
 
 ## Without the CLI
 
@@ -62,5 +62,5 @@ The canonical machine contract is `checks/checks.yaml`; the CLI ships its matchi
 Teams decide which reported levels block CI and may add project-owned checks. Editing a local contract
 copy does not reconfigure the CLI.
 
-Suspec commits nothing by default. Projects own code, tests, decisions, guides, PRs, and any explicitly
-promoted artifact.
+Suspec commits nothing by default. Your project remains your project: it owns code, tests, decisions,
+guides, PRs, and any explicitly promoted artifact.

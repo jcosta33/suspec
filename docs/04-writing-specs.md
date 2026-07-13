@@ -1,6 +1,7 @@
 # Specs
 
-Use `sus-spec` when structured intent will change execution or review. State trivial work inline.
+A spec turns decided intent into obligations an agent can prove. Use `sus-spec` when that structure
+will change execution or review. State trivial work inline.
 
 ## Minimum shape
 
@@ -33,7 +34,8 @@ Verify with: `npm run test:integration -- expired-session`
 ```
 
 `Intent` and `Requirements` are required. Add `Non-goals`, `Open questions`, `Affected areas`,
-`Dropped from sources`, or `Execution` only when they carry information.
+`Dropped from sources`, or `Execution` only when they carry information. Empty headings prove
+nothing.
 
 ## Requirements
 
@@ -47,7 +49,7 @@ Each requirement:
 - contains no unresolved uncertainty.
 
 Resolve discoverable facts and reversible conventions. Put unresolved material decisions under
-`Open questions`, keep the spec `draft`, and block dependent work. `ready` means no blocking
+`Open questions`, keep the spec `draft`, and block dependent work. `ready` is a claim: no blocking
 decision or unresolved marker remains. C007 enforces that floor; C021 rejects a missing or empty
 `Intent`.
 

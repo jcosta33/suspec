@@ -43,6 +43,6 @@ suspec check ~/.agents/artifacts/shop-api/checkout-expiry-review.md \
 ```
 
 The structured command must match the spec. Empty or stale evidence is `Unverified`. The checker
-reports facts; the human owns `decision: accepted`.
+reports facts. The human gets `decision: accepted`.
 
 Next: [close](04-close.md).

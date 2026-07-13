@@ -1,6 +1,7 @@
 # Tutorial
 
-Walk one fictional feature through spec, implementation, review, and close:
+Walk one fictional feature through spec, implementation, review, and cleanup. No grand tour, just the
+whole loop:
 
 > A checkout session older than 30 minutes must return `409 SESSION_EXPIRED`, never a 5xx.
 
@@ -12,6 +13,7 @@ executable evidence.
 3. [Review](03-review.md)
 4. [Close](04-close.md)
 
-This case earns a spec and deterministic check, but no task: one requirement goes to one worker.
+This case earns a spec and deterministic check, but no task. One requirement going to one worker is
+not a decomposition problem.
 
 Prerequisites: [install Suspec](../ADOPTING.md), choose a repository, and use an agent or human worker.

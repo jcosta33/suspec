@@ -1,6 +1,7 @@
 # Local checks
 
-Project repositories own code verification. Suspec checks generic artifact facts.
+Project repositories verify code. Suspec checks generic artifact facts. Rebuilding every linter badly
+would not improve this arrangement.
 
 Resolve exact build, test, lint, type, format, architecture, security, and benchmark commands from the
 repository's instructions and manifests. A `Verify with:` slot without a real project mapping remains
@@ -16,6 +17,6 @@ status and facts; independent review decides whether evidence supports a require
 | evidence judgment              | independent reviewer        |
 | merge policy                   | human or project governance |
 
-Do not rebuild project linters inside Suspec.
+Project linters stay in the project. One source of truth is enough.
 
 Related: [checks](checks.md) · [CLI](cli.md)

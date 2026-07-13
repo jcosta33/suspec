@@ -51,7 +51,7 @@ Verify with: `npm run test:e2e -- report-csv-export`
 suspec check ~/.agents/artifacts/reports-app/report-csv-spec.md
 ```
 
-One requirement and one worker need no task.
+One requirement and one worker need no task. Splitting nothing still produces nothing.
 
 ## Review
 
@@ -82,4 +82,5 @@ suspec check ~/.agents/artifacts/reports-app/report-csv-review.md \
 ```
 
 The checker confirms structure and command consistency; the human owns acceptance. No durable lesson
-emerged. The code and test retain the value, so [close the transient files](../03-where-files-live.md#close).
+emerged. Good. The code and test retain the value, so
+[close the transient files](../03-where-files-live.md#close).

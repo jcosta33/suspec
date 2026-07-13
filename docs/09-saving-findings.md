@@ -1,6 +1,6 @@
 # Findings and memory
 
-Keep task-local observations with the live spec, task, or review and let them expire. Preserve only
+Keep task-local findings with the live spec, task, or review and let them die there. Preserve only
 verified lessons that future work needs.
 
 Use `remember` to route one durable lesson:
@@ -8,8 +8,8 @@ Use `remember` to route one durable lesson:
 - personal knowledge to a documented native harness memory surface;
 - team behavior to an issue, ADR, test, public contract, glossary, or maintained documentation.
 
-Suspec creates no memory file, directory, store, or retrieval engine. If no supported memory surface
-or project channel fits, leave the observation transient.
+Suspec creates no memory file, directory, store, or retrieval engine. No supported home? Let the
+observation expire.
 
 ## Durable lesson
 

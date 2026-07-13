@@ -12,7 +12,7 @@ request/source -> working spec -> implementation -> review -> findings decision
 - Evidence names the requirement and command it supports.
 - A durable finding names evidence and moves to native memory or a project channel.
 
-IDs reconcile live work; they create no registry. Requirement IDs are spec-scoped. Cross-spec
+IDs reconcile live work; they do not summon a registry. Requirement IDs are spec-scoped. Cross-spec
 references use `SPEC-id#AC-NNN`.
 
 Every producer reports an absolute path. Every consumer receives it. The checker performs only

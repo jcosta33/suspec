@@ -4,8 +4,9 @@
 inventory -> spec -> change plan -> task split when needed -> implement -> review
 ```
 
-Add only the structure the work needs. `sus-inventory` records present reality.
-`sus-change-plan` defines a behavior-preserving transformation. Both use the
+Add only the structure the work needs. If you cannot name current behavior, you cannot promise to
+preserve it. `sus-inventory` records present reality. `sus-change-plan` defines a behavior-preserving
+transformation. Both use the
 [agent-neutral artifact location](03-where-files-live.md).
 
 ## Inventory
@@ -20,8 +21,8 @@ unclear. Record:
 - unknowns;
 - file or line evidence for every structural claim.
 
-Inventory observes. It does not prescribe. The CLI recognizes inventory but does not check it; review
-it by hand.
+Inventory observes. It does not pitch a redesign. The CLI recognizes inventory but does not check it;
+review it by hand.
 
 ## Change plan
 
@@ -54,9 +55,10 @@ names the source spec and its scoped requirement IDs.
 
 ## Live drift
 
-When code or evidence contradicts the working spec, stop. Update the spec if intent changed; fix code
-if implementation drifted; record any lasting decision through the project's own channel. After
-close, start later work from current code and durable records, not old transient artifacts.
+When code or evidence contradicts the working spec, stop. Either intent changed or something is
+wrong. Update the spec in the first case; fix code in the second. Record any lasting decision through
+the project's own channel. After close, start later work from current code and durable records, not
+old transient artifacts.
 
 Skip both documents for local work whose behavior, ownership, and tests are already clear.
 

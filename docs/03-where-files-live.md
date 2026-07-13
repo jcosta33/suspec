@@ -16,13 +16,13 @@ This location is agent-neutral because artifacts are plain Markdown, not harness
 vendor-native plans, native memory, source code, build output, and harness-managed state remain with
 their owners.
 
-The root is a passive convention. Suspec creates no registry, resolver, configuration, lifecycle
-state, cleanup command, symlink, or background process.
+The root is a directory, not a database. Suspec creates no registry, resolver, configuration,
+lifecycle state, cleanup command, symlink, or background process.
 
 ## Conflicts
 
-Never overwrite unrelated work. When a workspace name or target path is ambiguous, require a distinct
-human-readable name. Do not hash paths or create identity state.
+Never overwrite unrelated work. A collision is a decision, not permission to guess. Require a
+distinct human-readable name; do not hash paths or create identity state.
 
 If the root is unwritable, offer:
 
@@ -43,8 +43,8 @@ Artifact-relative checks remain bounded:
 - change-plan `SPEC-id#AC-NNN` references scan `spec.md` in the plan directory and immediate sibling
   directories only.
 
-No tool lists, discovers, or resumes work. Recover a lost handoff manually under the known workspace
-and pass its absolute path again.
+No tool lists, discovers, or resumes work. Lost the handoff? Find it manually under the known
+workspace and pass the absolute path again.
 
 ## Close
 
@@ -70,8 +70,9 @@ Promotion never creates Suspec storage or pushes implicitly.
 | split task        | none; the spec remains the contract                         |
 | change strategy   | landed code and project records                             |
 
-A whole artifact enters a repository only through explicit promotion into a project-owned channel.
-The adopter otherwise receives no Suspec directory, configuration, scaffold, or gitignore entry.
+Working files are not a second source of truth. A whole artifact enters a repository only through
+explicit promotion into a project-owned channel. The adopter otherwise receives no Suspec directory,
+configuration, scaffold, or gitignore entry.
 
 During live work, code that contradicts intent triggers re-verification and a decision: update the
 active spec when intent changed; fix code when implementation drifted. After close, current code and

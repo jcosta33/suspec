@@ -11,8 +11,8 @@ Common cases:
 - a task diverged from its spec;
 - fixtures diverged from the checks contract.
 
-Stop using stale evidence. Identify the changed authority, reconcile intent or implementation, rerun
-affected verification against the final state, and review again.
+Stale evidence is dead evidence. Identify the changed authority, reconcile intent or implementation,
+rerun affected verification against the final state, and review again.
 
 Suspec maintains no repository-wide spec baseline after close. Later work starts from current code,
 tests, project decisions, and the new request. Contract fixtures remain shipped evidence and must

@@ -17,6 +17,7 @@ failures.
 Collapse when intent is precise inline, one worker owns a local change, verification is direct, and
 the owner can inspect the full result.
 
-Delete scaffold after live work ends. Distill durable value into its owner.
+Delete scaffold after live work ends. A completed workflow is not a museum. Distill durable value into
+its owner.
 
 Related: [workflow](../02-basic-workflow.md) · [distillation](distillation.md)

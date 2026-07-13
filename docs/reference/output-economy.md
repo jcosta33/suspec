@@ -1,6 +1,6 @@
 # Disrespec
 
-Maximize clarity per token.
+Every token pays rent. Maximize clarity per token.
 
 - State each fact once.
 - Delete filler, repeated material, repeated conclusions, and empty sections.
@@ -10,8 +10,8 @@ Maximize clarity per token.
 - Return an artifact link without repeating its contents.
 
 Explain blockers, failed creation, incomplete verification, and irreversible confirmation when they
-occur. Source code, raw evidence, commit messages, and repository-native PR forms keep their native
-constraints.
+occur. Silence is cheap only when nothing is wrong. Source code, raw evidence, commit messages, and
+repository-native PR forms keep their native constraints.
 
 After the final consumer finishes, require one human choice for the complete transient artifact and
 sidecar set: Delete, Leave, Promote, or `Other`. Never choose from silence.

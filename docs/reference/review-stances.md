@@ -1,7 +1,7 @@
 # Review stances
 
-A stance is one bounded, target-derived question with a concrete failure surface and refuting evidence.
-It is a procedure, not a tone or reusable role label.
+A stance is one bounded, target-derived question with a concrete failure surface and refuting
+evidence. It is a procedure, not a costume.
 
 Derive stances from the spec, diff, trust boundaries, data flow, failure modes, and verification gaps.
 Payment migrations, parsers, public APIs, and documentation require different questions.
@@ -16,7 +16,7 @@ Give each fresh reviewer:
 - read-only permissions;
 - a return contract: evidenced actionable findings or no finding.
 
-Reviewers never decide acceptance.
+Reviewers never decide acceptance. Finding a defect does not confer executive power.
 
 ## Revolver
 
@@ -32,8 +32,8 @@ Reviewers never decide acceptance.
 Revolver creates no artifact. Final chat contains material changes, proof, consequential refutations,
 and blockers.
 
-Model variety may reduce correlated framing but proves no independence. Judge surfaced defects and
-rerun evidence, not model labels.
+Different model names are not a scientific control. Model variety may reduce correlated framing but
+proves no independence. Judge surfaced defects and rerun evidence, not model labels.
 
 Use Bulletproof for active claim verification and Triple-check for exactly three deep fresh passes.
 Methods never replace independent review or human authority.

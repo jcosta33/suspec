@@ -1,6 +1,6 @@
 # Documentation
 
-Follow the method:
+Start here. Reading the reference front to back is legal but suspicious:
 
 1. [What Suspec is](01-what-is-suspec.md)
 2. [Workflow](02-basic-workflow.md)
@@ -13,7 +13,7 @@ Follow the method:
 9. [Findings and memory](09-saving-findings.md)
 10. [Integrations](10-integrations.md)
 
-Then use:
+Reach for the rest when the work earns it:
 
 - [Adoption](ADOPTING.md) for installation and first use.
 - [Tutorial](tutorial/README.md) for one complete run.

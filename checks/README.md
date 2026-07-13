@@ -1,7 +1,8 @@
 # Checks fixtures
 
-This directory holds data for [`checks.yaml`](./checks.yaml). It runs nothing. `suspec-cli` is the
-reference consumer; [checks reference](../docs/reference/checks.md) is the human contract.
+This directory holds oracle data for [`checks.yaml`](./checks.yaml). It runs nothing and decides
+nothing. `suspec-cli` is the reference consumer; [checks reference](../docs/reference/checks.md) is
+the human contract.
 
 ## Evidence rules
 
@@ -56,7 +57,7 @@ The fixtures claim no unimplemented semantic parsing.
 - Core IDs and severities match [checks reference](../docs/reference/checks.md) row for row.
 - Task and review schemas match the checked subset of
   [artifact formats](../docs/reference/artifact-formats.md).
-- Every pinned expectation agrees with contract and prose.
+- Every pinned expectation agrees with contract and prose. A fixture is evidence, not decoration.
 - `conformant-task.md` returns no diagnostic.
 - Each violation snippet returns exactly its named check and severity.
 - Domain artifacts match their `EXPECTED.md`.
