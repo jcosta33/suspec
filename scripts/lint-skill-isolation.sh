@@ -68,7 +68,7 @@ for file in "$skills"/skills/*/SKILL.md; do
       for term in delete leave promote sidecar; do
         grep -qi "$term" "$file" || { echo "incomplete artifact disposition in $name: $term" >&2; exit 1; }
       done
-      grep -qiE 'lifecycle|fully actioned|no downstream step' "$file" || {
+      printf '%s\n' "$flattened" | grep -qiE 'lifecycle|fully actioned|no downstream step' || {
         echo "artifact close occurs at the wrong time in $name" >&2
         exit 1
       }
@@ -90,6 +90,14 @@ for file in "$skills"/skills/*/SKILL.md; do
           exit 1
         }
       done
+      printf '%s\n' "$flattened" | grep -Fqi 'non-empty transient artifact set' || {
+        echo "artifact disposition does not require a transient set in $name" >&2
+        exit 1
+      }
+      printf '%s\n' "$flattened" | grep -qiE 'durable (documents|inputs) never enter disposition' || {
+        echo "artifact disposition may include durable inputs in $name" >&2
+        exit 1
+      }
       ;;
   esac
 done
@@ -99,20 +107,30 @@ grep -Fq 'Never activate merely because another skill writes an artifact' \
   echo "disrespec blanket activation returned" >&2
   exit 1
 }
-for phrase in 'non-empty transient artifact set' 'durable documents never enter disposition'; do
-  grep -Fq "$phrase" "$skills/skills/disrespec/SKILL.md" || {
-    echo "disrespec may dispose of durable documents: $phrase" >&2
-    exit 1
-  }
-done
 for method in bulletproof demolition revolver triple-check; do
   grep -Fq 'target: <path-or-stable-identifier>' "$skills/skills/$method/SKILL.md" || {
     echo "inspection target frontmatter missing in $method" >&2
     exit 1
   }
 done
-grep -Fq 'unique `SPEC-`-prefixed `id`' "$skills/skills/sus-spec/SKILL.md" || {
+grep -Fq 'The `SPEC-`-prefixed `id` is unique.' "$skills/skills/sus-spec/SKILL.md" || {
   echo "sus-spec id prefix missing" >&2
+  exit 1
+}
+for phrase in '`sources` is always a list' '/absolute/path/to/source.md'; do
+  grep -Fq "$phrase" "$skills/skills/sus-spec/SKILL.md" || {
+    echo "sus-spec frontmatter shape missing: $phrase" >&2
+    exit 1
+  }
+done
+for phrase in '`preserves` is always a list' 'SPEC-feature#AC-001' 'PG-001'; do
+  grep -Fq "$phrase" "$skills/skills/sus-change-plan/SKILL.md" || {
+    echo "sus-change-plan frontmatter shape missing: $phrase" >&2
+    exit 1
+  }
+done
+grep -Fq 'waivers: [AC-002]' "$skills/skills/sus-review/SKILL.md" || {
+  echo "sus-review waiver list shape missing" >&2
   exit 1
 }
 
