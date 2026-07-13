@@ -40,14 +40,6 @@ pr: none yet
 decision: changes-requested
 ---
 
-# Review: Checkout session refactor
-
-## Summary
-
-Active, missing, and provider-failure paths remain consistent with the spec. Expired
-sessions now return 500 instead of `409 SESSION_EXPIRED`. The diff also touches
-`src/retry.ts`, which lies outside the task's affected areas.
-
 ## Changed files
 
 - `src/checkout/session.ts`
@@ -101,8 +93,8 @@ suspec check ~/.agents/artifacts/shop-api/checkout/session-refactor-review.md \
 
 The checker reconciles identities, coverage, evidence presence, and structured command
 bindings. It does not convert the unsupported row into acceptance. A structurally clean
-packet can still say "do not merge" because the human review decision and the check's
-severity level answer different questions.
+packet can still carry `decision: changes-requested` because the human review decision and the
+check's severity level answer different questions.
 
 ## Revise and review again
 
@@ -114,16 +106,14 @@ state and replaces claims only when their own evidence supports them:
 | ID | Assessment | Evidence |
 | --- | --- | --- |
 | AC-002 | Supported | `npm run test:integration -- expired-session` -> `1 passed` |
-
-Reran: AC-002 - expired-session integration test returned `1 passed`.
 ```
 
 Run the same explicit check again after the final review edit. Earlier output is stale.
 
 ## Close
 
-The regression is worth remembering because broad checkout CI did not expose it. Save a
-native memory only if the harness provides one, and cite durable evidence:
+The regression is worth remembering because broad checkout CI did not expose it. Use `remember`
+only if the harness provides native memory, and cite durable evidence:
 
 ```markdown
 ## Checkout refactors require the expired-session integration case
@@ -134,6 +124,16 @@ Verified by `test/integration/expired-session.test.ts` and
 Applies to: checkout session state refactors.
 Does not apply to: changes outside checkout session handling.
 ```
+
+Once the spec, task, review, and evidence sidecars have no downstream consumer, present one
+disposition choice covering all of them:
+
+1. **Delete (recommended)** — the accepted code, tests, and saved lesson hold the durable value.
+2. **Leave** — keep the transient files for near-term reuse.
+3. **Promote** — move selected files into a project-owned durable destination.
+4. **Other** — state another disposition for the complete set.
+
+Execute the human selection.
 
 ## Lesson
 

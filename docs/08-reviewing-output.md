@@ -1,6 +1,6 @@
 # Reviewing output
 
-Review reconciles finished work against the spec. A task, when present, only scopes the
+`sus-review` reconciles finished work against the spec. A task, when present, only scopes the
 requirements and indexes evidence. The agent assesses evidence; the human accepts, requests
 changes, defers, or waives.
 
@@ -25,7 +25,7 @@ decision: pending
 
 | ID | Assessment | Evidence |
 | --- | --- | --- |
-| AC-001 | Supported | `3 passed` — [E-001](./evidence-checkout.md#E-001) |
+| AC-001 | Supported | `3 passed` — `evidence-checkout.md#E-001` |
 | AC-002 | Unverified | CI run is unavailable. |
 ```
 
@@ -53,7 +53,7 @@ Structured command records remain valid:
 ````markdown
 ```verify id=AC-001 cmd="npm test -- expired-session" result=pass
 3 passed
-Full output: [E-001](./evidence-checkout.md#E-001)
+Full output: `evidence-checkout.md#E-001`
 ```
 ````
 
@@ -81,7 +81,10 @@ After assessment, present a state-aware picker. Recommend from the evidence:
 
 Write the selection to `decision: accepted | changes-requested | deferred`. For acceptance
 with waivers, add the affected requirement IDs under `waivers` and record owner, reason, and
-follow-up where the project keeps decision context. Then return only the artifact link.
+follow-up where the project keeps decision context. Return the artifact link without restating it.
+The review remains live through findings routing and any requested fixes; the final consumer asks
+whether to delete, leave, promote, or choose `Other` for the complete transient artifact set. That close picker replaces
+the path-only return. The agent selects no option; inaction is not Leave.
 
 ## Escalation
 

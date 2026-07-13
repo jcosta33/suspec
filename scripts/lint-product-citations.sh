@@ -5,7 +5,7 @@
 # provenance markers. Those markers are how the Suspec repo records WHY a decision was made
 # (ADR-NNNN), what audit surfaced a fact (AUDIT-...), and where a primary source lives
 # (github / doi.org URLs). They belong in the canon docs or ADRs, NOT in
-# the shipped skill guides, agent definitions, templates, hooks, or generated runner files — a
+# the shipped skill guides, templates, hooks, or generated runner files — a
 # user reading product prose should see the rule, not the citation trail behind it.
 #
 # Top-level product READMEs are the one narrower class: they may link to repos/install instructions,
@@ -22,8 +22,6 @@
 #
 # The linted set, per repo (sibling repos under this repository's parent by default):
 #   suspec-skills/skills/<name>/SKILL.md          + that skill's references/*.md
-#   suspec-agents/agents/*.md                     (top-level agent definitions)
-#   suspec-agents/.codex/agents/*.toml            (hand-maintained Codex agent projections)
 #   top-level product READMEs in the family        (README carve-out: repo/install links allowed)
 #
 # Forbidden patterns (extended regex):
@@ -34,7 +32,7 @@
 #
 # Usage:
 #   scripts/lint-product-citations.sh [REPO_PARENT_DIR]
-#     REPO_PARENT_DIR  directory holding the sibling repos (suspec-skills, suspec-agents, …).
+#     REPO_PARENT_DIR  directory holding the sibling repos (suspec-skills, suspec-cli, …).
 #                      Defaults to this repository's parent. Pass a temp dir to self-test a seed.
 #
 # Exit: 0 when every linted file is clean; 1 on any forbidden citation; 2 on a usage/scope error.
@@ -45,12 +43,12 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DEV_DIR="${1:-$(CDPATH= cd -- "$SCRIPT_DIR/../.." && pwd)}"
 if [ ! -d "$DEV_DIR" ]; then
     echo "lint-product-citations: not a directory: $DEV_DIR" >&2
-    echo "  Pass the directory that holds the sibling repos (suspec-skills, suspec-agents, …)," >&2
+    echo "  Pass the directory that holds the sibling repos (suspec-skills, suspec-cli, …)," >&2
     echo "  or run with no argument to use this repository's parent directory." >&2
     exit 2
 fi
 
-# Forbidden-citation patterns (extended regex). A skill/agent BODY carries no sourcing at all —
+# Forbidden-citation patterns (extended regex). A skill body carries no sourcing at all —
 # including source URLs. A product README legitimately links to the repo and install instructions, so
 # a README forbids only the provenance CITATIONS (ADR-/AUDIT-/doi), never github repo/install URLs.
 FORBIDDEN_BODY='ADR-[0-9]|AUDIT-[A-Za-z0-9]|https?://github|doi\.org'
@@ -80,7 +78,6 @@ repo_dir() {
 
 SUSPEC_MAIN_DIR=$(repo_dir suspec)
 SUSPEC_SKILLS_DIR=$(repo_dir suspec-skills)
-SUSPEC_AGENTS_DIR=$(repo_dir suspec-agents)
 SUSPEC_MCP_DIR=$(repo_dir suspec-mcp)
 SUSPEC_CLI_DIR=$(repo_dir suspec-cli)
 
@@ -89,14 +86,6 @@ body_files=$(
     if [ -d "$SUSPEC_SKILLS_DIR/skills" ]; then
         find "$SUSPEC_SKILLS_DIR/skills" -type f \
             \( -name 'SKILL.md' -o -path '*/references/*.md' \)
-    fi
-    # suspec-agents: top-level agent definitions only
-    if [ -d "$SUSPEC_AGENTS_DIR/agents" ]; then
-        find "$SUSPEC_AGENTS_DIR/agents" -maxdepth 1 -type f -name '*.md'
-    fi
-    # suspec-agents: hand-maintained Codex projections are product output, too.
-    if [ -d "$SUSPEC_AGENTS_DIR/.codex/agents" ]; then
-        find "$SUSPEC_AGENTS_DIR/.codex/agents" -maxdepth 1 -type f -name '*.toml'
     fi
     :
 )
@@ -107,7 +96,6 @@ readme_files=$(
     for r in \
         "$SUSPEC_MAIN_DIR/README.md" \
         "$SUSPEC_SKILLS_DIR/README.md" \
-        "$SUSPEC_AGENTS_DIR/README.md" \
         "$SUSPEC_MCP_DIR/README.md" \
         "$SUSPEC_CLI_DIR/README.md"
     do
@@ -121,7 +109,7 @@ files=$(printf '%s\n%s\n' "$body_files" "$readme_files" | grep . || true)
 # A scope that matched nothing means the parent dir is wrong — fail loudly, don't pass vacuously.
 if [ -z "$files" ]; then
     echo "lint-product-citations: no in-scope product files found under $DEV_DIR" >&2
-    echo "  Expected sibling repos like $DEV_DIR/suspec-skills, $DEV_DIR/suspec-agents." >&2
+    echo "  Expected sibling repos like $DEV_DIR/suspec-skills and $DEV_DIR/suspec-cli." >&2
     echo "  Check the REPO_PARENT_DIR argument." >&2
     exit 2
 fi

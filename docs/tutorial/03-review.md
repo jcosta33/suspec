@@ -5,9 +5,8 @@ did not implement the change and reruns the requirement's Verify command.
 
 ## 1. Create and human-finalize the packet
 
-Have an independent agent draft evidence, findings, and assessments. Then present the human
-decision picker and write the selection. Place the packet beside the other
-native working artifacts:
+Run `sus-review` in an independent context to draft evidence, findings, and assessments. Then present the human
+decision picker and write the selection. Place the packet in the agent-neutral workspace:
 
 ```text
 ~/.agents/artifacts/shop-api/checkout-expiry-review.md

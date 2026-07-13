@@ -10,9 +10,9 @@ one that reports a different check. Inert fixture data — nothing here runs.
 
 ---
 
-## V1 — empty paste slot (`non-empty-paste`, hard error)
+## V1 — missing implementation evidence (C023 `task-evidence`, hard error)
 
-A task packet's Verify section, every box checked, no output anywhere:
+A `review-ready` task packet's Verify section, every box checked, no output anywhere:
 
 ```markdown
 ## Verify
@@ -21,9 +21,25 @@ A task packet's Verify section, every box checked, no output anywhere:
 - [x] `npm run lint` (AC-002)
 ```
 
-**Expected:** flagged — both items claim completion with no pasted output, no CI link,
-and no `n/a` + reason. A claim without visible output is unverified; this is the
-hallucinated-completion hole the rule exists to close.
+**Expected:** C023 fires — the Verify section contains checked completion claims but no pasted
+raw output with a numeric exit, CI link, or justified `n/a`. Bare claims do not satisfy the
+artifact-level check. The same section at `ready` or `running` does not run C023.
+
+A fenced bare claim also fails:
+
+````markdown
+## Verify
+
+- [x] `npm test`
+
+  Exit: 0
+
+  ```text
+  All tests passed.
+  ```
+````
+
+**Expected:** C023 fires — fencing a completion claim does not turn it into raw command output.
 
 ---
 
@@ -82,6 +98,33 @@ only ever review as Unverified.
 
 ---
 
+## V4b — missing intent (C021 `intent-present`, hard error)
+
+A spec with requirements but no non-empty `## Intent` section:
+
+```markdown
+---
+type: spec
+id: SPEC-no-intent
+title: Missing intent
+status: draft
+owner: test
+sources: [ISSUE-1]
+---
+
+## Requirements
+
+### AC-001 - Observable behavior
+
+The command must return one record.
+
+Verify with: `npm test -- one-record`
+```
+
+**Expected:** C021 fires. Requirements without intent do not state why the contract exists.
+
+---
+
 ## V5 — duplicate requirement ID (C001 `unique-ids`, hard error)
 
 One spec, two headings claiming the same ID:
@@ -97,20 +140,25 @@ report coverage by requirement ID; a duplicated ID makes both ambiguous.
 
 ---
 
-## V6 — open blocking question at `closed` (`no-open-critical`, hard error)
+## V6 — open blocking question at `closed` (C024 `closed-task-resolved`, hard error)
 
-A task packet with frontmatter `status: closed` whose Findings section contains:
+A task packet with frontmatter `status: closed` whose Findings section contains any one of these
+canonical labels with a substantive value:
 
 ```markdown
 ## Findings
 
 - Open question (blocking): should a refresh rotate the whole token family, or
   only the access token? Undecided — AC-002 implemented on a guess.
+
+- Blocking: token-family rotation remains undecided.
+
+- Blocked questions: should refresh rotate the whole token family?
 ```
 
 **Expected:** flagged — `closed` is terminal, and a blocking question is still open inside
-the packet. The status must stay non-terminal (or the review go to `needs-human`) until
-the question is resolved.
+the packet. The status must stay non-terminal until the question is resolved. The canonical labels
+with `none` or `n/a` instead are resolved sentinels and do not fire C024.
 
 ---
 
@@ -203,11 +251,11 @@ cannot be checked for fidelity against what was asked.
 ---
 type: spec
 id: SPEC-export-json
-sources: [intake/export-json.md]
+sources: [sources/export-json.md]
 ---
 ```
 
-…where `intake/export-json.md` does not exist relative to the spec's own directory
+…where `sources/export-json.md` does not exist relative to the spec's own directory
 (resolution is artifact-relative).
 
 **Expected:** flagged — a path-shaped ref in `sources:` resolves to nothing. A bare
@@ -260,7 +308,7 @@ unsequenced migration is the half-migrated codebase waiting to happen.
 
 ---
 
-## V16 — run summary missing at `closed` (required section, hard error)
+## V16 — run summary missing at `closed` (C022 `task-shape`, hard error)
 
 A task packet with frontmatter `status: closed` whose sections end at
 `## Findings` — no `## Run summary` anywhere in the file.
@@ -269,37 +317,6 @@ A task packet with frontmatter `status: closed` whose sections end at
 (checks.yaml `required_sections`). A closed task with no handoff digest leaves
 the review packet nothing to read; the Verify pastes hold the evidence, the
 summary indexes it.
-
----
-
-## V17 — a changed file touches a Do-not-change entry (C014 `do-not-change-touched`, warning)
-
-A task whose `## Do not change` lists `src/auth/token-family.ts` (and whose
-`## Affected areas` lists `src/auth/`), reviewed by a packet whose `## Changed files`
-includes that protected file:
-
-```markdown
-## Do not change
-
-- `src/auth/token-family.ts` — the refresh-token family table; rotation logic is frozen.
-
-## Affected areas
-
-- `src/auth/`
-```
-
-```markdown
-## Changed files
-
-- `src/auth/refresh.ts`
-- `src/auth/token-family.ts`
-```
-
-**Expected:** flagged — `src/auth/token-family.ts` is named in the task's Do-not-change
-list and the review packet reports it changed, so it must be routed to Findings or Open decisions.
-Distinct from V7 (out-of-scope drift): this file lies **inside** the declared Affected
-areas (`src/auth/`), so `outsideScope` does not catch it — touching an explicitly
-protected path is its own exception. Surfaces a fact, never a verdict.
 
 ---
 

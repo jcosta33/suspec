@@ -7,9 +7,9 @@ can still be done without it (level: convention).
 ## The CLI
 
 [suspec-cli](https://github.com/jcosta33/suspec-cli) is the deterministic checker — the
-honesty floor. It is path-agnostic: it reads exactly the files it is handed by an absolute
-or current-working-directory-relative path, never resolves a location, config, repo root,
-or surrounding filesystem tree. These reference checks are artifact-relative: source
+honesty floor. It is explicit-path: it discovers no primary artifact or companion beyond the paths
+passed as absolute or current-working-directory-relative inputs. It resolves no config or repo root.
+These reference checks are artifact-relative: source
 paths and citation files resolve from the spec's
 directory using the paths its frontmatter names. For a change plan, C010 scans `spec.md`
 in each immediate child directory of the plan directory's parent, including the plan's
@@ -19,7 +19,7 @@ searched (level: enforced — suspec-cli).
 The surface:
 
 ```bash
-suspec check <path>                                           # spec or change plan
+suspec check <path>                                           # spec, task, or change plan
 suspec check <review-path> --spec <spec-path>                       # review packet
 suspec check <review-path> --spec <spec-path> --task <task-path>    # split-task review
 suspec check --contract                                       # the checks contract as JSON
@@ -38,16 +38,13 @@ The full surface and the checks it runs: [CLI reference](reference/cli.md) and
 
 ## The MCP server
 
-[suspec-mcp](https://github.com/jcosta33/suspec-mcp) adapts the same check surface for
-MCP-capable, shell-less runners: path-explicit check tools that shell out to the CLI and
-return its JSON. Same contract, same explicit paths, no extra capability — an agent that
-can run shell commands does not need it.
-
-## Agent catalogs
-
-[suspec-agents](https://github.com/jcosta33/suspec-agents) carries Claude Code worker
-definitions — reviewer, auditor, spec author, and related roles — for developers who
-delegate to subagents. Its README lists the current definitions.
+[suspec-mcp](https://github.com/jcosta33/suspec-mcp) gives MCP-capable, shell-less runners
+`suspec_check`, `suspec_get_checks`, and the checks-contract resource. `suspec_check` accepts a
+non-empty array of absolute primary paths, preserves input order, and passes the set through one CLI
+invocation so C002 remains available. One review target may add explicit `specPath` and `taskPath`
+companions. The server validates every CLI payload and requires checks contract `0.18.0`. Its
+response envelope is `ok`, `source`, `data`, optional `note`, and `responseFormat`. An agent that can
+run shell commands does not need MCP.
 
 ## Agents
 
@@ -75,8 +72,7 @@ Keep the tracker as the backlog.
 
 Use Suspec for the working contract:
 
-1. Capture the ticket as an intake file when you want the original preserved — manual
-   copy-paste is the mechanism — or point the spec's `sources` straight at the ticket URL.
+1. Point the spec's `sources` at the ticket URL or stable tracker ID.
 2. Write a working spec when the change earns structured intent.
 3. Link the PR and the review outcome back to the tracker.
 

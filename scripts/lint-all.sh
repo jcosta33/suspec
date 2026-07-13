@@ -7,7 +7,9 @@
 #
 #   lint-product-citations.sh   no ADR/AUDIT/source-URL citations in product bodies
 #   lint-count-ranges.sh        no hardcoded count-bearing ADR ranges in bootstrap prose
-#   lint-skill-mirrors.sh       local maintainer skill subset matches suspec-skills byte for byte
+#   lint-method-topology.sh     exact skill set, current names, checks contract, no custom agents
+#   lint-skill-isolation.sh     standalone skill bodies and artifact lifecycle rules
+#   lint-skill-catalog.sh       skill metadata and catalog coverage
 #
 # Each repository decides whether to wire these checks into CI; this script is the shared entry point.
 #
@@ -19,7 +21,7 @@ HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DEV_DIR="${1:-$(CDPATH= cd -- "$HERE/../.." && pwd)}"
 
 rc=0
-for gate in lint-product-citations lint-count-ranges lint-skill-mirrors lint-method-topology lint-disrespec-spine lint-skill-catalog; do
+for gate in lint-product-citations lint-count-ranges lint-method-topology lint-skill-isolation lint-skill-catalog; do
     echo "--- $gate ---"
     if ! sh "$HERE/$gate.sh" "$DEV_DIR"; then
         rc=1

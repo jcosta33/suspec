@@ -1,54 +1,35 @@
 # Artifact formats
 
-Every Suspec file is markdown with frontmatter.
+Every Suspec artifact is Markdown with frontmatter. Evidence receipts and run notes are untyped
+Markdown sidecars.
 
 The `type:` field identifies the artifact. Kind is read from frontmatter, never from the
-filename or location — where the files live is your choice
+filename or location. Ordinary artifacts live under the agent-neutral
+`~/.agents/artifacts/<workspace>/` root and move into a project only through explicit promotion
 ([where files live](../03-where-files-live.md)).
 
-## Live-work records
+Ordinary conversation and direct action create no Suspec artifact. Create one when the user requests
+it or the applicable Suspec workflow requires it as a live input. When no downstream step needs the
+transient set, the final consumer asks whether to delete, leave, promote, or choose `Other` for
+every artifact and
+sidecar. Disposition is a human action, not frontmatter or lifecycle state, and its picker replaces
+path-only handoff. The agent selects no option; inaction is not Leave.
 
-| Type | ID prefix |
-| --- | --- |
-| `intake` | none |
-| `spec` | `SPEC-` |
-| `task` | `TASK-` |
-| `review` | `REVIEW-` |
+## Types
 
-## Structural-work records
+| Type | Writer | Carries | ID prefix |
+| --- | --- | --- | --- |
+| `spec` | `sus-spec` | intent and verifiable requirements | `SPEC-` |
+| `task` | `sus-task` | one dispatched source slice | `TASK-` |
+| `review` | `sus-review` | requirement assessments and evidence | `REVIEW-` |
+| `inventory` | `sus-inventory` | observed present-state structure | `INV-` |
+| `change-plan` | `sus-change-plan` | a staged structural transformation | `CHANGE-` |
+| `audit` | `sus-audit` | evidenced present-state risks | `AUDIT-` |
+| `research` | `sus-research` | evidence for one decision-informing question | `RESEARCH-` |
+| `inspection` | inspection method | one method applied to one target | none required |
 
-| Type | ID prefix |
-| --- | --- |
-| `inventory` | `INV-` |
-| `change-plan` | `CHANGE-` |
-
-## Other skill outputs
-
-| Type | Use |
-| --- | --- |
-| `audit` | present-state risk or debt |
-| `bug-report` | diagnosis of one defect |
-| `adr` | decision record |
-| `research` | inquiry with sources, no decision |
-| `prd` | product requirements |
-| `rfc` | proposal for review |
-| `threat-model` | security analysis |
-| `release-note` | shipped-change note |
-
-## Intake
-
-Frontmatter:
-
-```yaml
-type: intake
-source: SHOP-4012
-url: https://...
-captured: 2026-06-20
-```
-
-Body: verbatim source text.
-
-No interpretation.
+No other `type:` value is a Suspec artifact. Project records such as issues, decision records,
+product documents, and release documentation keep their project-native formats.
 
 ## Spec
 
@@ -61,7 +42,7 @@ title: Expired checkout sessions
 status: draft
 owner: checkout-team
 sources:
-  - intake/SHOP-4012.md
+  - SHOP-4012
 ```
 
 Required sections:
@@ -107,7 +88,8 @@ Sections:
 - Agent instructions
 - Findings
 - Run summary
-- Self-review
+
+Add `Self-review` when it carries useful pre-handoff checks.
 
 Every verify item names a requirement id.
 
@@ -126,14 +108,14 @@ Frontmatter:
 type: review
 id: REVIEW-checkout-expiry
 task: TASK-checkout-expiry   # omit for a 1:1 review with no task
-pr: https://...
+pr: https://example.test/pull/123
 reviewer: name-or-session
 decision: pending
 # waivers: [AC-002]          # required when an accepted review waives unsupported/unverified rows
 ```
 
 A review reconciles against the **spec**, always passed explicitly via `--spec <path>` on
-the check call ([ADR-0143](../adrs/0143-path-agnostic-check-cli-contract.md)): with
+the check call: with
 `task:`, coverage keys on the spec's ACs the task scoped (the task's `scope:` list); with
 no `task:` (1:1, no task), on the whole spec. A task, when present, only
 scopes and indexes evidence — it is never the review's target. The review's frontmatter
@@ -162,6 +144,10 @@ After a state-aware human picker, the selected decision is written as `accepted`
 
 ## Inspection
 
+Compact implementation proof does not create an inspection artifact. It records the command,
+numeric exit, and decisive raw output in the implementation handoff. Substantive Bulletproof,
+Demolition, Revolver, and Triple-check runs use this artifact:
+
 Frontmatter:
 
 ```yaml
@@ -177,7 +163,8 @@ artifact opens with `Advocacy exercise, not evidence.`
 
 ## Evidence receipt
 
-Name large receipts `evidence-<slug>.md`. Each record has a stable `E-NNN` anchor and:
+Evidence receipts are untyped sidecars. Name large receipts `evidence-<slug>.md`. Each record has a
+stable `E-NNN` anchor and:
 
 ````markdown
 <a id="E-001"></a>
@@ -195,6 +182,12 @@ untouched raw output
 
 The governing artifact links the anchor and includes only the decisive verbatim excerpt.
 One receipt may support several claims when each claim names its evidence anchor.
+
+## Run note
+
+A run note is an untyped sidecar for raw round logs or execution detail that would dominate its
+governing artifact. Name it for the run, keep raw records untouched, and link it from the artifact.
+It carries no lifecycle status or independent verdict.
 
 ## Finding
 
@@ -218,6 +211,17 @@ Sections:
 - Observed constraints
 
 No prescriptions.
+
+## Audit
+
+An audit records present-state findings, severity, and direct evidence. It does not invent intended
+behavior or prescribe a change. Each finding must be independently checkable from the named source.
+
+## Research
+
+Research answers one decision-informing question with source-qualified findings, limitations, and
+open uncertainty. It does not make the decision. Marketing claims, synthetic respondents, and
+anecdotes remain labeled as such.
 
 ## Change plan
 

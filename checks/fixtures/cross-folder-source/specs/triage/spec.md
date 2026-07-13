@@ -5,7 +5,7 @@ title: Triage queue
 status: ready
 owner: support-platform
 sources:
-  - ../../intake/sup-204.md
+  - ../../sources/sup-204.md
 ---
 
 # Triage queue

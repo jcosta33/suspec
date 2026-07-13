@@ -5,18 +5,25 @@
 | **Intent** | What the change must make true. At minimum weight, one inline sentence. |
 | **Key** | A moment present on virtually every change: intent, review, or findings. |
 | **Scaffold** | Structure pulled in when work earns it: spec, task split, inventory, change plan, checker. |
-| **Spec** | Working structured intent: requirements, non-goals, questions, affected areas, verification. |
+| **Spec** | Working structured intent: intent and verifiable requirements, plus only the optional sections that carry information. |
 | **Requirement / AC** | One observable obligation with a stable ID inside its spec and a verification method. |
 | **Task packet** | A scoped slice cut when a source must be decomposed across workers or waves. |
 | **Execution notes** | Changed files, verification output, scope drift, and blockers for the current run. |
 | **Inventory** | Observation-only map of current modules, interfaces, behavior, tests, constraints, and unknowns. |
 | **Change plan** | Safe transformation plan with preservation guarantees, waves, cutover, rollback, and checks. |
+| **Audit** | Evidence-backed record of present-state risks; no intended behavior or prescription. |
+| **Research** | Evidence for one decision-informing question; no decision. |
+| **Inspection** | One read-only or explicitly refined method run over a named target. |
 | **Review packet** | Independent reconciliation of implementation and evidence against the spec. |
-| **Review result** | Human judgment recorded as Supported, Unsupported, Unverified, or Blocked per requirement. |
+| **Requirement assessment** | Agent evidence judgment recorded as Supported, Unsupported, Unverified, or Blocked per requirement. |
+| **Review decision** | Human selection recorded as accepted, changes-requested, or deferred; waivers name deliberately accepted evidence gaps. |
 | **Finding** | A lesson candidate. It is not a standalone artifact type. |
 | **Native memory** | A harness-provided durable memory surface; used only when supported. |
 | **Evidence** | Directly inspectable output, CI run, or named manual observation tied to a claim. |
+| **Evidence receipt** | Untyped sidecar holding one raw command record under a stable anchor. |
+| **Run note** | Untyped sidecar for execution or round detail too large for its governing artifact. |
 | **Decision gate** | Structured human selection for material or irreversible choices. |
+| **Artifact disposition** | Human close choice for a complete transient artifact set: delete, leave, promote, or `Other`. |
 | **Checker** | `suspec check`: read-only facts and severity levels over explicit artifact paths. |
 | **SOL** | A stricter, per-spec controlled syntax that encodes the same requirement record as plain form. |
 | **Revolver** | Purpose-agnostic breadth inspection through sequential target-derived stances. |

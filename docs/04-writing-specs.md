@@ -1,6 +1,7 @@
 # Writing specs
 
-A spec states intended behavior when structured intent will change execution or review.
+A spec states intended behavior when structured intent will change execution or review. Use
+`sus-spec` to investigate, plan, write, and check it as one coherent pass.
 For trivial work, state intent and verification inline.
 
 ## Minimum shape
@@ -51,7 +52,7 @@ Without a picker, render the same numbered choices plus `Other`. Never ask a bar
 
 Batch only independent decisions. Record unresolved decisions under `Open questions`, keep
 the spec `draft`, and block dependent work. `ready` means no blocking decision or unresolved
-marker remains; C007 enforces that floor.
+marker remains; C007 enforces that floor. C021 also rejects a missing or empty `Intent` section.
 
 ## Optional sections
 

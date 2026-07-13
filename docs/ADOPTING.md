@@ -10,22 +10,26 @@ Adopting begins with the global skill install. Nothing lands in your repo.
    npx skills add jcosta33/suspec-skills -g -a codex
    ```
 
-   That is a complete install: the skills carry the methodology — authoring specs,
-   splitting work, implementing, reviewing, saving findings — and the artifact shapes
+   That is a complete install: the standalone skills carry inspection methods, artifact authors,
+   promotion, concise writing, and durable-lesson routing
    (level: convention). Repo-specific guides — your commands, architecture, and
    conventions — stay committed in the repository they describe; they do not fork the
    globally installed methodology.
 
-2. Add the reference CLI,
+2. Confirm the repository's `AGENTS.md` or equivalent names the real test, lint, typecheck,
+   validation, and build commands the project uses. Skills read project commands from that native
+   guide; when a required command is absent, the agent stops and asks instead of guessing.
+
+3. Add the reference CLI,
    [suspec-cli](https://github.com/jcosta33/suspec-cli), when deterministic checks will
    improve review. It is not published; install it from source with Node.js 22.6 or newer:
 
    ```bash
    git clone https://github.com/jcosta33/suspec-cli
    cd suspec-cli
-   npm install
-   npm run build
-   npm link
+    pnpm install --frozen-lockfile
+    pnpm build
+    pnpm link --global
    ```
 
    Then run:
@@ -47,19 +51,25 @@ Start small and run the whole loop once. The loop is proportioned to feature-siz
 a trivial fix earns one-line inline intent and no files at all; see
 [the bug-fix example](examples/bug-fix.md) for that shorter path.
 
-1. Author a spec through the skill: requirements with `AC-NNN` ids, each with a
-   `Verify with:` line, non-goals, acceptance criteria. Place the file under
+Ordinary conversation and direct action create no Suspec artifact. The applicable workflow still
+creates any artifact it requires as a live input; the user need not ask for a file by name.
+
+1. Author a spec through the skill: intent and requirements with `AC-NNN` ids, each with a
+   `Verify with:` line. Add non-goals or other sections only when they carry information. Place the file under
    `~/.agents/artifacts/<workspace>/`, resolve `~` to the absolute home path, and
    derive `<workspace>` from the repository or working-directory basename. Keep it
    out of the repository and carry its absolute path forward.
 2. When using the checker, lint it: `suspec check <path>`.
-3. Implement — your agent works from the spec by path, runs every verify command, and
+3. Implement — a native harness worker or human works from the spec by path, runs every verify command, and
    pastes real output.
 4. Review — an independent reviewer builds the review packet against the spec, then runs
    the floor: `suspec check <review-path> --spec <spec-path>`.
    Exit codes: `0` clean, `1` warning, `2` blocking.
 5. Keep what mattered: a durable lesson becomes a native harness memory; a decision
    becomes an ADR; a defect becomes an issue — through your project's own channels.
+6. Once no downstream step needs the working files, choose Delete, Leave, Promote, or Other for the
+   complete transient artifact set. This close choice replaces a path-only handoff; the agent
+   selects no option, and inaction is not Leave.
 
 A hands-on walkthrough lives in [tutorial/README.md](tutorial/README.md).
 
@@ -84,7 +94,8 @@ nothing else.
 Nothing, by Suspec's hand. Your repo takes the code, the tests, and whatever your
 project's own governance already commits — ADRs, agent guides, the PRs themselves.
 Specs, task packets, and review packets stay outside the repository under
-`~/.agents/artifacts/<workspace>/` until explicitly promoted.
+`~/.agents/artifacts/<workspace>/`. At lifecycle close, the user chooses whether to delete them,
+leave them there, promote them into a project-owned durable destination, or specify `Other`.
 
 ## Teams
 
@@ -96,6 +107,9 @@ installed checker.
 
 ## Updating
 
-Re-run `npx skills add jcosta33/suspec-skills -g -a codex` (substituting your runner's
-agent ID) — the skill family updates in one
-place, for every repo at once.
+`npx skills add` adds or updates source entries; it does not prune installed entries absent from
+the source. For an ordinary update, re-run
+`npx skills add jcosta33/suspec-skills -g -a codex`, substituting your runner's agent ID. When the
+catalog removes entries, use `npx skills remove -g -a <agent> <names...>` for only the obsolete
+Suspec entries before reinstalling. Leave unrelated installed skills untouched. The skill family
+then updates in one place, for every repo at once.

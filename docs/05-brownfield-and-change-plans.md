@@ -8,7 +8,8 @@ The expanded loop:
 inventory -> spec -> change plan -> task split when needed -> implement -> review
 ```
 
-Inventory and change plan are artifact kinds like any other: written by their skills,
+`sus-inventory` writes the observed map; `sus-change-plan` writes the transformation contract.
+Both are artifacts,
 placed in the agent-neutral workspace per the
 [placement rule](03-where-files-live.md), named by absolute path from then on. Lint the
 change plan with `suspec check <path>` (level: enforced — suspec-cli); inventory has

@@ -33,7 +33,7 @@ checkout paths write the same area, so parallel changes would conflict.
 - `db/inventory.ledger` owns ledger rows; `db/orders` keeps only order data; the
   reconciliation job reads the new schema. What a ledger entry contains stays unchanged.
 
-## Behavioral preservation guarantees
+## Preservation guarantees
 
 | ID | Behavior | Verify with |
 |---|---|---|

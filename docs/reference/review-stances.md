@@ -21,7 +21,7 @@ Each reviewer receives:
 - the current target and source spec by explicit path
 - one stance and its bounded question
 - relevant verification output as an index, not proof
-- read/write permissions
+- read-only permissions
 - a return contract: actionable findings with evidence, or no finding
 
 The reviewer does not issue the final review decision.
@@ -30,20 +30,21 @@ The reviewer does not issue the final review decision.
 
 For substantial work:
 
-1. Derive a diverse stance pool from the target.
-2. Run one reviewer at a time.
-3. Reconcile the finding and apply a legitimate fix before the next round.
-4. Make every next reviewer inspect the revised state.
-5. Complete a full rotation, then repeat only while a rotation finds new relevant issues
-   and the cycle bound has not been reached.
+1. Derive every distinct stance justified by the target.
+2. Run one fresh reviewer at a time without prior reviewer prose.
+3. In the default inspect mode, keep the pinned target unchanged for the full run.
+4. In explicitly requested refine mode, the orchestrator verifies findings and applies accepted
+   fixes between fresh reviewers; reviewers never edit.
+5. Complete a full rotation. Repeat only after a rotation finds something new, and stop after a
+   quiet rotation or the hard cycle cap.
 
 Model variety can be used as a practical hedge, but it is not evidence that failures are
 independent. Judge the review by surfaced defects and rerun checks, not model labels.
 
 ## Focused methods
 
-Use `bulletproof` for hostile scrutiny of an important claim, decision, spec, plan, or
-finding. Use `security-review` when trust boundaries or dangerous sinks are reachable.
-These methods define procedures; they do not replace independent review or human authority.
+Use `bulletproof` for hostile scrutiny of an important claim, decision, spec, plan, or finding.
+When trust boundaries or dangerous sinks are reachable, derive a security stance from that target
+and verify concrete reachability. Methods do not replace independent review or human authority.
 
 Related: [reviewing output](../08-reviewing-output.md) · [agent guides](agent-guides.md)

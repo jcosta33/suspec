@@ -4,7 +4,7 @@
 is handed. It reads files, reports facts, and exits. It never writes code, never runs a
 model, never renders a verdict, and never decides what merges. The methodology itself lives
 in the skill family; every step keeps a by-hand path, and no step requires this tool
-(level: convention — [ADR-0134](../adrs/0134-self-contained-spine.md)).
+(level: convention).
 
 What it earns its keep on is the honesty floor — structural facts the checker can verify
 at zero model cost:
@@ -24,35 +24,35 @@ Source: [suspec-cli](https://github.com/jcosta33/suspec-cli).
 The complete command surface (level: enforced — suspec-cli):
 
 ```bash
-suspec check <artifact> [<artifact>...]                            # spec / change-plan files (exit = max across files)
+suspec check <artifact> [<artifact>...]                            # spec / task / change-plan files
 suspec check <review-path> --spec <spec-path> [--task <task-path>] # a review packet
 suspec check --contract                                            # the checks contract as JSON
 ```
 
 There is no other command — no interactive mode, no dashboard, no scaffolds. A `check`
-invocation does take several spec/change-plan paths at once: each runs its own single-artifact
+invocation does take several spec/task/change-plan paths at once: each runs its own single-artifact
 lint, plus a cross-file duplicate-id check (C002) over the passed set, and the exit code is the
 max severity across every file — a batching convenience for a caller checking a staged set in
 one process, not a second command.
 
 ## Argument semantics
 
-- **Path-agnostic, with narrow artifact-relative reference checks** (level: enforced —
-  suspec-cli). The CLI reads exactly the files it is handed, accepting absolute paths or
-  paths relative to the process's current working directory. It never resolves
-  a state location, config, repo root, or surrounding filesystem tree — except these reference checks,
-  each of which resolves one level of sibling directory relative to the passed artifact:
-  C009 and C015 (see the next bullet), and C010, which resolves a change plan's `preserves:
-  SPEC-id#AC-NNN` refs by looking one level above the plan's own directory, then globbing
-  that parent's immediate subdirectories for a file literally named `spec.md` (never a tree
-  walk). Concretely, the resolver globs every immediate subdirectory of the plan's parent
-  for a file named `spec.md` — which trivially includes the plan's own directory, so
-  `<parent>/<plan-dir>/change-plan.md` beside `<parent>/<spec-dir>/spec.md` resolves, and so
-  does a `spec.md` placed directly alongside `change-plan.md` in one flat folder. What never
-  resolves is a `spec.md` nested any deeper than one level, or named anything else. Every
-  other check and artifact kind has no opinion on where your files live.
-- **Kind from frontmatter.** The primary artifact's kind is read from its own `type:`
-  frontmatter, never from its filename or location. The lint that runs is that kind's own.
+- **Explicit input paths, with bounded artifact-relative references** (level: enforced —
+  suspec-cli). The CLI reads exactly the files it is handed, accepting absolute paths or paths
+  relative to the process's current working directory. It never resolves a state location,
+  config, or repo root. C009 and C015 resolve named paths from the passed artifact's directory;
+  they do not scan. C010 alone resolves a change plan's `preserves: SPEC-id#AC-NNN` references by
+  checking `spec.md` in the plan directory and in each immediate sibling directory. It never walks
+  deeper or accepts another filename. Every other check has no opinion on file placement.
+- **Kind from frontmatter.** The primary artifact's kind is read from its own required `type:`
+  frontmatter, never from its filename or location. Missing and unknown types are blocking usage
+  errors. `inventory`, `audit`, `research`, and `inspection` are recognized and return
+  `checked: false`; `spec`, `task`, `review`, and `change-plan` have checker faces.
+- **Strict frontmatter.** The parser accepts string scalars and flat string lists under top-level
+  keys, with an optional UTF-8 BOM and comments outside quotes. It rejects malformed delimiters,
+  duplicate keys, nesting, multiline values, YAML tags/references, empty list heads, and field-shape
+  mismatches. It never coerces scalar values. Spec `sources`; task `source` and `scope`; review
+  `waivers`; and change-plan `sources` and `preserves` are lists.
 - **Companions are explicit flags.** A review packet reconciles against its spec — and its
   task, when it names one. Those companions are passed with `--spec` and `--task`; nothing
   is inferred or discovered.
@@ -60,6 +60,8 @@ one process, not a second command.
   references and a named `sources.md` resolve from the passed artifact's own directory
   using the relative paths in frontmatter, even when those paths climb folders. No root
   is inferred.
+- **Unknown options fail before file reads.** A misspelled or unsupported flag is a usage error,
+  never ignored and never treated as an artifact path.
 
 ## The missing-companion rule
 
@@ -107,8 +109,10 @@ version and check definitions.
 
 ## MCP
 
-`suspec-mcp` adapts this same surface for shell-less runners: path-explicit tools that
-shell out to `suspec check --json` (level: toolable — suspec-mcp).
+`suspec-mcp` adapts checking for shell-less runners. `suspec_check` accepts a non-empty array of
+absolute primary paths and preserves input order through one CLI invocation, including C002. One
+review target may add explicit `specPath` and `taskPath` companions. The adapter validates every
+CLI payload and requires checks contract `0.18.0` (level: toolable - suspec-mcp).
 
 ## Related
 

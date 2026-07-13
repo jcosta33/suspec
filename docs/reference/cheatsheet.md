@@ -29,9 +29,13 @@ acceptance criteria; large work extends rather than pads. Escalation cues:
 | review packet | requirement coverage, evidence, human attention |
 | inventory | observed modules, interfaces, tests, constraints, unknowns |
 | change plan | baseline, target, preservation guarantees, verified waves |
+| audit | evidenced present-state risks |
+| research | evidence for one decision-informing question |
+| inspection | one method applied to one target |
 
-Findings are not a file type. Ephemeral observations ride run/review notes; durable lessons
-go to native memory or project channels. Shapes: [artifact formats](artifact-formats.md).
+Evidence receipts and run notes are untyped sidecars. Findings are not a file type. Ephemeral
+observations ride run/review notes; durable lessons go to native memory or project channels.
+Shapes: [artifact formats](artifact-formats.md).
 
 ## Where files go
 
@@ -100,13 +104,13 @@ Route to findings or open decisions:
 ## Checks
 
 ```bash
-suspec check <artifact> [<artifact>...]                         # spec / change-plan
+suspec check <artifact> [<artifact>...]                         # spec / task / change-plan
 suspec check <review-path> --spec <spec-path>                  # review packet
 suspec check <review-path> --spec <spec-path> --task <task-path> # split-task review
 suspec check --contract                                         # checks contract JSON
 ```
 
-Several spec/change-plan paths in one `check` call also run a cross-file duplicate-id check
+Several spec/task/change-plan paths in one `check` call also run a cross-file duplicate-id check
 (C002) over the set. Exit `0` clean · `1` warning · `2` blocking. A review checked without a
 required companion is a blocking error (exit 2). The checker reports facts, never verdicts —
 the human owns the result. Multi-artifact `--json` output is JSON Lines. Full reference:

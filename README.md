@@ -25,11 +25,11 @@ check catch what discipline alone misses.
 ## What Suspec is
 
 1. **The skill family is the product** — installed once, globally for your runner
-   (`npx skills add jcosta33/suspec-skills -g -a codex` for Codex). Skills for authoring specs, splitting
-   work, implementing against a spec, building review packets, and saving findings. A
+   (`npx skills add jcosta33/suspec-skills -g -a codex` for Codex). Standalone methods inspect,
+   compress, promote, and preserve lessons; canonical authors produce the owned artifacts. A
    capable harness plus the skills is a complete install (level: convention).
 2. **The checker reinforces the method** — [suspec-cli](https://github.com/jcosta33/suspec-cli).
-   `suspec check` runs deterministic checks over the artifacts you hand it:
+   `suspec check` runs deterministic checks over specs, tasks, reviews, and change plans:
    every scoped requirement has a coverage row, every evidence command matches the spec's
    `Verify with:` line, every `Supported` carries evidence, every supported reference resolves —
    plus per-artifact lint (level: enforced — suspec-cli). Zero model cost, deterministic
@@ -37,6 +37,16 @@ check catch what discipline alone misses.
    that pasted evidence is true.
 
 Every step keeps a by-hand path; no step requires a tool (level: convention).
+
+## Skill catalog
+
+| Universal methods | Canonical artifact authors |
+| --- | --- |
+| `bulletproof`, `demolition`, `dissect`, `disrespec` | `sus-spec`, `sus-task`, `sus-review` |
+| `revolver`, `triple-check`, `promote`, `remember` | `sus-inventory`, `sus-change-plan`, `sus-audit`, `sus-research` |
+
+Each skill works when installed alone. Native harness workers implement code and provide fresh
+subagents when isolation or independent review matters.
 
 ## Sixty seconds
 
@@ -85,8 +95,9 @@ Details: [where files live](docs/03-where-files-live.md).
 ## Proportional rigor
 
 The least structure that changes execution or reviewability. A trivial fix gets a
-one-line inline intent and no file. A feature gets a lean spec — a small set of requirements,
-non-goals, acceptance criteria. Large work extends the spec rather than padding it.
+one-line inline intent and no file. A feature gets a lean spec with intent and verifiable
+requirements; other sections appear only when they carry information. Large work extends the
+spec rather than padding it.
 Intent, review, and findings are the keys — present on virtually every change, at
 whatever weight it earns; the rest is scaffold, erected when the work earns it. No
 step exists for ceremony's sake (level: convention).
@@ -108,14 +119,13 @@ describes its repository; it does not fork the methodology (level: convention).
 | **install the methodology** — the global skill family                         | [suspec-skills](https://github.com/jcosta33/suspec-skills) — `npx skills add jcosta33/suspec-skills -g -a codex` (Codex) |
 | **add the deterministic checks** — the reference checker                      | [suspec-cli](https://github.com/jcosta33/suspec-cli) — `suspec check`                                    |
 | **understand the method** — formats, the checks contract, the decision ledger | **this repo** — `docs/` (the numbered happy path), `docs/reference/`, `docs/adrs/`                       |
-| **delegate to subagents** — review / audit / spec-author worker definitions   | [suspec-agents](https://github.com/jcosta33/suspec-agents) — Claude Code agent definitions               |
 
 Most people install the skills, add the CLI when its checks pay for themselves, and never
 read this repo cover to cover.
 
 ## Is / is not
 
-**Is:** a methodology shipped as skills · a spec format agents work from · proportional
+**Is:** a methodology shipped as standalone skills · a spec format agents work from · proportional
 rigor — structure scaled to the work, never below a one-liner, never padded ·
 a deterministic honesty floor over review claims (`suspec check`) · a discipline for
 saving durable lessons into your harness's own memory.

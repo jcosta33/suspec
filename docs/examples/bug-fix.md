@@ -68,7 +68,7 @@ under `## Execution`.
 
 `~/.agents/artifacts/payments-api/payment-timeout-retry-review.md`
 
-```markdown
+````markdown
 ---
 type: review
 id: REVIEW-payment-timeout-retry
@@ -82,16 +82,14 @@ decision: pending
 | --- | --- | --- |
 | AC-003 | Supported | `npm run test:integration -- payment-timeout-retry` -> failed before fix, passed after fix |
 
-Reran: AC-003 - integration test after fix; pass reproduced.
+```verify id=AC-003 cmd="npm run test:integration -- payment-timeout-retry" result=pass
+1 passed
+```
 
 ## Findings
 
 1. Money path: inspect retry path and idempotency lookup before merge.
-
-## Open decisions
-
-Merge after human inspection of the money-path note.
-```
+````
 
 Check it:
 
@@ -100,16 +98,13 @@ suspec check ~/.agents/artifacts/payments-api/payment-timeout-retry-review.md \
   --spec ~/.agents/artifacts/payments-api/payments-spec.md
 ```
 
-This exits with an advisory warning (exit 1) as shown: the coverage row, the pasted
-evidence, and the spec's own `Verify with:` command all agree, but a free-form Evidence
-cell can't be machine-matched, so C013 routes it to a human — add a `verify`
-block ([ADR-0083](../adrs/0083-verify-evidence-reconcile.md)) to machine-confirm it and
-exit clean instead. It exits blocking (2) if AC-003 were marked `Supported` with an empty
-evidence cell.
+This exits clean: the coverage row, evidence, spec command, and matching `verify` block agree. It
+would exit blocking if AC-003 were marked `Supported` with an empty evidence cell. The human still
+decides whether the money-path finding permits acceptance.
 
 ### Close
 
-The idempotency-lookup sharing was worth remembering — save it as a native memory:
+The idempotency-lookup sharing was worth remembering. Use `remember` to route it to native memory:
 
 ```markdown
 ## Payment timeout retries reuse the idempotency record, not a new charge
@@ -120,6 +115,16 @@ Verified: `test/integration/payment-timeout-retry.test.ts` and
 Applies to: payment timeout retry handling.
 Does not apply to: retries with a different idempotency key.
 ```
+
+Once the spec and review have no downstream consumer, present one disposition choice covering
+both files:
+
+1. **Delete (recommended)** — the durable lesson is already saved.
+2. **Leave** — keep the transient files for near-term reuse.
+3. **Promote** — move selected files into a project-owned durable destination.
+4. **Other** — state another disposition for the complete set.
+
+Execute the human selection.
 
 ## Lesson
 

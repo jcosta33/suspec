@@ -38,6 +38,7 @@ Implement or preserve:
 
 - [ ] `npm test -- payment-idempotency.spec.ts` (AC-001)
 - [ ] `npm test -- payment-retry.spec.ts` (AC-002, AC-003)
+- CI: https://example.test/pr/641/checks/209
 
 ## Agent instructions
 

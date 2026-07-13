@@ -15,10 +15,9 @@ says so.
   `ADOPTING.md`, `adrs/` (the decision ledger), `research/sources.md` (the evidence
   bibliography).
 - `checks/` — the checks contract as data (`checks.yaml`) + fixtures (test data for
-  `docs/reference/checks.md`; suspec-cli's oracle). `.agents/` — a small dev-skills subset
-  (see `.agents/SKILLS-MANIFEST.md`).
-- The methodology itself — the skill family (authoring, splitting, implementing,
-  reviewing, and findings disciplines) — lives in the `suspec-skills` repository and installs
+  `docs/reference/checks.md`; suspec-cli's oracle).
+- The methodology itself — standalone methods and canonical artifact authors — lives in the
+  `suspec-skills` repository and installs
   globally. Adopter repos take nothing; the CLI seeds nothing.
 
 ## Working on this repo
@@ -44,8 +43,9 @@ decisions land in `docs/adrs/`.
 - **Honesty framework (ADR-0063).** Rules carry a level: convention · checklist · toolable
   (names suspec-cli's command) · enforced (only with a shipped tool). Never
   write enforcement-sounding claims without a level.
-- **Current vocabulary.** Intent, review, and findings are the keys. Specs, task splits,
-  inventories, change plans, and the checker are scaffold pulled in when work earns them.
+- **Current vocabulary.** Suspec owns specs, tasks, reviews, inventories, change plans, audits,
+  research, and inspections. Evidence receipts and run notes are untyped sidecars. Artifacts are
+  scaffold pulled in only when work earns them.
   The checker reports facts and severity levels; only a human owns a review result.
 - **No counts ceremony.** Do not hardcode closed-set cardinalities in public/current prose.
   List values when they help the reader; keep maintainer reconciliation in the source
@@ -64,19 +64,17 @@ decisions land in `docs/adrs/`.
 ## Pointers
 
 - Decisions: `docs/adrs/README.md` — the complete immutable ledger
-- The skill catalog (global install): github.com/jcosta33/suspec-skills —
+- The standalone skill catalog (global install): github.com/jcosta33/suspec-skills —
   `npx skills add jcosta33/suspec-skills -g -a codex`
-- Claude Code agent catalog: github.com/jcosta33/suspec-agents —
-  Claude-Code-first worker definitions + the delegation hook; honest scope: toolable/partial
-- Dev skills (the small subset for working on this repo): `.agents/skills/` — see
-  `.agents/SKILLS-MANIFEST.md`
+- Subagents: use fresh harness-native workers when isolation or independence matters; each skill
+  carries its complete method
 - Evidence: `docs/research/sources.md` (verified / caveated / rejected — never cite rejected)
 
 ## Commands
 
 | Slot     | Command                       | Resolves                                                |
 | -------- | ----------------------------- | ------------------------------------------------------- |
-| cmdCheck | `sh scripts/lint-all.sh`      | product prose, bootstrap counts, and local skill parity |
+| cmdCheck | `sh scripts/lint-all.sh`      | product prose, checks contract, and skill topology |
 
 ## Workflow
 

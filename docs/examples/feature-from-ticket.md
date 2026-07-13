@@ -14,7 +14,7 @@ It should export the currently filtered rows.
 
 ## Spec
 
-Placed beside the author's own working files — one example:
+Placed in the agent-neutral workspace:
 
 ```text
 ~/.agents/artifacts/reports-app/report-csv-spec.md
@@ -49,10 +49,6 @@ Users can export the rows currently visible in the report.
 The report page must export the currently filtered rows as CSV.
 
 Verify with: `npm run test:e2e -- report-csv-export`
-
-## Open questions
-
-- None.
 
 ## Affected areas
 
@@ -97,23 +93,29 @@ decision: accepted
 ```
 ```
 
-Check it against the spec — no `task:` in the frontmatter means no `--task` on the call,
-per [ADR-0143](../adrs/0143-path-agnostic-check-cli-contract.md):
+Check it against the spec. No `task:` in the frontmatter means no `--task` on the call:
 
 ```bash
 suspec check ~/.agents/artifacts/reports-app/report-csv-review.md \
   --spec ~/.agents/artifacts/reports-app/report-csv-spec.md
 ```
 
-Exits with an advisory warning (exit 1): one requirement, one coverage row, evidence
-present — C013 flags the free-form Evidence cell and routes it to a human. Add a
-`verify` block ([ADR-0083](../adrs/0083-verify-evidence-reconcile.md)) to machine-confirm
-it and exit clean instead.
+Exits clean: the coverage row carries evidence and the matching `verify` block records the exact
+command and result. The checker confirms structure and consistency; the human still owns acceptance.
 
 ## Close
 
 No durable lesson emerged, so nothing is saved as memory. The spec and review served the
 live work; the exported CSV code and its test remain.
+
+The files now have no downstream consumer. Present one disposition choice covering both:
+
+1. **Delete (recommended)** — the code and test now hold the durable value.
+2. **Leave** — keep the transient files for near-term reuse.
+3. **Promote** — move selected files into a project-owned durable destination.
+4. **Other** — state another disposition for the complete set.
+
+Execute the human selection.
 
 ## Lesson
 

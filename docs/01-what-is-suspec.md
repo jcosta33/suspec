@@ -12,11 +12,11 @@ code; Suspec shapes the work around it.
 It gives you:
 
 - an inline, zero-file path for changes too small to need a spec
-- specs with requirements and acceptance criteria, sized to the work
+- specs with intent and verifiable requirements, sized to the work
 - task packets for separately dispatchable spec slices or change-plan waves
 - review packets that reconcile evidence against the spec, requirement by requirement
 - a discipline for saving durable lessons where your harness actually reads them
-- a deterministic checker — `suspec check` — over specs, change plans, and reviews
+- a deterministic checker — `suspec check` — over specs, tasks, change plans, and reviews
 
 It does not replace your agent, your harness's plan mode, your issue tracker, PRs, CI,
 or your docs site.
@@ -27,8 +27,8 @@ The least structure that changes execution or reviewability — this rule is exi
 not decorative (level: convention):
 
 - A **trivial fix** gets one-line inline intent and no file at all.
-- A **feature** gets a lean spec: a small set of requirements with IDs and `Verify with:`
-  lines, non-goals, acceptance criteria.
+- A **feature** gets a lean spec: intent plus requirements with IDs and `Verify with:` lines.
+  Other sections appear only when they carry information.
 - **Large work** extends rather than pads: inventory and a change plan when needed, with
   task packets only for separately dispatchable slices.
 
@@ -57,8 +57,8 @@ structural omissions and inconsistent bindings visible:
 - every `Supported` carries evidence — an empty evidence cell can never read as `Supported`
 - every supported reference resolves
 
-plus per-artifact lint on specs, change plans, and review packets. The checker is
-`suspec check` — `suspec check <path>` for a spec or change plan,
+plus per-artifact lint on specs, tasks, change plans, and review packets. The checker is
+`suspec check` — `suspec check <path>` for a spec, task, or change plan,
 `suspec check <review-path> --spec <spec-path>` (add `--task <task-path>` when the spec
 was split into one) for a review packet — facts and exit codes, no model in the loop, no
 review decision rendered (level: enforced — suspec-cli). Every step also keeps a by-hand

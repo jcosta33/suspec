@@ -28,8 +28,9 @@ artifact-relative reference lookups.
 
 ## After close
 
-The working chain can expire. Code, tests, ADRs, issues, PRs, maintained docs, and supported
-native memory are the durable lineage. Suspec does not promote or reconcile a separate
-artifact record.
+The working chain can expire. Code, tests, project decisions, issues, PRs, maintained docs, and
+supported native memory are the durable lineage. Suspec keeps no separate artifact record.
+Explicit promotion moves a whole transient artifact into a project-owned durable destination; it
+creates no registry or retained transient copy.
 
 Related: [where files live](../03-where-files-live.md) · [CLI](cli.md)

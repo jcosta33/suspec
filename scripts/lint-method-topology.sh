@@ -12,31 +12,57 @@ repo_dir() {
 
 canon=$(repo_dir corpus suspec)
 skills=$(repo_dir corpus-skills suspec-skills)
-agents=$(repo_dir corpus-agents suspec-agents)
-cli=$(repo_dir corpus-cli suspec-cli)
 
-for required in disrespec bulletproof demolition revolver triple-check promote-artifact; do
+expected='bulletproof
+demolition
+disrespec
+dissect
+promote
+remember
+revolver
+sus-audit
+sus-change-plan
+sus-inventory
+sus-research
+sus-review
+sus-spec
+sus-task
+triple-check'
+
+actual=$(find "$skills/skills" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort)
+test "$actual" = "$expected" || {
+  echo "skill topology drift" >&2
+  printf 'expected:\n%s\nactual:\n%s\n' "$expected" "$actual" >&2
+  exit 1
+}
+
+for required in $expected; do
   test -f "$skills/skills/$required/SKILL.md" || { echo "missing skill: $required" >&2; exit 1; }
   grep -q "^name: $required$" "$skills/skills/$required/SKILL.md" || { echo "name drift: $required" >&2; exit 1; }
 done
 
-for retired in concise-output revolver-review persona-challenger; do
-  test ! -e "$skills/skills/$retired" || { echo "retired skill survives: $retired" >&2; exit 1; }
-done
-test ! -e "$agents/agents/suspec-challenger.md" || { echo "retired agent survives" >&2; exit 1; }
-test ! -e "$agents/.codex/agents/suspec-challenger.toml" || { echo "retired projection survives" >&2; exit 1; }
-
-if grep -RniE 'concise-output|revolver-review|persona-challenger|suspec-challenger' \
-  "$skills/README.md" "$skills/skills" "$agents/README.md" "$agents/agents" "$agents/.codex/agents"; then
+if grep -RniE 'concise-output|revolver-review|persona-|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr' \
+  "$skills/README.md" "$skills/skills"; then
   echo "stale current method name" >&2
   exit 1
 fi
 
-if grep -RniE 'C005|C006|pass-needs-evidence' "$canon/checks" "$canon/docs/reference" \
-  "$cli/src/modules/Core/services" "$cli/src/modules/Core/useCases/checkReviewFile.ts"; then
-  echo "retired current check contract survives" >&2
+if grep -RniE --exclude-dir=adrs 'suspec-agents|canonical agent|Codex projection|agents/suspec-' \
+  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$skills/README.md" "$skills/skills"; then
+  echo "custom agent catalog survives on a current surface" >&2
   exit 1
 fi
 
-sh "$agents/hooks/check-projection-parity.sh"
+grep -q '^version: 0\.18\.0' "$canon/checks/checks.yaml" || {
+  echo "checks contract version drift" >&2
+  exit 1
+}
+for id in C021 C022 C023 C024; do
+  grep -q "id: $id" "$canon/checks/checks.yaml" || { echo "missing check: $id" >&2; exit 1; }
+done
+grep -q 'C014 is RETIRED' "$canon/checks/checks.yaml" || { echo "C014 retirement missing" >&2; exit 1; }
+if grep -qE '^  - \{ id: C014,' "$canon/checks/checks.yaml"; then
+  echo "C014 still active" >&2
+  exit 1
+fi
 echo "lint-method-topology: OK"

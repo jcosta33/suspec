@@ -18,8 +18,21 @@ Plan Mode, vendor-native plans, native memory, source code, build output, and
 harness-managed state stay where their owners put them. Suspec does not intercept them.
 
 The root is a passive convention, not a managed store. Suspec creates no registry,
-resolver, config, lifecycle state, cleanup command, or background process. Cleanup stays
-manual and external to Suspec.
+resolver, config, lifecycle state, cleanup command, or background process.
+
+## Close the artifact set
+
+An artifact remains live while any current or expected downstream step needs it. The final consumer
+then presents one structured choice for the complete transient set, including sidecars:
+
+- **Delete** - remove the selected files; the selection confirms the irreversible action.
+- **Leave** - keep them at their current neutral paths.
+- **Promote** - sanitize and move them into a selected project-owned durable destination, repair
+  references, validate, and never push implicitly.
+
+Do not ask at creation or after every revision. Do not silently choose; inaction is not Leave. This explicit close action
+replaces path-only handoff and adds no registry, retention state, cleanup daemon, or Suspec-owned
+destination.
 
 ## Workspace and conflicts
 
@@ -54,7 +67,9 @@ Nothing discovers, resolves, or infers artifact relationships, with one narrow e
   plan and no further (level: enforced — suspec-cli).
 
 The known root improves human discovery, but no Suspec tool lists or resumes work. Every
-consumer still receives an explicit absolute path.
+consumer still receives an explicit absolute path. That path is the resume handle: carry it into
+the next session or dispatch. If the handoff is lost, recover the file manually under the known
+workspace directory and pass its absolute path again; Suspec creates no index to do this for you.
 
 ## Nothing in the adopter repo
 
@@ -69,20 +84,21 @@ channel.
 The files are disposable *because* the durable residue leaves them for the layers that
 already own it:
 
-| You produced        | It lives, while the work is live, as | Durable value lands in                     |
-| ------------------- | ------------------------------------ | ------------------------------------------- |
-| a captured ticket   | an intake file                       | nothing — the recorded URL re-fetches it    |
-| intended behavior   | a spec                               | an ADR, when it carries a decision          |
-| verification        | pasted output in the spec or task    | the PR and its discussion                   |
-| a review            | a review packet                      | the exceptions you act on                   |
-| a lesson            | the packet's findings section        | a native harness memory, an issue, a test   |
-| a split slice       | a task packet                        | nothing — the spec stays the contract       |
-| a change plan       | a change plan                        | the PRs that land it                        |
+| You produced | It lives, while the work is live, as | Durable value lands in |
+| --- | --- | --- |
+| intended behavior | a spec | a project decision record, when needed |
+| verification | an evidence receipt or run note sidecar | CI, tests, and the PR discussion |
+| a review | a review | the exceptions you act on |
+| a lesson | a review finding or run note | native memory, an issue, or a test |
+| a split slice | a task | nothing; the spec stays the contract |
+| a change strategy | an inventory and change plan | the code and project records that land it |
+| an inspection | an inspection plus optional sidecars | verified fixes and project records |
 
 See [saving findings](09-saving-findings.md) for the memory route. Whole-document
-promotion uses `promote-artifact`: discover the project's durable destinations, select
+promotion uses `promote`: discover the project's durable destinations, select
 one, sanitize, move, repair references, and validate. Promotion is durable-only; it does
-not relocate files between transient roots, create a registry, or push implicitly.
+not relocate files between transient roots, create a registry, or push implicitly. Selecting
+Promote at lifecycle close is an explicit promotion request.
 
 ## Drift rule
 

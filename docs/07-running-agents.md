@@ -1,6 +1,6 @@
 # Running agents
 
-Suspec does not run agents. It hands them the working artifact the change earned — a
+Suspec does not ship or run custom agents. It hands a fresh harness-native worker the artifact the change earned — a
 spec, or a task packet when work is split — by explicit path.
 
 Any worker can use a Suspec packet:
@@ -17,9 +17,9 @@ Any worker can use a Suspec packet:
 The dispatch prompt names the spec — and the task, when one exists — by absolute path:
 
 ```text
-Read /Users/you/agent-notes/shop-api/spec-checkout.md and implement AC-001.
+Read /Users/you/.agents/artifacts/shop-api/spec-checkout.md and implement AC-001.
 
-Read /Users/you/agent-notes/shop-api/task-checkout-expiry.md and do what it says.
+Read /Users/you/.agents/artifacts/shop-api/task-checkout-expiry.md and do what it says.
 ```
 
 The spec contains requirements and `Verify with:` lines. A task packet adds the split
@@ -27,9 +27,11 @@ scope, `Do not change`, affected areas, verify commands, and standing instructio
 one slice. Paths flow explicitly — the worker is handed everything it needs by path and
 never discovers artifacts on its own (level: convention).
 
-## Worker types
+## Native workers
 
 - **Worker**: implements a spec or task slice and leaves a run summary.
+- **Fresh subagent**: receives one bounded method and returns its artifact or findings without
+  inherited peer conclusions.
 - **Scout**: reads or researches and reports back. It does not merge code.
 
 Do not merge scout output as implementation work.
@@ -40,8 +42,8 @@ Run authoring, implementation, and review as different sessions:
 
 - **Spec/task author** — writes the spec, change plan, and split task packets when needed.
 - **Implementer** — executes one spec or task slice; reads the spec and any task; the scoped requirements are the boundary; does not change requirements.
-- **Lens reviewer** — reviews one lens (correctness, evidence, design risk, …) and returns findings only.
-- **Review lead** — for a formal review, cycles a pool of distinct lens stances one reviewer at a time on the revised change, applies fixes between rounds, and writes the packet.
+- **Reviewer** - inspects a fixed target in a fresh context and returns findings or requirement assessments without editing it.
+- **Orchestrator** - dispatches the chosen inspection method and writes artifacts; it applies verified fixes only when refine mode was explicitly requested.
 - **Human/owner** — owns the decision.
 
 The reviewer is not the implementer. The spec or task author may review the implementation, as long as they did not implement it.
@@ -74,7 +76,7 @@ The returned spec `## Execution` entry, or task packet when split, contains:
 - changed files listed
 - out-of-scope edits named
 - blocked questions named
-- candidate findings listed
+- findings listed
 - for delegated work, a Provenance line when it helps review: sources read, guide loaded,
   worker identity, and isolation mode. Treat it as evidence to inspect, not a trust token.
 
@@ -89,7 +91,7 @@ Example:
 
 ## Findings
 
-- Candidate findings: none
+- None.
 
 ## Run summary
 

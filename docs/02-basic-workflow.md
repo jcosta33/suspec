@@ -24,14 +24,14 @@ When the change is big enough to need a contract:
 intent -> spec -> implement -> review packet -> check -> findings
 ```
 
-1. **Spec** — the authoring skill turns intent into a lean spec: requirements with
-   `AC-NNN` ids and `Verify with:` lines, non-goals, open questions. Place the file in
-   the [agent-neutral workspace](03-where-files-live.md) and carry its absolute path
-   forward. Lint it: `suspec check <path>`.
-2. **Implement** — the implementer (your agent, or you) works from the spec by explicit
+1. **Spec** — `sus-spec` turns intent into a lean spec: intent plus requirements
+   with `AC-NNN` ids and `Verify with:` lines. Add other sections only when they carry
+   information. Place the file in the [agent-neutral workspace](03-where-files-live.md),
+   carry its absolute path forward, and lint it: `suspec check <path>`.
+2. **Implement** — a native harness worker or human works from the spec by explicit
    path, runs every verify command, and pastes real output into the spec's
    `## Execution` section. `Tests passed` without output is not evidence.
-3. **Review packet** — an independent reviewer (never the implementer) reconciles the
+3. **Review packet** — `sus-review` runs in an independent context and reconciles the
    result against the spec: one coverage row per scoped requirement, evidence per row,
    exceptions routed to a human.
 4. **Check** — the deterministic floor:
@@ -40,8 +40,9 @@ intent -> spec -> implement -> review packet -> check -> findings
    references resolve. Exit codes:
    `0` clean, `1` warning, `2` blocking (level: enforced — suspec-cli). The human owns
    the review decision; the check owns the facts.
-5. **Findings** — ephemeral findings ride the review packet and die with it. A durable
-   lesson becomes a native harness memory — see [saving findings](09-saving-findings.md).
+5. **Findings** — ephemeral findings ride the review packet and die with it. `remember` routes a
+   verified durable lesson to native harness memory or a project channel — see
+   [saving findings](09-saving-findings.md).
 
 Every step above keeps a by-hand path; no step requires a tool (level: convention).
 
@@ -70,13 +71,13 @@ proportionally, never a station to pass through. The spec (the structured form i
 graduates into) and the deterministic check are the scaffold the full loop above already
 shows; the rest:
 
-- **Task** — cut only when a spec has separately dispatchable parallel/context slices, or a
+- **Task** — `sus-task` cuts one only when a spec has separately dispatchable parallel/context slices, or a
   change plan defines separately dispatchable sequenced waves. Size alone does not create a
   task; the common 1:1 case works directly from the source. See
   [creating tasks](06-creating-tasks.md).
-- **Inventory** — map existing code before brownfield work: observed modules,
+- **Inventory** — `sus-inventory` maps existing code before brownfield work: observed modules,
   interfaces, tests, unknowns, with file references. Skip when the code is understood.
-- **Change plan** — for migrations, rewrites, schema changes, high-risk refactors:
+- **Change plan** — `sus-change-plan` handles migrations, rewrites, schema changes, and high-risk refactors:
   preservation guarantees, waves, verification per wave, rollback. See
   [brownfield work and change plans](05-brownfield-and-change-plans.md).
 Implementation is neither key nor scaffold — it is the work itself, the thing the loop

@@ -37,6 +37,7 @@ Implement or preserve:
 - [ ] `npm test -- auth-refresh.spec.ts` (AC-001, AC-003)
 - [ ] AC-002 — the spec names no verification; expect Unverified at review unless a test is
       added and its output pasted
+- CI: https://example.test/pr/412/checks/88
 
 ## Agent instructions
 

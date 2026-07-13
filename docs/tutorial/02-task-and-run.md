@@ -5,7 +5,7 @@ worker implements directly from the spec and records run evidence in that workin
 
 ## 1. Dispatch by explicit path
 
-Use the `implement-task` skill or hand the spec to a worker directly:
+Hand the spec to a native harness worker or implement it directly:
 
 ```text
 Read ~/.agents/artifacts/shop-api/checkout-expiry-spec.md and implement AC-001.
@@ -31,7 +31,7 @@ The worker adds run notes to the spec after the final edit:
 
 - Out-of-scope edits: none
 - Blocked questions: none
-- Candidate findings: expired checkout sessions are an expected client case, not an
+- Findings: expired checkout sessions are an expected client case, not an
   outage signal
 ```
 
@@ -46,10 +46,10 @@ Before review, confirm:
 - the named Verify command ran after the final edit
 - output is pasted rather than summarized
 - scope drift and blocked questions are visible
-- candidate findings remain claims for the reviewer to examine
+- findings remain claims for the reviewer to examine
 
 When one spec actually splits into parallel slices, use
-[creating tasks](../06-creating-tasks.md) and place each task beside the native working
-artifacts. This example does not need that scaffold.
+[creating tasks](../06-creating-tasks.md) and place each task in the agent-neutral workspace.
+This example does not need that scaffold.
 
 Next: [Review](03-review.md).

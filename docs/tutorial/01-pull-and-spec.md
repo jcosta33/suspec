@@ -30,7 +30,7 @@ What we want: a checkout session older than 30 minutes must return
 
 ## 2. Write the spec
 
-Use the write-spec skill (or write it by hand — the skill is the discipline, not a
+Use `sus-spec` (or write it by hand — the skill is the discipline, not a
 requirement) to turn that ask into requirement text.
 
 Place the file under `~/.agents/artifacts/<workspace>/`, resolving `~` to the
@@ -42,8 +42,6 @@ As one example of that choice, this walkthrough uses:
 ```text
 ~/.agents/artifacts/shop-api/checkout-expiry-spec.md
 ```
-
-Your harness may put it somewhere else entirely — that's fine.
 
 ```markdown
 ---
@@ -77,10 +75,6 @@ When a request acts on a checkout session older than 30 minutes, the API must re
 
 Verify with: `npm run test:integration -- expired-session`
 
-## Open questions
-
-- None.
-
 ## Affected areas
 
 - `src/checkout/`
@@ -93,14 +87,13 @@ suspec check ~/.agents/artifacts/shop-api/checkout-expiry-spec.md
 ```
 
 This exits 0 on a clean spec. A missing `Verify with:` or a leftover `TBD` reports a
-blocking row naming the gap; a thin `Non-goals` or `Open questions` section reports a
-warning.
+blocking row naming the gap.
 
 By hand, without the CLI, check the same things:
 
 - `status: ready`
 - one requirement: `AC-001`
 - `Verify with:` exists
-- non-goals bound scope
+- every optional section changes how the work is understood
 
 Next: [Task and implement](02-task-and-run.md).

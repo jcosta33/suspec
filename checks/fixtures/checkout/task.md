@@ -40,6 +40,7 @@ parallel tasks on one write area conflict.
 - [ ] `npm test -- checkout.spec.ts` (AC-001)
 - [ ] `npm test -- order-record.spec.ts` (AC-002)
 - [ ] `npm test -- inventory.spec.ts` (AC-003)
+- CI: https://example.test/pr/507/checks/133
 
 ## Agent instructions
 

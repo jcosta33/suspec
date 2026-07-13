@@ -7,11 +7,12 @@ packet: the implementer works from the source and fills its `## Execution` secti
 
 A task does not add requirements. It copies a scope-subset from a spec or change plan.
 
-Task packets are files like any other Suspec artifact: written by the split-work skill,
+Task packets are files like any other Suspec artifact: written by `sus-task`,
 placed in the agent-neutral workspace per the [placement rule](03-where-files-live.md),
 and dispatched by explicit path — the packet names its spec by absolute path, and the
-dispatch prompt names the packet by absolute path. `suspec check` has no task-packet face
-today; review one by hand against the shape below (level: checklist).
+dispatch prompt names the packet by absolute path. `suspec check <task-path>` validates its
+frontmatter, required sections, Verify evidence, and closed-state blockers
+(level: enforced — suspec-cli).
 
 ## Task shape
 
@@ -29,7 +30,7 @@ status: ready
 
 ## Source
 
-- Spec: `/Users/you/agent-notes/shop-api/spec-checkout.md`
+- Spec: `/Users/you/.agents/artifacts/shop-api/spec-checkout.md`
 - Source commit: `3f2c9ab`
 
 ### Requirement snapshot
@@ -163,7 +164,7 @@ The worker fills the run summary after implementation.
 It records:
 
 - changed files
-- verify results with pasted output
+- Verify evidence cited from the `## Verify` section without duplicating its output
 - out-of-scope edits
 - blocked questions
 

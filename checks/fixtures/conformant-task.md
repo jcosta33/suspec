@@ -1,9 +1,10 @@
 ---
 # Checks fixture — positive. Expected: a checker applying ../checks.yaml's
 # task_file rules reports nothing. Every required section is present;
-# every Verify item carries pasted output (non-empty-paste satisfied); the
+# the Verify section contains numeric exits and non-empty fenced raw output
+# (C023 satisfied); the
 # status is terminal (closed) and no blocking open question remains anywhere
-# (no-open-critical satisfied). Inert fixture data — nothing here runs.
+# (C024 satisfied). Inert fixture data — nothing here runs.
 type: task
 id: TASK-export-json-flag
 source:
@@ -41,6 +42,8 @@ Implement or preserve:
 
 - [x] `npm test -- export-json.spec.ts` (AC-001, AC-002)
 
+  Exit: 0
+
   ```
   PASS tests/export-json.spec.ts
     export --json
@@ -51,6 +54,8 @@ Implement or preserve:
 
 - [x] `npm test -- export-default.spec.ts` (guards "Do not change": default
   output unchanged)
+
+  Exit: 0
 
   ```
   PASS tests/export-default.spec.ts
@@ -73,6 +78,7 @@ Implement or preserve:
 
 ## Findings
 
+- Blocking: n/a
 - The CLI arg parser lowercases flag names before dispatch, so any future flag
   must be registered in lowercase (`--json`, never `--JSON`) or it silently
   falls through to the default formatter. Candidate for native memory after
@@ -86,3 +92,4 @@ Implement or preserve:
   AC-002; `export-default.spec.ts` 1 passed guarding the Do-not-change snapshot)
 - Out-of-scope edits: none
 - Blocked questions: none
+- Open question (blocking): n/a

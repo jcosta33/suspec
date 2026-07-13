@@ -11,7 +11,7 @@ The numbered happy path, in order:
 7. [Running agents](07-running-agents.md) - dispatching implementers by explicit path.
 8. [Reviewing output](08-reviewing-output.md) - reconciliation against the spec, the deterministic check.
 9. [Saving findings](09-saving-findings.md) - durable lessons become native memories.
-10. [Integrations](10-integrations.md) - CLI, MCP, and agent-catalog reinforcement.
+10. [Integrations](10-integrations.md) - skills, native agents, CLI, and MCP.
 
 Then go deeper:
 

@@ -13,7 +13,8 @@
 - **Evidence precedes assessment.** Worker claims are review inputs, not proof.
 - **Review is independent.** The implementer does not assess their own work; the human decides.
 - **Checks report facts.** Exit codes and diagnostics never become merge authority.
-- **Every step works by hand.** CLI, MCP, and agent definitions are reinforcement.
+- **Every step works by hand.** CLI and MCP are optional reinforcement; native subagents provide
+  isolation when needed.
 - **Claims fit sources.** External evidence supports the exact claim and carries its limits.
 - **History stays in ADRs.** Current docs speak from the present design; accepted ADR bodies
   preserve decision history.

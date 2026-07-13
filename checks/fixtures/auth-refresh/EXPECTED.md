@@ -63,10 +63,10 @@ files is wrong (the anti-fork rule).
 | ------------------ | -------------------------- | ------------------------------------------------------------------------ |
 | `supported-needs-evidence` (C016)  | review rows AC-001, AC-003 | pass — output pasted or linked                                           |
 | `supported-needs-evidence` (C016)  | review row AC-002          | the Evidence cell is empty, so the row reads **Unverified** — never Supported |
-| `no-open-critical` | task and review            | pass — no open blocking question                                         |
+| C022 `task-shape` | task | pass — frontmatter and required sections are valid |
+| `no-open-critical` | review | pass — no open blocking question |
 
 These are checklist-level rules; `suspec check`'s packet mode can flag the mechanical
 parts (the empty Evidence cell).
 
-_Task-side note: `non-empty-paste` does **not** fire on the task fixture — its Verify boxes are
-unchecked and it claims no completion; the rule binds completion claims, not open work._
+_Task-side note: C023 `task-evidence` passes because `## Verify` contains the exact CI run link._

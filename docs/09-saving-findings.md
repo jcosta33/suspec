@@ -1,9 +1,8 @@
 # Saving findings
 
-Findings are either ephemeral or durable. Ephemeral findings — surprises, candidate issues,
-things the reviewer should see — ride the review packet's Candidate findings section
-when the review is multi-lens, or its Findings section otherwise, and die with
-it. Durable lessons outlive the work, and they go where your harness will actually read
+Findings are either ephemeral or durable. Ephemeral findings - surprises and issues the reviewer
+should see - ride the review packet's `Findings` section and die with it. Durable lessons outlive
+the work, and they go where your harness will actually read
 them again:
 
 A durable lesson becomes a native memory only when the harness provides a memory surface.
@@ -14,6 +13,9 @@ project's own channels — an issue, ADR, test, or maintained documentation — 
 task-local observation ephemeral.
 
 Save a lesson when it will matter again. Do not save task-local scratch.
+
+Use `remember` for this route. It stores one verified lesson through native memory when available,
+or sends team-facing residue to the project's own channel. It creates no Suspec memory store.
 
 ## What counts
 
@@ -75,6 +77,16 @@ Some discoveries have a better home than your memory:
 
 A finding does not weaken a requirement. During live work, reconcile a contradiction
 between the finding, the working spec, and the code before review closes.
+
+## Close the working files
+
+After every finding and severe issue is accounted for, confirm no downstream step still needs the
+working artifacts. Present one structured choice covering every artifact and sidecar: Delete,
+Leave, Promote, or Other. Delete only after selection. Leave keeps the current neutral paths. Promote
+sanitizes and moves the set into a selected project-owned durable destination, repairs references,
+validates, and never pushes implicitly. This picker is the handoff; do not return only artifact
+links or claim Close. The agent selects no option; inaction is not Leave. Create no disposition
+record or lifecycle state.
 
 ## Retrieval
 

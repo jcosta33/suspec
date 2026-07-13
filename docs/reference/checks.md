@@ -4,12 +4,12 @@ Checks catch common Suspec mistakes.
 
 Use this page as a review checklist.
 
-`suspec check` implements the toolable subset. It is a path-agnostic checker: it reads
-exactly the files it is handed — the primary artifact's kind from its own frontmatter
-`type:`, companions as explicit flags — and resolves nothing else.
+`suspec check` implements the deterministic subset. It is an explicit-path checker: it discovers no
+other primary artifacts or companions. C009 and C015 resolve references named by the checked spec;
+C010 performs its documented bounded sibling-spec lookup for change-plan references.
 
 ```
-suspec check <path>                                             # spec or change plan
+suspec check <path>                                             # spec, task, or change plan
 suspec check <review-path> --spec <spec-path>                  # review packet
 suspec check <review-path> --spec <spec-path> --task <task-path> # split-task review
 suspec check --contract                                         # the contract as JSON
@@ -33,13 +33,29 @@ refused as a wiring mistake. The human owns what blocks a merge.
 
 This docs repo enforces nothing by itself.
 
+## Artifact recognition
+
+`type:` is required. `spec`, `task`, `review`, and `change-plan` have deterministic checker
+faces. `inventory`, `audit`, `research`, and `inspection` are recognized and return
+`checked: false`. A missing or unknown type is a blocking usage error.
+
+Frontmatter accepts one strict subset: an optional UTF-8 BOM; required opening and closing `---`;
+top-level keys matching `[A-Za-z0-9_-]+`; string scalars; flat inline or block string lists; and
+comments outside quotes. Strings are never coerced to booleans, numbers, or null. Duplicate keys,
+malformed quotes or brackets, nesting, maps, multiline scalars, anchors, aliases, tags, empty list
+heads, and scalar/list field-shape mismatches are blocking parse errors. Unknown extra keys are
+allowed when they obey the subset.
+
+Field shapes are exact: spec `sources`; task `source` and `scope`; review `waivers`; and
+change-plan `sources` and `preserves` are lists. Their other defined fields are scalars.
+
 ## Core checks
 
 | ID | Name | Check | Severity |
 | --- | --- | --- | --- |
 | C001 | `unique-ids` | Requirement IDs are unique within a file. | hard-error |
 | C002 | `duplicate-id` | No other file checked in the same invocation uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard-error |
-| C003 | `verify-with` | Every requirement has `Verify with:` or `VERIFY BY`. | hard-error |
+| C003 | `verify-with` | Every requirement has a non-empty `Verify with:` or `VERIFY BY`. | hard-error |
 | C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate (advice, ADR-0126). SOL `INTERFACE` (IF-) is exempt — a signature declaration has no strength-word slot (ADR-0127). | warning |
 | C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard-error |
 | C008 | `sources-named` | Frontmatter `sources:` names at least one origin. | warning |
@@ -48,13 +64,16 @@ This docs repo enforces nothing by itself.
 | C011 | `waves-present` | Migration, rewrite, and schema-change plans have waves with verify steps. | warning |
 | C012 | `coverage` | Review coverage rows match the task scope and source spec. | warning |
 | C013 | `verify-evidence-binding` | Structured `verify` blocks match the requirement command and row assessment — a **consistency** check (nothing re-runs the command). A cmd-mismatch is **blocking** at check time (ADR-0129); the other faces stay advisory. | warning (cmd-mismatch: hard-error) |
-| C014 | `do-not-change-touched` | Reviewer compares changed files with `Do not change`; published in the contract but checklist-only because the CLI has no live diff. | warning |
 | C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`, itself resolved against the spec's own directory. | warning |
 | C016 | `supported-needs-evidence` | A `Supported` row with empty evidence is invalid. | hard-error |
 | C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. | warning |
 | C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard-error |
+| C021 | `intent-present` | A spec has a non-empty `## Intent`. | hard-error |
+| C022 | `task-shape` | Task type, non-empty ID/source/scope, field shapes, status, and exactly-once required H2 sections match the contract. | hard-error |
+| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a CI link, or justified `n/a`; fenced bare claims and placeholders fail. | hard-error |
+| C024 | `closed-task-resolved` | A closed task contains no `TBD`, `TODO`, `???`, or non-empty canonical blocker labeled `Blocked questions:`, `Blocking:`, or `Open question (blocking):`; `none` and `n/a` are resolved. | hard-error |
 
-C018 is a reserved ID — it is not minted for a new check.
+C005, C006, C014, and C017 are retired and never reused. C018 is reserved.
 
 Notes:
 
@@ -65,17 +84,19 @@ Notes:
   review is never checked shallowly by accident, because a missing required companion is a
   blocking usage error, not a silent skip. C012 keys on the task's declared `scope` when the
   review names a task, and on the spec's full requirement set when it doesn't; C020 applies
-  only to task-referencing reviews. C014 needs the live diff (checklist level): the reviewer's
-  own re-run is the honest backstop.
+  only to task-referencing reviews. Comparing changed files with `Do not change` needs the live
+  diff and remains a reviewer checklist item.
 - References resolve artifact-relative everywhere. A spec citing a file two folders up writes
-  the relative path from its own directory (`../../intake/sup-204.md`); no root is ever inferred.
+  the relative path from its own directory (`../../sources/sup-204.md`); no root is ever inferred.
 
 ## Task and review packet checks
 
 | Check | Rule |
 | --- | --- |
-| `non-empty-paste` | Completion claims need pasted output or a CI link. |
-| `no-open-critical` | A closed task or accepted review has no unresolved blocking decision. |
+| C022 `task-shape` | Required task frontmatter and sections have valid shapes. |
+| C023 `task-evidence` | No evidence check at `ready`/`running`; at `review-ready`/`closed`, require numeric exit plus non-empty fenced raw output, a CI link, or justified `n/a`. Fenced bare claims and placeholders fail. |
+| C024 `closed-task-resolved` | A closed task has no non-empty canonical blocker; `none` and `n/a` are resolved values. |
+| `no-open-critical` | An accepted review has no unresolved blocking decision. |
 | `accepted-waivers` | Accepted reviews list every waived Unsupported or Unverified requirement ID. |
 | `verify-evidence-binding` | Structured evidence matches its requirement row and command. |
 
@@ -186,7 +207,7 @@ which core checks are implemented in your installed version.
 
 Hard:
 
-- C001, C002, C003, C007, C009, C010, C016, C020
+- C001, C002, C003, C007, C009, C010, C016, C020, C021, C022, C023, C024
 - all SOL-S
 - SOL-P001-SOL-P008
 - all SOL-M
@@ -195,7 +216,7 @@ Hard:
 
 Warning:
 
-- C004, C008, C011, C012, C013, C014, C015, C019
+- C004, C008, C011, C012, C013, C015, C019
 - SOL-P050-SOL-P058
 - SOL-V003, SOL-V011
 - SOL-O004, SOL-O006

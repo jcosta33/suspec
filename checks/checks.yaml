@@ -1,37 +1,65 @@
 # checks.yaml — the checks contract as data. Inert: nothing in this
 # repository runs it.
 #
-# This file is the machine-readable shadow of the core checks of
-# docs/reference/checks.md (the prose reference is canonical; this file
-# restates it as testable data). It shadows only the core checks and packet
-# schemas — the SOL catalogue is prose-only and lives in the reference; the
+# This file is the contract of record for deterministic checks and packet schemas.
+# docs/reference/checks.md explains the same contract for humans and must agree with it.
+# The SOL catalogue is prose-only and lives in the reference; the
 # human-facing artifact-shape reference is docs/reference/artifact-formats.md.
 # Frontmatter lists are minimum-required: extra keys are legal and ignored.
-# The reference consumer is suspec-cli's `suspec check` — a path-agnostic
+# The reference consumer is suspec-cli's `suspec check` — an explicit-path
 # checker that reads exactly the files it is handed (the primary artifact's
 # kind from its own frontmatter `type:`, companions as explicit flags); a
 # reviewer can apply every rule by hand.
 # The files under fixtures/ pin the expected results and guard this file and
 # the prose from drifting apart.
 #
-# Severity legend (the two-way split):
+# Severity legend:
 #   hard-error  a checker must reject the file
 #   warning     a checker should flag it; teams may treat any warning as
 #               blocking by policy
 # Severities are expressed at check time — exit codes are the API (0 clean ·
 # 1 warning · 2 blocking); the human owns what blocks a merge.
 
-version: 0.17.0 # contract version of this file; bump on any rule change
+version: 0.18.0 # contract version of this file; bump on any rule change
+
+# --- Artifact and frontmatter contract ----------------------------------------
+artifact_types:
+  checked: [spec, task, review, change-plan]
+  recognized_unchecked: [inventory, audit, research, inspection]
+  missing_type: hard-error
+  unknown_type: hard-error
+
+frontmatter:
+  opening_delimiter: first logical line after optional UTF-8 BOM
+  closing_delimiter: required
+  key_pattern: "[A-Za-z0-9_-]+"
+  values: [string-scalar, inline-string-list, block-string-list]
+  scalar_coercion: none
+  comments: allowed outside quoted values
+  allow_extra_keys: true
+  reject:
+    - duplicate keys
+    - unbalanced quotes or brackets
+    - nested maps or lists
+    - multiline scalars
+    - anchors, aliases, or tags
+    - empty list heads
+    - scalar/list field-shape mismatches
 
 # --- Spec form selector -------------------------------------------------------
 # The default spec form is plain structured markdown. A spec opts into the
 # stricter SOL notation per file with frontmatter `format: sol`. Both forms
 # encode the same requirement record; every check below keys on the record,
 # never the surface (the per-domain equivalence pairs under fixtures/ prove it).
+# Field-shape lists below apply when a field is present. Separate checks state
+# presence and non-empty requirements.
 spec_form:
   default: simple
   selector: "format: sol" # frontmatter key, per file; absent = simple form
-  frontmatter: [type, id, title, status, owner, sources] # + `format` when the spec selects SOL
+  frontmatter:
+    scalar: [type, id, title, status, owner]
+    optional_scalar: [format]
+    list: [sources]
 
 # --- Core checks ---------------------------------------------------------------
 # Mirrors the "Core checks" table in docs/reference/checks.md, row for row.
@@ -39,13 +67,12 @@ spec_form:
 # C002 keys on the file set passed in one invocation (frontmatter id uniqueness across the checked files);
 # C012 keys on the review packet's coverage table against its source spec;
 # C013 keys on the review packet's structured verify blocks against its source spec;
-# C014 keys the review packet's Changed files against the task packet's Do-not-change entries.
 # C015 keys the spec's inline [[KEY]] citations against the <a id> anchors in the sources.md its
 # frontmatter names, resolved against the spec's own directory.
 # Reference resolution is ARTIFACT-RELATIVE everywhere: a ref resolves against the artifact that
 # names it, never against a surrounding tree.
-# IDs are stable; the prose reference defines each rule in full — this list
-# pins id, name, and severity so a checker and the fixtures can cite them.
+# IDs are stable. This list owns each deterministic id, name, and severity; the prose reference
+# explains each rule in full.
 core_checks:
   - { id: C001, name: unique-ids, severity: hard-error }
   - { id: C002, name: duplicate-id, severity: hard-error } # frontmatter id: uniqueness across the files checked together; requirement ids are spec-scoped (ADR-0080)
@@ -58,12 +85,18 @@ core_checks:
   - { id: C011, name: waves-present, severity: warning } # change plan: kind in {migration, rewrite, schema-change} => non-empty waves, each naming a verify step
   - { id: C012, name: coverage, severity: warning } # review packet: in-scope ids covered, no orphan rows; the in-scope set is the task's declared scope when the review names a split task, else the spec's full requirement id set; non-draft source spec only (ADR-0079)
   - { id: C013, name: verify-evidence-binding, severity: warning } # review packet: a verify block's cmd matches the requirement's named Verify command + result=pass; non-draft source spec only. Nominal severity warning, but a CMD-MISMATCH is blocking at check time — a recorded cmd that disagrees with the spec's named command is a structural contradiction (ADR-0129); the other faces stay advisory. The check confirms the recorded command's CONSISTENCY, never that it ran — nothing re-executes it.
-  - { id: C014, name: do-not-change-touched, severity: warning } # review packet: a Changed-files entry matches a task's Do-not-change entry (same matcher + {{placeholder}} skip as Affected areas); distinct from outsideScope; surfaced to Open decisions (ADR-0086). Checklist level — it needs the live diff, so the reviewer's own re-run is the honest backstop (the reference's notes); no checker computes it
+  # C014 is RETIRED. It required a live diff and no deterministic checker computed it. Never reuse.
   - { id: C015, name: citation-resolves, severity: warning } # spec: an inline [[KEY]] citation resolves to a matching <a id="KEY"> anchor in the sources.md the spec's frontmatter names, resolved against the spec's own directory; skips when no sources.md is resolvable (no false-flag); v0 = dangling-anchor only (ADR-0087)
   - { id: C016, name: supported-needs-evidence, severity: hard-error } # review packet: a Supported coverage row with an empty Evidence cell is a structural contradiction
+  # C017 is RETIRED. Never reuse.
   # C018 is RESERVED — do not mint it for a new check (the oversized-packet signal, ADR-0094/ADR-0097).
   - { id: C019, name: malformed-requirement-heading, severity: warning } # spec: a ### heading shaped like a requirement id but with a lowercase split-suffix (AC-004a) — the parser reads it as prose, so the requirement silently vanishes from scope/coverage; the warning makes the disappearance visible (the id shape is `AC-NNN` — digits only, per the format frozen in ADR-0058; minted in ADR-0125)
   - { id: C020, name: unresolvable-ref, severity: hard-error } # review packet: the review's `task:` ref does not resolve to the task packet it is checked against (the handed packet identifies as a different task, or carries no id), so C012/C013/C016 would key on the wrong slice — without C020 a typo'd/renamed task ref silently bypasses the honesty checks. Blocking (structural, like C016). Minted in ADR-0128; explicit-companion scope per ADR-0143
+  - { id: C021, name: intent-present, severity: hard-error } # spec: a non-empty ## Intent section
+  - { id: C022, name: task-shape, severity: hard-error } # task: field shapes, status enum, and required H2 sections
+  - { id: C023, name: task-evidence, severity: hard-error } # task: review-ready/closed ## Verify has numeric exit + non-empty fenced raw output, a CI link, or justified n/a; ready/running are exempt; fenced bare claims and placeholders fail
+  - { id: C024, name: closed-task-resolved, severity: hard-error } # task: status closed has no non-empty canonical blocking label except none/n/a
+  # C005 and C006 are RETIRED. Never reuse.
   # NOTE: oversized-packet (ADR-0094) is specified-not-shipped — a raw LOC/files band cannot be both useful and low-FP for code task diffs (measured ~15% FP at 600 LOC; ADR-0097). The diff size is a reviewer judgment, no band asserted.
 
 # --- The task packet -----------------------------------------------------------
@@ -71,8 +104,13 @@ core_checks:
 # docs/reference/artifact-formats.md): a well-formed task presents every
 # required H2 section and satisfies every content rule.
 task_file:
-  frontmatter: [type, id, source, scope, status]
+  frontmatter:
+    scalar: [type, id, status]
+    list: [source, scope]
+  type_value: task
+  non_empty: [id, source, scope]
   status_enum: [ready, running, review-ready, closed]
+  required_section_occurrence: exactly-once
   required_sections:
     - Source
     - Scope
@@ -83,28 +121,34 @@ task_file:
     - Findings
     - Run summary # the handoff digest — cites the Verify pastes, never re-pastes them
   content_rules:
-    - id: non-empty-paste
+    - id: task-evidence # implemented as core check C023
       applies_to: Verify
       # The Run summary section cites these pastes — never an alternative paste home.
       severity: hard-error
       rule: >-
-        Every completion claim binds to pasted command output or a CI link — a
-        fenced output block under the Verify item, or `n/a` with a one-line
-        reason — never a bare "tests passed" or an unfilled placeholder. A
-        claim without visible output is unverified.
-    - id: no-open-critical
+        When status is `review-ready` or `closed`, the Verify section contains a
+        numeric exit status plus non-empty fenced raw command output, a CI link,
+        or `n/a` with a one-line reason. Status `ready` and `running` do not run
+        this evidence check. A bare completion claim fails even when fenced; an
+        unfilled placeholder also fails.
+    - id: closed-task-resolved # implemented as core check C024
       applies_to: whole packet (frontmatter status + every section)
       severity: hard-error
       rule: >-
-        No blocking open question remains unresolved anywhere in the packet
-        when its frontmatter status is the terminal value `closed`.
+        When status is `closed`, the packet contains no `TBD`, `TODO`, `???`, or
+        non-empty canonical blocking label: `Blocked questions:`, `Blocking:`,
+        or `Open question (blocking):`. The values `none` and `n/a`, matched
+        case-insensitively after trimming, are resolved and do not fail.
 
 # --- The review packet ----------------------------------------------------------
 # The review packet's required shape (the human-facing reference is
 # docs/reference/artifact-formats.md).
 review_file:
-  frontmatter: [type, id, decision]
-  optional_frontmatter: [task, pr, waivers] # task: only when the review covers a split task slice — its
+  frontmatter:
+    scalar: [type, id, decision]
+    optional_scalar: [task, pr, reviewer]
+    optional_list: [waivers]
+  # task: only when the review covers a split task slice — its
   # presence obliges the task companion at check time; a task-less review is checked spec-keyed
   decision_enum: [pending, accepted, changes-requested, deferred]
   required_sections:
@@ -174,6 +218,12 @@ review_file:
         faces ship at warning. Surfaces a fact, never a verdict
         (ADR-0077 Decision 8).
 
+# --- The change plan -----------------------------------------------------------
+change_plan_file:
+  frontmatter:
+    scalar: [type, id, title, status, kind, owner]
+    list: [sources, preserves]
+
 # --- Command slots (advisory) ----------------------------------------------------
 # Adapter slots a Verify item or `Verify with:` line may name instead of a
 # literal command; each resolves through the repo's `AGENTS.md > Commands`
@@ -218,7 +268,6 @@ fixtures:
   positive: fixtures/conformant-task.md
   negative: fixtures/violations.md
   domains: [fixtures/auth-refresh, fixtures/payment-5xx, fixtures/checkout]
-  intake: fixtures/intake/intake-jira-123.md # valid intake; expectation pinned in its trailing note
   transformation: fixtures/transformation # inventory + change plan; EXPECTED.md pins C010/C011
   cross-folder-source: fixtures/cross-folder-source # EXPECTED.md pins C009 artifact-relative resolution across folders
   prose: fixtures/prose-fixtures/labeled.yaml

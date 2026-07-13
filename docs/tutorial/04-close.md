@@ -6,8 +6,8 @@ Suspec artifact.
 ## 1. Decide whether anything is durable
 
 The review surfaced one reusable lesson: expired checkout sessions are an expected client
-case, not a server outage. If the harness provides native memory, record the lesson through
-that supported surface:
+case, not a server outage. Use `remember` to record the lesson through a supported native memory
+surface:
 
 ```markdown
 ## Expired checkout sessions return 409, not a 5xx
@@ -22,11 +22,22 @@ Does not apply to: other checkout validation failures or non-checkout sessions.
 Do not invent a memory file when the harness has no memory surface. Route a team-facing
 lesson through the project's own issue, ADR, test, or maintained documentation instead.
 
-## 2. Let working artifacts remain transient
+## 2. Close the transient artifacts
 
-The spec and review stay wherever the harness placed them until they are no longer useful.
-Suspec moves nothing and owns no cleanup lifecycle. Code, tests, project decisions, and a
-supported native memory are the durable layers.
+The spec and review have served their live-work purpose. Present one structured choice covering
+both files and any evidence sidecars:
+
+1. **Delete** - remove the transient set.
+2. **Leave** - keep it under the agent-neutral workspace.
+3. **Promote** - choose a project-owned durable destination, sanitize private content, move the
+   files, repair references, and validate.
+4. **Other** - state another disposition for the complete set.
+
+Recommend the choice supported by the work: delete exhausted scratch, leave files needed for a
+known continuation, promote durable project truth. The user selection controls the action.
+The agent selects nothing; inaction is not Leave. Do not return only links or claim Close when this
+choice is due. Promotion never pushes implicitly, and no choice creates lifecycle state or cleanup
+machinery.
 
 ## What this walkthrough used
 

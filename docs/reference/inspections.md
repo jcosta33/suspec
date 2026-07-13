@@ -1,7 +1,9 @@
 # Inspections
 
-Inspections route different questions through different evidence and cost contracts. Every
-substantive run writes one `type: inspection` artifact and no ship verdict.
+Inspections route different questions through different evidence and cost contracts. Compact
+implementation proof stays in the implementation handoff: command, numeric exit, and decisive raw
+output, with no new artifact. A substantive inspection run writes one `type: inspection` artifact
+and no ship verdict.
 
 | Method | Question | Mutation |
 |---|---|---|
@@ -21,7 +23,10 @@ finding, applies accepted fixes, and pins the revised target before the next fre
 
 ## Evidence boundary
 
-Bulletproof may inspect primary sources and run non-mutating checks to fill evidence gaps.
+Bulletproof inspects the target claim set, checks every explicit and load-bearing implied claim,
+and uses primary sources, code inspection, and non-mutating checks to fill evidence gaps. A compact
+claim check may report assessments and direct evidence inline; a substantive run uses the inspection
+artifact below.
 Demolition opens with `Advocacy exercise, not evidence.` It may speculate but may not fabricate
 sources, quotations, incidents, or test output. Nothing from Demolition becomes a finding until
 independently verified.
