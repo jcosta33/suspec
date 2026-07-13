@@ -130,10 +130,13 @@ The source spec must still be exactly `ready` when review begins. The review ID 
 `Requirement coverage` section are required and non-empty. Add `Changed files`, `Findings`, `Open decisions`,
 `Change-plan coverage`, or method notes only when they carry information.
 
-Coverage rows use:
+Coverage is one contiguous GFM table. Use the exact header and place its delimiter immediately
+after it. Keep every row together; structured `verify` blocks follow the table.
 
-```text
-ID | Assessment | Evidence
+```markdown
+| ID | Assessment | Evidence |
+| --- | --- | --- |
+| AC-001 | Supported | exact evidence |
 ```
 
 Assessments:

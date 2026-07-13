@@ -259,6 +259,14 @@ grep -q '^    sections: \[Requirement coverage, Change-plan coverage\]' "$canon/
   echo "change-plan coverage parser contract missing" >&2
   exit 1
 }
+grep -q '^    delimiter_row: required-immediately-after-header$' "$canon/checks/checks.yaml" || {
+  echo "coverage delimiter contract missing" >&2
+  exit 1
+}
+grep -q '^    rows: contiguous$' "$canon/checks/checks.yaml" || {
+  echo "coverage row-contiguity contract missing" >&2
+  exit 1
+}
 grep -q 'duplicate waiver' "$canon/checks/checks.yaml" || {
   echo "duplicate waiver rejection missing" >&2
   exit 1

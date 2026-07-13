@@ -189,6 +189,30 @@ for method in bulletproof demolition revolver triple-check; do
     exit 1
   }
 done
+for method in revolver triple-check; do
+  method_text=$(tr '\n' ' ' < "$skills/skills/$method/SKILL.md" | tr -s ' ')
+  for phrase in 'A substantive run requires that artifact.' \
+    'An explicit no-write or chat-only request conflicts with this method.' \
+    'Never write against the refusal'; do
+    printf '%s\n' "$method_text" | grep -Fq "$phrase" || {
+      echo "$method does not honor an explicit no-write conflict: $phrase" >&2
+      exit 1
+    }
+  done
+done
+grep -Fq 'Skip targeted code-path tracing without an explicit three-pass request.' \
+  "$skills/skills/triple-check/SKILL.md" || {
+  echo "triple-check overlaps targeted dissection" >&2
+  exit 1
+}
+for phrase in 'is already the independent reviewer: execute here and do not dispatch again.' \
+  'Any Blocked row: Request changes or Defer. Never offer either acceptance option.' \
+  'Never offer plain Accept.' 'Keep this as one contiguous GFM table:'; do
+  grep -Fq "$phrase" "$skills/skills/sus-review/SKILL.md" || {
+    echo "sus-review state or fallback contract missing: $phrase" >&2
+    exit 1
+  }
+done
 grep -Fq 'Make the first body line exactly: `Advocacy exercise, not evidence.`' \
   "$skills/skills/demolition/SKILL.md" || {
   echo "demolition quarantine banner missing" >&2

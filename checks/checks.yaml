@@ -195,6 +195,8 @@ review_file:
     required_non_empty: [Requirement coverage]
     optional_parsed_when_present: [Change-plan coverage]
     columns: [ID, Assessment, Evidence]
+    delimiter_row: required-immediately-after-header
+    rows: contiguous
     assessment_enum: [Supported, Unsupported, Unverified, Blocked]
     invalid_option_value: hard-error
   content_rules:
