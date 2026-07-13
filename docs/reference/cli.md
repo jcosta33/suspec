@@ -56,6 +56,9 @@ one process, not a second command.
 - **Companions are explicit flags.** A review packet reconciles against its spec — and its
   task, when it names one. Those companions are passed with `--spec` and `--task`; nothing
   is inferred or discovered.
+- **Tasks remain spec-backed.** A task's `source` names the spec that owns its scoped
+  requirements. Change-plan wave and preservation details are context, never replacement
+  requirement authority.
 - **Reference checks resolve artifact-relative** (level: enforced — suspec-cli). Source
   references and a named `sources.md` resolve from the passed artifact's own directory
   using the relative paths in frontmatter, even when those paths climb folders. No root
@@ -101,7 +104,10 @@ version and check definitions.
   decides what blocks a merge.
 - **No acceptance.** It never accepts work. Review assessments (`Supported` / `Unsupported` /
   `Unverified` / `Blocked`) are written by the independent reviewer; the checker verifies their
-  shape and evidence binding. The human owns the decision and waivers.
+  shape and evidence binding. Review IDs and Requirement coverage are non-empty; decision and
+  assessment enums are closed; waivers are accepted-only and exactly reconcile Unsupported and
+  Unverified requirement rows; accepted reviews have no non-empty Open decisions or Blocked
+  assessment. Blocked cannot be waived. The human owns the decision and waivers.
 - **No execution.** It does not run your verify commands, your tests, or any agent. It
   checks that recorded evidence matches what the spec named — not that the commands pass.
 - **No writes.** It scaffolds nothing, seeds nothing, manages nothing. The filesystem is

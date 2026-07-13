@@ -51,7 +51,7 @@ it preserves rather than gesture at "no behavior change".
    gains `inventory/` and `change-plans/` folders; a change-plan wave decomposes into N tasks, each
    worktree-isolated exactly as any task (ADR-0046 unchanged).
 5. **Guide lineage:** the planning halves of the per-kind implementation guides (wave planning, equivalence
-   oracles, behavior-delta tables, baseline/target protocol) consolidate into the `write-change-plan`
+   oracles, behavior-delta tables, baseline/target protocol) consolidate into the `sus-change-plan`
    advanced guide; execution halves remain implementation guidance in the code-skills library.
 
 ## Alternatives considered

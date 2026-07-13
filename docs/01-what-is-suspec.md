@@ -13,7 +13,7 @@ It gives you:
 
 - an inline, zero-file path for changes too small to need a spec
 - specs with intent and verifiable requirements, sized to the work
-- task packets for separately dispatchable spec slices or change-plan waves
+- spec-backed task packets for separately dispatchable slices, including change-plan waves
 - review packets that reconcile evidence against the spec, requirement by requirement
 - a discipline for saving durable lessons where your harness actually reads them
 - a deterministic checker — `suspec check` — over specs, tasks, change plans, and reviews

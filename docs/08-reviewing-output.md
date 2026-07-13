@@ -29,7 +29,7 @@ decision: pending
 | AC-002 | Unverified | CI run is unavailable. |
 ```
 
-`Requirement coverage` is the only required section. Add changed files, findings, open
+The review ID and `Requirement coverage` are required and non-empty. Add changed files, findings, open
 decisions, or change-plan coverage only when they carry information.
 
 Assessments:
@@ -40,6 +40,10 @@ Assessments:
 - `Blocked`: a dependency prevents assessment.
 
 An agent writes every assessment and leaves `decision: pending`.
+
+The decision is one of `pending`, `accepted`, `changes-requested`, or `deferred`; assessments use
+only the four values above. When a task executes a change-plan wave, `Change-plan coverage` may add
+plan-local preservation context, but requirement coverage still reconciles against the source spec.
 
 ## Evidence
 
@@ -79,9 +83,13 @@ After assessment, present a state-aware picker. Recommend from the evidence:
 - blocked rows or unresolved material decisions: `Defer`
 - unsupported or unverified rows the owner deliberately accepts: `Accept with waivers`
 
-Write the selection to `decision: accepted | changes-requested | deferred`. For acceptance
-with waivers, add the affected requirement IDs under `waivers` and record owner, reason, and
-follow-up where the project keeps decision context. Return the artifact link without restating it.
+Write the selection to `decision: accepted | changes-requested | deferred`. `waivers` is absent
+before acceptance and absent from an accepted review with no Unsupported or Unverified rows. For
+acceptance with waivers, list exactly every `Unsupported` or `Unverified` requirement ID, and no
+`Supported` or `Blocked` ID, then record owner, reason, and follow-up where
+the project keeps decision context. An accepted review cannot retain a non-empty `Open decisions`
+section or any `Blocked` assessment in requirement or change-plan coverage. Resolve the dependency
+or defer the review; `Blocked` cannot be waived. Return the artifact link without restating it.
 The review remains live through findings routing and any requested fixes; the final consumer asks
 whether to delete, leave, promote, or choose `Other` for the complete transient artifact set. That close picker replaces
 the path-only return. The agent selects no option; inaction is not Leave.

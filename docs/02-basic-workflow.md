@@ -71,8 +71,9 @@ proportionally, never a station to pass through. The spec (the structured form i
 graduates into) and the deterministic check are the scaffold the full loop above already
 shows; the rest:
 
-- **Task** — `sus-task` cuts one only when a spec has separately dispatchable parallel/context slices, or a
-  change plan defines separately dispatchable sequenced waves. Size alone does not create a
+- **Task** — `sus-task` cuts one only when a spec has separately dispatchable parallel/context slices,
+  including sequenced waves described by a change plan. The spec remains every task's requirement
+  source; the plan adds wave and preservation context. Size alone does not create a
   task; the common 1:1 case works directly from the source. See
   [creating tasks](06-creating-tasks.md).
 - **Inventory** — `sus-inventory` maps existing code before brownfield work: observed modules,

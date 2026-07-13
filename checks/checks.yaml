@@ -20,7 +20,7 @@
 # Severities are expressed at check time — exit codes are the API (0 clean ·
 # 1 warning · 2 blocking); the human owns what blocks a merge.
 
-version: 0.18.0 # contract version of this file; bump on any rule change
+version: 0.18.0 # contract version of this file
 
 # --- Artifact and frontmatter contract ----------------------------------------
 artifact_types:
@@ -94,8 +94,8 @@ core_checks:
   - { id: C020, name: unresolvable-ref, severity: hard-error } # review packet: the review's `task:` ref does not resolve to the task packet it is checked against (the handed packet identifies as a different task, or carries no id), so C012/C013/C016 would key on the wrong slice — without C020 a typo'd/renamed task ref silently bypasses the honesty checks. Blocking (structural, like C016). Minted in ADR-0128; explicit-companion scope per ADR-0143
   - { id: C021, name: intent-present, severity: hard-error } # spec: a non-empty ## Intent section
   - { id: C022, name: task-shape, severity: hard-error } # task: field shapes, status enum, and required H2 sections
-  - { id: C023, name: task-evidence, severity: hard-error } # task: review-ready/closed ## Verify has numeric exit + non-empty fenced raw output, a CI link, or justified n/a; ready/running are exempt; fenced bare claims and placeholders fail
-  - { id: C024, name: closed-task-resolved, severity: hard-error } # task: status closed has no non-empty canonical blocking label except none/n/a
+  - { id: C023, name: task-evidence, severity: hard-error } # task: review-ready/closed ## Verify has numeric exit + non-empty fenced raw output, a visible `CI:`/`CI link:` URL, or justified n/a; ready/running are exempt; fenced bare claims and placeholders fail
+  - { id: C024, name: closed-task-resolved, severity: hard-error } # task: status closed has no non-empty canonical blocking label under an unordered or ordered list item except none/n/a
   # C005 and C006 are RETIRED. Never reuse.
   # NOTE: oversized-packet (ADR-0094) is specified-not-shipped — a raw LOC/files band cannot be both useful and low-FP for code task diffs (measured ~15% FP at 600 LOC; ADR-0097). The diff size is a reviewer judgment, no band asserted.
 
@@ -109,6 +109,9 @@ task_file:
     list: [source, scope]
   type_value: task
   non_empty: [id, source, scope]
+  source_contract: >-
+    `source` names the spec that owns every scoped requirement. A change plan
+    may be named as context in the Source section, but never replaces that spec.
   status_enum: [ready, running, review-ready, closed]
   required_section_occurrence: exactly-once
   required_sections:
@@ -127,8 +130,9 @@ task_file:
       severity: hard-error
       rule: >-
         When status is `review-ready` or `closed`, the Verify section contains a
-        numeric exit status plus non-empty fenced raw command output, a CI link,
-        or `n/a` with a one-line reason. Status `ready` and `running` do not run
+        numeric exit status plus non-empty fenced raw command output, a visible
+        URL labeled `CI:` or `CI link:`, or `n/a` with a one-line reason. Status
+        `ready` and `running` do not run
         this evidence check. A bare completion claim fails even when fenced; an
         unfilled placeholder also fails.
     - id: closed-task-resolved # implemented as core check C024
@@ -136,8 +140,9 @@ task_file:
       severity: hard-error
       rule: >-
         When status is `closed`, the packet contains no `TBD`, `TODO`, `???`, or
-        non-empty canonical blocking label: `Blocked questions:`, `Blocking:`,
-        or `Open question (blocking):`. The values `none` and `n/a`, matched
+        non-empty canonical blocking label after an unordered (`-`, `*`, `+`) or
+        ordered (`N.`) list marker: `Blocked questions:`, `Blocking:`, or
+        `Open question (blocking):`. The values `none` and `n/a`, matched
         case-insensitively after trimming, are resolved and do not fail.
 
 # --- The review packet ----------------------------------------------------------
@@ -150,8 +155,12 @@ review_file:
     optional_list: [waivers]
   # task: only when the review covers a split task slice — its
   # presence obliges the task companion at check time; a task-less review is checked spec-keyed
+  non_empty: [id]
   decision_enum: [pending, accepted, changes-requested, deferred]
+  required_section_occurrence: exactly-once
   required_sections:
+    - Requirement coverage
+  non_empty_sections:
     - Requirement coverage
   optional_sections:
     - Changed files
@@ -171,17 +180,25 @@ review_file:
         saw) in its Evidence cell. An empty Evidence cell means Unverified,
         never Supported.
     - id: no-open-critical
-      applies_to: whole packet
+      applies_to: Open decisions
       severity: hard-error
       rule: >-
-        No blocking open decision remains unresolved in a review whose decision
-        is `accepted`; defer the decision until the question is resolved.
+        A review whose decision is `accepted` contains no non-empty Open
+        decisions section; resolve or defer every open decision before acceptance.
+    - id: accepted-no-blocked
+      applies_to: Requirement coverage, Change-plan coverage
+      severity: hard-error
+      rule: >-
+        A review whose decision is `accepted` contains no Blocked assessment.
+        Resolve the dependency or defer the review; Blocked cannot be waived.
     - id: accepted-waivers
-      applies_to: frontmatter
+      applies_to: frontmatter, Requirement coverage
       severity: hard-error
       rule: >-
-        An accepted review with Unsupported or Unverified requirements lists
-        those requirement IDs under `waivers`.
+        `waivers` is absent unless decision is `accepted`. For an accepted review
+        with Unsupported or Unverified rows, it lists exactly once every such
+        requirement ID, with no other IDs. When there are no such rows, `waivers`
+        is absent. Supported and Blocked rows are not waivable.
     - id: coverage # C012; ADR-0079
       applies_to: Requirement coverage
       severity: warning

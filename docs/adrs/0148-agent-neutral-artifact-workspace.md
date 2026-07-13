@@ -37,9 +37,9 @@ Markdown [[CLAUDE-FILES]](../research/sources.md#CLAUDE-FILES)
    registry, lifecycle state, or automated cleanup is added. Tools continue to read only explicit
    paths. The fixed root improves human and cross-vendor discovery without becoming a managed
    Suspec store. _Level: convention._
-5. **Promotion remains durable-only.** `promote-artifact` moves a transient whole document into a
+5. **Promotion remains durable-only.** `promote` moves a transient whole document into a
    human-selected project-native durable channel. It does not relocate artifacts between transient
-   roots. `save-findings` still writes durable lessons to native harness memory.
+   roots. `remember` still writes durable lessons to native harness memory.
 
 ## Narrowed decisions
 

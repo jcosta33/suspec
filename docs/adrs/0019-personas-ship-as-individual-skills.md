@@ -18,7 +18,7 @@ A persona ships as a standalone skill **only when its mindset adds something bey
 
 The other **5 mindsets do not ship as skills** — each is carried by the matching workflow skill, where the mindset and the procedure are the same thing:
 
-- Builder → `write-feature`; Bug Hunter → `write-bug-report`; Documentarian → `write-documentation`; Test Author → `write-testing`; Researcher → `write-research`.
+- Builder → `write-feature`; Bug Hunter → `write-bug-report`; Documentarian → `write-documentation`; Test Author → `write-testing`; Researcher → `sus-research`.
 
 **Lead Engineer ships** (`persona-lead-engineer`) precisely *because* it has no workflow skill — orchestration ships none — so the coordination mindset (disjoint-scope decomposition, the hand-off contract, liveness, verified merge) *is* the discipline and clears the bar. See [0025](./0025-orchestration-coordination-artifact.md).
 

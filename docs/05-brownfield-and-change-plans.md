@@ -42,6 +42,9 @@ Every structural claim needs a file or line reference.
 
 A change plan explains how to change code without losing behavior.
 
+It adds transformation order, preservation guarantees, and rollback context to a source spec.
+It does not own product requirements and cannot replace the spec behind a task packet or review.
+
 Use it for:
 
 - migrations
@@ -77,6 +80,9 @@ encode it in the durable layer that owns it — usually a test, public contract,
 ## Waves
 
 Each wave must leave the codebase usable and verifiable.
+
+When a wave becomes a task packet, the packet still names the source spec and scopes its
+requirement IDs. The change plan is optional context for the wave and preservation guarantees.
 
 Good waves:
 

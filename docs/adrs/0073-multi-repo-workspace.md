@@ -79,5 +79,5 @@ condition). The Suspec family's own multi-repo workspace is a separate owner act
 ## Propagation
 
 docs/03/06/07, reference/{glossary, step-bars, advanced-lifecycle, future-cli,
-structured-requirements}, task template comment, kit README, split-work guide, checks.yaml
+structured-requirements}, task template comment, kit README, sus-task guide, checks.yaml
 comment, ledger row.

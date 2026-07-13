@@ -1,11 +1,12 @@
 # Creating tasks
 
 A task packet is the **split slice** — cut only when a spec has multiple independently
-dispatchable parallel/context slices, or a change plan defines separately dispatchable
-sequenced waves. Size alone does not create a task. For the common 1:1 case there is no
+dispatchable parallel/context slices, including separately dispatchable sequenced waves in a
+change plan. Size alone does not create a task. For the common 1:1 case there is no
 packet: the implementer works from the source and fills its `## Execution` section.
 
-A task does not add requirements. It copies a scope-subset from a spec or change plan.
+A task does not add requirements. It always copies a scope subset from a source spec. A change
+plan may add wave and preservation context, but it never replaces that spec.
 
 Task packets are files like any other Suspec artifact: written by `sus-task`,
 placed in the agent-neutral workspace per the [placement rule](03-where-files-live.md),
@@ -32,6 +33,7 @@ status: ready
 
 - Spec: `/Users/you/.agents/artifacts/shop-api/spec-checkout.md`
 - Source commit: `3f2c9ab`
+- Change plan: `/Users/you/.agents/artifacts/shop-api/change-checkout.md` (when this task executes a wave)
 
 ### Requirement snapshot
 

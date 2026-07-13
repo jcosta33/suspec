@@ -53,7 +53,7 @@ _Level: convention._
   relocate catalog → kit; the catalog's long-form `implement-task` folds into the kit's. The universal
   set (`adversarial-review`, `persona-skeptic/-challenger/-surveyor`, `empirical-proof`, `concise-output`,
   `fix-flaky-test`) is stripped framework-free — `adversarial-review` loses its `type:review` template
-  (its Suspec review-packet building already lives in the kit's `review-output`).
+  (its Suspec review-packet building already lives in the kit's `sus-review`).
 - The anatomy upgrades (Gotchas, explain-why, behavior-changing) apply to **both** tiers.
 - **Migration tail:** the relocation is mechanical; no artifact format changes.
 

@@ -10,7 +10,7 @@ updated: 2026-06-25
 
 ## Context
 
-The dominant path is `1 spec → 1 task` (`split-work`: "most specs become exactly one task packet"),
+The dominant path is `1 spec → 1 task` (`sus-task`: "most specs become exactly one task packet"),
 and in that case the task **repeats the spec**: the spec's ACs already carry their own `Verify with:`
 lines, so the task's `## Verify` restates them; `scope` is "all of it"; `Agent instructions` are
 boilerplate. Only the execution record (`Run summary` / `Self-review` / `Findings`) carries weight —
@@ -43,7 +43,7 @@ parse.
    the verdict lives in a file the implementer does not write.
 
 3. **The task is an on-demand split slice.** When one spec must become **N parallel** tasks,
-   `split-work` cuts a task per slice (a scope-subset + `Do not change` + `Affected areas` + a pointer
+   `sus-task` cuts a task per slice (a scope-subset + `Do not change` + `Affected areas` + a pointer
    to — or, in spec-external mode, a pinned snapshot of — the spec, ADR-0100). Each slice carries its
    own execution + review. A task is cut **only** when the work decomposes; it is no longer a
    pass-through station. This **refines ADR-0030**: `task.md` stays a shipped Tier-1 template but is
@@ -72,8 +72,8 @@ parse.
 
 The kit spec template (add `## Execution`), the task template (reframed as the on-demand slice),
 `docs/02-basic-workflow.md` + `docs/06-creating-tasks.md` (spec is the unit; task on-demand),
-`split-work` (cut a task only when decomposing; otherwise fill the spec's `## Execution`),
-`implement-task` (1:1 → fill the spec's `## Execution`; split → the task), and `review-output`
+`sus-task` (cut a task only when decomposing; otherwise fill the spec's `## Execution`),
+`implement-task` (1:1 → fill the spec's `## Execution`; split → the task), and `sus-review`
 (review the spec's ACs + execution when there is no task). suspec-cli/mcp adaptation tracked.
 
 ## Affected obligations / constraints

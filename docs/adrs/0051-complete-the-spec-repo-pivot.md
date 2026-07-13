@@ -18,7 +18,7 @@ the `starter-kit/` still carried the old shape:
 - ~448 KB of **not-installed** content lived inside the kit — the `language/` (88 KB) and `passes/` (196 KB)
   **derived twins** and the `conformance/` golden fixture set (164 KB). A thing you hand an adopter should contain
   only what the adopter uses.
-- The kit's skills mixed **authoring** (`write-spec`, `pass-lint-spec`, `persona-architect`…) with
+- The kit's skills mixed **authoring** (`sus-spec`, `pass-lint-spec`, `persona-architect`…) with
   **code-implementation** (`write-feature`, `fix-flaky-test`, `persona-bug-hunter`, `persona-builder`…). A
   docs/spec repo has no use for the latter — the kit was effectively two kits crammed together.
 - Specs sat under `.agents/specs/`, conflating the **product** (intent) with **agent tooling**.

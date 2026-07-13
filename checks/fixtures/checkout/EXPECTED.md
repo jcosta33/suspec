@@ -75,6 +75,6 @@ two files is wrong (the anti-fork rule).
 | `supported-needs-evidence` (C016)  | review rows AC-001, AC-002 | pass — output pasted or linked                                           |
 | `supported-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Supported |
 | C022 `task-shape` | task | pass — frontmatter and required sections are valid |
-| `no-open-critical` | review | pass — the open question is non-blocking |
+| `no-open-critical` | review | pass — the pending review may retain its non-empty Open decisions section |
 
-_Task-side note: C023 `task-evidence` passes because `## Verify` contains the exact CI run link._
+_Task-side note: C023 `task-evidence` passes because `## Verify` contains the exact `CI:` URL._

@@ -9,11 +9,13 @@ The PR implements one slice of a larger checkout spec. The working inputs alread
 
 ```text
 ~/.agents/artifacts/shop-api/checkout/spec.md
+~/.agents/artifacts/shop-api/checkout/session-refactor-change-plan.md
 ~/.agents/artifacts/shop-api/checkout/session-refactor-task.md
 ```
 
 The task names its source spec, scoped requirements, affected areas, and `Do not change`
-paths. The worker claims:
+paths. It names the change plan only for wave and preservation context; the spec remains the
+requirement authority for the task and review. The worker claims:
 
 ```text
 All checkout session behaviors preserved.
@@ -55,6 +57,12 @@ decision: changes-requested
 | AC-002 | Unsupported | `npm run test:integration -- expired-session` -> expected 409, got 500 |
 | AC-003 | Supported | `npm run test:integration -- missing-session` -> `1 passed` |
 | AC-004 | Supported | `npm run test:integration -- provider-failure` -> `1 passed` |
+
+## Change-plan coverage
+
+| ID | Assessment | Evidence |
+| --- | --- | --- |
+| PG-001 | Supported | `npm run test:integration -- active-session` -> `1 passed` |
 
 ```verify id=AC-001 cmd="npm run test:integration -- active-session" result=pass
 1 passed
@@ -112,7 +120,7 @@ Run the same explicit check again after the final review edit. Earlier output is
 
 ## Close
 
-The regression is worth remembering because broad checkout CI did not expose it. Use `remember`
+The regression is worth preserving because broad checkout CI did not expose it. Use `remember`
 only if the harness provides native memory, and cite durable evidence:
 
 ```markdown

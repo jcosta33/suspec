@@ -70,8 +70,8 @@ change-plan `sources` and `preserves` are lists. Their other defined fields are 
 | C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard-error |
 | C021 | `intent-present` | A spec has a non-empty `## Intent`. | hard-error |
 | C022 | `task-shape` | Task type, non-empty ID/source/scope, field shapes, status, and exactly-once required H2 sections match the contract. | hard-error |
-| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a CI link, or justified `n/a`; fenced bare claims and placeholders fail. | hard-error |
-| C024 | `closed-task-resolved` | A closed task contains no `TBD`, `TODO`, `???`, or non-empty canonical blocker labeled `Blocked questions:`, `Blocking:`, or `Open question (blocking):`; `none` and `n/a` are resolved. | hard-error |
+| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`; fenced bare claims and placeholders fail. | hard-error |
+| C024 | `closed-task-resolved` | A closed task contains no `TBD`, `TODO`, `???`, or non-empty canonical blocker labeled `Blocked questions:`, `Blocking:`, or `Open question (blocking):` after an unordered or ordered list marker; `none` and `n/a` are resolved. | hard-error |
 
 C005, C006, C014, and C017 are retired and never reused. C018 is reserved.
 
@@ -94,10 +94,12 @@ Notes:
 | Check | Rule |
 | --- | --- |
 | C022 `task-shape` | Required task frontmatter and sections have valid shapes. |
-| C023 `task-evidence` | No evidence check at `ready`/`running`; at `review-ready`/`closed`, require numeric exit plus non-empty fenced raw output, a CI link, or justified `n/a`. Fenced bare claims and placeholders fail. |
-| C024 `closed-task-resolved` | A closed task has no non-empty canonical blocker; `none` and `n/a` are resolved values. |
-| `no-open-critical` | An accepted review has no unresolved blocking decision. |
-| `accepted-waivers` | Accepted reviews list every waived Unsupported or Unverified requirement ID. |
+| C023 `task-evidence` | No evidence check at `ready`/`running`; at `review-ready`/`closed`, require numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`. Fenced bare claims and placeholders fail. |
+| C024 `closed-task-resolved` | A closed task has no non-empty canonical blocker after an unordered or ordered list marker; `none` and `n/a` are resolved values. |
+| Review structure (unnumbered) | Review ID and `Requirement coverage` are non-empty; decision and assessment values use their declared enums. |
+| `no-open-critical` | An accepted review has no non-empty `Open decisions` section. |
+| `accepted-no-blocked` | An accepted review has no `Blocked` assessment in requirement or change-plan coverage; Blocked cannot be waived. |
+| `accepted-waivers` | `waivers` appears only at acceptance and, when needed, exactly equals the Unsupported and Unverified requirement IDs; it is absent when there are no such rows. Supported and Blocked rows are not waivable. |
 | `verify-evidence-binding` | Structured evidence matches its requirement row and command. |
 
 ## Writing watchlist

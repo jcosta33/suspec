@@ -11,8 +11,8 @@ updated: 2026-06-22
 ## Context
 
 The suspec-skills catalog shipped seven `persona-*` conditioning stances. But ADR-0064 already folds
-each stance's _substance_ into the kit work guides (`write-spec` carries the architect stance,
-`review-output` carries refute-by-default, `write-audit` carries observation-only, `write-research`
+each stance's _substance_ into the kit work guides (`sus-spec` carries the architect stance,
+`sus-review` carries refute-by-default, `sus-audit` carries observation-only, `sus-research`
 the researcher stance, the documentation guide the documentarian stance). So five disciplines had
 **two carriers** — the folded form in the guide _and_ a standalone persona — and the substance had in
 practice drifted into a third copy (the suspec-works dev-skill mirror), out of sync with the catalog.
@@ -33,8 +33,8 @@ redundant second carrier whose only reliable effect is drift.
 
 1. **Collapse the four 1:1 authoring personas.** `persona-architect`, `persona-auditor`,
    `persona-researcher`, `persona-documentarian` are removed from the catalog. Each discipline keeps
-   its **single canonical carrier — the folded form in its work guide**: architect→`write-spec`,
-   auditor→`write-audit`, researcher→`write-research` (the kit); documentarian→`write-documentation`
+   its **single canonical carrier — the folded form in its work guide**: architect→`sus-spec`,
+   auditor→`sus-audit`, researcher→`sus-research` (the kit); documentarian→`write-documentation`
    (this catalog's code-depth guide). No substance is lost; the redundant standalone copy is.
 2. **The catalog ships only cross-cutting stances.** `persona-skeptic`, `persona-challenger`,
    `persona-surveyor` stay standalone — each is reused beyond any single guide (skeptic spans review,

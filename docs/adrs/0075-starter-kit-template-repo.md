@@ -16,9 +16,9 @@ commits; ADR-0074 split the producer workspace (suspec-works) and the optional g
 the owner followed. First, the kit split's precondition is gone: with the workspace in suspec-works
 cutting and reviewing every change, a format edit is already a reviewed cross-repo operation,
 and the family's repos exist. Second, ADR-0074's tier line was drawn in the wrong place: the
-workspace authoring guides (`write-audit`, `write-research`, `write-rfc`, `write-prd`,
-`write-bug-report`, `write-change-plan`, `write-inventory`, `spec-check`, `split-work`,
-`save-findings`, `adversarial-review`) author and gate Suspec's own artifacts — every Suspec
+workspace authoring guides (`sus-audit`, `sus-research`, `write-rfc`, `write-prd`,
+`write-bug-report`, `sus-change-plan`, `sus-inventory`, `spec-check`, `sus-task`,
+`remember`, `adversarial-review`) author and gate Suspec's own artifacts — every Suspec
 workspace needs them, which is the definition of essential, not optional.
 
 ## Decision
@@ -28,7 +28,7 @@ workspace needs them, which is the definition of essential, not optional.
    remain the rule canon; the kit ships what the ADRs freeze. `starter-kit/` leaves this repo;
    every doc reference points at the kit repo (URL form — the docs are read on GitHub).
 2. **Essential guides ship installed.** The kit's `.agents/skills/` carries the core loop
-   (`write-spec`, `implement-task`, `review-output`) plus the eleven workspace authoring
+   (`sus-spec`, `implement-task`, `sus-review`) plus the eleven workspace authoring
    guides. `advanced/` keeps the optional templates and the two reference cards.
 3. **The catalog is the optional layer.** suspec-skills carries the six conditioning stances
    (`persona-architect`, `-auditor`, `-documentarian`, `-researcher`, `-skeptic`,

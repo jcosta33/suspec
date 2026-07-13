@@ -42,7 +42,7 @@ Implement or preserve:
 
 - [x] `npm test -- export-json.spec.ts` (AC-001, AC-002)
 
-  Exit: 0
+  Exit status: 0
 
   ```
   PASS tests/export-json.spec.ts
@@ -55,7 +55,7 @@ Implement or preserve:
 - [x] `npm test -- export-default.spec.ts` (guards "Do not change": default
   output unchanged)
 
-  Exit: 0
+  Exit status: 0
 
   ```
   PASS tests/export-default.spec.ts
@@ -92,4 +92,4 @@ Implement or preserve:
   AC-002; `export-default.spec.ts` 1 passed guarding the Do-not-change snapshot)
 - Out-of-scope edits: none
 - Blocked questions: none
-- Open question (blocking): n/a
+1. Open question (blocking): n/a

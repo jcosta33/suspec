@@ -77,7 +77,7 @@ or exercised code has changed is stale — re-verify ([drift](drift.md)).
 Valid:
 
 - pasted command output
-- CI link
+- task CI URL labeled `CI:` or `CI link:`
 - named manual observation
 
 Invalid:

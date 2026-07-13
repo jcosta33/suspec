@@ -41,8 +41,8 @@ for required in $expected; do
   grep -q "^name: $required$" "$skills/skills/$required/SKILL.md" || { echo "name drift: $required" >&2; exit 1; }
 done
 
-if grep -RniE 'concise-output|revolver-review|persona-|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr' \
-  "$skills/README.md" "$skills/skills"; then
+if grep -RniE --exclude-dir=adrs '(^|[^[:alnum:]-])(concise-output|revolver-review|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr)([^[:alnum:]-]|$)' \
+  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$canon/checks" "$skills/README.md" "$skills/skills"; then
   echo "stale current method name" >&2
   exit 1
 fi

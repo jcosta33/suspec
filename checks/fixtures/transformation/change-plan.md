@@ -6,7 +6,7 @@ title: Move the inventory ledger out of db/orders
 status: draft
 kind: schema-change
 owner: checkout-team
-sources: [INV-checkout-storage]
+sources: [INV-checkout-storage, SPEC-checkout]
 preserves: [SPEC-checkout#AC-002, SPEC-checkout#AC-003]
 created: 2026-06-11
 ---
@@ -97,5 +97,5 @@ that owns that behavior.
 | Task | Wave | Scope (guarantee/requirement ids) |
 |---|---|---|
 | TASK-ledger-w1 | 1 | SPEC-checkout#AC-003 |
-| TASK-ledger-w2 | 2 | PG-001 |
+| TASK-ledger-w2 | 2 | SPEC-checkout#AC-003, PG-001 |
 | TASK-ledger-w3 | 3 | SPEC-checkout#AC-002, SPEC-checkout#AC-003, PG-001 |

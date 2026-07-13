@@ -22,7 +22,7 @@ A `review-ready` task packet's Verify section, every box checked, no output anyw
 ```
 
 **Expected:** C023 fires — the Verify section contains checked completion claims but no pasted
-raw output with a numeric exit, CI link, or justified `n/a`. Bare claims do not satisfy the
+raw output with a numeric exit, a visible `CI:` or `CI link:` URL, or justified `n/a`. Bare claims do not satisfy the
 artifact-level check. The same section at `ready` or `running` does not run C023.
 
 A fenced bare claim also fails:
@@ -40,6 +40,17 @@ A fenced bare claim also fails:
 ````
 
 **Expected:** C023 fires — fencing a completion claim does not turn it into raw command output.
+
+A bare CI URL also fails:
+
+```markdown
+## Verify
+
+- [x] https://example.test/pr/412/checks/88
+```
+
+**Expected:** C023 fires — CI evidence is machine-visible only when the URL follows `CI:` or
+`CI link:`. `- CI: https://example.test/pr/412/checks/88` satisfies this evidence form.
 
 ---
 
@@ -148,17 +159,62 @@ canonical labels with a substantive value:
 ```markdown
 ## Findings
 
-- Open question (blocking): should a refresh rotate the whole token family, or
+* Open question (blocking): should a refresh rotate the whole token family, or
   only the access token? Undecided — AC-002 implemented on a guess.
 
-- Blocking: token-family rotation remains undecided.
+1. Blocking: token-family rotation remains undecided.
 
-- Blocked questions: should refresh rotate the whole token family?
++ Blocked questions: should refresh rotate the whole token family?
 ```
 
 **Expected:** flagged — `closed` is terminal, and a blocking question is still open inside
-the packet. The status must stay non-terminal until the question is resolved. The canonical labels
-with `none` or `n/a` instead are resolved sentinels and do not fire C024.
+the packet. The status must stay non-terminal until the question is resolved. C024 recognizes the
+labels after unordered (`-`, `*`, `+`) and ordered (`N.`) list markers. The canonical labels with
+`none` or `n/a` instead are resolved sentinels and do not fire C024.
+
+---
+
+## V23 — invalid review structure (unnumbered review contract, hard error)
+
+Each packet below violates the deterministic review schema without minting a C-code:
+
+```markdown
+---
+type: review
+id: ""
+decision: approved
+waivers: [AC-001]
+---
+
+## Requirement coverage
+```
+
+```markdown
+---
+type: review
+id: REVIEW-invalid-acceptance
+decision: accepted
+waivers: [AC-003]
+---
+
+## Requirement coverage
+
+| ID | Assessment | Evidence |
+|---|---|---|
+| AC-001 | Unsupported | failing output |
+| AC-002 | Blocked | dependency unavailable |
+| AC-003 | Partially supported | incomplete output |
+
+## Open decisions
+
+- Decide whether to accept AC-001.
+```
+
+**Expected:** the first packet fails for an empty ID, an invalid decision, and an empty required
+coverage section; waivers are forbidden before acceptance. The second fails because accepted
+waivers must be exactly `[AC-001]` and an accepted review cannot retain a non-empty Open decisions
+section or a `Blocked` assessment. `Partially supported` is outside the assessment enum; `Blocked`
+is valid before acceptance but cannot be waived or retained at acceptance.
 
 ---
 

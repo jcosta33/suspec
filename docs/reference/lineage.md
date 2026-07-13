@@ -11,7 +11,8 @@ request/source -> working spec -> implementation -> review -> findings decision
 ## Relationships
 
 - A spec names its upstream source in frontmatter.
-- A task names its source spec or change plan and copies only its assigned IDs.
+- A task names its source spec and copies only assigned requirement IDs. When a change plan
+  provides wave or preservation context, the task names it in addition to the spec.
 - A review is checked against an explicitly passed spec. When it names a task, that task
   is also passed explicitly and narrows coverage scope.
 - Execution and review evidence name the requirement and command they support.

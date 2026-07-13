@@ -104,7 +104,7 @@ decides whether the money-path finding permits acceptance.
 
 ### Close
 
-The idempotency-lookup sharing was worth remembering. Use `remember` to route it to native memory:
+The idempotency-lookup sharing was worth preserving. Use `remember` to route it to native memory:
 
 ```markdown
 ## Payment timeout retries reuse the idempotency record, not a new charge

@@ -80,7 +80,8 @@ status: ready
 Sections:
 
 - Source — full spec path, source commit, and a verbatim snapshot of every scoped requirement plus
-  its `Verify with:` line
+  its `Verify with:` line; when a change plan supplies wave or preservation context, name it here
+  after the spec
 - Scope
 - Do not change
 - Affected areas
@@ -114,6 +115,9 @@ decision: pending
 # waivers: [AC-002]          # required when an accepted review waives unsupported/unverified rows
 ```
 
+A task is always spec-backed: `source` names the spec that owns every scoped requirement.
+A change plan can add wave and preservation context, but it never replaces the source spec.
+
 A review reconciles against the **spec**, always passed explicitly via `--spec <path>` on
 the check call: with
 `task:`, coverage keys on the spec's ACs the task scoped (the task's `scope:` list); with
@@ -121,7 +125,7 @@ no `task:` (1:1, no task), on the whole spec. A task, when present, only
 scopes and indexes evidence — it is never the review's target. The review's frontmatter
 never names its own spec; only `task:` is read and validated by the checker.
 
-`Requirement coverage` is required. Add `Changed files`, `Findings`, `Open decisions`,
+The review ID and `Requirement coverage` section are required and non-empty. Add `Changed files`, `Findings`, `Open decisions`,
 `Change-plan coverage`, or method notes only when they carry information.
 
 Coverage rows use:
@@ -137,10 +141,14 @@ Assessments:
 - `Unverified`
 - `Blocked`
 
-`Supported` needs evidence. The agent writes assessments and leaves `decision: pending`.
-After a state-aware human picker, the selected decision is written as `accepted`,
-`changes-requested`, or `deferred`. Accepted reviews list every waived `Unsupported` or
-`Unverified` requirement ID under `waivers`.
+The decision enum is `pending`, `accepted`, `changes-requested`, or `deferred`. The assessment
+enum is exactly the four values above. `Supported` needs evidence. The agent writes assessments and
+leaves `decision: pending`. After a state-aware human picker, the selected decision is written as
+`accepted`, `changes-requested`, or `deferred`. `waivers` is absent before acceptance. At acceptance,
+when Unsupported or Unverified rows exist, it lists exactly every such requirement ID and no others;
+otherwise it is absent. `Supported` and `Blocked` rows are not waivable. An accepted review has no
+non-empty `Open decisions` section and no `Blocked` assessment in requirement or change-plan
+coverage. Resolve the dependency or defer the review.
 
 ## Inspection
 

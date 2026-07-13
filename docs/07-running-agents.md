@@ -22,9 +22,11 @@ Read /Users/you/.agents/artifacts/shop-api/spec-checkout.md and implement AC-001
 Read /Users/you/.agents/artifacts/shop-api/task-checkout-expiry.md and do what it says.
 ```
 
-The spec contains requirements and `Verify with:` lines. A task packet adds the split
+The spec contains requirements and `Verify with:` lines. Every task packet names that source spec
+and adds the split
 scope, `Do not change`, affected areas, verify commands, and standing instructions for
-one slice. Paths flow explicitly — the worker is handed everything it needs by path and
+one slice. A change plan may accompany it for wave or preservation context, never as a substitute
+for the spec. Paths flow explicitly — the worker is handed everything it needs by path and
 never discovers artifacts on its own (level: convention).
 
 ## Native workers
@@ -105,7 +107,8 @@ Example:
 
 `Tests passed` is not evidence.
 
-A `Supported` needs pasted output, a CI link, or a named manual observation. Without that, review records `Unverified`.
+A `Supported` needs pasted output, a CI link, or a named manual observation. In a task packet,
+CI evidence uses a visible `CI:` or `CI link:` URL. Without evidence, review records `Unverified`.
 
 ## Self-review
 

@@ -70,7 +70,7 @@ though only the SOL surface has a code that names it.
 | `supported-needs-evidence` (C016)  | review row AC-003          | the Evidence cell is empty, so the row reads **Unverified** — never Supported                                                                                                                       |
 | `coverage` (C012)  | review vs spec scope       | pass — every in-scope AC has a coverage row and no row is orphaned (the source spec is `status: ready`, so C012 is in scope for this domain — unlike the draft-spec domains) |
 | `verify-evidence-binding` (C013) | review rows AC-001, AC-002 | **fires** (warning) — each Supported row carries only a free-form Evidence cell, no structured `verify` block, so the free-form-only advisory routes it to a human rather than machine-rejecting it (the source spec is `status: ready`, so C013 is in scope for this domain — unlike the draft-spec domains) |
-| `no-open-critical` | review                     | **does not fire** — the open blocking question is correctly reflected as `decision: deferred`; the rule guards acceptance. Counterfactual: the same packet at `decision: accepted` would fire it |
+| `no-open-critical` | review                     | **does not fire** — the open decision is correctly reflected as `decision: deferred`; the rule forbids every non-empty Open decisions section at acceptance. Counterfactual: the same packet at `decision: accepted` would fire it |
 | C022 `task-shape` | task | pass — frontmatter and required sections are valid |
 
-_Task-side note: C023 `task-evidence` passes because `## Verify` contains the exact CI run link._
+_Task-side note: C023 `task-evidence` passes because `## Verify` contains the exact `CI:` URL._
