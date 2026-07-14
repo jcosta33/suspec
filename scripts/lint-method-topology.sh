@@ -3,17 +3,42 @@ set -eu
 
 PARENT=${1:-$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)}
 
-repo_dir() {
-  for name in "$@"; do
-    [ -d "$PARENT/$name" ] && { printf '%s\n' "$PARENT/$name"; return; }
+repo_with_file() {
+  marker=$1
+  found=
+  for candidate in "$PARENT"/*; do
+    [ -f "$candidate/$marker" ] || continue
+    [ -z "$found" ] || {
+      echo "multiple Suspec repositories match $marker under $PARENT" >&2
+      return 1
+    }
+    found=$candidate
   done
-  return 1
+  [ -n "$found" ] || { echo "Suspec repository with $marker not found under $PARENT" >&2; return 1; }
+  printf '%s\n' "$found"
 }
 
-canon=$(repo_dir corpus suspec)
-skills=$(repo_dir corpus-skills suspec-skills)
-cli=$(repo_dir corpus-cli suspec-cli)
-mcp=$(repo_dir corpus-mcp suspec-mcp)
+repo_with_package() {
+  package=$1
+  found=
+  for candidate in "$PARENT"/*; do
+    manifest="$candidate/package.json"
+    [ -f "$manifest" ] || continue
+    grep -Eq '"name"[[:space:]]*:[[:space:]]*"'"$package"'"' "$manifest" || continue
+    [ -z "$found" ] || {
+      echo "multiple Suspec repositories identify as $package under $PARENT" >&2
+      return 1
+    }
+    found=$candidate
+  done
+  [ -n "$found" ] || { echo "Suspec repository $package not found under $PARENT" >&2; return 1; }
+  printf '%s\n' "$found"
+}
+
+canon=${SUSPEC_CANON:-$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)}
+skills=${SUSPEC_SKILLS:-$(repo_with_file skills/disrespec/SKILL.md)}
+cli=${SUSPEC_CLI:-$(repo_with_package suspec-cli)}
+mcp=${SUSPEC_MCP:-$(repo_with_package suspec-mcp)}
 
 dispatch_only_siblings() {
   awk '
@@ -50,6 +75,12 @@ for workflow in \
     exit 1
   }
 done
+if grep -RniE 'suspec-agents|agents_ref' \
+  "$canon/.github/workflows" "$skills/.github/workflows" \
+  "$cli/.github/workflows" "$mcp/.github/workflows"; then
+  echo "deleted agent repository survives in a current workflow" >&2
+  exit 1
+fi
 grep -Fq 'SUSPEC_HISTORY_BASE:' "$canon/.github/workflows/method-gates.yml" || {
   echo "canon workflow lacks base-relative ADR history verification" >&2
   exit 1
@@ -121,7 +152,7 @@ if grep -RniE --exclude-dir=adrs 'suspec-agents|canonical agent|Codex projection
   exit 1
 fi
 
-grep -q '^version: 0\.19\.0' "$canon/checks/checks.yaml" || {
+grep -q '^version: 0\.21\.0' "$canon/checks/checks.yaml" || {
   echo "checks contract version drift" >&2
   exit 1
 }

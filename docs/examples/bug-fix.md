@@ -50,7 +50,9 @@ blockers under the spec's `## Execution`.
 ---
 type: review
 id: REVIEW-payment-timeout-retry
+spec: SPEC-payment-timeout-retry
 pr: none yet
+reviewer: fresh-review-session
 decision: pending
 ---
 

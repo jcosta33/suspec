@@ -12,7 +12,11 @@ the human contract.
   Exact claim-only and placeholder output fails
   [[EVIBOUND]](../docs/research/sources.md#EVIBOUND).
 - C024 rejects unresolved canonical blocking fields in a closed task. `none` and `n/a` resolve them.
+- C025 rejects specs with missing identity, status, required sections, or requirements.
+- C026 rejects dangling local evidence-receipt paths and `E-NNN` anchors.
+- C027 rejects a review whose `spec:` does not match the handed spec.
 - Accepted reviews cannot retain an open critical decision.
+- Accepted reviews require every preservation row to be `Supported`.
 - Empty review evidence is `Unverified`, never `Supported`.
 
 ## Contents

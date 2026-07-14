@@ -1,6 +1,8 @@
 ---
 type: review
 id: REVIEW-assessed
+spec: SPEC-minimal
+reviewer: fixture-reviewer
 decision: pending
 ---
 

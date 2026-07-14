@@ -10,7 +10,7 @@ Payment migrations, parsers, public APIs, and documentation require different qu
 
 Give each fresh reviewer:
 
-- current target and source spec by explicit path;
+- current target, plus the source spec by explicit path when the workflow is spec-backed;
 - one stance;
 - verification output as an index, not proof;
 - read-only permissions;
@@ -20,22 +20,25 @@ Reviewers never decide acceptance. Finding a defect does not confer executive po
 
 ## Revolver
 
-1. Derive at least six materially distinct stances. Use no canned menu or fixed upper limit.
-2. Fix the pool and order.
-3. Run one fresh reviewer at a time without prior reviewer prose.
-4. Verify every finding. Fix supported defects; refute false findings with decisive evidence; stop on
-   a human decision or concrete blocker.
-5. Dispatch the next stance only after resolution.
-6. Complete a full rotation. Repeat only after a productive rotation. Stop after a quiet rotation or
-   the hard three-cycle cap.
+Use Revolver for breadth: at least six target-derived stances, one fresh reviewer at a time, and every
+finding resolved before the next. Complete full rotations; repeat after a productive rotation; stop
+after a quiet rotation or three cycles. It creates no artifact.
 
-Revolver creates no artifact. Final chat contains material changes, proof, consequential refutations,
-and blockers.
+Executable procedure: [Revolver](https://github.com/jcosta33/suspec-skills/tree/main/skills/revolver).
+
+## Triple-check
+
+Use Triple-check for narrow depth: exactly three distinct high-consequence stances, one fresh top-tier
+reviewer per pass, and every real defect fixed and verified before the next. Complete all three. It
+creates no artifact.
+
+Executable procedure:
+[Triple-check](https://github.com/jcosta33/suspec-skills/tree/main/skills/triple-check).
 
 Different model names are not a scientific control. Model variety may reduce correlated framing but
 proves no independence. Judge surfaced defects and rerun evidence, not model labels.
 
-Use Bulletproof for active claim verification and Triple-check for exactly three deep fresh passes.
-Methods never replace independent review or human authority.
+Use Bulletproof for active claim verification. Methods never replace independent review or human
+authority.
 
 Related: [review](../08-reviewing-output.md) · [native subagents](agent-guides.md)

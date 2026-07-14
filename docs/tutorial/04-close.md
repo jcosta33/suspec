@@ -20,7 +20,8 @@ After the final consumer finishes, present one choice for the spec, review, and 
 1. **Delete:** remove exhausted transient work.
 2. **Leave:** keep files required by a known continuation.
 3. **Promote:** sanitize and move durable project truth, repair references, and validate.
-4. **Other:** specify another disposition for the complete set.
+
+The picker may expose `Other` to split the files across those actions.
 
 The human chooses. Silence is not Leave, and a forgotten directory is not a retention policy.
 Promotion never pushes or creates lifecycle state.

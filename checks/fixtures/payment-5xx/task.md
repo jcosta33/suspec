@@ -51,6 +51,12 @@ Implement or preserve:
 5. Leave a summary: changed files, commands run with output, and candidate lessons for
    independent review.
 
+## Run order
+
+- This packet: TASK-payment-5xx
+- Starts after: None
+- May run with: None
+
 ## Findings
 
 - Candidate: the provider is idempotent only after the key is persisted. The reviewer

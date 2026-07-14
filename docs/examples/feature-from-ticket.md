@@ -61,8 +61,10 @@ One requirement and one worker need no task. Splitting nothing still produces no
 ---
 type: review
 id: REVIEW-report-csv
+spec: SPEC-report-csv
 pr: none yet
-decision: accepted
+reviewer: fresh-review-session
+decision: pending
 ---
 
 ## Requirement coverage
@@ -81,6 +83,6 @@ suspec check ~/.agents/artifacts/reports-app/report-csv-review.md \
   --spec ~/.agents/artifacts/reports-app/report-csv-spec.md
 ```
 
-The checker confirms structure and command consistency; the human owns acceptance. No durable lesson
-emerged. Good. The code and test retain the value, so
+The checker confirms structure and command consistency. The human selects Accept; the workflow
+changes `decision` to `accepted`. No durable lesson emerged. Good. The code and test retain the value, so
 [close the transient files](../03-where-files-live.md#close).

@@ -6,9 +6,9 @@
 # The human-facing artifact-shape reference is docs/reference/artifact-formats.md.
 # Frontmatter lists are minimum-required: extra keys are legal and ignored.
 # The reference consumer is suspec-cli's `suspec check` — an explicit-path
-# checker that reads exactly the files it is handed (the primary artifact's
-# kind from its own frontmatter `type:`, companions as explicit flags); a
-# reviewer can apply every rule by hand.
+# checker whose primary artifacts and companions are explicit paths. Deterministic
+# reference checks may read local paths those artifacts name. A reviewer can apply
+# every rule by hand.
 # The files under fixtures/ pin the expected results and guard this file and
 # the prose from drifting apart.
 #
@@ -19,7 +19,7 @@
 # Severities are expressed at check time — exit codes are the API (0 clean ·
 # 1 warning · 2 blocking); the human owns what blocks a merge.
 
-version: 0.19.0 # contract version of this file
+version: 0.21.0 # contract version of this file
 
 # --- Artifact and frontmatter contract ----------------------------------------
 artifact_types:
@@ -106,6 +106,9 @@ core_checks:
   - { id: C022, name: task-shape, severity: hard-error } # task: field shapes, status enum, and required H2 sections
   - { id: C023, name: task-evidence, severity: hard-error } # task: review-ready/closed ## Verify has numeric exit + non-empty fenced raw output, a visible `CI:`/`CI link:` URL, or justified n/a; ready/running are exempt; exact claim-only fences and placeholders fail
   - { id: C024, name: closed-task-resolved, severity: hard-error } # task: status closed has no non-empty canonical blocking label under an unordered or ordered list item except none/n/a
+  - { id: C025, name: spec-shape, severity: hard-error } # spec: non-empty id, draft/ready status, exactly one Intent and Requirements section, and at least one requirement
+  - { id: C026, name: evidence-receipt-resolves, severity: hard-error } # review: explicit local Markdown receipt links with E-NNN fragments resolve artifact-relative to a matching HTML anchor
+  - { id: C027, name: review-spec-ref, severity: hard-error } # review spec ref matches the spec packet handed through --spec
   # C005 and C006 are RETIRED. Never reuse.
 
 # --- The task packet -----------------------------------------------------------
@@ -133,9 +136,16 @@ task_file:
     - Affected areas
     - Verify
     - Agent instructions
+    - Run order
     - Findings
     - Run summary # the handoff digest — cites the Verify pastes, never re-pastes them
   content_rules:
+    - id: task-dependency-handoff # implemented by core check C022
+      applies_to: Run order
+      severity: hard-error
+      rule: >-
+        `Starts after:` and `May run with:` each carry a non-empty value. `None`
+        is explicit and valid.
     - id: task-evidence # implemented as core check C023
       applies_to: Verify
       # The Run summary section cites these pastes — never an alternative paste home.
@@ -169,13 +179,13 @@ task_file:
 # docs/reference/artifact-formats.md).
 review_file:
   frontmatter:
-    scalar: [type, id, decision]
-    optional_scalar: [task, pr, reviewer]
+    scalar: [type, id, spec, reviewer, decision]
+    optional_scalar: [task, pr]
     optional_list: [waivers]
   # task: only when the review covers a split task slice — its
   # presence obliges the task companion at check time; a task-less review is checked spec-keyed
   source_spec_status: ready # exact; draft, missing, and unknown values are hard errors before review
-  non_empty: [id]
+  non_empty: [id, spec, reviewer]
   decision_enum: [pending, accepted, changes-requested, deferred]
   invalid_option_value: hard-error
   required_section_occurrence: exactly-once
@@ -218,6 +228,20 @@ review_file:
       rule: >-
         A review whose decision is `accepted` contains no Blocked assessment.
         Resolve the dependency or defer the review; Blocked cannot be waived.
+    - id: accepted-change-plan-supported
+      applies_to: Change-plan coverage
+      severity: hard-error
+      rule: >-
+        Every Change-plan coverage row in an accepted review is Supported.
+        Preservation guarantees cannot be waived through requirement waivers.
+    - id: evidence-receipt-resolves # C026
+      applies_to: Requirement coverage, Change-plan coverage
+      severity: hard-error
+      rule: >-
+        An explicit local Markdown evidence link whose fragment is `E-NNN`
+        resolves against the review's directory to a file carrying the matching
+        HTML id anchor. Missing files and anchors block. External links and
+        unlinked prose are outside this check.
     - id: accepted-waivers
       applies_to: frontmatter, Requirement coverage
       severity: hard-error

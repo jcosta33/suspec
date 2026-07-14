@@ -19,7 +19,7 @@ Every producer reports an absolute path. Every consumer receives it. The checker
 explicit and documented artifact-relative reads.
 
 After close, code, tests, decisions, issues, PRs, maintained documentation, and supported memory hold
-durable lineage. Promotion moves a whole artifact into a project-owned destination without retaining a
-transient copy or registry.
+durable lineage. Promotion moves a whole artifact into a project-owned destination by default. It
+retains a transient copy only when the human explicitly selects that exception. It creates no registry.
 
 Related: [artifact location](../03-where-files-live.md) · [CLI](cli.md)

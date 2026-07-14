@@ -76,6 +76,12 @@ Implement or preserve:
 5. Leave a summary: changed files, commands run with output, and candidate
    lessons for independent review.
 
+## Run order
+
+- This packet: TASK-export-json-flag
+- Starts after: None
+- May run with: None
+
 ## Findings
 
 - Blocking: n/a

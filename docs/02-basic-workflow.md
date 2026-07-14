@@ -9,8 +9,9 @@ Fix: expired refresh tokens must redirect to /login, not 500.
 Verify with: pnpm test:run auth-refresh-expired-token
 ```
 
-Implement, run the command, preserve the output, and review the result. Do not manufacture a file to
-prove a process happened.
+Implement, run the command, and preserve the output. A non-implementer reviews the final diff and
+output in the project's native PR, CI, or conversation surface. Do not manufacture a file to prove a
+process happened.
 
 ## Structured work
 
@@ -22,23 +23,20 @@ intent -> spec -> implement -> review -> check -> findings
    Set `status: ready` before dispatch or review.
 2. **Implement:** a native worker or human follows the spec by absolute path, runs every verification,
    and records real output under `## Execution`.
-3. **Review:** `sus-review` independently assesses every scoped requirement and routes exceptions to
-   the human.
-4. **Check:** `suspec check` catches coverage, command-binding, evidence, and reference defects.
+3. **Review:** a non-implementer judges the result. Use `sus-review` when risk or later
+   reconstruction earns a formal packet.
+4. **Check:** use `suspec check` when deterministic coverage, command-binding, evidence, or reference
+   reconciliation pays for itself.
 5. **Findings:** discard transient observations; route verified durable lessons through
    [memory or project records](09-saving-findings.md).
 
-Every step has a by-hand path. The CLI backs the method; it never gets custody of it.
+Every step has a by-hand path. A fresh human or agent may review without `sus-review`; the
+implementer may not call self-review independent. Work that earns independent review stays blocked
+until a non-implementer can judge it. The CLI backs the method; it never gets custody of it.
 
 ## Escalation
 
-| Signal                                               | Add                       |
-| ---------------------------------------------------- | ------------------------- |
-| intent exceeds one precise sentence                  | spec                      |
-| current behavior or ownership is unclear             | inventory                 |
-| structural work must preserve behavior across stages | change plan               |
-| one source has separately dispatchable slices        | task                      |
-| risk exceeds direct inspection                       | formal independent review |
+Escalate only when the [signal earns the rigor](reference/rigor-escalation.md).
 
 A task narrows a source spec; it never adds requirements. A change plan adds transformation order and
 preservation context; it never replaces the spec.

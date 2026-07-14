@@ -8,6 +8,9 @@ Use `remember` to route one durable lesson:
 - personal knowledge to a documented native harness memory surface;
 - team behavior to an issue, ADR, test, public contract, glossary, or maintained documentation.
 
+Confirm the durable destination before deleting its transient evidence. When persistence fails,
+close stays blocked until retry or an explicit decision to save nothing.
+
 Suspec creates no memory file, directory, store, or retrieval engine. No supported home? Let the
 observation expire.
 

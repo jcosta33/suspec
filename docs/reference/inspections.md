@@ -11,18 +11,13 @@ Inspection methods attack different failure classes. They return compact chat or
 
 ## Loops
 
-Revolver derives at least six distinct stances, runs one fresh reviewer at a time, and resolves
-every finding before the next stance sees the target. It completes a full rotation, repeats after a
-productive rotation, and stops after a quiet rotation or three cycles.
-
-Triple-check derives exactly three high-consequence stances and runs exactly three fresh top-tier
-reviewers. Each receives the current target and no peer prose. A supported defect is fixed and
-verified before the next pass.
+Exact sequencing, resolution, and stopping rules: [review stances](review-stances.md).
 
 ## Evidence boundary
 
 Bulletproof checks every explicit and load-bearing implied claim through primary sources, code
 inspection, and non-mutating checks. It returns assessments and direct evidence in chat.
-Demolition opens with `Advocacy exercise, not evidence.` It may speculate but may not fabricate
-sources, quotations, incidents, or test output. Nothing from Demolition becomes a finding until
-independently verified.
+Demolition runs only on explicit request and opens with `Advocacy exercise, not evidence.` It marks
+speculation, attacks ideas rather than people, and ends without balance or verdict. It may not
+fabricate sources, quotations, incidents, users, commands, or test output. Nothing from Demolition
+becomes a finding until independently verified.

@@ -139,6 +139,29 @@ Verify with: `npm test -- one-record`
 
 ---
 
+## V4c — empty spec shape (C025 `spec-shape`, hard error)
+
+```markdown
+---
+type: spec
+id: SPEC-empty-requirements
+status: draft
+sources: [ISSUE-1]
+---
+
+## Intent
+
+Define one observable behavior.
+
+## Requirements
+```
+
+**Expected:** C025 fires because `Requirements` contains no parsed requirement. C021 does not fire;
+the intent is present. The same check rejects a missing ID or status and duplicate or missing
+`Intent` or `Requirements` sections.
+
+---
+
 ## V5 — duplicate requirement ID (C001 `unique-ids`, hard error)
 
 One spec, two headings claiming the same ID:
@@ -185,6 +208,8 @@ Each packet below violates the deterministic review schema without minting a C-c
 ---
 type: review
 id: ""
+spec: SPEC-invalid
+reviewer: fixture-reviewer
 decision: approved
 waivers: [AC-001]
 ---
@@ -196,6 +221,8 @@ waivers: [AC-001]
 ---
 type: review
 id: REVIEW-invalid-acceptance
+spec: SPEC-invalid
+reviewer: fixture-reviewer
 decision: accepted
 waivers: [AC-001, AC-001]
 ---
@@ -235,7 +262,8 @@ A present Change-plan coverage table uses the same three columns and assessment 
 ```
 
 **Expected:** the table is parsed. C016 fires for PG-001, the invalid assessment is blocking, and
-PG-003 blocks `decision: accepted`. C012, C013, and waiver reconciliation ignore all three rows.
+every non-Supported preservation row blocks `decision: accepted`. C012, C013, and requirement-waiver
+reconciliation ignore all three rows.
 
 ---
 
@@ -511,7 +539,9 @@ identifies as a different task:
 ---
 type: review
 id: REVIEW-checkout-expiry
+spec: SPEC-checkout
 task: TASK-checkout-expiry-typo
+reviewer: fixture-reviewer
 decision: pending
 ---
 
@@ -528,8 +558,38 @@ decision: pending
 **Expected:** flagged `unresolvable-ref` (hard-error) — the review's `task:` does not resolve to the
 task packet it was handed, so C012/C013/C016 would key on the wrong slice; without it a
 typo'd/renamed task ref silently bypasses the honesty checks. Blocking (structural, like C016).
-Deliberately narrow — the check keys on the `task:` ref only; the spec's identity is the reviewer's
-call, and a task-less review (no `task:` frontmatter) is out of C020's scope entirely (it reconciles
-spec-keyed, with no `--task`). (A review
+Deliberately narrow — C020 keys on the `task:` ref only; C027 separately binds `spec:`. A task-less
+review (no `task:` frontmatter) is out of C020's scope entirely and reconciles spec-keyed, with no
+`--task`. (A review
 that names a task but is checked with no `--task` never reaches this check: the missing flag is
 itself a blocking usage error.)
+
+---
+
+## V25 — a review evidence link resolves nowhere (C026 `evidence-receipt-resolves`, hard error)
+
+```markdown
+| ID | Assessment | Evidence |
+| --- | --- | --- |
+| AC-001 | Supported | [E-001](./evidence-missing.md#E-001) |
+```
+
+**Expected:** C026 fires when `evidence-missing.md` is absent beside the review or lacks
+`<a id="E-001"></a>`. It checks explicit local path and anchor wiring, not evidence truth or age.
+
+---
+
+## V26 — a review names the wrong spec (C027 `review-spec-ref`, hard error)
+
+```yaml
+type: review
+id: REVIEW-checkout
+spec: SPEC-checkout-v2
+reviewer: fixture-reviewer
+decision: pending
+```
+
+Checked with `--spec spec.md`, where `spec.md` identifies as `SPEC-checkout`.
+
+**Expected:** C027 fires. Coverage against the wrong requirement authority is structurally invalid,
+including when either side omits its spec ID.

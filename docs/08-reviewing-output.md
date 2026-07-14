@@ -10,6 +10,7 @@ The implementer cannot review their own work.
 ---
 type: review
 id: REVIEW-checkout-expiry
+spec: SPEC-checkout-expiry
 task: TASK-checkout-expiry
 reviewer: session-or-name
 decision: pending
@@ -21,7 +22,7 @@ decision: pending
 
 | ID     | Assessment | Evidence                                  |
 | ------ | ---------- | ----------------------------------------- |
-| AC-001 | Supported  | `3 passed` — `evidence-checkout.md#E-001` |
+| AC-001 | Supported  | `3 passed` — [E-001](./evidence-checkout.md#E-001) |
 | AC-002 | Unverified | CI run is unavailable.                    |
 ```
 
@@ -54,7 +55,7 @@ A structured record may bind the command:
 ````markdown
 ```verify id=AC-001 cmd="npm test -- expired-session" result=pass
 3 passed
-Full output: `evidence-checkout.md#E-001`
+Full output: [E-001](./evidence-checkout.md#E-001)
 ```
 ````
 
@@ -78,10 +79,17 @@ After assessment, recommend:
 - **Request changes:** unsupported rows or material findings remain.
 - **Defer:** blocked rows or unresolved material decisions remain.
 - **Accept with waivers:** the owner deliberately accepts unsupported or unverified requirements.
+- **Accept with named risk:** requirements are supported, but the owner deliberately accepts a
+  remaining material finding.
 
 Write the human selection to `decision`. For accepted work, `waivers` is absent unless Requirement
 coverage contains `Unsupported` or `Unverified`. Then list every such ID exactly once, no others,
 and record owner, reason, and follow-up in the project's decision channel.
+
+Never offer plain Accept while a material finding remains. Before acceptance, fix and verify it or
+record its named owner, explicit accepted-risk decision, reason, and follow-up in the project's
+decision channel. Until then, repeat it under `Open decisions`; accepted reviews reject that
+section. Non-material notes may expire with the review.
 
 Accepted reviews contain no `Blocked` assessment or non-empty `Open decisions`. Blocked work cannot
 be waived.
@@ -89,8 +97,7 @@ be waived.
 The review remains live through findings and requested fixes. Close its complete transient set only
 after no downstream step needs it; see [artifact close](03-where-files-live.md#close).
 
-For broad risk, Revolver runs at least six target-derived stances sequentially and resolves each
-before the next. For narrow depth, Triple-check runs exactly three fresh top-tier passes. Neither
+Use [Revolver for broad risk and Triple-check for narrow depth](reference/review-stances.md). Neither
 creates an artifact.
 
 Exact review contract: [artifact formats](reference/artifact-formats.md).

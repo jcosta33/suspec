@@ -4,23 +4,8 @@ Checks catch common Suspec mistakes.
 
 Use this page as a review checklist.
 
-`suspec check` implements the deterministic subset. It is an explicit-path checker: it discovers no
-other primary artifacts or companions. C009 and C015 resolve references named by the checked spec;
-C010 performs its documented bounded sibling-spec lookup for change-plan references.
-
-```
-suspec check <path>                                             # spec, task, or change plan
-suspec check <review-path> --spec <spec-path>                  # review packet
-suspec check <review-path> --spec <spec-path> --task <task-path> # split-task review
-suspec check --contract                                         # the contract as JSON
-```
-
-Exit codes are the API: `0` clean · `1` warning · `2` blocking. A review packet always
-needs `--spec`; `--task` is required iff the review names a `task:` (the task is a
-split slice; a task-less 1:1 review reconciles spec-keyed, against the spec's
-full requirement set). A missing required companion exits blocking naming the flag — the
-strongest checks never silently degrade — and a `--task` the review never references is
-refused as a wiring mistake. The human owns what blocks a merge.
+`suspec check` implements the deterministic subset. See the [CLI contract](cli.md) for commands,
+companions, path resolution, and exits.
 
 ## Honesty levels
 
@@ -75,11 +60,14 @@ below. A present value outside its declared set is a blocking contract error.
 | C015 | `citation-resolves` | `[[KEY]]` citations resolve to anchors in the named `sources.md`, itself resolved against the spec's own directory. | warning |
 | C016 | `supported-needs-evidence` | A `Supported` row with empty evidence is invalid. | hard-error |
 | C019 | `malformed-requirement-heading` | A `###` heading shaped like a requirement id but with a lowercase split-suffix (`AC-004a`) — it parses as prose and silently vanishes from scope and coverage. | warning |
-| C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none) — coverage and evidence would key on the wrong slice, so a typo'd task ref must not silently pass. | hard-error |
+| C020 | `unresolvable-ref` | The review's `task:` ref does not resolve to the task packet handed via `--task` (the packet identifies as a different task, or none). | hard-error |
 | C021 | `intent-present` | A spec has a non-empty `## Intent`. | hard-error |
-| C022 | `task-shape` | Task type, non-empty ID/source/scope, field shapes, status, and exactly-once required H2 sections match the contract. | hard-error |
-| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`; any placeholder fence fails even beside valid output, and visible placeholders fail case-insensitively. | hard-error |
+| C022 | `task-shape` | Task type, non-empty ID/source/scope, field shapes, status, exactly-once required H2 sections, and non-empty dependency handoff match the contract. | hard-error |
+| C023 | `task-evidence` | No evidence check runs at `ready` or `running`. At `review-ready` or `closed`, `## Verify` contains a numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`. A fence is claim-only when its entire trimmed body matches <code>^(all )?(tests?&#124;checks?) (pass(ed)?&#124;succeeded)\.?$</code> case-insensitively. Any placeholder fence fails even beside valid output; visible placeholders fail case-insensitively. | hard-error |
 | C024 | `closed-task-resolved` | A closed task contains no `TBD`, `TODO`, `???`, or non-empty canonical blocker labeled `Blocked questions:`, `Blocking:`, or `Open question (blocking):` after an unordered or ordered list marker; `none` and `n/a` are resolved. Fences and comments are excluded; inline code is live text. | hard-error |
+| C025 | `spec-shape` | A spec has a non-empty ID, `draft` or `ready` status, exactly one `Intent` and `Requirements` section, and at least one parsed requirement. | hard-error |
+| C026 | `evidence-receipt-resolves` | Explicit local Markdown evidence links with `E-NNN` fragments resolve artifact-relative to files carrying the matching HTML id anchor. | hard-error |
+| C027 | `review-spec-ref` | The review's `spec:` ref matches the spec packet handed via `--spec`. | hard-error |
 
 C005, C006, C014, and C017 are retired and never reused. C018 is reserved.
 
@@ -91,8 +79,8 @@ Notes:
 - The review-packet checks run against the companions the reviewer hands the checker — the
   review is never checked shallowly by accident, because a missing required companion is a
   blocking usage error, not a silent skip. C012 keys on the task's declared `scope` when the
-  review names a task, and on the spec's full requirement set when it doesn't; C020 applies
-  only to task-referencing reviews. Comparing changed files with `Do not change` needs the live
+  review names a task, and on the spec's full requirement set when it doesn't. C027 always binds
+  the review to the handed spec; C020 binds split reviews to the handed task. Comparing changed files with `Do not change` needs the live
   diff and remains a reviewer checklist item.
 - References resolve artifact-relative everywhere. A spec citing a file two folders up writes
   the relative path from its own directory (`../../sources/sup-204.md`); no root is ever inferred.
@@ -100,18 +88,17 @@ Notes:
   `ready`. Draft, missing, and unknown statuses are blocking; C012 and C013 therefore never use a
   draft exemption.
 
-## Task and review packet checks
+## Unnumbered review checks
+
+The [core checks](#core-checks) above own every numbered rule. Reviews also enforce:
 
 | Check | Rule |
 | --- | --- |
-| C022 `task-shape` | Required task frontmatter and sections have valid shapes. |
-| C023 `task-evidence` | No evidence check at `ready`/`running`; at `review-ready`/`closed`, require numeric exit plus non-empty fenced raw output, a visible `CI:` or `CI link:` URL, or justified `n/a`. A fence is claim-only only when its entire trimmed body matches `^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$` case-insensitively. Any exact placeholder fence fails even beside valid output; visible placeholders fail case-insensitively. |
-| C024 `closed-task-resolved` | A closed task has no non-empty canonical blocker after an unordered or ordered list marker; `none` and `n/a` are resolved values. Fences and comments are excluded; inline code is checked. |
-| Review structure (unnumbered) | The source spec is exactly `ready`; review ID and `Requirement coverage` are non-empty; each coverage section uses one contiguous GFM table whose exact header is followed immediately by its three-column delimiter; decision and assessment values use their declared enums. `Change-plan coverage`, when present, uses the same shape. |
+| Review structure (unnumbered) | The source spec is exactly `ready`; review ID, spec ref, reviewer provenance, and `Requirement coverage` are non-empty; each coverage section uses one contiguous GFM table whose exact header is followed immediately by its three-column delimiter; decision and assessment values use their declared enums. `Change-plan coverage`, when present, uses the same shape. |
 | `no-open-critical` | An accepted review has no non-empty `Open decisions` section. |
 | `accepted-no-blocked` | An accepted review has no `Blocked` assessment in requirement or change-plan coverage; Blocked cannot be waived. |
+| `accepted-change-plan-supported` | Every Change-plan coverage row is `Supported` before acceptance. |
 | `accepted-waivers` | Requirement coverage only: `waivers` appears only at acceptance and, when needed, exactly equals the Unsupported and Unverified requirement IDs without duplicates; it is absent when there are no such rows. Supported and Blocked rows are not waivable. |
-| `verify-evidence-binding` | Requirement coverage only: structured evidence matches its requirement row and command. |
 
 ## Writing watchlist
 

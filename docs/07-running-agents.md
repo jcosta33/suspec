@@ -4,9 +4,9 @@ Suspec ships no custom agents. Give a native worker or human a spec, or a task w
 by explicit absolute path.
 
 ```text
-Read /Users/you/.agents/artifacts/shop-api/spec-checkout.md and implement AC-001.
+Read ~/.agents/artifacts/shop-api/spec-checkout.md and implement AC-001.
 
-Read /Users/you/.agents/artifacts/shop-api/task-checkout-expiry.md and do what it says.
+Read ~/.agents/artifacts/shop-api/task-checkout-expiry.md and do what it says.
 ```
 
 A task adds slice scope, excluded areas, verification, and standing instructions. A change plan may
@@ -17,11 +17,11 @@ add wave or preservation context. Neither replaces the spec.
 - The author defines intent and decomposition.
 - The implementer changes code without changing requirements.
 - An independent reviewer assesses the result without editing the target.
-- The orchestrator dispatches methods and applies accepted fixes.
+- The orchestrator dispatches methods and applies supported fixes.
 - The human owns material decisions and acceptance.
 
-The author may review only when they did not implement. Scout or research output is evidence to
-inspect, not implementation to merge.
+The author may review only when they did not implement. Read-only subagent or research output is
+evidence to inspect, not implementation to merge.
 
 ## Isolation
 

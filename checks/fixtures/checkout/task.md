@@ -53,6 +53,12 @@ parallel tasks on one write area conflict.
 5. Leave a summary: changed files, commands run with output, and candidate lessons for
    independent review.
 
+## Run order
+
+- This packet: TASK-checkout
+- Starts after: None
+- May run with: None
+
 ## Findings
 
 - Candidate: the order record and inventory ledger share one write area. The reviewer

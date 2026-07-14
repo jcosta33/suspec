@@ -1,8 +1,10 @@
 ---
 type: review
 id: REVIEW-auth-refresh
+spec: SPEC-auth-refresh
 task: TASK-auth-refresh
 pr: https://example.test/pr/412
+reviewer: fixture-reviewer
 decision: pending
 ---
 

@@ -27,6 +27,8 @@ Verify with: pnpm test:run auth-refresh-expired-token
 ```
 
 Implement it, run the command, and preserve the output.
+Close it through direct non-implementer review of the final diff and output in the project's native
+PR, CI, or conversation surface. No artifact needed.
 
 When intent needs a structured working contract, `sus-spec` writes a spec with observable
 requirements:
@@ -47,13 +49,10 @@ Ordinary artifacts live outside the repository under
 
 ```bash
 suspec check <path>
-suspec check <review-path> --spec <spec-path>
-suspec check <review-path> --spec <spec-path> --task <task-path>
 ```
 
-Exit `0` is clean, `1` is warning, and `2` is blocking. The checker verifies recorded structure,
-coverage, command binding, evidence presence, and references. It reports facts. It does not bless the
-work.
+The checker reports deterministic facts; it does not bless the work. See the [CLI
+contract](docs/reference/cli.md) for companions, checks, and exits.
 
 ## Method
 

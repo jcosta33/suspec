@@ -16,14 +16,16 @@ A task must:
 - copy the scoped requirement snapshots and `Verify with:` lines;
 - define a small write surface and a `Do not change` wall;
 - map every scoped requirement to verification;
-- record findings, run summary, and self-review;
+- record findings and the run summary;
 - start only from a source spec with exactly `status: ready`.
 
 `sus-task` writes the packet under the [agent-neutral artifact location](03-where-files-live.md).
-Dispatch names the task by absolute path. `suspec check <task-path>` validates shape, evidence, and
-closed-state blockers.
+Dispatch names the task and ready source spec by absolute path. `suspec check <task-path> --spec
+<spec-path>` validates source binding, shape, dependency handoff, evidence, and closed-state
+blockers.
 
 Exact shape: [artifact formats](reference/artifact-formats.md).
+Add `## Self-review` only when it carries useful checks.
 
 ## Splitting
 

@@ -14,7 +14,8 @@ occur. Silence is cheap only when nothing is wrong. Source code, raw evidence, c
 repository-native PR forms keep their native constraints.
 
 After the final consumer finishes, require one human choice for the complete transient artifact and
-sidecar set: Delete, Leave, Promote, or `Other`. Never choose from silence.
+sidecar set: Delete, Leave, or Promote. The picker may expose `Other` to split the set across those
+actions. Never choose from silence.
 
 An evidence receipt names command, working directory, state identifier, exit status, untouched output,
 and a stable `E-NNN` anchor. The governing artifact links the anchor and keeps only the decisive

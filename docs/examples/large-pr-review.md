@@ -25,9 +25,11 @@ Treat that as a claim, because it is one. Inspect changed files and rerun every 
 ---
 type: review
 id: REVIEW-checkout-session-refactor
+spec: SPEC-checkout-session-refactor
 task: TASK-checkout-session-refactor
 pr: none yet
-decision: changes-requested
+reviewer: fresh-review-session
+decision: pending
 ---
 
 ## Changed files
@@ -85,7 +87,8 @@ suspec check ~/.agents/artifacts/shop-api/checkout/session-refactor-review.md \
 ```
 
 The packet may be structurally clean while correctly requesting changes. Clean structure is not clean
-code. The checker reports facts; the human decision answers a different question.
+code. The checker reports facts; the human selects Request changes and the workflow changes
+`decision` to `changes-requested`.
 
 The implementer fixes AC-002 within scope, removes the retry edit, and records fresh output. A fresh
 reviewer replaces AC-002 only after rerunning proof:

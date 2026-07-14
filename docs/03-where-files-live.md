@@ -34,8 +34,10 @@ Never fall back to vendor storage, the repository, or an OS temporary directory.
 
 ## Explicit handoffs
 
-Writers resolve and report absolute paths. Dispatch prompts name every input path. The CLI reads only
-the primary artifacts and companions it receives.
+Writers resolve and report absolute paths. Dispatch prompts name every input path and next consumer.
+When no consumer remains, the current consumer is final and presents close. The human owns the
+disposition. The CLI reads only the
+primary artifacts and companions it receives.
 
 Artifact-relative checks remain bounded:
 
@@ -51,7 +53,8 @@ workspace and pass the absolute path again.
 Keep an artifact while a current or expected step needs it. The final consumer presents one choice for
 the complete transient artifact and sidecar set:
 
-- **Delete:** remove it after irreversible-action confirmation.
+- **Delete:** selection confirms removal; verify every selected path is absent. A failed path blocks
+  close and stays reported.
 - **Leave:** keep it at its current neutral paths.
 - **Promote:** sanitize and move it into a project-owned durable destination, repair references, and
   validate.

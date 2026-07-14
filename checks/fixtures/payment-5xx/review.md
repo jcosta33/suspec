@@ -1,8 +1,10 @@
 ---
 type: review
 id: REVIEW-payment-5xx
+spec: SPEC-payment-5xx
 task: TASK-payment-5xx
 pr: https://example.test/pr/641
+reviewer: fixture-reviewer
 decision: deferred
 ---
 

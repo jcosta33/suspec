@@ -5,34 +5,15 @@ method; Markdown and explicit paths carry the work.
 
 ## CLI
 
-[suspec-cli](https://github.com/jcosta33/suspec-cli) checks supplied artifacts without discovering a
-repository, configuration, or store.
-
-```bash
-suspec check <path>
-suspec check <review-path> --spec <spec-path>
-suspec check <review-path> --spec <spec-path> --task <task-path>
-suspec check --contract
-```
-
-Exit `0` is clean, `1` warning, and `2` blocking. `--json` returns structured reports. Missing
-required review companions block instead of weakening the check.
-
-Source and citation paths resolve from the spec directory. C010 scans `spec.md` in immediate child
-directories of the change-plan directory's parent, including the plan directory, and never deeper.
-
-The CLI reports facts. It blesses nothing. See [CLI reference](reference/cli.md) and
-[checks](reference/checks.md).
+[suspec-cli](https://github.com/jcosta33/suspec-cli) runs read-only deterministic checks over explicit
+paths. See its [public contract](https://github.com/jcosta33/suspec-cli#readme) and Suspec's
+[check catalog](reference/checks.md).
 
 ## MCP
 
-[suspec-mcp](https://github.com/jcosta33/suspec-mcp) exposes `suspec_check`,
-`suspec_get_checks`, and `suspec://checks` to shell-less MCP clients.
-
-`suspec_check` accepts an ordered non-empty array of absolute primary paths and passes it through one
-CLI invocation so C002 can run. Exactly one review target may add `specPath` and `taskPath`. The
-server validates every CLI payload, requires checks contract `0.19.0`, and returns `ok`, `source`,
-`data`, optional `note`, and `responseFormat`.
+[suspec-mcp](https://github.com/jcosta33/suspec-mcp) exposes the checker to shell-less MCP clients.
+Its repository owns the exact [tools, schemas, envelope, and installation
+contract](https://github.com/jcosta33/suspec-mcp#readme).
 
 Agents with shell access can call the CLI directly.
 

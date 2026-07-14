@@ -36,10 +36,4 @@ truth. Suspec neither intercepts native plans nor creates a repository-local sto
 The CLI checks shape, not truth. It does not prove recorded evidence or render a review decision.
 Independent review judges evidence; humans accept, waive, defer, or request changes.
 
-## Fit
-
-Use Suspec when a change outgrows direct attention, several workers share it, or intent and proof must
-be reconstructed later. Skip it when native planning, project instructions, tests, and direct review
-already make the work obvious.
-
 Next: [workflow](02-basic-workflow.md).

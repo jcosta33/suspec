@@ -12,6 +12,7 @@ Name:
 - one bounded method or question;
 - read/write permissions;
 - required commands;
+- whether this is the final consumer; and
 - return shape.
 
 Implementation receives its spec and optional task. Review receives both companion paths. A universal

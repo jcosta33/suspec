@@ -1,6 +1,8 @@
 ---
 type: review
 id: REVIEW-waived
+spec: SPEC-waiver
+reviewer: fixture-reviewer
 decision: accepted
 waivers: [AC-002]
 ---

@@ -3,6 +3,9 @@
 Every Suspec artifact is Markdown with frontmatter. Evidence receipts and run notes are untyped
 Markdown sidecars.
 
+Sidecars live beside their governing artifact, link from it, and travel through handoff and close as
+one absolute path set. A collision follows the same stop rule as the primary artifact.
+
 The `type:` field identifies the artifact. Kind is read from frontmatter, never from the
 filename or location. Ordinary artifacts live under the agent-neutral
 `~/.agents/artifacts/<workspace>/` root and move into a project only through explicit promotion
@@ -85,12 +88,17 @@ Sections:
 - Affected areas
 - Verify
 - Agent instructions
+- Run order — dependency sequence plus non-empty `Starts after:` and `May run with:` values; use
+  `None` explicitly
 - Findings
 - Run summary
 
 Add `Self-review` when it carries useful pre-handoff checks.
 
 Every verify item names a requirement id.
+
+Checking a task requires its ready source spec through `--spec <spec-path>`. The task's `source:`
+must name that spec. Several task paths may share one companion only when they share that source.
 
 `status` is one of:
 
@@ -106,6 +114,7 @@ Frontmatter:
 ```yaml
 type: review
 id: REVIEW-checkout-expiry
+spec: SPEC-checkout
 task: TASK-checkout-expiry   # omit for a 1:1 review with no task
 pr: https://example.test/pull/123
 reviewer: name-or-session
@@ -116,16 +125,21 @@ decision: pending
 A task is always spec-backed: `source` names the ready spec that owns every scoped requirement.
 A change plan can add wave and preservation context, but it never replaces the source spec.
 
-A review reconciles against the **spec**, always passed explicitly via `--spec <path>` on
+A review names the source spec in `spec:` and reconciles against that **spec**, always passed
+explicitly via `--spec <path>` on
 the check call: with
 `task:`, coverage keys on the spec's ACs the task scoped (the task's `scope:` list); with
-no `task:` (1:1, no task), on the whole spec. A task, when present, only
+no `task:` (1:1, no task), on the whole spec. The checker rejects a `spec:` value that does not
+match the handed spec's `id:`. A task, when present, only
 scopes and indexes evidence — it is never the review's target. The review's frontmatter
-never names its own spec; only `task:` is read and validated by the checker.
+names the source slice; it does not replace `spec:`.
 
 The source spec must still be exactly `ready` when review begins. The review ID and
 `Requirement coverage` section are required and non-empty. Add `Changed files`, `Findings`, `Open decisions`,
 `Change-plan coverage`, or method notes only when they carry information.
+
+The method requires `reviewer` to identify the fresh human or agent context. The CLI requires it as
+a non-empty scalar but cannot prove independence; a name is provenance, not a force field.
 
 Coverage is one contiguous GFM table. Use the exact header and place its delimiter immediately
 after it. Keep every row together; structured `verify` blocks follow the table.
@@ -153,7 +167,8 @@ when Unsupported or Unverified Requirement coverage rows exist, it lists exactly
 requirement ID and no others;
 otherwise it is absent. `Supported` and `Blocked` rows are not waivable. An accepted review has no
 non-empty `Open decisions` section and no `Blocked` assessment in requirement or change-plan
-coverage. Resolve the dependency or defer the review.
+coverage. Resolve the dependency or defer the review. Every Change-plan coverage row must be
+`Supported` before acceptance; requirement waivers cannot excuse a failed preservation guarantee.
 
 C012 coverage reconciliation, C013 structured command binding, and waivers read Requirement
 coverage only. C016 evidence and the accepted-review `Blocked` rule read both Requirement coverage
@@ -178,7 +193,9 @@ untouched raw output
 ```
 ````
 
-The governing artifact links the anchor and includes only the decisive verbatim excerpt.
+The governing artifact links the anchor and includes only the decisive verbatim excerpt. Review
+checks resolve explicit local Markdown links with `E-NNN` fragments against the review's directory
+and require the linked file to carry the matching HTML id anchor.
 One receipt may support several claims when each claim names its evidence anchor.
 
 ## Run note
@@ -191,8 +208,9 @@ It carries no lifecycle status or independent verdict.
 
 Findings are not a standalone artifact — there is no `finding` type, no `FINDING-` id, no
 file to write. Ephemeral findings ride the review packet's `Findings` section and die with
-it. A durable finding becomes a native harness memory instead — one
-claim, its evidence, a searchable title, no id assigned ([memory](memory.md),
+it. A durable personal lesson becomes native harness memory. A durable team fact enters a
+human-selected project channel such as an issue, ADR, test, runbook, or maintained documentation.
+Keep one claim, its evidence, a searchable title, and no assigned id ([memory](memory.md),
 [saving findings](../09-saving-findings.md)).
 
 ## Inventory

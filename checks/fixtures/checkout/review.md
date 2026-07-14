@@ -1,8 +1,10 @@
 ---
 type: review
 id: REVIEW-checkout
+spec: SPEC-checkout
 task: TASK-checkout
 pr: https://example.test/pr/507
+reviewer: fixture-reviewer
 decision: pending
 ---
 

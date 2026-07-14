@@ -11,9 +11,10 @@ asks the human for the decision, and writes:
 ---
 type: review
 id: REVIEW-checkout-expiry
+spec: SPEC-checkout
 pr: none yet
-reviewer: you
-decision: accepted
+reviewer: fresh-review-session
+decision: pending
 ---
 
 # Review: Expired checkout session returns 409
@@ -43,6 +44,6 @@ suspec check ~/.agents/artifacts/shop-api/checkout-expiry-review.md \
 ```
 
 The structured command must match the spec. Empty or stale evidence is `Unverified`. The checker
-reports facts. The human gets `decision: accepted`.
+reports facts. The human selects Accept; the workflow changes `decision` to `accepted`.
 
 Next: [close](04-close.md).

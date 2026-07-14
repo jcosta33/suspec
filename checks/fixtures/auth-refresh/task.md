@@ -50,6 +50,12 @@ Implement or preserve:
 5. Leave a summary: changed files, commands run with output, and candidate lessons for
    independent review.
 
+## Run order
+
+- This packet: TASK-auth-refresh
+- Starts after: None
+- May run with: None
+
 ## Findings
 
 - Candidate: concurrent 401s fan out into parallel refresh calls. The reviewer must verify

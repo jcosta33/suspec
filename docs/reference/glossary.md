@@ -13,7 +13,7 @@
 | **Change plan** | Safe transformation plan with preservation guarantees, waves, cutover, rollback, and checks. |
 | **Audit** | Evidence-backed record of present-state risks; no intended behavior or prescription. |
 | **Research** | Evidence for one decision-informing question; no decision. |
-| **Inspection** | One read-only or explicitly refined method run over a named target. |
+| **Inspection method** | A bounded method run over a target. Bulletproof and Demolition stay read-only; Revolver and Triple-check repair sequentially. |
 | **Review packet** | Independent reconciliation of implementation and evidence against the spec. |
 | **Requirement assessment** | Agent evidence judgment recorded as Supported, Unsupported, Unverified, or Blocked per requirement. |
 | **Review decision** | Human selection recorded as accepted, changes-requested, or deferred; waivers name deliberately accepted evidence gaps. |
@@ -23,7 +23,7 @@
 | **Evidence receipt** | Untyped sidecar holding one raw command record under a stable anchor. |
 | **Run note** | Untyped sidecar for execution or round detail too large for its governing artifact. |
 | **Decision gate** | Structured human selection for material or irreversible choices. |
-| **Artifact disposition** | Human close choice for a complete transient artifact set: delete, leave, promote, or `Other`. |
+| **Artifact disposition** | Human close choice for a complete transient artifact set: Delete, Leave, or Promote. `Other` is the picker escape hatch, not a disposition. |
 | **Checker** | `suspec check`: read-only facts and severity levels over explicit artifact paths. |
 | **SOL** | A stricter, per-spec controlled syntax that encodes the same requirement record as plain form. |
 | **Revolver** | Purpose-agnostic breadth inspection through sequential target-derived stances. |
