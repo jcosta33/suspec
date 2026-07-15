@@ -6,8 +6,8 @@ Inspection methods attack different failure classes. They return compact chat or
 |---|---|---|---|
 | Bulletproof | Which explicit or load-bearing implied claims survive active fact-checking? | target read-only | claim assessments in chat |
 | Demolition | What is the strongest persuasive case for rejecting this target? | target read-only; output quarantined from evidence | advocacy in chat |
-| Revolver | What survives at least six sequential target-derived stances? | each supported finding fixed before the next stance | fixes, proof, and consequential refutations in chat |
-| Triple-check | What survives exactly three fresh top-tier passes? | each supported finding fixed before the next pass | fixes, proof, and consequential refutations in chat |
+| Revolver | What survives every materially distinct target-derived stance? | each supported finding fixed before the next stance | fixes, proof, and consequential refutations in chat |
+| Triple-check | What survives three independent attacks on one frozen target? | reviewers stay read-only; supported fixes land after reconciliation | fixes, proof, and consequential refutations in chat |
 
 ## Loops
 

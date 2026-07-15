@@ -20,17 +20,19 @@ Reviewers never decide acceptance. Finding a defect does not confer executive po
 
 ## Revolver
 
-Use Revolver for breadth: at least six target-derived stances, one fresh reviewer at a time, and every
-finding resolved before the next. Complete full rotations; repeat after a productive rotation; stop
-after a quiet rotation or three cycles. It creates no artifact.
+Use Revolver for breadth: derive every materially distinct target-justified stance with no numeric
+floor or ceiling. Run one fresh reviewer at a time and resolve every finding before the next.
+Complete full rotations; repeat after a productive rotation; stop after a quiet rotation or three
+cycles. It creates no artifact.
 
 Executable procedure: [Revolver](https://github.com/jcosta33/suspec-skills/tree/main/skills/revolver).
 
 ## Triple-check
 
-Use Triple-check for narrow depth: exactly three distinct high-consequence stances, one fresh top-tier
-reviewer per pass, and every real defect fixed and verified before the next. Complete all three. It
-creates no artifact.
+Use Triple-check for fast independent scrutiny: give exactly three fresh top-tier reviewers the same
+frozen target concurrently. Each derives its own attack and reviews the whole target without peer
+prose. Wait for all three, reconcile and verify their findings, apply supported fixes once, and run
+final proof. It creates no artifact.
 
 Executable procedure:
 [Triple-check](https://github.com/jcosta33/suspec-skills/tree/main/skills/triple-check).

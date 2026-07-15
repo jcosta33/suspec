@@ -13,7 +13,7 @@
 | **Change plan** | Safe transformation plan with preservation guarantees, waves, cutover, rollback, and checks. |
 | **Audit** | Evidence-backed record of present-state risks; no intended behavior or prescription. |
 | **Research** | Evidence for one decision-informing question; no decision. |
-| **Inspection method** | A bounded method run over a target. Bulletproof and Demolition stay read-only; Revolver and Triple-check repair sequentially. |
+| **Inspection method** | A bounded method run over a target. Bulletproof and Demolition stay read-only; Revolver repairs between sequential stances; Triple-check repairs after one parallel review wave. |
 | **Review packet** | Independent reconciliation of implementation and evidence against the spec. |
 | **Requirement assessment** | Agent evidence judgment recorded as Supported, Unsupported, Unverified, or Blocked per requirement. |
 | **Review decision** | Human selection recorded as accepted, changes-requested, or deferred; waivers name deliberately accepted evidence gaps. |
@@ -26,8 +26,10 @@
 | **Artifact disposition** | Human close choice for a complete transient artifact set: Delete, Leave, or Promote. `Other` is the picker escape hatch, not a disposition. |
 | **Checker** | `suspec check`: read-only facts and severity levels over explicit artifact paths. |
 | **SOL** | A stricter, per-spec controlled syntax that encodes the same requirement record as plain form. |
-| **Revolver** | Purpose-agnostic breadth inspection through sequential target-derived stances. |
-| **Triple-check** | Exactly three fresh top-tier passes for narrow depth. |
+| **Revolver** | Purpose-agnostic breadth inspection through every materially distinct target-derived stance, resolved sequentially. |
+| **Triple-check** | Exactly three fresh top-tier reviewers attacking one frozen target concurrently. |
+| **Campaign** | Large delivery coordinated through reusable worktree lanes, project-native pull requests, adaptive routing, and visible review resolution. |
+| **Worktree lane** | One stable repository worktree with one active branch and one implementation owner, recycled across campaign tasks. |
 
 ## Authority
 

@@ -152,6 +152,28 @@ if grep -RniE --exclude-dir=adrs 'suspec-agents|canonical agent|Codex projection
   exit 1
 fi
 
+if grep -RniE --exclude-dir=adrs \
+  'at least six.*stances|six distinct stances|Triple-check.*one fresh.*per pass|fixed before the next pass|Triple-check.*repairs sequentially' \
+  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs"; then
+  echo "stale current inspection semantics" >&2
+  exit 1
+fi
+grep -Fq 'every materially distinct target-justified stance with no numeric' \
+  "$canon/docs/reference/review-stances.md" || {
+  echo "adaptive Revolver reference missing" >&2
+  exit 1
+}
+grep -Fq 'exactly three fresh top-tier reviewers the same' \
+  "$canon/docs/reference/review-stances.md" || {
+  echo "parallel Triple-check reference missing" >&2
+  exit 1
+}
+grep -Fq '| **Campaign** | Large delivery coordinated through reusable worktree lanes' \
+  "$canon/docs/reference/glossary.md" || {
+  echo "campaign glossary contract missing" >&2
+  exit 1
+}
+
 grep -q '^version: 0\.21\.0' "$canon/checks/checks.yaml" || {
   echo "checks contract version drift" >&2
   exit 1
