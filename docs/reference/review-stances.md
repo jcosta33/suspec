@@ -18,6 +18,16 @@ Give each fresh reviewer:
 
 Reviewers never decide acceptance. Finding a defect does not confer executive power.
 
+## Pull requests
+
+Stances are execution units, not publishing units. Publish only deduplicated, supported, actionable
+findings. Use a line thread when possible. Keep quiet stances, refutations, reviewer identity, and
+review mechanics out of the pull request.
+
+Write one terse paragraph per finding: defect, consequence, required outcome. The implementation
+owner replies once with the fixing commit and decisive proof. Verify the current head, resolve the
+thread, then run the next stance. A pull request is a change record, not an agent transcript.
+
 ## Revolver
 
 Use Revolver for breadth: derive every materially distinct target-justified stance with no numeric

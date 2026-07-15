@@ -194,6 +194,7 @@ Two consequences of that rule govern this ledger:
 | [0160](./0160-adaptive-revolver-parallel-triple-check.md) | Revolver derives every justified stance without a numeric floor; Triple-check runs three concurrent whole-target reviewers | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0146, 0155, and 0157 |
 | [0161](./0161-semantic-skill-contracts-and-evidence.md) | Three-sentence selection metadata, ruthless executable bodies, standalone semantic composition, and evidence-maintained design docs | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0113, 0149, and 0157 |
 | [0162](./0162-campaign-orchestration.md) | Large delivery through reusable worktree lanes, adaptive routing, native issues and pull requests, implementation-owner repair, and human merge authority | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0099, 0151, and 0157 |
+| [0163](./0163-conventional-campaign-pull-requests.md) | Conventional concise pull requests, internal review stances, actionable comments, in-place resolution, and project-owned approval | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0157 and 0162 |
 
 ## The new kernel ADRs (0027+), by topic
 

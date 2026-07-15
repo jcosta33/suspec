@@ -173,6 +173,18 @@ grep -Fq '| **Campaign** | Large delivery coordinated through reusable worktree 
   echo "campaign glossary contract missing" >&2
   exit 1
 }
+grep -Fq 'Stances are execution units, not publishing units.' \
+  "$canon/docs/reference/review-stances.md" || {
+  echo "pull-request publication boundary missing" >&2
+  exit 1
+}
+if grep -RniE --exclude-dir=adrs \
+  'review event per stance|Record a quiet stance|follow-up review event referencing' \
+  "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$skills/README.md" "$skills/AGENTS.md" \
+  "$skills/docs" "$skills/skills"; then
+  echo "stale campaign review ceremony" >&2
+  exit 1
+fi
 
 grep -q '^version: 0\.21\.0' "$canon/checks/checks.yaml" || {
   echo "checks contract version drift" >&2

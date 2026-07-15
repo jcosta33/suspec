@@ -2,8 +2,8 @@
 set -eu
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-EXPECTED_COUNT=160
-EXPECTED_DIGEST=caf6bcd34417578b47858ed07f05b854f9ec87f39cef3bbb76701b1620cffdbb
+EXPECTED_COUNT=161
+EXPECTED_DIGEST=dfa3153308cde18893e2713359678d60a9b9d1ae362b133e494738f0231aa967
 BASE=${SUSPEC_HISTORY_BASE:-}
 
 case "$BASE" in
@@ -43,7 +43,7 @@ actual=$(printf '%s\n' "$files" |
   shasum -a 256 |
   awk '{print $1}')
 test "$actual" = "$EXPECTED_DIGEST" || {
-  echo "accepted ADR body drift" >&2
+  echo "accepted ADR body drift: $actual" >&2
   exit 1
 }
 
