@@ -195,6 +195,7 @@ Two consequences of that rule govern this ledger:
 | [0161](./0161-semantic-skill-contracts-and-evidence.md) | Three-sentence selection metadata, ruthless executable bodies, standalone semantic composition, and evidence-maintained design docs | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0113, 0149, and 0157 |
 | [0162](./0162-campaign-orchestration.md) | Large delivery through reusable worktree lanes, adaptive routing, native issues and pull requests, implementation-owner repair, and human merge authority | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0099, 0151, and 0157 |
 | [0163](./0163-conventional-campaign-pull-requests.md) | Conventional concise pull requests, internal review stances, actionable comments, in-place resolution, and project-owned approval | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0157 and 0162 |
+| [0164](./0164-one-spec-format.md) | One spec format: structured markdown (`### AC-NNN` + `Verify with:`); the `format: sol` selector and the SOL surface retire | **New (canon -> cli/mcp/skills) - accepted (2026-07-18)** - supersedes [0058](./0058-two-tier-spec-format.md); narrows [0027](./0027-sol-is-the-obligation-language.md); upholds [0059](./0059-frontmatter-type-is-the-discriminator.md); contract 0.22.0 |
 
 ## The new kernel ADRs (0027+), by topic
 

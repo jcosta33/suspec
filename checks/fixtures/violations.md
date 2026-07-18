@@ -106,7 +106,7 @@ A spec's Requirements section:
 When a client exceeds 100 requests per minute, the API must return 429.
 ```
 
-**Expected:** flagged — no `Verify with:` line (SOL form: no `VERIFY BY`). The
+**Expected:** flagged — no `Verify with:` line. The
 verification line is the highest-value line in a spec; without it the requirement can
 only ever review as Unverified.
 
@@ -264,21 +264,6 @@ A present Change-plan coverage table uses the same three columns and assessment 
 **Expected:** the table is parsed. C016 fires for PG-001, the invalid assessment is blocking, and
 every non-Supported preservation row blocks `decision: accepted`. C012, C013, and requirement-waiver
 reconciliation ignore all three rows.
-
----
-
-## V24 — inexact SOL QUESTION marker (blocking parse error)
-
-Each header is malformed:
-
-```sol
-QUESTION Q-001:
-QUESTION Q-002 [Blocking]:
-QUESTION Q-003 [deferred]:
-```
-
-**Expected:** parsing fails. The only accepted headers use exact lowercase `[blocking]` or
-`[non-blocking]`, followed immediately by `:`. No separate SOL check code is emitted.
 
 ---
 

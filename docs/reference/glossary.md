@@ -25,7 +25,6 @@
 | **Decision gate** | Structured human selection for material or irreversible choices. |
 | **Artifact disposition** | Human close choice for a complete transient artifact set: Delete, Leave, or Promote. `Other` is the picker escape hatch, not a disposition. |
 | **Checker** | `suspec check`: read-only facts and severity levels over explicit artifact paths. |
-| **SOL** | A stricter, per-spec controlled syntax that encodes the same requirement record as plain form. |
 | **Revolver** | Purpose-agnostic breadth inspection through every materially distinct target-derived stance, resolved sequentially. |
 | **Triple-check** | Exactly three fresh top-tier reviewers attacking one frozen target concurrently. |
 | **Campaign** | Large delivery coordinated through reusable worktree lanes, project-native pull requests, adaptive routing, and visible review resolution. |

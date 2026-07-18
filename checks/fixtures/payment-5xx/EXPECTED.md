@@ -2,14 +2,12 @@
 
 # payment-5xx
 
-The plain and SOL specs represent the same three requirement IDs and one blocking question. Both
-seed one deterministic defect: the spec is `ready` while that question remains open. Check each spec
-separately because they intentionally share `id: SPEC-payment-5xx`.
+The spec carries three requirement IDs and one blocking question, seeding one deterministic
+defect: the spec is `ready` while that question remains open.
 
 | Invocation target | Exit | Diagnostics |
 | --- | --- | --- |
 | `spec.md` | 2 | C007 blocking question at `status: ready` |
-| `spec.sol.md` | 2 | C007 blocking question at `status: ready` |
 | `task.md` | 0 | none |
 | `review.md` with `spec.md` and `task.md` | 1 | C013 warning on Supported AC-001 and AC-002 rows carrying free-form evidence only |
 

@@ -2,13 +2,11 @@
 
 # checkout
 
-The plain and SOL specs represent the same three requirement IDs. Check each spec separately because
-they intentionally share `id: SPEC-checkout`.
+The spec carries three requirement IDs under `id: SPEC-checkout`.
 
 | Invocation target | Exit | Diagnostics |
 | --- | --- | --- |
 | `spec.md` | 0 | none |
-| `spec.sol.md` | 0 | none |
 | `task.md` | 0 | none |
 | `review.md` with `spec.md` and `task.md` | 1 | C013 warning on Supported AC-001 and AC-002 rows carrying free-form evidence only |
 

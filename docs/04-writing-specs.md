@@ -53,10 +53,6 @@ Resolve discoverable facts and reversible conventions. Put unresolved material d
 decision or unresolved marker remains. C007 enforces that floor; C021 rejects a missing or empty
 `Intent`.
 
-Plain Markdown is the default. Set `format: sol` only for the
-[structured SOL form](reference/structured-requirements.md); do not mix SOL and plain requirement
-syntax.
-
 Exact frontmatter and optional sections: [artifact formats](reference/artifact-formats.md).
 
 Next: [inventories and change plans](05-brownfield-and-change-plans.md). Previous:

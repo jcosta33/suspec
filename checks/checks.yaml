@@ -19,7 +19,7 @@
 # Severities are expressed at check time — exit codes are the API (0 clean ·
 # 1 warning · 2 blocking); the human owns what blocks a merge.
 
-version: 0.21.0 # contract version of this file
+version: 0.22.0 # contract version of this file
 
 # --- Artifact and frontmatter contract ----------------------------------------
 artifact_types:
@@ -53,27 +53,20 @@ frontmatter:
     - empty list heads
     - scalar/list field-shape mismatches
 
-# --- Spec form selector -------------------------------------------------------
-# The default spec form is plain structured markdown. A spec opts into the
-# SOL notation per file with frontmatter `format: sol`. Both forms map parsed
-# requirements to the same structural checker record. Domain fixture pairs pin
-# their implemented C-check behavior.
-# Field-shape lists below apply when a field is present. Separate checks state
-# presence and non-empty requirements.
+# --- Spec form ----------------------------------------------------------------
+# A spec is structured markdown: each requirement is a `### AC-NNN` heading with a
+# `Verify with:` line. Field-shape lists below apply when a field is present.
+# Separate checks state presence and non-empty requirements.
 spec_form:
-  default: simple
-  selector: "format: sol" # frontmatter key, per file; absent = simple form
   frontmatter:
     scalar: [type, id, title, status, owner]
-    optional_scalar: [format]
     list: [sources]
   status_enum: [draft, ready]
-  format_enum: [sol] # applies only when `format` is present
   invalid_option_value: hard-error
 
 # --- Core checks ---------------------------------------------------------------
 # Mirrors the "Core checks" table in docs/reference/checks.md, row for row.
-# C001–C009, C015, and C019 key on the spec (C019: the plain `###` form only); C010–C011 key on the change plan;
+# C001–C009, C015, and C019 key on the spec; C010–C011 key on the change plan;
 # C002 keys on the file set passed in one invocation (frontmatter id uniqueness across the checked files);
 # C012 keys on the review packet's coverage table against its source spec;
 # C013 keys on the review packet's structured verify blocks against its source spec;
@@ -87,7 +80,7 @@ core_checks:
   - { id: C001, name: unique-ids, severity: hard-error }
   - { id: C002, name: duplicate-id, severity: hard-error } # frontmatter id uniqueness across files checked together; requirement ids are spec-scoped
   - { id: C003, name: verify-with, severity: hard-error }
-  - { id: C004, name: one-strength-word, severity: warning } # at least one binding word per obligation; more than one is a split-candidate advisory; SOL IF- declarations are exempt; QUESTION never parses as a requirement
+  - { id: C004, name: one-strength-word, severity: warning } # at least one binding word per obligation; more than one is a split-candidate advisory
   - { id: C007, name: no-tbd-at-ready, severity: hard-error } # open questions not marked non-blocking included
   - { id: C008, name: sources-named, severity: warning }
   - { id: C009, name: broken-source-link, severity: hard-error } # path-shaped refs only, resolved against the spec's own directory (artifact-relative); bare tracker ids exempt
@@ -273,7 +266,7 @@ review_file:
         info-string `id=AC-NNN cmd="…" result=pass|fail`, keyed to the row's id
         within the ready source spec; the body is verbatim and unparsed).
         Where present, the recorded `cmd` matches the requirement's named
-        `Verify with:` / `VERIFY BY` command (closed-value, exact after
+        `Verify with:` command (closed-value, exact after
         whitespace-collapse) and a Supported row's block reads `result=pass`; a
         structured mismatch — a `cmd` disagreeing with the named command, a
         `result=fail` recorded under a Supported row, or a malformed/duplicate block —
@@ -328,7 +321,7 @@ placeholders:
 
 # --- Fixtures ----------------------------------------------------------------------
 # Where the pinned expectations live. See ./README.md for the map and the
-# per-domain plain/SOL pairs.
+# per-domain fixtures.
 fixtures:
   positive: fixtures/conformant-task.md
   negative: fixtures/violations.md

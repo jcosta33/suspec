@@ -38,9 +38,9 @@ allowed when they obey the subset.
 Field shapes are exact: `type` and `id` are scalars on every recognized artifact; spec `sources`;
 task `source` and `scope`; review `waivers`; and change-plan `sources` and `preserves` are lists.
 Their other defined fields are scalars.
-Declared option values are exact and case-sensitive. Spec status is `draft` or `ready`; optional
-spec format is `sol`; task status, review decision, and coverage assessment use the closed sets
-below. A present value outside its declared set is a blocking contract error.
+Declared option values are exact and case-sensitive. Spec status is `draft` or `ready`; task status,
+review decision, and coverage assessment use the closed sets below. A present value outside its
+declared set is a blocking contract error.
 
 ## Core checks
 
@@ -48,8 +48,8 @@ below. A present value outside its declared set is a blocking contract error.
 | --- | --- | --- | --- |
 | C001 | `unique-ids` | Requirement IDs are unique within a file. | hard-error |
 | C002 | `duplicate-id` | No other file checked in the same invocation uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard-error |
-| C003 | `verify-with` | Every requirement has a non-empty `Verify with:` or `VERIFY BY`. | hard-error |
-| C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate. SOL `INTERFACE` (`IF-`) is exempt because it is a declaration. | warning |
+| C003 | `verify-with` | Every requirement has a non-empty `Verify with:`. | hard-error |
+| C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate. | warning |
 | C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard-error |
 | C008 | `sources-named` | Frontmatter `sources:` names at least one origin. | warning |
 | C009 | `broken-source-link` | Path-shaped source refs resolve against the spec's own directory (artifact-relative). Bare tracker IDs are exempt. | hard-error |
@@ -116,17 +116,8 @@ These words are allowed only when the same line makes them checkable.
 | bundling | and, or, and/or | split requirements |
 | vague references | it, this, above | name the thing |
 
-## SOL syntax
-
-Specs with `format: sol` use SOL requirement openers and the same C checks listed above. The parser
-also rejects malformed `QUESTION` headers. Suspec publishes no separate SOL check-code family.
-
-See [structured requirements](structured-requirements.md) for the exact parsed syntax. Teams may
-treat any warning as blocking by policy.
-
 ## Related
 
-- [Structured requirements](structured-requirements.md)
 - [Writing specs](../04-writing-specs.md)
 - [Reviewing output](../08-reviewing-output.md)
 - [Artifact formats](artifact-formats.md)

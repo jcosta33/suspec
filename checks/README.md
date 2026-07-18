@@ -26,9 +26,9 @@ the human contract.
 | [`checks.yaml`](./checks.yaml)                                 | machine contract                                                  |
 | [`fixtures/conformant-task.md`](./fixtures/conformant-task.md) | positive task oracle                                              |
 | [`fixtures/violations.md`](./fixtures/violations.md)           | minimal negative cases                                            |
-| `fixtures/auth-refresh/`                                       | plain/SOL spec, task, review, and expected result                 |
-| `fixtures/payment-5xx/`                                        | plain/SOL spec, task, review, and expected result                 |
-| `fixtures/checkout/`                                           | plain/SOL spec, task, review, and expected result                 |
+| `fixtures/auth-refresh/`                                       | spec, task, review, and expected result                          |
+| `fixtures/payment-5xx/`                                        | spec, task, review, and expected result                          |
+| `fixtures/checkout/`                                           | spec, task, review, and expected result                          |
 | `fixtures/transformation/`                                     | inventory, change plan, C010, and C011                            |
 | `fixtures/cross-folder-source/`                                | artifact-relative C009                                            |
 | `fixtures/attention-economy/`                                  | minimal/deferred specs, reviews, waivers, decisions, and receipts |
@@ -44,15 +44,11 @@ Related examples:
 | `payment-5xx`  | [bug fix](../docs/examples/bug-fix.md)                         |
 | `checkout`     | [large PR review](../docs/examples/large-pr-review.md)         |
 
-Plain and `format: sol` specs must produce equivalent structural records and implemented diagnostics.
-The fixtures claim no unimplemented semantic parsing.
-
 ## Closed values
 
 | Set            | Values                                                                    |
 | -------------- | ------------------------------------------------------------------------- |
-| SOL blocks     | `REQ`, `CONSTRAINT`, `INVARIANT`, `INTERFACE`, `QUESTION`                 |
-| strength words | must, must not, should, should not, may; uppercase in SOL                 |
+| strength words | must, must not, should, should not, may                                   |
 | assessments    | `Supported`, `Unsupported`, `Unverified`, `Blocked`                       |
 | artifact types | `spec`, `task`, `review`, `inventory`, `change-plan`, `audit`, `research` |
 
