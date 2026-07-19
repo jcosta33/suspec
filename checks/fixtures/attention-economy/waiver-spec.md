@@ -14,13 +14,11 @@ Exercise accepted review waiver capture.
 ## Requirements
 
 ### AC-001 - Local behavior
-
-The command must report its local behavior.
-
-Verify with: `npm test -- deterministic`
+- When: the command runs locally
+- Then: the command MUST report its local behavior
+- Verify with: `npm test -- deterministic`
 
 ### AC-002 - External observation
-
-The operator should record the external system observation.
-
-Verify with: named operator observation
+- When: the command affects the external system
+- Then: the operator SHOULD record the external system observation
+- Verify with: named operator observation

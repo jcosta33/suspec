@@ -28,11 +28,9 @@ working spec at `~/.agents/artifacts/payments-api/payments-spec.md`:
 
 ```markdown
 ### AC-003 - Retry is idempotent after timeout
-
-When a payment request times out and the client retries with the same idempotency key,
-the payment service must not create a second charge.
-
-Verify with: `npm run test:integration -- payment-timeout-retry`
+- When: a payment request times out and the client retries with the same idempotency key
+- Then: the payment service MUST NOT create a second charge
+- Verify with: `npm run test:integration -- payment-timeout-retry`
 
 ## Non-goals
 

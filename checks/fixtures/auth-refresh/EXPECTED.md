@@ -8,8 +8,8 @@ verification command.
 | Invocation target | Exit | Diagnostics |
 | --- | --- | --- |
 | `spec.md` | 2 | C003 on AC-002 |
-| `task.md` | 0 | none |
-| `review.md` with `spec.md` and `task.md` | 1 | C013 warning on Supported AC-001 and AC-003 rows carrying free-form evidence only |
+| `task.md` with `spec.md` | 2 | usage error: spec companion fails C003 |
+| `review.md` with `spec.md` and `task.md` | 2 | usage error: spec companion fails C003 |
 
 The writing watchlist flags AC-003's "handle ... gracefully". That is a human
 checklist result, not a deterministic diagnostic.

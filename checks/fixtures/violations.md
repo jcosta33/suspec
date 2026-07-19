@@ -80,11 +80,9 @@ A spec with frontmatter `status: ready` whose Requirements section reads:
 
 ```markdown
 ### AC-001 — Cached repeat queries
-
-When the same query repeats within a session, the search service must return
-the cached result.
-
-Verify with: `search-cache.spec.ts`
+- When: the same query repeats within a session
+- Then: the search service MUST return the cached result
+- Verify with: `search-cache.spec.ts`
 
 ### AC-002 — TBD (waiting on product)
 ```
@@ -102,8 +100,8 @@ A spec's Requirements section:
 
 ```markdown
 ### AC-003 — rate-limit responses
-
-When a client exceeds 100 requests per minute, the API must return 429.
+- When: a client exceeds 100 requests per minute
+- Then: the API MUST return 429
 ```
 
 **Expected:** flagged — no `Verify with:` line. The
@@ -129,10 +127,9 @@ sources: [ISSUE-1]
 ## Requirements
 
 ### AC-001 - Observable behavior
-
-The command must return one record.
-
-Verify with: `npm test -- one-record`
+- When: the command runs
+- Then: the command MUST return one record
+- Verify with: `npm test -- one-record`
 ```
 
 **Expected:** C021 fires. Requirements without intent do not state why the contract exists.
@@ -168,8 +165,14 @@ One spec, two headings claiming the same ID:
 
 ```markdown
 ### AC-001 — accept the coupon code
+- When: a valid coupon code is submitted
+- Then: the service MUST accept it
+- Verify with: `npm test -- coupon-valid`
 
 ### AC-001 — reject expired coupons
+- When: an expired coupon code is submitted
+- Then: the service MUST reject it
+- Verify with: `npm test -- coupon-expired`
 ```
 
 **Expected:** flagged — `AC-001` appears twice in one file. Tasks scope work and reviews
@@ -246,8 +249,8 @@ waivers contain a duplicate, and an accepted review cannot retain a non-empty Op
 section or a `Blocked` assessment. `Partially supported` is outside the assessment enum; `Blocked`
 is valid before acceptance but cannot be waived or retained at acceptance.
 
-The same blocking option-value error applies to spec `status` outside `draft | ready`, optional
-spec `format` outside `sol`, and task `status` outside `ready | running | review-ready | closed`.
+The same blocking option-value error applies to spec `status` outside `draft | ready` and task
+`status` outside `ready | running | review-ready | closed`.
 
 A present Change-plan coverage table uses the same three columns and assessment options:
 
@@ -315,20 +318,17 @@ file is C001, not C002.
 
 ---
 
-## V9 — two strength words in one requirement (C004 `one-strength-word`, warning)
+## V9 — two strength words in one requirement (C004 `one-strength-word`, hard error)
 
 ```markdown
 ### AC-002 — Expired session response
-
-When the session is expired, the API must return 409 and should log the
-session id.
-
-Verify with: `npx jest sessions/expired`
+- When: the session is expired
+- Then: the API MUST return 409 and SHOULD log the session id
+- Verify with: `npx jest sessions/expired`
 ```
 
-**Expected:** flagged as a split-candidate advisory — "must … and should …" in one requirement.
-Two strength words usually means two requirements; the report recommends a split, it does not
-perform one, and it never demands "exactly one"; the requirement needs at least one.
+**Expected:** blocked. Two strength words bind two obligations inside one record. Split them into
+separate requirements.
 
 ---
 
@@ -479,10 +479,9 @@ sources:
 ---
 
 ### AC-001 — survey-grounded recommendation
-
-The reviewer must apply the survey's recommended ordering, per [[FAROS2025]].
-
-Verify with: a test.
+- When: the reviewer orders the findings
+- Then: the reviewer MUST apply the survey's recommended ordering, per [[FAROS2025]]
+- Verify with: a test
 ```
 
 …where the named `../../docs/research/sources.md` declares anchors for `GOOGLESA`, `MAST`,
@@ -503,15 +502,31 @@ A spec heading shaped like a requirement id, but with a letter suffix:
 
 ```markdown
 ### AC-004a — the split half of a requirement
-
-When the token expires, the client must refresh it.
-Verify with: `npm test -- refresh`
+- When: the token expires
+- Then: the client MUST refresh it
+- Verify with: `npm test -- refresh`
 ```
 
 **Expected:** flagged — `AC-004a` is not a legal requirement id (`AC-NNN` is digits-only), so the parser
 reads the heading as plain prose: the requirement silently vanishes from scope and coverage, and a
 checker would report "clean" while an AC is invisible. The warning makes the disappearance visible.
 The fix is a digits-only id — a split requirement gets its own number (`AC-007`), not a suffix.
+
+---
+
+## V27 — malformed requirement block (C028 `requirement-shape`, hard error)
+
+```markdown
+### AC-005 — escaped prose
+- When: the token expires
+- Then: the client MUST refresh it
+This sentence escaped the record.
+- Verify with: `npm test -- refresh`
+```
+
+**Expected:** blocked. A requirement contains exactly the three labeled items in order. Missing,
+empty, duplicated, misordered, or additional live lines are malformed. C003 separately owns an empty
+`Verify with` value.
 
 ---
 

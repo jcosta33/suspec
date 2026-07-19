@@ -26,13 +26,13 @@ Evidence receipts and run notes are untyped sidecars. Findings are not a type. E
 
 ```markdown
 ### AC-001 - Short name
-
-The system must do one observable thing.
-
-Verify with: `command`
+- When: one concrete condition holds
+- Then: the system MUST do one observable thing
+- Verify with: `command`
 ```
 
-Use one behavior, at least one binding word, one verification, and no unresolved uncertainty.
+Use one condition, one behavior, exactly one binding word, one verification, and no unresolved
+uncertainty.
 
 ## Assessments
 

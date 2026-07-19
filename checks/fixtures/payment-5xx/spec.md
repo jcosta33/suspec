@@ -24,24 +24,19 @@ without ever charging the customer twice.
 ## Requirements
 
 ### AC-001 — at most one capture
-
-When the same idempotency key is submitted twice, the payments service must capture at most
-one charge.
-
-Verify with: `npm test -- payment-idempotency.spec.ts` (case `at-most-one-capture`)
+- When: the same idempotency key is submitted twice
+- Then: the payments service MUST capture at most one charge
+- Verify with: `npm test -- payment-idempotency.spec.ts` (case `at-most-one-capture`)
 
 ### AC-002 — retry on 5xx
-
-When the provider returns a 5xx, the payments service must retry the charge once with the
-same idempotency key.
-
-Verify with: `npm test -- payment-retry.spec.ts` (case `retries-once`)
+- When: the provider returns a 5xx
+- Then: the payments service MUST retry the charge once with the same idempotency key
+- Verify with: `npm test -- payment-retry.spec.ts` (case `retries-once`)
 
 ### AC-003 — no retry on 5xx
-
-When the provider returns a 5xx, the payments service must not retry the charge.
-
-Verify with: `npm test -- payment-retry.spec.ts` (case `no-retry`)
+- When: the provider returns a 5xx
+- Then: the payments service MUST NOT retry the charge
+- Verify with: `npm test -- payment-retry.spec.ts` (case `no-retry`)
 
 ## Open questions
 

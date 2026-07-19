@@ -186,7 +186,7 @@ if grep -RniE --exclude-dir=adrs \
   exit 1
 fi
 
-grep -q '^version: 0\.22\.0' "$canon/checks/checks.yaml" || {
+grep -q '^version: 0\.23\.0' "$canon/checks/checks.yaml" || {
   echo "checks contract version drift" >&2
   exit 1
 }

@@ -6,7 +6,7 @@
 | **Key** | A moment present on virtually every change: intent, review, or findings. |
 | **Scaffold** | Structure pulled in when work earns it: spec, task split, inventory, change plan, checker. |
 | **Spec** | Working structured intent: intent and verifiable requirements, plus only the optional sections that carry information. |
-| **Requirement / AC** | One observable obligation with a stable ID inside its spec and a verification method. |
+| **Requirement / AC** | One condition, one observable obligation, exactly one binding word, and one verification method under a stable spec-local ID. |
 | **Task packet** | A scoped slice cut when a source must be decomposed across workers or waves. |
 | **Execution notes** | Changed files, verification output, scope drift, and blockers for the current run. |
 | **Inventory** | Observation-only map of current modules, interfaces, behavior, tests, constraints, and unknowns. |

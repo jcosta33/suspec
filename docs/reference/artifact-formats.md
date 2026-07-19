@@ -57,9 +57,13 @@ Only a spec whose status is exactly `ready` can be dispatched or reviewed. A mis
 
 Each requirement has:
 
-- `AC-NNN`
-- one behavior
-- `Verify with:`
+- one `### AC-NNN` heading;
+- one non-empty `- When:` condition;
+- one non-empty `- Then:` observable obligation with exactly one binding word; and
+- one `- Verify with:` method.
+
+Use those three items once, in that order, with no other requirement-body line. Use `When: always`
+only for an unconditional invariant.
 
 `## Execution` holds changed files, verify output, scope drift, and blocked questions for
 the live run. When work is split, those notes live in each task packet instead. Execution
@@ -80,9 +84,8 @@ status: ready
 
 Sections:
 
-- Source — full spec path, source commit, and a verbatim snapshot of every scoped requirement plus
-  its `Verify with:` line; when a change plan supplies wave or preservation context, name it here
-  after the spec
+- Source — full spec path, source commit, and a verbatim snapshot of every scoped requirement block;
+  when a change plan supplies wave or preservation context, name it here after the spec
 - Scope
 - Do not change
 - Affected areas

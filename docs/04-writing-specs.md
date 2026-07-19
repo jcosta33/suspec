@@ -26,11 +26,9 @@ failure.
 ## Requirements
 
 ### AC-001 - Expired session returns 409
-
-When a checkout session is older than 30 minutes, the API must return
-`409 SESSION_EXPIRED` and must not return a 5xx.
-
-Verify with: `npm run test:integration -- expired-session`
+- When: a checkout session is older than 30 minutes
+- Then: the API MUST return `409 SESSION_EXPIRED`, never a 5xx
+- Verify with: `npm run test:integration -- expired-session`
 ```
 
 `Intent` and `Requirements` are required. Add `Non-goals`, `Open questions`, `Affected areas`,
@@ -42,10 +40,10 @@ nothing.
 Each requirement:
 
 - has a stable `AC-NNN` ID;
-- states one observable behavior;
-- names its actor or system;
-- uses a binding word;
-- ends with one `Verify with:` line;
+- has exactly one non-empty `When`, `Then`, and `Verify with` item, in that order;
+- states one observable behavior in `Then`;
+- names its actor or system in `Then`;
+- uses exactly one binding word in `Then`;
 - contains no unresolved uncertainty.
 
 Resolve discoverable facts and reversible conventions. Put unresolved material decisions under

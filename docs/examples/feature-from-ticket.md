@@ -36,10 +36,9 @@ Users can export the rows currently visible in the report.
 ## Requirements
 
 ### AC-001 - Export visible rows
-
-The report page must export the currently filtered rows as CSV.
-
-Verify with: `npm run test:e2e -- report-csv-export`
+- When: a user exports the report
+- Then: the report page MUST export the currently filtered rows as CSV
+- Verify with: `npm run test:e2e -- report-csv-export`
 
 ## Affected areas
 

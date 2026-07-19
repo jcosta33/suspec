@@ -47,11 +47,9 @@ Expired checkout sessions return a client-visible expiry response instead of a s
 ## Requirements
 
 ### AC-001 - Expired session returns 409
-
-When a request acts on a checkout session older than 30 minutes, the API must respond
-`409 SESSION_EXPIRED`, never a 5xx.
-
-Verify with: `npm run test:integration -- expired-session`
+- When: a request acts on a checkout session older than 30 minutes
+- Then: the API MUST respond `409 SESSION_EXPIRED`, never a 5xx
+- Verify with: `npm run test:integration -- expired-session`
 
 ## Affected areas
 
@@ -64,7 +62,7 @@ Check it:
 suspec check ~/.agents/artifacts/shop-api/checkout-expiry-spec.md
 ```
 
-Without the CLI, verify `status: ready`, unique `AC-001`, a non-empty `Verify with:`, and only useful
-optional sections. Empty ceremony still counts as empty.
+Without the CLI, verify `status: ready`, unique `AC-001`, the three requirement items, exactly one
+binding word in `Then`, and only useful optional sections. Empty ceremony still counts as empty.
 
 Next: [implement](02-task-and-run.md).

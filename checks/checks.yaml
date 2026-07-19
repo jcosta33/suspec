@@ -19,7 +19,7 @@
 # Severities are expressed at check time — exit codes are the API (0 clean ·
 # 1 warning · 2 blocking); the human owns what blocks a merge.
 
-version: 0.22.0 # contract version of this file
+version: 0.23.0 # contract version of this file
 
 # --- Artifact and frontmatter contract ----------------------------------------
 artifact_types:
@@ -54,8 +54,10 @@ frontmatter:
     - scalar/list field-shape mismatches
 
 # --- Spec form ----------------------------------------------------------------
-# A spec is structured markdown: each requirement is a `### AC-NNN` heading with a
-# `Verify with:` line. Field-shape lists below apply when a field is present.
+# A spec is structured markdown: each requirement is a `### AC-NNN` heading followed by
+# exactly one non-empty `- When:`, one non-empty `- Then:`, and one `- Verify with:`
+# item in that order. C003 owns a missing Verify value.
+# Field-shape lists below apply when a field is present.
 # Separate checks state presence and non-empty requirements.
 spec_form:
   frontmatter:
@@ -80,7 +82,7 @@ core_checks:
   - { id: C001, name: unique-ids, severity: hard-error }
   - { id: C002, name: duplicate-id, severity: hard-error } # frontmatter id uniqueness across files checked together; requirement ids are spec-scoped
   - { id: C003, name: verify-with, severity: hard-error }
-  - { id: C004, name: one-strength-word, severity: warning } # at least one binding word per obligation; more than one is a split-candidate advisory
+  - { id: C004, name: one-strength-word, severity: hard-error } # exactly one binding word in the requirement's Then value
   - { id: C007, name: no-tbd-at-ready, severity: hard-error } # open questions not marked non-blocking included
   - { id: C008, name: sources-named, severity: warning }
   - { id: C009, name: broken-source-link, severity: hard-error } # path-shaped refs only, resolved against the spec's own directory (artifact-relative); bare tracker ids exempt
@@ -102,6 +104,7 @@ core_checks:
   - { id: C025, name: spec-shape, severity: hard-error } # spec: non-empty id, draft/ready status, exactly one Intent and Requirements section, and at least one requirement
   - { id: C026, name: evidence-receipt-resolves, severity: hard-error } # review: explicit local Markdown receipt links with E-NNN fragments resolve artifact-relative to a matching HTML anchor
   - { id: C027, name: review-spec-ref, severity: hard-error } # review spec ref matches the spec packet handed through --spec
+  - { id: C028, name: requirement-shape, severity: hard-error } # spec: non-empty When and Then plus one Verify with list item in order, with no other live body line; C003 owns an empty Verify value
   # C005 and C006 are RETIRED. Never reuse.
 
 # --- The task packet -----------------------------------------------------------

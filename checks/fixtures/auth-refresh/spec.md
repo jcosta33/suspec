@@ -24,21 +24,19 @@ replays the original request, so the user never sees a spurious login screen.
 ## Requirements
 
 ### AC-001 — replay on 401
-
-When a request returns 401 and a refresh token is present, the auth client must replay the
-original request once with a refreshed session.
-
-Verify with: `npm test -- auth-refresh.spec.ts` (case `replays-after-refresh`)
+- When: a request returns 401 and a refresh token is present
+- Then: the auth client MUST replay the original request once with a refreshed session
+- Verify with: `npm test -- auth-refresh.spec.ts` (case `replays-after-refresh`)
 
 ### AC-002 — expired refresh token ends the session
-
-When the refresh token is itself expired, the auth client must redirect to `/login`.
+- When: the refresh token is expired
+- Then: the auth client MUST redirect to `/login`
+- Verify with:
 
 ### AC-003 — refresh timeout
-
-When the refresh request times out, the auth client must handle the failure gracefully.
-
-Verify with: `npm test -- auth-refresh.spec.ts` (case `timeout`)
+- When: the refresh request times out
+- Then: the auth client MUST handle the failure gracefully
+- Verify with: `npm test -- auth-refresh.spec.ts` (case `timeout`)
 
 ## Open questions
 

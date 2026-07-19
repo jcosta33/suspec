@@ -49,7 +49,7 @@ declared set is a blocking contract error.
 | C001 | `unique-ids` | Requirement IDs are unique within a file. | hard-error |
 | C002 | `duplicate-id` | No other file checked in the same invocation uses the same frontmatter `id:`. Requirement IDs are spec-scoped. | hard-error |
 | C003 | `verify-with` | Every requirement has a non-empty `Verify with:`. | hard-error |
-| C004 | `one-strength-word` | Each obligation requirement uses at least one binding word; more than one flags a split candidate. | warning |
+| C004 | `one-strength-word` | Each requirement's `Then` value uses exactly one binding word. | hard-error |
 | C007 | `no-tbd-at-ready` | `status: ready` has no `TBD`, `TODO`, `???`, or blocking open question. | hard-error |
 | C008 | `sources-named` | Frontmatter `sources:` names at least one origin. | warning |
 | C009 | `broken-source-link` | Path-shaped source refs resolve against the spec's own directory (artifact-relative). Bare tracker IDs are exempt. | hard-error |
@@ -68,13 +68,15 @@ declared set is a blocking contract error.
 | C025 | `spec-shape` | A spec has a non-empty ID, `draft` or `ready` status, exactly one `Intent` and `Requirements` section, and at least one parsed requirement. | hard-error |
 | C026 | `evidence-receipt-resolves` | Explicit local Markdown evidence links with `E-NNN` fragments resolve artifact-relative to files carrying the matching HTML id anchor. | hard-error |
 | C027 | `review-spec-ref` | The review's `spec:` ref matches the spec packet handed via `--spec`. | hard-error |
+| C028 | `requirement-shape` | Each requirement contains non-empty `When` and `Then` items followed by one `Verify with` item, with no other live body line. C003 owns an empty verification value. | hard-error |
 
 C005, C006, C014, and C017 are retired and never reused. C018 is reserved.
 
 Notes:
 
 - `AC-NNN` IDs are unique within a spec, not across files. Cross-spec references use `SPEC-id#AC-NNN`.
-- A `Verify with:` command that does not exist yet is not a spec defect. The requirement is `Unverified` until evidence exists.
+- A named `Verify with` method that does not exist yet is not a spec defect. The requirement is
+  `Unverified` until evidence exists.
 - Diff size remains reviewer judgment; no packet-size threshold is asserted.
 - The review-packet checks run against the companions the reviewer hands the checker — the
   review is never checked shallowly by accident, because a missing required companion is a

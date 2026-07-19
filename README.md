@@ -35,10 +35,9 @@ requirements:
 
 ```markdown
 ### AC-001 — CSV export honors the selected date range
-
-The export endpoint must filter rows to the selected date range before generating the CSV.
-
-Verify with: `pnpm test:run export-date-range-filter`
+- When: a user exports a filtered report
+- Then: the export endpoint MUST filter rows to the selected date range before generating the CSV
+- Verify with: `pnpm test:run export-date-range-filter`
 ```
 
 Ordinary artifacts live outside the repository under

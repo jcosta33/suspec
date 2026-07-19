@@ -196,6 +196,8 @@ Two consequences of that rule govern this ledger:
 | [0162](./0162-campaign-orchestration.md) | Large delivery through reusable worktree lanes, adaptive routing, native issues and pull requests, implementation-owner repair, and human merge authority | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0099, 0151, and 0157 |
 | [0163](./0163-conventional-campaign-pull-requests.md) | Conventional concise pull requests, internal review stances, actionable comments, in-place resolution, and project-owned approval | **New (canon -> skills) - accepted (2026-07-15)** - narrows 0157 and 0162 |
 | [0164](./0164-one-spec-format.md) | One spec format: structured markdown (`### AC-NNN` + `Verify with:`); the `format: sol` selector and the SOL surface retire | **New (canon -> cli/mcp/skills) - accepted (2026-07-18)** - supersedes [0058](./0058-two-tier-spec-format.md); narrows [0027](./0027-sol-is-the-obligation-language.md); upholds [0059](./0059-frontmatter-type-is-the-discriminator.md); contract 0.22.0 |
+| [0165](./0165-checker-invocation-architecture.md) | CLI engine, ambient MCP discovery, checker-agnostic skills, and optional invocation | **New (canon -> skills/mcp) - accepted (2026-07-19)** - upholds 0121, 0140, 0143, 0149, 0153, and 0161 |
+| [0166](./0166-enriched-single-spec-format.md) | One enriched Markdown requirement block with deterministic shape and exact modal checks | **New (canon -> cli/mcp/skills) - accepted (2026-07-19)** - narrows 0164; upholds 0131 and 0143; contract 0.23.0 |
 
 ## The new kernel ADRs (0027+), by topic
 

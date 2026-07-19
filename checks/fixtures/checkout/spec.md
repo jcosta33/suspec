@@ -24,23 +24,19 @@ records the sale — charging the card at most once.
 ## Requirements
 
 ### AC-001 — submit the cart
-
-When the shopper submits the cart, the checkout service must validate the cart and charge
-the card and email the receipt.
-
-Verify with: `npm test -- checkout.spec.ts` (case `submit`)
+- When: the shopper submits the cart
+- Then: the checkout service MUST validate the cart, charge the card, and email the receipt
+- Verify with: `npm test -- checkout.spec.ts` (case `submit`)
 
 ### AC-002 — order record
-
-When the charge succeeds, the checkout service must write the order record.
-
-Verify with: `npm test -- order-record.spec.ts` (case `writes-order`)
+- When: the charge succeeds
+- Then: the checkout service MUST write the order record
+- Verify with: `npm test -- order-record.spec.ts` (case `writes-order`)
 
 ### AC-003 — inventory ledger
-
-When the charge succeeds, the checkout service must append the inventory ledger entry.
-
-Verify with: `npm test -- inventory.spec.ts` (case `writes-ledger`)
+- When: the charge succeeds
+- Then: the checkout service MUST append the inventory ledger entry
+- Verify with: `npm test -- inventory.spec.ts` (case `writes-ledger`)
 
 ## Open questions
 
