@@ -102,6 +102,9 @@
 <a id="BOSU15"></a>
 **[BOSU15] Characteristics of Useful Code Reviews: An Empirical Study at Microsoft.** Bosu, Greiler, Bird. **MSR 2015, pp. 146–156**, DOI 10.1109/MSR.2015.21. *Verified (June 2026, web — MSR PDF + abstract).* The **more files in a change, the lower the proportion of review comments that are useful** to the author (direction only, no point estimate). Grounds: files-touched is a first-class size signal for the oversized-packet heuristic — a sprawling change degrades review quality (ADR-0094).
 
+<a id="REVIEWPRIMING"></a>
+**[REVIEWPRIMING] Primers or reminders? The effects of existing review comments on code review.** Spadini, Calikli, Bacchelli. **ICSE 2020, pp. 1171-1182**, DOI 10.1145/3377811.3380385. *Verified (July 2026, Chalmers publication record).* Controlled experiment with 85 developers: visible prior comments increased detection of another uncommon bug of the same type and did not reduce detection of other bug types. Grounds: withholding prior review prose may preserve method independence, but broad harmful priming is not an established outcome.
+
 <a id="RIGBY13"></a>
 **[RIGBY13] Convergent Contemporary Software Peer Review Practices.** Rigby & Bird. **ESEC/FSE 2013, pp. 202–212**, DOI 10.1145/2491411.2491444. *Verified (June 2026, web — MSR author PDF, text-extracted).* Across drastically different projects, modern review **converged on small changes** — median *change* sizes of tens of lines (e.g. Android/AMD 44, Chrome 78; vs the prior-OSS Apache 25 / Linux 32 contrast and traditional inspection's 263). Grounds: small, self-contained units are the field-convergent norm a task should target (ADR-0094).
 
@@ -286,6 +289,9 @@ These sources may illustrate a direction but never ground a `MUST`. Their headli
 ### Preprints — web-verified arXiv (finding confirmed; cite as preliminary, never a `MUST`)
 
 A web-verified arXiv preprint is stronger than a blog post but is **not peer-reviewed**: it may *corroborate* or *illustrate* a direction, never carry a `MUST`. Each finding below was confirmed against the source (June 2026).
+
+<a id="CICACHE"></a>
+**[CICACHE] The Promise and Reality of Continuous Integration Caching: An Empirical Study of Travis CI Builds.** Ghaleb, da Costa, Zou. **arXiv:2601.19146** (2026 preprint). *Verified (July 2026, direct arXiv record).* Across 513,384 builds from 1,279 GitHub projects, one-third of projects received substantial build-time reductions while 33% contained stale cached artifacts. Grounds (preliminary): reuse can save work, but cache identity and refresh rules remain necessary. Scope: CI caches, not local worktree dependency folders.
 
 <a id="PERSUASIONPARADOX"></a>
 **[PERSUASIONPARADOX] The Persuasion Paradox: When LLM Explanations Fail to Improve Human-AI Team Performance.** Cohen, Feng, Bloch, Kraus. **arXiv:2604.03237** (preprint, 2026). *Verified (June 2026, id + abstract).* Three controlled studies; the result is explicitly **task-dependent / mediated by cognitive modality** — on **visual** reasoning (RAVEN matrices) explanations inflate confidence without accuracy and suppress error recovery, but on **language-based logical** reasoning (LSAT) "LLM explanations yield the highest accuracy and recovery rates, outperforming both expert-written explanations and probability-based support." The paper rejects treating explanations as a universal solution. Grounds (preliminary, **mixed**): on the visual task it corroborates the over-reliance/"calibration cues over persuasion" direction; on the language task — the class **closer to a developer's decision** — explanations *helped*, which cuts the other way. Cite only as preliminary, never a `MUST`; do not read it as a one-directional "replicate and intensify."
