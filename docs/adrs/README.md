@@ -199,6 +199,7 @@ Two consequences of that rule govern this ledger:
 | [0165](./0165-checker-invocation-architecture.md) | CLI engine, ambient MCP discovery, checker-agnostic skills, and optional invocation | **New (canon -> skills/mcp) - accepted (2026-07-19)** - upholds 0121, 0140, 0143, 0149, 0153, and 0161 |
 | [0166](./0166-enriched-single-spec-format.md) | One enriched Markdown requirement block with deterministic shape and exact modal checks | **New (canon -> cli/mcp/skills) - accepted (2026-07-19)** - narrows 0164; upholds 0131 and 0143; contract 0.23.0 |
 | [0167](./0167-bounded-campaign-guardrails.md) | Honest campaign tripwires, reusable-lane hygiene, authoritative fresh review, scoped comments, and merged-SHA proof | **New (canon -> skills) - accepted (2026-07-20)** - narrows 0145, 0157, 0162, and 0163 |
+| [0168](./0168-rendered-chat-output.md) | Rendered Markdown for structured chat; fences only for literal code, raw evidence, and artifact templates | **New (canon -> skills) - accepted (2026-07-22)** - narrows 0109, 0157, and 0161 |
 
 ## The new kernel ADRs (0027+), by topic
 
