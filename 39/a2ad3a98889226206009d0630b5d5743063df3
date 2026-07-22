@@ -1,0 +1,24 @@
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_77207c93b64160 6
+  s_0a3429e31e555d::t_8c1e180dcfd5dd 5
+docs/adrs/README.md
+  s_0a3429e31e555d::t_361a4cbc4f6b57 202
+docs/adrs/0168-rendered-chat-output.md
+  s_0a3429e31e555d::t_361a4cbc4f6b57 1-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "39a2ad3a98889226206009d0630b5d5743063df3",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
