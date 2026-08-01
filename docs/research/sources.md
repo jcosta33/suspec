@@ -164,6 +164,21 @@
 <a id="LOSTMID"></a>
 **[LOSTMID] Lost in the Middle: How Language Models Use Long Contexts.** Liu et al., **TACL 2024**. The U-shaped attention curve — accuracy degrades for information in the middle of long contexts. "Context rot" is a later popular term, not one coined by this paper. Grounds: minimize always-on context and keep load-bearing instructions easy to locate.
 
+<a id="CONTEXTROT"></a>
+**[CONTEXTROT] Context Rot.** Chroma Research, 2025. Controlled context-growth experiments across 18 current models find increasingly unreliable performance as context grows and distractors accumulate. <https://www.trychroma.com/research/context-rot> - *inspectable industry study with released methods; not peer-reviewed.* Grounds: context capacity is not context quality.
+
+<a id="CONINSTRUCT"></a>
+**[CONINSTRUCT] ConInstruct: Benchmarking Language Models on Conflict Resolution.** AAAI 2026. Strong models often detect instruction conflicts but rarely notify the user or seek clarification. <https://ojs.aaai.org/index.php/AAAI/article/view/40356> - *peer-reviewed.* Grounds: unresolved authority conflicts need an explicit human decision rail.
+
+<a id="CONTROLILLUSION"></a>
+**[CONTROLILLUSION] Control Illusion: The Failure of Instruction Hierarchies in Large Language Models.** AAAI 2026. Six leading models show persistent failures under conflicting instruction hierarchies; prompt and tuning interventions yield limited repair. <https://ojs.aaai.org/index.php/AAAI/article/view/40339> - *peer-reviewed.* Grounds: delete conflicting control instead of trusting role precedence.
+
+<a id="MASCALE"></a>
+**[MASCALE] Towards a Science of Scaling Agent Systems.** Google Research, 2025, arXiv:2512.08296. Across 180 configurations, five architectures, four benchmarks, and three model families, multi-agent gains depend on parallelizable task structure and can reverse on sequential work. <https://arxiv.org/abs/2512.08296> - *preprint with a controlled cross-model study.* Grounds: orchestration follows task topology, not task size.
+
+<a id="PROMPTCOMP"></a>
+**[PROMPTCOMP] An Empirical Study on Prompt Compression for Large Language Models.** arXiv:2505.00019, 2025. Six compression methods across thirteen datasets show task-dependent effects; moderate compression can help, but shortening is not a universal quality metric. <https://arxiv.org/abs/2505.00019> - *preprint.* Grounds: measure behavior, not word count.
+
 <a id="SCOT"></a>
 **[SCOT] Structured Chain-of-Thought Prompting for Code Generation.** Li, Li, Li, Jin. **ACM TOSEM 34(2), Art. 37, 2025** (DOI 10.1145/3690635; preprint arXiv:2305.06599). *Verified (peer-reviewed).* A *structured* intermediate (program-structured reasoning) beats free-form CoT for code generation (the paper reports +13.79% Pass@1). Grounds: a structured intermediate can beat free prose for downstream code work; this does not establish that every task needs one.
 
@@ -177,6 +192,21 @@
 
 <a id="CTXENG"></a>
 **[CTXENG] Effective context engineering for AI agents.** Anthropic Engineering, 2025. Treats context as a finite resource, recommends just-in-time retrieval, and describes structured note-taking through a to-do list or `NOTES.md`; it does not prescribe a fixed file set. <https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents> — *official guidance.*
+
+<a id="CLAUDE5CTX"></a>
+**[CLAUDE5CTX] The new rules of context engineering for Claude 5 generation models.** Anthropic, 2026. Reports an internal prompt reduction above 80% without measurable loss on undisclosed Claude Code evaluations and recommends less prescriptive control for stronger models. <https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models> - *first-party internal result; direction only, not a portable effect size.*
+
+<a id="OAIHARNESS"></a>
+**[OAIHARNESS] Harness engineering: leveraging Codex in an agent-first world.** OpenAI, 2026. Treats human attention and context as scarce, uses repository knowledge as a map, and enforces architecture through mechanical tests rather than a giant instruction manual. <https://openai.com/index/harness-engineering/> - *first-party case study, not a controlled comparison.*
+
+<a id="OAIDATA"></a>
+**[OAIDATA] Inside our in-house data agent.** OpenAI, 2026. Reports that overlapping tools confused selection and highly prescriptive prompts reduced robustness; consolidation and goal-oriented control improved the deployed system. <https://openai.com/index/inside-our-in-house-data-agent/> - *first-party production report without disclosed effect sizes.*
+
+<a id="GOOGLECTX"></a>
+**[GOOGLECTX] Architecting an efficient context-aware multi-agent framework for production.** Google Developers, 2026. Separates durable storage from compiled agent context, scopes each worker to minimum necessary state, and passes large objects by handle. <https://developers.googleblog.com/architecting-efficient-context-aware-multi-agent-framework-for-production/> - *official architecture guidance.*
+
+<a id="MCPINTERFERENCE"></a>
+**[MCPINTERFERENCE] Tool-space interference in the MCP era.** Microsoft Research, 2026. A survey of 1,470 MCP servers finds semantic collisions, generic names, and extreme outputs; recommends small distinct tool sets, concise responses, dynamic discovery, and model-client testing. <https://www.microsoft.com/en-us/research/blog/tool-space-interference-in-the-mcp-era-designing-for-agent-compatibility-at-scale/> - *large descriptive survey; causal effects remain bounded.*
 
 <a id="BUILDAGENTS"></a>
 **[BUILDAGENTS] Building effective agents.** Anthropic Engineering, 2024. *Verified (July 2026, direct fetch).* Start-simple guidance: "find the simplest solution possible, and only increasing complexity when needed"; the most successful implementations used **simple, composable patterns**, not complex frameworks; frameworks "often create extra layers of abstraction that can obscure the underlying prompts and responses" and "make it tempting to add complexity when a simpler setup would suffice." <https://www.anthropic.com/engineering/building-effective-agents> — *official guidance, not a measured study; cite as design guidance.* Grounds: the minimum-useful-rigor default — add structure only where it earns its place (ADR-0131).
