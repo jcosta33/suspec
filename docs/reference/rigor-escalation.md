@@ -8,6 +8,7 @@
 | structural work must preserve behavior across stages | change plan  |
 | risk or later reconstruction exceeds direct review   | review packet |
 | review needs deterministic reconciliation            | checker      |
+| behavior is defective or consequential                | executable oracle |
 | several risk surfaces need breadth                   | Revolver     |
 | one high-consequence surface needs depth             | Triple-check |
 

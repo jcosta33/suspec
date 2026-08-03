@@ -12,6 +12,11 @@ Read ~/.agents/artifacts/shop-api/task-checkout-expiry.md and do what it says.
 A task adds slice scope, excluded areas, verification, and standing instructions. A change plan may
 add wave or preservation context. Neither replaces the spec.
 
+Before changing behavior, define the strongest available observable check. A bug fix starts by
+reproducing the original failure. Trust a new regression test only when it fails for the expected
+reason on the original state, passes on the repair, exercises production behavior, and invents no
+requirement.
+
 ## Separation
 
 - The author defines intent and decomposition.
@@ -27,6 +32,10 @@ evidence to inspect, not implementation to merge.
 
 Parallel workers need isolated file state. Review needs the judged state preserved until final.
 Branches and worktrees remain project-owned Git practice; Suspec does not create or clean them.
+
+Inspect the current worktree before allocating another. Reuse project-native lanes when ownership,
+branch, state, and dependency identity are proven. Implementation on `main` requires project or
+human authority. Never clean a dirty, unknown, or externally owned worktree.
 
 Worktrees are not force fields. They do not isolate services, ports, databases, or credentials.
 Configure those separately.

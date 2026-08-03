@@ -12,6 +12,7 @@ Name:
 - one bounded method or question;
 - read/write permissions;
 - required commands;
+- the accepted observable check and original failing state when repairing behavior;
 - whether this is the final consumer; and
 - return shape.
 

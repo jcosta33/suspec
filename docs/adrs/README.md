@@ -201,6 +201,7 @@ Two consequences of that rule govern this ledger:
 | [0167](./0167-bounded-campaign-guardrails.md) | Honest campaign tripwires, reusable-lane hygiene, authoritative fresh review, scoped comments, and merged-SHA proof | **New (canon -> skills) - accepted (2026-07-20)** - narrows 0145, 0157, 0162, and 0163 |
 | [0168](./0168-rendered-chat-output.md) | Rendered Markdown for structured chat; fences only for literal code, raw evidence, and artifact templates | **New (canon -> skills) - accepted (2026-07-22)** - narrows 0109, 0157, and 0161 |
 | [0169](./0169-minimum-sufficient-skill-control.md) | Minimum sufficient skill control, behavior-owned gates, progressive disclosure, and universal structured questions | **New (canon -> skills) - accepted (2026-08-01)** - narrows 0149, 0157, and 0161 |
+| [0170](./0170-proportional-design-and-executable-oracles.md) | Required-response interception, proportional design, worktree authority, executable oracles, and field-driven skill control | **New (canon -> skills) - accepted (2026-08-03)** - narrows 0161-0163, 0167, and 0169 |
 
 ## The new kernel ADRs (0027+), by topic
 
