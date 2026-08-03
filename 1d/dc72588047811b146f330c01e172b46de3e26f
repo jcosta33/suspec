@@ -1,0 +1,32 @@
+docs/research/sources.md
+  s_0a3429e31e555d::t_1eaf32561713bf 162-170,350-352,496-497
+  s_0a3429e31e555d::t_88b7399f9a810f 498
+docs/reference/agent-guides.md
+  s_0a3429e31e555d::t_1eaf32561713bf 15
+docs/adrs/0170-proportional-design-and-executable-oracles.md
+  s_0a3429e31e555d::t_1eaf32561713bf 1-17,20-22,26-88
+  s_0a3429e31e555d::t_f54c689e4da772 18-19,23-25
+docs/07-running-agents.md
+  s_0a3429e31e555d::t_1eaf32561713bf 15-19,36-38
+  s_0a3429e31e555d::t_4a1e8c80aafcfd 39
+docs/adrs/README.md
+  s_0a3429e31e555d::t_1eaf32561713bf 204
+docs/reference/rigor-escalation.md
+  s_0a3429e31e555d::t_1eaf32561713bf 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "1ddc72588047811b146f330c01e172b46de3e26f",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
