@@ -1,0 +1,21 @@
+docs/reference/checks.md
+  s_0a3429e31e555d::t_cb6e4e3125851c 73
+checks/checks.yaml
+  s_0a3429e31e555d::t_cb6e4e3125851c 93,96,108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "2985678b45c0b8d4c898a5e364807a4aac5ed4b6",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
