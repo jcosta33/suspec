@@ -70,7 +70,7 @@ declared set is a blocking contract error.
 | C027 | `review-spec-ref` | The review's `spec:` ref matches the spec packet handed via `--spec`. | hard-error |
 | C028 | `requirement-shape` | Each requirement contains non-empty `When` and `Then` items followed by one `Verify with` item, with no other live body line. C003 owns an empty verification value. | hard-error |
 
-C005, C006, C014, and C017 are retired and never reused. C018 is reserved.
+C005, C006, C014, C017, and C018 are reserved and never reused.
 
 Notes:
 

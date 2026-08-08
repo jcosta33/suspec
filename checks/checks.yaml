@@ -90,10 +90,10 @@ core_checks:
   - { id: C011, name: waves-present, severity: warning } # change plan: kind in {migration, rewrite, schema-change} => non-empty waves, each naming a verify step
   - { id: C012, name: coverage, severity: warning } # Requirement coverage only: in-scope ids covered, no orphan rows; task scope when split, otherwise the ready spec's full requirement set
   - { id: C013, name: verify-evidence-binding, severity: warning } # Requirement coverage only: a verify block's cmd matches the named command + result=pass; command mismatch blocks; other faces warn; nothing re-executes the command
-  # C014 is RETIRED. It required a live diff and no deterministic checker computed it. Never reuse.
+  # C014 is RESERVED. Live-diff inspection remains outside deterministic checking. Never reuse.
   - { id: C015, name: citation-resolves, severity: warning } # inline [[KEY]] resolves to <a id="KEY"> in the named artifact-relative sources.md; skips when no sources.md resolves
   - { id: C016, name: supported-needs-evidence, severity: hard-error } # review packet: a Supported coverage row with an empty Evidence cell is a structural contradiction
-  # C017 is RETIRED. Never reuse.
+  # C017 is RESERVED. Never reuse.
   # C018 is RESERVED. Never reuse.
   - { id: C019, name: malformed-requirement-heading, severity: warning } # a ### id with lowercase split suffix (AC-004a) parses as prose and vanishes from scope; requirement ids are digits-only
   - { id: C020, name: unresolvable-ref, severity: hard-error } # review task ref does not match the task packet handed through --task, so coverage would key on the wrong slice
@@ -105,7 +105,7 @@ core_checks:
   - { id: C026, name: evidence-receipt-resolves, severity: hard-error } # review: explicit local Markdown receipt links with E-NNN fragments resolve artifact-relative to a matching HTML anchor
   - { id: C027, name: review-spec-ref, severity: hard-error } # review spec ref matches the spec packet handed through --spec
   - { id: C028, name: requirement-shape, severity: hard-error } # spec: non-empty When and Then plus one Verify with list item in order, with no other live body line; C003 owns an empty Verify value
-  # C005 and C006 are RETIRED. Never reuse.
+  # C005 and C006 are RESERVED. Never reuse.
 
 # --- The task packet -----------------------------------------------------------
 # The task packet's required shape (the human-facing reference is
