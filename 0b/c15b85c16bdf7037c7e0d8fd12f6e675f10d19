@@ -1,0 +1,31 @@
+policy/economy.md
+  s_0a3429e31e555d::t_d94277aab77eef 1-14
+docs/adrs/README.md
+  s_0a3429e31e555d::t_d94277aab77eef 205-206
+  s_0a3429e31e555d::t_cd66ce96d9eb1f 143,179,185,199,202-204
+  s_0a3429e31e555d::t_1d10b6a45bbf11 174,177
+docs/research/sources.md
+  s_0a3429e31e555d::t_d94277aab77eef 208-225
+docs/adrs/0171-global-interaction-economy.md
+  s_0a3429e31e555d::t_d94277aab77eef 1-61
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_d92a6d6ad49568 5-6
+docs/adrs/0172-reversible-harness-economy-setup.md
+  s_0a3429e31e555d::t_d94277aab77eef 1-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "0bc15b85c16bdf7037c7e0d8fd12f6e675f10d19",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
