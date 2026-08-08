@@ -1,0 +1,43 @@
+docs/reference/cli.md
+  s_0a3429e31e555d::t_864388b1bdd7ab 3-10,21-22
+README.md
+  s_0a3429e31e555d::t_864388b1bdd7ab 17-26,93
+docs/reference/output-economy.md
+  s_0a3429e31e555d::t_864388b1bdd7ab 1,5-12,18
+scripts/lint-method-topology.sh
+  s_0a3429e31e555d::t_71cde2159b16e3 122-135
+docs/artifact-registry.md
+  s_0a3429e31e555d::t_864388b1bdd7ab 7
+docs/10-integrations.md
+  s_0a3429e31e555d::t_864388b1bdd7ab 9-11,21-22
+  s_bc88af7d3b054c::t_28d8dc29dc3006 23
+AGENTS.md
+  s_0a3429e31e555d::t_864388b1bdd7ab 13
+docs/ADOPTING.md
+  s_0a3429e31e555d::t_864388b1bdd7ab 11,41-60
+  s_bc88af7d3b054c::t_8794ba74ac4e42 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "420d091697f37581b2e32b476c2000c769cc2399",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    },
+    "s_bc88af7d3b054c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f9b4a-11a2-7f61-8dfb-76eed0eb2a9c",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
