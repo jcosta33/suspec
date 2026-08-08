@@ -119,6 +119,20 @@ grep -Fq 'SUSPEC_BIN:' "$mcp/.github/workflows/gate.yml" || {
   exit 1
 }
 
+economy_policy="$canon/policy/economy.md"
+generated_policy="$cli/src/generated/economyPolicy.ts"
+test -f "$economy_policy" || { echo "canonical economy policy missing" >&2; exit 1; }
+test -f "$generated_policy" || { echo "CLI generated economy policy missing" >&2; exit 1; }
+economy_digest=$(node -e '
+  const { createHash } = require("node:crypto");
+  const { readFileSync } = require("node:fs");
+  process.stdout.write(createHash("sha256").update(readFileSync(process.argv[1])).digest("hex"));
+' "$economy_policy")
+grep -Fq "ECONOMY_POLICY_SHA256 = '$economy_digest'" "$generated_policy" || {
+  echo "CLI economy policy digest drift" >&2
+  exit 1
+}
+
 formats="$canon/docs/reference/artifact-formats.md"
 require_writer() {
   type=$1

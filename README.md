@@ -14,8 +14,16 @@ Install the skill family for your harness (Codex shown):
 npx skills add jcosta33/suspec-skills -g -a codex
 ```
 
-The skills are a complete install. Add [suspec-cli](https://github.com/jcosta33/suspec-cli) when
-deterministic checks improve review.
+Skills install the workflows. Add [suspec-cli](https://github.com/jcosta33/suspec-cli) for
+deterministic checks and the optional global economy policy:
+
+```bash
+suspec setup codex claude-code opencode
+suspec setup codex claude-code opencode --yes
+```
+
+The first command previews. The second applies the approved user-level change. Neither touches a
+repository.
 
 ## Use the least structure that pays
 
@@ -82,7 +90,7 @@ recommend. Humans own intent, waivers, irreversible actions, and acceptance.
 | Need                                            | Owner                                                      |
 | ----------------------------------------------- | ---------------------------------------------------------- |
 | Install the method                              | [suspec-skills](https://github.com/jcosta33/suspec-skills) |
-| Run deterministic checks                        | [suspec-cli](https://github.com/jcosta33/suspec-cli)       |
+| Run checks or install global economy rules      | [suspec-cli](https://github.com/jcosta33/suspec-cli)       |
 | Give shell-less clients the checker             | [suspec-mcp](https://github.com/jcosta33/suspec-mcp)       |
 | Read the method, formats, checks, and decisions | this repository                                            |
 

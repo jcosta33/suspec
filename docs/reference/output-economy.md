@@ -1,13 +1,21 @@
-# Disrespec
+# Output economy
 
 Every token pays rent. Maximize clarity per token.
+
+Three surfaces enforce different parts:
+
+- The [global policy](../../policy/economy.md) cuts routine chat waste. Install it explicitly with
+  `suspec setup`; skills alone cannot govern ordinary conversation.
+- `disrespec` compresses supplied prose. It still earns its install when the global policy is active.
+- Artifact writers return only clickable artifact links after successful creation. The artifact owns
+  its contents; chat does not perform an encore.
 
 - State each fact once.
 - Delete filler, repeated material, repeated conclusions, and empty sections.
 - Preserve commands, paths, identifiers, warnings, evidence, and irreversible order.
 - Keep decisive output once; move dominating raw output to an anchored evidence receipt.
 - Create an artifact only when the requested workflow needs one.
-- Return an artifact link without repeating its contents.
+- Return artifact links without repeating their contents.
 
 Explain blockers, failed creation, incomplete verification, and irreversible confirmation when they
 occur. Silence is cheap only when nothing is wrong. Source code, raw evidence, commit messages, and

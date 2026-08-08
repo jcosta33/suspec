@@ -6,8 +6,9 @@ method; Markdown and explicit paths carry the work.
 ## CLI
 
 [suspec-cli](https://github.com/jcosta33/suspec-cli) runs read-only deterministic checks over explicit
-paths. See its [public contract](https://github.com/jcosta33/suspec-cli#readme) and Suspec's
-[check catalog](reference/checks.md).
+paths. Its separate `setup` command installs, checks, or removes the user-level economy policy for
+explicit harnesses. See its [public contract](https://github.com/jcosta33/suspec-cli#readme) and
+Suspec's [check catalog](reference/checks.md).
 
 ## MCP
 
@@ -16,6 +17,9 @@ Its repository owns the exact [tools, schemas, envelope, and installation
 contract](https://github.com/jcosta33/suspec-mcp#readme).
 
 Agents with shell access can call the CLI directly.
+
+MCP exposes checks only. It cannot install policy, manage artifacts, or orchestrate work. Run
+`suspec setup` directly.
 
 ## Harnesses
 

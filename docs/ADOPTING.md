@@ -8,7 +8,7 @@ Install globally for your harness (Codex shown):
 npx skills add jcosta33/suspec-skills -g -a codex
 ```
 
-This is the complete install. Suspec does not annex the repository: its commands, architecture, and
+This installs the workflows. Suspec does not annex the repository: its commands, architecture, and
 policy stay in native instructions.
 
 Re-running `npx skills add` updates present entries but does not remove names absent from the source.
@@ -37,6 +37,27 @@ suspec check <path>
 
 It reads explicit absolute or current-working-directory-relative paths and adds no repository
 configuration. Exact behavior: [CLI reference](reference/cli.md).
+
+## Add the optional global policy
+
+Preview the exact user-level changes, then apply only the approved harnesses:
+
+```bash
+suspec setup codex claude-code opencode
+suspec setup codex claude-code opencode --yes
+suspec setup codex claude-code opencode --check
+```
+
+The policy cuts preambles, progress diaries, and repeated handoffs. It preserves required questions,
+warnings, blockers, and failed verification. Setup writes no repository file. Remove it reversibly:
+
+```bash
+suspec setup codex claude-code opencode --remove
+suspec setup codex claude-code opencode --remove --yes
+```
+
+`npx skills` installs workflows. `suspec setup` installs global interaction rules. Neither substitutes
+for the other.
 
 ## First structured run
 
