@@ -205,6 +205,24 @@
 <a id="CLAUDE5CTX"></a>
 **[CLAUDE5CTX] The new rules of context engineering for Claude 5 generation models.** Anthropic, 2026. Reports an internal prompt reduction above 80% without measurable loss on undisclosed Claude Code evaluations and recommends less prescriptive control for stronger models. <https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models> - *first-party internal result; direction only, not a portable effect size.*
 
+<a id="OAILEAN"></a>
+**[OAILEAN] Latest model prompting guidance.** OpenAI developer docs, 2026. Reports directional internal coding-agent results from leaner prompts: higher task scores, 41-66% fewer total tokens, and 33-67% lower cost; explicitly requires validation on representative work. <https://developers.openai.com/api/docs/guides/latest-model> - *first-party internal result; direction only.*
+
+<a id="CLAUDETOOLS"></a>
+**[CLAUDETOOLS] Advanced tool use.** Anthropic Engineering, 2026. Reports a 55K-token tool-definition baseline in one internal system and a 37% token reduction from programmatic handling that kept intermediate results out of model context. <https://www.anthropic.com/engineering/advanced-tool-use> - *first-party internal result; workload-specific.*
+
+<a id="AIRBNBEVAL"></a>
+**[AIRBNBEVAL] Eval-driven development: lessons from evaluating GenAI at scale.** Airbnb Engineering, 2026. Recommends deriving evaluators from real failures, using deterministic checks first, keeping evaluators narrow, and assigning disputed quality to a human owner. <https://airbnb.tech/ai-ml/eval-driven-development-lessons-from-evaluating-genai-at-scale/> - *first-party production guidance, not a controlled effect estimate.*
+
+<a id="CODEXGLOBAL"></a>
+**[CODEXGLOBAL] Codex AGENTS.md and configuration references.** OpenAI developer docs, 2026. Defines user-level `AGENTS.override.md` / `AGENTS.md` discovery, `CODEX_HOME`, profile configuration, and `model_instructions_file`. <https://developers.openai.com/codex/guides/agents-md> <https://developers.openai.com/codex/config-reference/> - *authoritative product contract.*
+
+<a id="CLAUDEDIR"></a>
+**[CLAUDEDIR] Claude Code user instructions and configuration directory.** Anthropic docs, 2026. Defines global `CLAUDE.md`, imports, and `CLAUDE_CONFIG_DIR` redirection. <https://code.claude.com/docs/en/memory> <https://code.claude.com/docs/en/claude-directory> - *authoritative product contract.*
+
+<a id="OPENCODERULES"></a>
+**[OPENCODERULES] OpenCode rules and configuration.** OpenCode docs, 2026. Defines global `~/.config/opencode/AGENTS.md`, Claude-compatible fallback, project precedence, combined instruction files, and JSON/JSONC configuration. <https://opencode.ai/docs/rules/> <https://opencode.ai/docs/config/> - *authoritative product contract.*
+
 <a id="OAIHARNESS"></a>
 **[OAIHARNESS] Harness engineering: leveraging Codex in an agent-first world.** OpenAI, 2026. Treats human attention and context as scarce, uses repository knowledge as a map, and enforces architecture through mechanical tests rather than a giant instruction manual. <https://openai.com/index/harness-engineering/> - *first-party case study, not a controlled comparison.*
 
