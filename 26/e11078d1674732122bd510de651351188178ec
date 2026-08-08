@@ -1,0 +1,30 @@
+docs/10-integrations.md
+  s_0a3429e31e555d::t_0d2a104ec19e66 10-12
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_0a26786c2a7df1 5-6
+docs/adrs/0173-native-harness-instruction-installation.md
+  s_0a3429e31e555d::t_3443545c1e2def 1-63
+docs/adrs/README.md
+  s_0a3429e31e555d::t_3443545c1e2def 206-207
+docs/reference/cli.md
+  s_0a3429e31e555d::t_0d2a104ec19e66 9-10
+docs/ADOPTING.md
+  s_0a3429e31e555d::t_0d2a104ec19e66 52
+  s_0a3429e31e555d::t_55b8600d1a382b 53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "26e11078d1674732122bd510de651351188178ec",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
