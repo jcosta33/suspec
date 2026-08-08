@@ -49,7 +49,8 @@ suspec setup codex claude-code opencode --check
 ```
 
 The policy cuts preambles, progress diaries, and repeated handoffs. It preserves required questions,
-warnings, blockers, and failed verification. Setup writes no repository file. Remove it reversibly:
+warnings, blockers, and failed verification. Setup adds a neutral inline block to each harness's
+native global instruction file and writes nowhere else. Remove it reversibly:
 
 ```bash
 suspec setup codex claude-code opencode --remove

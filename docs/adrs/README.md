@@ -203,7 +203,8 @@ Two consequences of that rule govern this ledger:
 | [0169](./0169-minimum-sufficient-skill-control.md) | Minimum sufficient skill control, behavior-owned gates, progressive disclosure, and universal structured questions | **New (canon -> skills) - accepted (2026-08-01)** - narrows 0149, 0157, and 0161; narrowed by [0171](./0171-global-interaction-economy.md) and [0172](./0172-reversible-harness-economy-setup.md) |
 | [0170](./0170-proportional-design-and-executable-oracles.md) | Required-response interception, proportional design, worktree authority, executable oracles, and field-driven skill control | **New (canon -> skills) - accepted (2026-08-03)** - narrows 0161-0163, 0167, and 0169; narrowed by [0171](./0171-global-interaction-economy.md) and [0172](./0172-reversible-harness-economy-setup.md) |
 | [0171](./0171-global-interaction-economy.md) | Global interaction economy without method leakage or recap | **New (canon -> skills/CLI) - accepted (2026-08-08)** - narrows 0109, 0145, 0168-0170 |
-| [0172](./0172-reversible-harness-economy-setup.md) | Explicit reversible user-level economy setup with no MCP expansion | **New (canon -> CLI) - accepted (2026-08-08)** - narrows 0140, 0143, 0151, 0165, 0169, and 0170 |
+| [0172](./0172-reversible-harness-economy-setup.md) | Explicit reversible user-level economy setup with no MCP expansion | **New (canon -> CLI) - accepted (2026-08-08)** - narrows 0140, 0143, 0151, 0165, 0169, and 0170; narrowed by [0173](./0173-native-harness-instruction-installation.md) |
+| [0173](./0173-native-harness-instruction-installation.md) | Native inline economy installation without branded user-home scaffolding | **New (canon -> CLI) - accepted (2026-08-09)** - narrows 0137, 0171, and 0172; setup envelope 2 |
 
 ## The new kernel ADRs (0027+), by topic
 

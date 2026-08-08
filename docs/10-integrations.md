@@ -7,8 +7,9 @@ method; Markdown and explicit paths carry the work.
 
 [suspec-cli](https://github.com/jcosta33/suspec-cli) runs read-only deterministic checks over explicit
 paths. Its separate `setup` command installs, checks, or removes the user-level economy policy for
-explicit harnesses. See its [public contract](https://github.com/jcosta33/suspec-cli#readme) and
-Suspec's [check catalog](reference/checks.md).
+explicit harnesses through their native global instruction files. See its [public
+contract](https://github.com/jcosta33/suspec-cli#readme) and Suspec's [check
+catalog](reference/checks.md).
 
 ## MCP
 

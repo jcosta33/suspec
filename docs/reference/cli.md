@@ -6,8 +6,8 @@
   verification command, writes nothing, discovers no repository or artifact store, and renders no
   acceptance decision.
 - `suspec setup` previews, installs, checks, or removes the canonical user-level economy policy for
-  explicit Codex, Claude Code, or OpenCode targets. It owns only its payload and marked harness blocks.
-  Drift or ambiguous configuration blocks mutation.
+  explicit Codex, Claude Code, or OpenCode targets. It owns only a neutral inline block in each
+  effective native instruction file. Drift or ambiguous configuration blocks mutation.
 
 The CLI repository owns commands, options, companions, path handling, output, exits, installation,
 and runtime behavior. See its [public contract](https://github.com/jcosta33/suspec-cli#readme).
