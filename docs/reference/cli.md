@@ -5,9 +5,9 @@
 - `suspec check` is a read-only deterministic checker. Facts in, diagnostics out. It runs no model or
   verification command, writes nothing, discovers no repository or artifact store, and renders no
   acceptance decision.
-- `suspec setup` previews, installs, checks, or removes the canonical user-level economy policy for
-  explicit Codex, Claude Code, or OpenCode targets. It owns only a neutral inline block in each normal
-  native instruction file. Drift or ambiguous configuration blocks mutation.
+- `suspec setup` previews, installs, checks, or removes the canonical user-level agent policy for
+  explicit Codex, Claude Code, Kimi Code, ZCode, or OpenCode targets. It owns only a neutral inline
+  block in each normal native instruction file. Drift or ambiguous configuration blocks mutation.
 
 The CLI repository owns commands, options, companions, path handling, output, exits, installation,
 and runtime behavior. See its [public contract](https://github.com/jcosta33/suspec-cli#readme).
@@ -18,5 +18,5 @@ Canon owns check meaning:
 - [check catalog](checks.md);
 - [artifact formats](artifact-formats.md).
 
-The checker must match the checks contract. Setup must embed [the economy policy](output-economy.md)
+The checker must match the checks contract. Setup must embed [the agent policy](../../policy/agent.md)
 byte for byte. A parser is not a manager.

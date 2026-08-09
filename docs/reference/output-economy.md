@@ -4,8 +4,8 @@ Every token pays rent. Maximize clarity per token.
 
 Three surfaces enforce different parts:
 
-- The [global policy](../../policy/economy.md) cuts routine chat waste. Install it explicitly with
-  `suspec setup`; skills alone cannot govern ordinary conversation.
+- The [global policy](../../policy/agent.md) cuts routine chat waste and routes installed context
+  tools. Install it explicitly with `suspec setup`; skills alone cannot govern ordinary conversation.
 - `disrespec` compresses supplied prose. It still earns its install when the global policy is active.
 - Artifact writers return only clickable artifact links after successful creation. The artifact owns
   its contents; chat does not perform an encore.

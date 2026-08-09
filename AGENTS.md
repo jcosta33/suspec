@@ -10,7 +10,7 @@ machine-readable checks contract; sibling repositories own the skill catalog, CL
 - Machine checks contract: `checks/checks.yaml`.
 - Check explanations: `docs/reference/checks.md`.
 - Empirical sources: `docs/research/sources.md`.
-- Global interaction policy: `policy/economy.md`.
+- Global agent policy: `policy/agent.md`.
 - Executable procedures: `suspec-skills`.
 
 A contract change travels as a unit. Half-updated truth is still wrong.

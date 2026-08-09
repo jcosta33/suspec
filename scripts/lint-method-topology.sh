@@ -119,17 +119,17 @@ grep -Fq 'SUSPEC_BIN:' "$mcp/.github/workflows/gate.yml" || {
   exit 1
 }
 
-economy_policy="$canon/policy/economy.md"
-generated_policy="$cli/src/generated/economyPolicy.ts"
-test -f "$economy_policy" || { echo "canonical economy policy missing" >&2; exit 1; }
-test -f "$generated_policy" || { echo "CLI generated economy policy missing" >&2; exit 1; }
-economy_digest=$(node -e '
+agent_policy="$canon/policy/agent.md"
+generated_policy="$cli/src/generated/agentPolicy.ts"
+test -f "$agent_policy" || { echo "canonical agent policy missing" >&2; exit 1; }
+test -f "$generated_policy" || { echo "CLI generated agent policy missing" >&2; exit 1; }
+agent_digest=$(node -e '
   const { createHash } = require("node:crypto");
   const { readFileSync } = require("node:fs");
   process.stdout.write(createHash("sha256").update(readFileSync(process.argv[1])).digest("hex"));
-' "$economy_policy")
-grep -Fq "ECONOMY_POLICY_SHA256 = '$economy_digest'" "$generated_policy" || {
-  echo "CLI economy policy digest drift" >&2
+' "$agent_policy")
+grep -Fq "AGENT_POLICY_SHA256 = '$agent_digest'" "$generated_policy" || {
+  echo "CLI agent policy digest drift" >&2
   exit 1
 }
 
@@ -157,7 +157,7 @@ if grep -RniE --exclude-dir=adrs "(^|[^[:alnum:]-])($stale_methods)([^[:alnum:]-
   exit 1
 fi
 
-if grep -RniE --exclude-dir=adrs 'suspec-agents|canonical agent|Codex projection|agents/suspec-' \
+if grep -RniE --exclude-dir=adrs 'suspec-agents|canonical agents([^[:alnum:]]|$)|canonical agent (definition|catalog)|Codex projection|agents/suspec-' \
   "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" \
   "$skills/README.md" "$skills/AGENTS.md" "$skills/docs" "$skills/skills" \
   "$cli/README.md" "$cli/AGENTS.md" "$cli/docs" \

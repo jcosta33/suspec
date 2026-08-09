@@ -43,18 +43,19 @@ configuration. Exact behavior: [CLI reference](reference/cli.md).
 Preview the exact user-level changes, then apply only the approved harnesses:
 
 ```bash
-suspec setup codex claude-code opencode
-suspec setup codex claude-code opencode --yes
-suspec setup codex claude-code opencode --check
+suspec setup codex claude-code kimi-code zcode opencode
+suspec setup codex claude-code kimi-code zcode opencode --yes
+suspec setup codex claude-code kimi-code zcode opencode --check
 ```
 
-The policy cuts preambles, progress diaries, and repeated handoffs. It preserves required questions,
-warnings, blockers, and failed verification. Setup adds a neutral inline block to each harness's
-native global instruction file and writes nowhere else. Remove it reversibly:
+The policy cuts narration and repetition, keeps durable findings in the work, and routes context
+through lean-ctx and RTK when available. It preserves required questions, warnings, blockers, exact
+evidence, and failed verification. Setup adds one neutral inline block to each harness's native global
+instruction file and writes nowhere else. Remove it reversibly:
 
 ```bash
-suspec setup codex claude-code opencode --remove
-suspec setup codex claude-code opencode --remove --yes
+suspec setup codex claude-code kimi-code zcode opencode --remove
+suspec setup codex claude-code kimi-code zcode opencode --remove --yes
 ```
 
 `npx skills` installs workflows. `suspec setup` installs global interaction rules. Neither substitutes

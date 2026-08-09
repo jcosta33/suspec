@@ -223,6 +223,21 @@
 <a id="OPENCODERULES"></a>
 **[OPENCODERULES] OpenCode rules and configuration.** OpenCode docs, 2026. Defines global `~/.config/opencode/AGENTS.md`, Claude-compatible fallback, project precedence, combined instruction files, and JSON/JSONC configuration. <https://opencode.ai/docs/rules/> <https://opencode.ai/docs/config/> - *authoritative product contract.*
 
+<a id="KIMICODE"></a>
+**[KIMICODE] Kimi Code instructions and MCP configuration.** Kimi Code docs, 2026. Defines user-level `$KIMI_CODE_HOME/AGENTS.md` and `$KIMI_CODE_HOME/mcp.json`, with `~/.kimi-code` as the default root. <https://www.kimi.com/code/docs/en/kimi-code-cli/customization/agents> <https://www.kimi.com/code/docs/en/kimi-code-cli/customization/mcp.html> - *authoritative product contract.*
+
+<a id="ZCODE"></a>
+**[ZCODE] ZCode Agent instructions.** ZCode docs, 2026. Defines `~/.zcode/AGENTS.md` as the user-global instruction file and workspace `AGENTS.md` as the project source. <https://zcode.z.ai/en/docs/agents> - *authoritative product contract.*
+
+<a id="RTKHOOKS"></a>
+**[RTKHOOKS] RTK agent hooks.** RTK source documentation, 2026. Defines shell-command rewriting, MCP and native-read bypass, already-prefixed passthrough, and agent-specific hook limits. <https://github.com/rtk-ai/rtk/blob/master/hooks/README.md> - *authoritative implementation contract.*
+
+<a id="LEANCTX"></a>
+**[LEANCTX] lean-ctx integration modes.** lean-ctx source documentation, 2026. Defines MCP-only, hybrid, and replacement integration plus `ctx_read`, `ctx_search`, `ctx_shell`, security, and recovery behavior. <https://github.com/yvgude/lean-ctx/blob/main/docs/ga/developer-guide.md> - *authoritative implementation contract.*
+
+<a id="CLAUDEHOOKS"></a>
+**[CLAUDEHOOKS] Claude Code hooks.** Anthropic docs, 2026. Defines parallel execution and merged results for matching hooks. <https://code.claude.com/docs/en/hooks-guide> - *authoritative product contract.*
+
 <a id="OAIHARNESS"></a>
 **[OAIHARNESS] Harness engineering: leveraging Codex in an agent-first world.** OpenAI, 2026. Treats human attention and context as scarce, uses repository knowledge as a map, and enforces architecture through mechanical tests rather than a giant instruction manual. <https://openai.com/index/harness-engineering/> - *first-party case study, not a controlled comparison.*
 
