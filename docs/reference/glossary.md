@@ -27,7 +27,7 @@
 | **Checker** | `suspec check`: read-only facts and severity levels over explicit artifact paths. |
 | **Revolver** | Purpose-agnostic breadth inspection through every materially distinct target-derived stance, resolved sequentially. |
 | **Triple-check** | Exactly three fresh top-tier reviewers attacking one frozen target concurrently. |
-| **Campaign** | Large delivery coordinated through reusable worktree lanes, project-native pull requests, adaptive routing, and visible review resolution. |
+| **Campaign** | Large delivery admitted only after project-native lane, proof, resource, review, merge, and cleanup controls are proven. |
 | **Worktree lane** | One stable repository worktree with one active branch and one implementation owner, recycled across campaign tasks. |
 
 ## Authority

@@ -123,6 +123,18 @@ agent_policy="$canon/policy/agent.md"
 generated_policy="$cli/src/generated/agentPolicy.ts"
 test -f "$agent_policy" || { echo "canonical agent policy missing" >&2; exit 1; }
 test -f "$generated_policy" || { echo "CLI generated agent policy missing" >&2; exit 1; }
+grep -Fq 'Use project-native delivery controls when present. Never bypass them.' "$agent_policy" || {
+  echo "agent policy lacks native delivery routing" >&2
+  exit 1
+}
+grep -Fq 'This routing rule is advisory.' "$agent_policy" || {
+  echo "agent policy overstates instruction enforcement" >&2
+  exit 1
+}
+grep -Fq 'Project systems and harness permissions enforce delivery.' "$agent_policy" || {
+  echo "agent policy lacks native enforcement ownership" >&2
+  exit 1
+}
 agent_digest=$(node -e '
   const { createHash } = require("node:crypto");
   const { readFileSync } = require("node:fs");
@@ -182,7 +194,7 @@ grep -Fq 'exactly three fresh top-tier reviewers the same' \
   echo "parallel Triple-check reference missing" >&2
   exit 1
 }
-grep -Fq '| **Campaign** | Large delivery coordinated through reusable worktree lanes' \
+grep -Fq '| **Campaign** | Large delivery admitted only after project-native lane, proof, resource, review, merge, and cleanup controls are proven.' \
   "$canon/docs/reference/glossary.md" || {
   echo "campaign glossary contract missing" >&2
   exit 1

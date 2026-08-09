@@ -18,8 +18,8 @@ A contract change travels as a unit. Half-updated truth is still wrong.
 ## Writing
 
 - Present current behavior in fresh-product language. Keep migration history inside ADRs.
-- State enforcement honestly: `convention`, `checklist`, `toolable` with a named command, or
-  `enforced` by a shipped tool.
+- State delivery control honestly: `advisory`, `deterministic local`, or `isolated authority`.
+  Otherwise name the enforcing command or owner.
 - Use current artifact types only: spec, task, review, inventory, change plan, audit, and research.
   Evidence receipts and run notes are untyped sidecars.
 - Publish no changing catalog, repository, artifact, or ADR totals. Decorative counts rot. Keep

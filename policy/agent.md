@@ -24,3 +24,8 @@ Otherwise run the original command through `ctx_shell`. When exact output is evi
 original command with `raw=true`.
 
 When `ctx_*` tools are unavailable, use native tools and RTK for supported shell commands.
+
+# Delivery
+
+Use project-native delivery controls when present. Never bypass them. This routing rule is advisory.
+Project systems and harness permissions enforce delivery.

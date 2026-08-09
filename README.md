@@ -70,7 +70,9 @@ itself:
 - a task when one spec must split into separately dispatchable slices;
 - an inventory when present behavior or ownership is unclear;
 - a change plan when structural work must preserve behavior across stages;
-- a formal review when risk exceeds direct human inspection.
+- a formal review when risk exceeds direct human inspection;
+- a campaign when one goal spans several pull requests and the project can enforce delivery
+  transitions.
 
 Suspec does not replace native plan mode, project guidance, issue trackers, PRs, CI, tests, or human
 acceptance. Skills install globally; repository commands, architecture, and policy stay in the

@@ -10,6 +10,10 @@ unverified.
 Run commands after the final relevant edit. Preserve raw output or the exact CI job. Tools report exit
 status and facts; independent review decides whether evidence supports a requirement.
 
+Hosted CI is optional. Project-approved local proof is valid when it binds the exact state, command,
+working directory, material environment, exit status, and decisive output. A worker's own receipt
+cannot grant merge authority.
+
 | Layer                          | Owner                       |
 | ------------------------------ | --------------------------- |
 | code behavior and quality      | repository tools            |

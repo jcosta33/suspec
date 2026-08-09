@@ -42,6 +42,22 @@ Configure those separately.
 Exclude worktree directories from tools that ignore `.gitignore`, including test runners and linters,
 to prevent duplicate tests and phantom errors.
 
+## Campaign controls
+
+Suspec's campaign method is advisory. A project command provides deterministic local enforcement. A
+harness or trusted project actor provides isolated authority by keeping protected state, resources,
+and credentials outside worker reach.
+
+Before allocating lanes or dispatching implementation, prove project-native control of lane
+ownership, proportionate verification, machine-wide heavyweight admission, pull-request shape and
+size, bounded review, exact-state proof, merge admission, and cleanup. Record each owner, class,
+mechanism, and negative check in the native campaign ledger. Instructions and worker self-attestation
+do not qualify.
+
+Hosted status checks are optional. Exact-state local command evidence is valid when project policy
+accepts it. If a required capability is absent, stop dependent autonomy; let a human supply the
+control, execute the affected transition, or cancel.
+
 ## Return
 
 Record under the source spec's `## Execution`, or in the task when split:

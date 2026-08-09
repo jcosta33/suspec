@@ -207,6 +207,7 @@ Two consequences of that rule govern this ledger:
 | [0173](./0173-native-harness-instruction-installation.md) | Native inline economy installation without branded user-home scaffolding | **New (canon -> CLI) - accepted (2026-08-09)** - narrows 0137, 0171, and 0172; setup envelope 2; narrowed by [0174](./0174-fixed-native-instruction-targets.md) |
 | [0174](./0174-fixed-native-instruction-targets.md) | Fixed normal global instruction targets; shadowing configuration blocks setup | **New (canon -> CLI) - accepted (2026-08-09)** - narrows 0172 and 0173 |
 | [0175](./0175-single-context-gateway.md) | One native agent policy, one context gateway, and matching Codex, Claude Code, Kimi Code, ZCode, and OpenCode targets | **New (canon -> CLI) - accepted (2026-08-09)** - narrows 0171-0174 |
+| [0176](./0176-native-delivery-control-contract.md) | Advisory Suspec methods, project-native delivery enforcement, harness isolation, and human authority | **New (canon -> skills/CLI) - accepted (2026-08-09)** - narrows 0143, 0162, 0167, and 0170-0175 |
 
 ## The new kernel ADRs (0027+), by topic
 

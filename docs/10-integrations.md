@@ -38,10 +38,14 @@ Keep existing owners:
 
 - issue trackers hold backlog and source IDs;
 - PRs show diffs and discussion;
-- CI runs commands;
+- project commands and CI run proportionate checks;
 - review maps those results to requirements;
-- project policy decides which CLI exit codes block;
+- project policy enforces pull-request, review, merge, resource, and cleanup transitions;
+- harness permissions isolate worker authority and shared resources;
 - project records hold durable decisions and lessons.
+
+An autonomous campaign starts only after these native controls prove their owner and enforcement
+class. Suspec supplies no delivery runtime.
 
 The checker verifies coverage, evidence presence, references, and command matches for structured
 `verify` blocks. Free-form evidence receives advisory human review. Suspec never owns credentials,

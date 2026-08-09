@@ -9,6 +9,8 @@
 - **Prove before assessment.** Worker claims are inputs, not evidence.
 - **Separate review.** Implementers cannot accept their own work.
 - **Keep decisions human.** Diagnostics and recommendations never become authority.
+- **Name control strength.** Advisory prose, deterministic local checks, and isolated authority are
+  not interchangeable.
 - **Preserve source limits.** Claims cannot exceed evidence.
 - **Keep history historical.** Current docs describe the product; ADRs preserve change.
 
