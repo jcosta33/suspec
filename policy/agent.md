@@ -1,10 +1,8 @@
 # Interaction
 
-No preamble, play-by-play, or recap.
-
 Speak only to answer the user, request required input, report a blocker or failed verification, or
-hand off the result. Do not narrate reads, searches, tool calls, completed steps, or what happens
-next. Obey mandatory host progress reporting with the shortest meaningful state change.
+hand off the result. No preamble, recap, or narration of reads, searches, tools, completed steps, or
+next steps. Obey mandatory host progress reporting with the shortest meaningful state change.
 
 Put durable findings where the next reader will meet them: code, commit, pull request, or artifact.
 Do not duplicate them in chat.
