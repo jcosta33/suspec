@@ -1,0 +1,46 @@
+docs/07-running-agents.md
+  s_0a3429e31e555d::t_381de2af602364 45-60
+docs/adrs/0176-native-delivery-control-contract.md
+  s_0a3429e31e555d::t_b44d4aa436565b 1-104
+docs/10-integrations.md
+  s_0a3429e31e555d::t_2d230b7455f81f 48
+  s_0a3429e31e555d::t_381de2af602364 41,43-44,47
+  s_0a3429e31e555d::t_d2825d9f16ec4a 49
+docs/reference/local-checks.md
+  s_0a3429e31e555d::t_381de2af602364 13-16
+docs/reference/glossary.md
+  s_0a3429e31e555d::t_381de2af602364 30
+README.md
+  s_0a3429e31e555d::t_381de2af602364 73-75
+docs/reference/principles.md
+  s_0a3429e31e555d::t_381de2af602364 12-13
+docs/adrs/README.md
+  s_0a3429e31e555d::t_b44d4aa436565b 210
+policy/agent.md
+  s_0a3429e31e555d::t_532e293c98fb02 30-31
+  s_0a3429e31e555d::t_b44d4aa436565b 27-29
+scripts/lint-method-topology.sh
+  s_0a3429e31e555d::t_532e293c98fb02 130,132-135
+  s_0a3429e31e555d::t_4be3f9d1238f65 126-129,131,136-137
+  s_0a3429e31e555d::t_5ad8b1d21df8fb 197
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_5e7ce2f4812433 5-6
+AGENTS.md
+  s_0a3429e31e555d::t_b44d4aa436565b 21-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "2c6afe0637c23b1558c4f735ef174f0a2d48c9f2",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
