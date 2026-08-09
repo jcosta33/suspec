@@ -1,0 +1,42 @@
+docs/10-integrations.md
+  s_0a3429e31e555d::t_b60ac0944e1ef3 43-44
+docs/reference/cli.md
+  s_0a3429e31e555d::t_66cb834011c0e2 21-23
+docs/adrs/README.md
+  s_0a3429e31e555d::t_16585daf83a287 211
+docs/07-running-agents.md
+  s_0a3429e31e555d::t_656be02fada220 47-49
+  s_0a3429e31e555d::t_66cb834011c0e2 57
+scripts/lint-method-topology.sh
+  s_0a3429e31e555d::t_656be02fada220 134
+policy/agent.md
+  s_0a3429e31e555d::t_656be02fada220 31
+docs/artifact-registry.md
+  s_0a3429e31e555d::t_b60ac0944e1ef3 7
+policy/agent-policy-predecessors.txt
+  s_0a3429e31e555d::t_53d93a117327ca 1-2
+AGENTS.md
+  s_0a3429e31e555d::t_b60ac0944e1ef3 13-14
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_16585daf83a287 5
+  s_0a3429e31e555d::t_b2d82d6ba8ac7f 6
+docs/adrs/0177-agent-policy-provenance-and-upgrade-integrity.md
+  s_0a3429e31e555d::t_16585daf83a287 1-18,22-27,30-51
+  s_0a3429e31e555d::t_53d93a117327ca 19-21,28-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "a7f77e6314a3070e9115a6fd04f2e2a0b41ea674",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
