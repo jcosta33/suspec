@@ -1,0 +1,47 @@
+docs/adrs/README.md
+  s_0a3429e31e555d::t_86fcdf33367cf8 209
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_f56ffb419d8751 5
+  s_0a3429e31e555d::t_196e3a1615e1ed 6
+policy/agent.md
+  s_0a3429e31e555d::t_86fcdf33367cf8 1,3-10,15-24,26
+docs/artifact-registry.md
+  s_0a3429e31e555d::t_af69734ea3cfc1 7
+docs/ADOPTING.md
+  s_0a3429e31e555d::t_af69734ea3cfc1 46-48,51-54,57-58
+AGENTS.md
+  s_0a3429e31e555d::t_86fcdf33367cf8 13
+docs/research/sources.md
+  s_0a3429e31e555d::t_077c4dad1a9f56 229-231
+  s_0a3429e31e555d::t_86fcdf33367cf8 226-228,232-240
+docs/reference/output-economy.md
+  s_0a3429e31e555d::t_af69734ea3cfc1 7-8
+docs/10-integrations.md
+  s_0a3429e31e555d::t_97867c6c606ac8 9
+README.md
+  s_0a3429e31e555d::t_af69734ea3cfc1 18,21-22,93
+scripts/lint-method-topology.sh
+  s_0a3429e31e555d::t_88841dd23416b2 160
+  s_0a3429e31e555d::t_af69734ea3cfc1 122-126,130-132
+docs/adrs/0175-single-context-gateway.md
+  s_0a3429e31e555d::t_86fcdf33367cf8 1-22,25-60
+  s_0a3429e31e555d::t_077c4dad1a9f56 23-24
+docs/reference/cli.md
+  s_0a3429e31e555d::t_97867c6c606ac8 8-10,21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "b95e5e99b18a8a1cae14f14f2fdcbe9acf34ff5f",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
