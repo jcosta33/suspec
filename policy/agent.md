@@ -28,4 +28,4 @@ When `ctx_*` tools are unavailable, use native tools and RTK for supported shell
 # Delivery
 
 Use project-native delivery controls when present. Never bypass them. This routing rule is advisory.
-Project systems and harness permissions enforce delivery.
+Project systems enforce delivery transitions. Harness permissions isolate worker authority.

@@ -131,7 +131,7 @@ grep -Fq 'This routing rule is advisory.' "$agent_policy" || {
   echo "agent policy overstates instruction enforcement" >&2
   exit 1
 }
-grep -Fq 'Project systems and harness permissions enforce delivery.' "$agent_policy" || {
+grep -Fq 'Project systems enforce delivery transitions. Harness permissions isolate worker authority.' "$agent_policy" || {
   echo "agent policy lacks native enforcement ownership" >&2
   exit 1
 }

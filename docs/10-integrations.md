@@ -40,8 +40,8 @@ Keep existing owners:
 - PRs show diffs and discussion;
 - project commands and CI run proportionate checks;
 - review maps those results to requirements;
-- project policy enforces pull-request, review, merge, resource, and cleanup transitions;
-- harness permissions isolate worker authority and shared resources;
+- project systems validate pull-request, review, merge, resource, and cleanup transitions;
+- harness permissions isolate worker authority, merge credentials, shared resources, and cleanup;
 - project records hold durable decisions and lessons.
 
 An autonomous campaign starts only after these native controls prove their owner and enforcement

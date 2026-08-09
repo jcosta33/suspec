@@ -18,5 +18,6 @@ Canon owns check meaning:
 - [check catalog](checks.md);
 - [artifact formats](artifact-formats.md).
 
-The checker must match the checks contract. Setup must embed [the agent policy](../../policy/agent.md)
-byte for byte. A parser is not a manager.
+The checker must match the checks contract. Generated policy bytes match
+[canon](../../policy/agent.md); installed blocks differ only by target line endings and terminal-newline
+normalization. A parser is not a manager.
