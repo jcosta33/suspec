@@ -1,0 +1,54 @@
+docs/adrs/README.md
+  s_0a3429e31e555d::t_75fa889311e4fa 212
+checks/checks.yaml
+  s_0a3429e31e555d::t_42c03bb357fdea 22,26,108-110,176-208
+  s_0a3429e31e555d::t_6ee18773ab87fb 209
+scripts/lint-method-topology.sh
+  s_0a3429e31e555d::t_63b6270139a320 164
+  s_0a3429e31e555d::t_6467fdb2de49eb 198,216,244
+checks/fixtures/campaign/campaign.md
+  s_0a3429e31e555d::t_42c03bb357fdea 1-35
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_fa79c3fd5e0c4c 5-6
+README.md
+  s_0a3429e31e555d::t_75fa889311e4fa 74-75
+checks/fixtures/campaign/spec.md
+  s_0a3429e31e555d::t_42c03bb357fdea 1-18
+docs/reference/glossary.md
+  s_0a3429e31e555d::t_75fa889311e4fa 16,31
+docs/10-integrations.md
+  s_0a3429e31e555d::t_75fa889311e4fa 48-49
+checks/README.md
+  s_0a3429e31e555d::t_6467fdb2de49eb 19-21,39,58
+docs/reference/checks.md
+  s_0a3429e31e555d::t_42c03bb357fdea 23,39-40,73-75
+docs/reference/artifact-formats.md
+  s_0a3429e31e555d::t_42c03bb357fdea 29,261-295
+  s_0a3429e31e555d::t_8828245973df21 296
+checks/fixtures/campaign/ledger.md
+  s_0a3429e31e555d::t_42c03bb357fdea 1-3
+docs/research/sources.md
+  s_0a3429e31e555d::t_75fa889311e4fa 208-216
+AGENTS.md
+  s_0a3429e31e555d::t_75fa889311e4fa 24-25
+docs/adrs/0178-restartable-campaign-goals.md
+  s_0a3429e31e555d::t_fbce2cca630add 1-79
+docs/07-running-agents.md
+  s_0a3429e31e555d::t_75fa889311e4fa 47-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "61117cde10361f110c23db6e9bf4c2f206f0e8cc",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
