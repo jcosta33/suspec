@@ -209,6 +209,7 @@ Two consequences of that rule govern this ledger:
 | [0175](./0175-single-context-gateway.md) | One native agent policy, one context gateway, and matching Codex, Claude Code, Kimi Code, ZCode, and OpenCode targets | **New (canon -> CLI) - accepted (2026-08-09)** - narrows 0171-0174 |
 | [0176](./0176-native-delivery-control-contract.md) | Advisory Suspec methods, project-native delivery enforcement, harness isolation, and human authority | **New (canon -> skills/CLI) - accepted (2026-08-09)** - narrows 0143, 0162, 0167, and 0170-0175 |
 | [0177](./0177-agent-policy-provenance-and-upgrade-integrity.md) | Retained policy provenance, canonical-byte verification, and reversible payload upgrades | **New (canon -> CLI) - accepted (2026-08-09)** - narrows 0171, 0172, 0175, and 0176 |
+| [0178](./0178-restartable-campaign-goals.md) | Stable campaign goal contracts, project-native progress, restart-safe execution, and deterministic campaign checks | **New (canon -> skills/CLI/MCP) - accepted (2026-08-10)** - narrows 0148, 0151, 0157, 0162, 0167, and 0176; checks contract 0.24.0 |
 
 ## The new kernel ADRs (0027+), by topic
 

@@ -16,6 +16,9 @@ the human contract.
 - C026 rejects dangling local evidence-receipt paths and `E-NNN` anchors.
 - C027 rejects a review whose `spec:` does not match the handed spec.
 - C028 rejects missing, duplicated, misordered, or escaped requirement fields.
+- C029 rejects malformed campaign identity, status, authority, or required sections.
+- C030 rejects broken campaign authorities and copied task-list state.
+- C031 rejects unresolved blocking state in a ready campaign.
 - Accepted reviews cannot retain an open critical decision.
 - Accepted reviews require every preservation row to be `Supported`.
 - Empty review evidence is `Unverified`, never `Supported`.
@@ -33,6 +36,7 @@ the human contract.
 | `fixtures/transformation/`                                     | inventory, change plan, C010, and C011                            |
 | `fixtures/cross-folder-source/`                                | artifact-relative C009                                            |
 | `fixtures/attention-economy/`                                  | minimal/deferred specs, reviews, waivers, decisions, and receipts |
+| `fixtures/campaign/`                                           | restartable goal, native ledger, and governing source              |
 
 C012 and C013 negative cases live in `fixtures/violations.md`; domain scenarios provide positive
 coverage. Live `Do not change` comparison remains reviewer work because the checker receives no diff.
@@ -51,7 +55,7 @@ Related examples:
 | -------------- | ------------------------------------------------------------------------- |
 | strength words | `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY`                        |
 | assessments    | `Supported`, `Unsupported`, `Unverified`, `Blocked`                       |
-| artifact types | `spec`, `task`, `review`, `inventory`, `change-plan`, `audit`, `research` |
+| artifact types | `spec`, `task`, `review`, `inventory`, `change-plan`, `audit`, `research`, `campaign` |
 
 ## Maintainer contract
 

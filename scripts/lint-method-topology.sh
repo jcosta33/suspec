@@ -161,6 +161,7 @@ require_writer inventory sus-inventory
 require_writer change-plan sus-change-plan
 require_writer audit sus-audit
 require_writer research sus-research
+require_writer campaign sus-campaign
 stale_methods='concise-output|revolver-review|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|market-research|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr|write-audit|write-bug-report|write-change-plan|write-documentation|write-feature|write-fix|write-inventory|write-migration|write-performance|write-prd|write-refactor|write-research|write-rewrite|write-rfc|write-testing'
 if grep -RniE --exclude-dir=adrs "(^|[^[:alnum:]-])($stale_methods)([^[:alnum:]-]|$)" \
   "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$canon/checks" \
@@ -194,7 +195,7 @@ grep -Fq 'exactly three fresh top-tier reviewers the same' \
   echo "parallel Triple-check reference missing" >&2
   exit 1
 }
-grep -Fq '| **Campaign** | Large delivery admitted only after project-native lane, proof, resource, review, merge, and cleanup controls are proven.' \
+grep -Fq '| **Campaign** | Large delivery governed by a campaign artifact and admitted only after project-native lane, proof, resource, review, merge, and cleanup controls are proven.' \
   "$canon/docs/reference/glossary.md" || {
   echo "campaign glossary contract missing" >&2
   exit 1
@@ -212,7 +213,7 @@ if grep -RniE --exclude-dir=adrs \
   exit 1
 fi
 
-grep -q '^version: 0\.23\.0' "$canon/checks/checks.yaml" || {
+grep -q '^version: 0\.24\.0' "$canon/checks/checks.yaml" || {
   echo "checks contract version drift" >&2
   exit 1
 }
@@ -240,7 +241,7 @@ printf '%s\n' "$actual_checks" | while read -r id name severity; do
     exit 1
   }
 done
-grep -Fq '  checked: [spec, task, review, change-plan]' "$canon/checks/checks.yaml" || {
+grep -Fq '  checked: [spec, task, review, change-plan, campaign]' "$canon/checks/checks.yaml" || {
   echo "checked artifact matrix drift" >&2
   exit 1
 }

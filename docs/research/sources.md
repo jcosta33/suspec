@@ -205,6 +205,15 @@
 <a id="CLAUDE5CTX"></a>
 **[CLAUDE5CTX] The new rules of context engineering for Claude 5 generation models.** Anthropic, 2026. Reports an internal prompt reduction above 80% without measurable loss on undisclosed Claude Code evaluations and recommends less prescriptive control for stronger models. <https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models> - *first-party internal result; direction only, not a portable effect size.*
 
+<a id="OAIGOAL"></a>
+**[OAIGOAL] Follow a goal.** OpenAI, 2026. Defines a durable coding goal by one objective, one verifiable stopping condition, source pointers, progress proof, checkpoints, and compact status. It warns against loose backlogs and accumulated one-off instructions. <https://learn.chatgpt.com/use-cases/follow-goals> - *official product guidance.*
+
+<a id="LONGHARNESS"></a>
+**[LONGHARNESS] Effective harnesses for long-running agents.** Anthropic Engineering, 2025. Reports failures across fresh contexts from one-shot implementation, undocumented partial work, and premature completion; its experimental harness used incremental work and structured continuity artifacts. <https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents> - *first-party experiment; exact file layout is not a universal contract.*
+
+<a id="MAGENTIC"></a>
+**[MAGENTIC] Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks.** Microsoft Research, 2024. Separates an outer task ledger from an inner progress ledger and replans on stalls. The published system was competitive on GAIA, AssistantBench, and WebArena; the ledger split remains architecture evidence, not proof of one ideal prompt format. <https://www.microsoft.com/en-us/research/articles/magentic-one-a-generalist-multi-agent-system-for-solving-complex-tasks/> - *first-party research report.*
+
 <a id="OAILEAN"></a>
 **[OAILEAN] Latest model prompting guidance.** OpenAI developer docs, 2026. Reports directional internal coding-agent results from leaner prompts: higher task scores, 41-66% fewer total tokens, and 33-67% lower cost; explicitly requires validation on representative work. <https://developers.openai.com/api/docs/guides/latest-model> - *first-party internal result; direction only.*
 

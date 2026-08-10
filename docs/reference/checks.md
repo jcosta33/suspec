@@ -20,7 +20,7 @@ This docs repo enforces nothing by itself.
 
 ## Artifact recognition
 
-`type:` is required. `spec`, `task`, `review`, and `change-plan` have deterministic checker
+`type:` is required. `spec`, `task`, `review`, `change-plan`, and `campaign` have deterministic checker
 faces. `inventory`, `audit`, and `research` are recognized and return
 `checked: false`. A missing or unknown type is a blocking usage error.
 
@@ -36,7 +36,8 @@ heads, and scalar/list field-shape mismatches are blocking parse errors. Unknown
 allowed when they obey the subset.
 
 Field shapes are exact: `type` and `id` are scalars on every recognized artifact; spec `sources`;
-task `source` and `scope`; review `waivers`; and change-plan `sources` and `preserves` are lists.
+task `source` and `scope`; review `waivers`; change-plan `sources` and `preserves`; and campaign
+`sources` are lists.
 Their other defined fields are scalars.
 Declared option values are exact and case-sensitive. Spec status is `draft` or `ready`; task status,
 review decision, and coverage assessment use the closed sets below. A present value outside its
@@ -69,6 +70,9 @@ declared set is a blocking contract error.
 | C026 | `evidence-receipt-resolves` | Explicit local Markdown evidence links with `E-NNN` fragments resolve artifact-relative to files carrying the matching HTML id anchor. | hard-error |
 | C027 | `review-spec-ref` | The review's `spec:` ref matches the spec packet handed via `--spec`. | hard-error |
 | C028 | `requirement-shape` | Each requirement contains non-empty `When` and `Then` items followed by one `Verify with` item, with no other live body line. C003 owns an empty verification value. | hard-error |
+| C029 | `campaign-shape` | A campaign has scalar type, ID, status, and ledger; list sources; `draft` or `ready` status; and exactly one non-empty Objective, Completion contract, Authorities, Operating loop, and Stops section. | hard-error |
+| C030 | `campaign-authority` | Local ledger and source refs resolve artifact-relative, absolute local refs fail, and the campaign contains no Markdown task-list checkbox that duplicates ledger state. | hard-error |
+| C031 | `campaign-ready` | A ready campaign contains no `TBD`, `TODO`, `???`, or non-empty canonical blocking label. | hard-error |
 
 C005, C006, C014, C017, and C018 are reserved and never reused.
 

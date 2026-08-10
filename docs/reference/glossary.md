@@ -13,6 +13,7 @@
 | **Change plan** | Safe transformation plan with preservation guarantees, waves, cutover, rollback, and checks. |
 | **Audit** | Evidence-backed record of present-state risks; no intended behavior or prescription. |
 | **Research** | Evidence for one decision-informing question; no decision. |
+| **Campaign artifact** | Restartable multi-pull-request goal contract: stable objective, authorities, operating loop, blockers, and verifiable completion; mutable progress stays in one project-native ledger. |
 | **Inspection method** | A bounded method run over a target. Bulletproof and Demolition stay read-only; Revolver repairs between sequential stances; Triple-check repairs after one parallel review wave. |
 | **Review packet** | Independent reconciliation of implementation and evidence against the spec. |
 | **Requirement assessment** | Agent evidence judgment recorded as Supported, Unsupported, Unverified, or Blocked per requirement. |
@@ -27,7 +28,7 @@
 | **Checker** | `suspec check`: read-only facts and severity levels over explicit artifact paths. |
 | **Revolver** | Purpose-agnostic breadth inspection through every materially distinct target-derived stance, resolved sequentially. |
 | **Triple-check** | Exactly three fresh top-tier reviewers attacking one frozen target concurrently. |
-| **Campaign** | Large delivery admitted only after project-native lane, proof, resource, review, merge, and cleanup controls are proven. |
+| **Campaign** | Large delivery governed by a campaign artifact and admitted only after project-native lane, proof, resource, review, merge, and cleanup controls are proven. |
 | **Worktree lane** | One stable repository worktree with one active branch and one implementation owner, recycled across campaign tasks. |
 
 ## Authority

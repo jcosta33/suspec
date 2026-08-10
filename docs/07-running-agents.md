@@ -44,7 +44,16 @@ to prevent duplicate tests and phantom errors.
 
 ## Campaign controls
 
-Suspec's campaign method is advisory. Project commands provide deterministic local enforcement.
+`sus-campaign` writes a stable goal contract and points to one project-native progress ledger. The
+ledger owns tasks, dependencies, assignments, pull requests, and status. The campaign artifact owns
+the objective, authorities, restart loop, blockers, and completion contract. Never copy mutable
+progress into both.
+
+Every pickup rereads the campaign and its authorities, reconciles live state, repairs ledger drift,
+and continues the highest-priority dependency-ready work. Counts, branch SHAs, current pull-request
+state, and lane occupancy belong in the live systems that own them, not the goal.
+
+Suspec's campaign contract is advisory. Project commands provide deterministic local enforcement.
 Harness permissions provide isolated authority by keeping protected state, resources, and credentials
 outside worker reach.
 

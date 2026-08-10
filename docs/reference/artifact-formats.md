@@ -26,6 +26,7 @@ Leave, or Promote. Disposition is not frontmatter or lifecycle state.
 | `change-plan` | `sus-change-plan` | a staged structural transformation | `CHANGE-` |
 | `audit` | `sus-audit` | evidenced present-state risks | `AUDIT-` |
 | `research` | `sus-research` | evidence for one decision-informing question | `RESEARCH-` |
+| `campaign` | `sus-campaign` | one restartable multi-pull-request goal | `CAMPAIGN-` |
 
 No other `type:` value is a Suspec artifact. Project records such as issues, decision records,
 product documents, and release documentation keep their project-native formats.
@@ -256,6 +257,42 @@ Sections:
 - Task split
 
 Every wave names verification.
+
+## Campaign
+
+Frontmatter:
+
+```yaml
+type: campaign
+id: CAMPAIGN-checkout-modernization
+status: draft
+ledger: https://github.com/example/shop/issues/123
+sources:
+  - ../checkout/spec.md
+```
+
+Required sections:
+
+- Objective
+- Completion contract
+- Authorities
+- Operating loop
+- Stops
+
+Add `Constraints`, `Non-goals`, or `Workstreams` only when useful. `status` is `draft` or `ready`.
+A ready campaign has no unresolved blocking decision.
+
+The campaign is a stable goal contract. One project-native issue, epic, or equivalent ledger owns
+work items, dependencies, assignments, pull requests, and mutable status. The campaign points to
+that ledger and contains no Markdown task-list checkboxes.
+
+Every pickup rereads the campaign and its authorities, reconciles live state, repairs ledger drift,
+selects the highest-priority dependency-ready work, executes project gates, records durable
+progress, and repeats until the completion contract passes or a named human decision blocks work.
+
+Local `ledger` and `sources` references resolve artifact-relative. Use durable URLs when the goal
+runs where those local files are unavailable. The campaign never grants merge, cleanup, credential,
+or resource authority.
 
 ## Reference rules
 

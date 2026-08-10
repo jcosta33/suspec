@@ -19,11 +19,11 @@
 # Severities are expressed at check time — exit codes are the API (0 clean ·
 # 1 warning · 2 blocking); the human owns what blocks a merge.
 
-version: 0.23.0 # contract version of this file
+version: 0.24.0 # contract version of this file
 
 # --- Artifact and frontmatter contract ----------------------------------------
 artifact_types:
-  checked: [spec, task, review, change-plan]
+  checked: [spec, task, review, change-plan, campaign]
   recognized_unchecked: [inventory, audit, research]
   missing_type: hard-error
   unknown_type: hard-error
@@ -105,6 +105,9 @@ core_checks:
   - { id: C026, name: evidence-receipt-resolves, severity: hard-error } # review: explicit local Markdown receipt links with E-NNN fragments resolve artifact-relative to a matching HTML anchor
   - { id: C027, name: review-spec-ref, severity: hard-error } # review spec ref matches the spec packet handed through --spec
   - { id: C028, name: requirement-shape, severity: hard-error } # spec: non-empty When and Then plus one Verify with list item in order, with no other live body line; C003 owns an empty Verify value
+  - { id: C029, name: campaign-shape, severity: hard-error } # campaign: frontmatter and required H2 sections are structurally valid
+  - { id: C030, name: campaign-authority, severity: hard-error } # campaign: local ledger/source refs resolve artifact-relative; no duplicated Markdown task-list state
+  - { id: C031, name: campaign-ready, severity: hard-error } # campaign: ready status carries no unresolved blocking decision
   # C005 and C006 are RESERVED. Never reuse.
 
 # --- The task packet -----------------------------------------------------------
@@ -169,6 +172,40 @@ task_file:
         `Open question (blocking):`. The values `none` and `n/a`, matched
         case-insensitively after trimming, are resolved and do not fail. HTML
         comments and fenced output are excluded; inline code remains live text.
+
+# --- The campaign goal ---------------------------------------------------------
+campaign_file:
+  frontmatter:
+    scalar: [type, id, status, ledger]
+    list: [sources]
+  type_value: campaign
+  non_empty: [id, ledger, sources]
+  status_enum: [draft, ready]
+  invalid_option_value: hard-error
+  required_section_occurrence: exactly-once
+  required_sections:
+    - Objective
+    - Completion contract
+    - Authorities
+    - Operating loop
+    - Stops
+  content_rules:
+    - id: campaign-shape # implemented by core check C029
+      severity: hard-error
+      rule: >-
+        Frontmatter fields have the declared shapes; id, ledger, and sources are non-empty; status
+        is draft or ready; and every required H2 section appears exactly once with non-empty body.
+    - id: campaign-authority # implemented by core check C030
+      severity: hard-error
+      rule: >-
+        A URL is external. Every path-shaped local ledger or source reference is relative to the
+        campaign and resolves to a file. Absolute local references fail. The body contains no
+        Markdown task-list checkbox; mutable progress belongs to the named project ledger.
+    - id: campaign-ready # implemented by core check C031
+      severity: hard-error
+      rule: >-
+        At status ready, visible body text contains no TBD, TODO, ???, or non-empty canonical
+        blocking label. Fenced output and HTML comments are excluded; inline code remains live.
 
 # --- The review packet ----------------------------------------------------------
 # The review packet's required shape (the human-facing reference is

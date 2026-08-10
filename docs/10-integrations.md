@@ -45,7 +45,8 @@ Keep existing owners:
 - project records hold durable decisions and lessons.
 
 An autonomous campaign starts only after these native controls prove their owner and enforcement
-class. Suspec supplies no delivery runtime.
+class. Its stable campaign artifact points to the native ledger that owns mutable progress. Suspec
+supplies no delivery runtime.
 
 The checker verifies coverage, evidence presence, references, and command matches for structured
 `verify` blocks. Free-form evidence receives advisory human review. Suspec never owns credentials,
