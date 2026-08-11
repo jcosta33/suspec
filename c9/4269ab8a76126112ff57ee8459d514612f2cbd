@@ -1,0 +1,28 @@
+docs/07-running-agents.md
+  s_0a3429e31e555d::t_f5631ffbf99c4b 56-66
+docs/reference/artifact-formats.md
+  s_0a3429e31e555d::t_f5631ffbf99c4b 283-285
+docs/adrs/README.md
+  s_0a3429e31e555d::t_f5631ffbf99c4b 196,201,204,210,212-213
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_801bacb2a1dfa0 6
+  s_0a3429e31e555d::t_18097b17e9a7f8 5
+docs/adrs/0179-proportional-campaign-authority.md
+  s_0a3429e31e555d::t_f5631ffbf99c4b 1-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c94269ab8a76126112ff57ee8459d514612f2cbd",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
