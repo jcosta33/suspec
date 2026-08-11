@@ -53,19 +53,17 @@ Every pickup rereads the campaign and its authorities, reconciles live state, re
 and continues the highest-priority dependency-ready work. Counts, branch SHAs, current pull-request
 state, and lane occupancy belong in the live systems that own them, not the goal.
 
-Suspec's campaign contract is advisory. Project commands provide deterministic local enforcement.
-Harness permissions provide isolated authority by keeping protected state, resources, and credentials
-outside worker reach.
+Classify only operations the campaign will use. Advisory guidance coordinates willing agents.
+Deterministic local commands reject invalid transitions. Isolated authority keeps protected state,
+resources, or credentials outside worker reach. Match the mechanism to the claim.
 
-Before allocating lanes or dispatching implementation, prove project-native control of lane
-ownership, proportionate verification, machine-wide heavyweight admission, pull-request shape and
-size, bounded review, exact-state proof, merge admission, and cleanup. Record each owner, class,
-mechanism, and negative check in the native campaign ledger. Instructions and worker self-attestation
-do not qualify.
+Name each operation's owner, strength, mechanism, and failure behavior in the native ledger. Missing
+authority blocks that operation, not unrelated work. One trusted owner may bootstrap a missing
+control while the campaign states the temporary limit and claims no unavailable protection.
 
-Hosted status checks are optional. Exact-state local command evidence is valid when the project gate
-accepts it. If a required capability is absent, stop dependent autonomy; let a human supply the
-control, execute the affected transition, or cancel.
+Hosted status checks are optional. Project-approved local proof remains valid. Humans own intent,
+material decisions, waivers, irreversible authority, and acceptance; they may delegate merge or
+cleanup execution to a named orchestrator, project command, or protected queue.
 
 ## Return
 

@@ -280,7 +280,9 @@ Required sections:
 - Stops
 
 Add `Constraints`, `Non-goals`, or `Workstreams` only when useful. `status` is `draft` or `ready`.
-A ready campaign has no unresolved blocking decision.
+A ready campaign has no unresolved blocking decision. Every intended operation names a reachable
+owner, honest control strength, mechanism, and failure behavior. A named stop may guard a later
+unavailable transition without blocking independent work.
 
 The campaign is a stable goal contract. One project-native issue, epic, or equivalent ledger owns
 work items, dependencies, assignments, pull requests, and mutable status. The campaign points to
