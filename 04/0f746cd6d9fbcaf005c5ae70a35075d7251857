@@ -1,0 +1,29 @@
+policy/agent-policy-predecessors.txt
+  s_0a3429e31e555d::t_8b626b32c118da 4
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_527f673a6616ba 5-6
+docs/research/sources.md
+  s_0a3429e31e555d::t_8b626b32c118da 220-231
+policy/agent.md
+  s_0a3429e31e555d::t_8b626b32c118da 17-20
+docs/adrs/README.md
+  s_0a3429e31e555d::t_8b626b32c118da 214
+docs/adrs/0180-evidence-bounded-execution.md
+  s_0a3429e31e555d::t_8b626b32c118da 1-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "040f746cd6d9fbcaf005c5ae70a35075d7251857",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
