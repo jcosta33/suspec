@@ -14,6 +14,10 @@ Show the smallest untouched evidence excerpt that decides a claim. Expand only w
 compress required questions, direct answers, safety warnings, irreversible-action confirmation,
 blockers, or failed or incomplete verification.
 
+Do not repeat a read, search, command, test, or review unless relevant state changed, the previous
+attempt failed, or independent repetition is required. Stop when the requested result exists and
+proportionate verification passes.
+
 # Context tools
 
 When lean-ctx `ctx_*` tools are available, use them for reads, search, code maps, and shell dispatch.

@@ -217,6 +217,18 @@
 <a id="OAILEAN"></a>
 **[OAILEAN] Latest model prompting guidance.** OpenAI developer docs, 2026. Reports directional internal coding-agent results from leaner prompts: higher task scores, 41-66% fewer total tokens, and 33-67% lower cost; explicitly requires validation on representative work. <https://developers.openai.com/api/docs/guides/latest-model> - *first-party internal result; direction only.*
 
+<a id="PACT"></a>
+**[PACT] What Should Agents Say? Action-state Communication for Efficient Multi-Agent Systems.** Huang, Wu, and Zhang, 2026. Reports that compact action-state-result records improved the performance-cost tradeoff across evaluated multi-agent systems and coding harnesses; no fixed communication strategy won everywhere. <https://arxiv.org/abs/2606.05304> - *recent preprint; model- and harness-specific.*
+
+<a id="EET"></a>
+**[EET] Experience-Driven Early Termination for Cost-Efficient Software Engineering Agents.** Guo et al., 2026. Reports 19-55% lower cost across six SWE-bench Verified configurations with at most 0.2 percentage-point resolution loss by stopping unproductive iterations from retrieved execution experience. <https://arxiv.org/abs/2601.05777> - *recent benchmark result; depends on transferable prior experience.*
+
+<a id="PROMPTWASTE"></a>
+**[PROMPTWASTE] Same Task, Different Work: Prompt-Induced Waste in Coding Agents.** Weinberger and Hozez, 2026. Across 4,644 valid runs, unbounded certainty and multi-approach prompts increased reasoning, verification, tool calls, latency, and cost without measured success gains in the evaluated tasks. <https://arxiv.org/abs/2608.01347> - *recent preregistered preprint; many tasks were small and deterministic.*
+
+<a id="TOKENCOST"></a>
+**[TOKENCOST] Token Reduction Is Not Cost Reduction.** Weinberger and Hozez, 2026. In 2,848 analyzed provider-billed Claude Code runs, one intervention removed about 38% of raw tool-output tokens but raised paired cost about 7%; lossy compression also damaged exact edit anchors. <https://arxiv.org/abs/2607.12161> - *recent preprint; provider-, pricing-, and harness-specific.*
+
 <a id="CLAUDETOOLS"></a>
 **[CLAUDETOOLS] Advanced tool use.** Anthropic Engineering, 2026. Reports a 55K-token tool-definition baseline in one internal system and a 37% token reduction from programmatic handling that kept intermediate results out of model context. <https://www.anthropic.com/engineering/advanced-tool-use> - *first-party internal result; workload-specific.*
 
