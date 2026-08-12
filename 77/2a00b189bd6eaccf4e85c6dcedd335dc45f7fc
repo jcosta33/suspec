@@ -1,0 +1,21 @@
+policy/agent.md
+  s_1304386b9215e3::t_f16f29be61bd4c 3-4,6-7,9-10,12-14,16-17,22-24,28-29
+policy/agent-policy-predecessors.txt
+  s_1304386b9215e3::t_c7a5ae35cfca01 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "772a00b189bd6eaccf4e85c6dcedd335dc45f7fc",
+  "prompts": {},
+  "sessions": {
+    "s_1304386b9215e3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f13d4fbe-9014-4251-8a5e-e2a26dae080a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
