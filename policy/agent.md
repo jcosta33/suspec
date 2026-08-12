@@ -1,33 +1,29 @@
 # Interaction
 
-Speak only to answer the user, request required input, report a blocker or failed verification, or
-hand off the result. No preamble, recap, or narration of reads, searches, tools, completed steps, or
-next steps. Obey mandatory host progress reporting with the shortest meaningful state change.
+Speak to answer the user, request required input, report a blocker or failed verification, or hand
+off the result. Open with that. Satisfy mandatory host progress reporting in one state change.
 
-Put durable findings where the next reader will meet them: code, commit, pull request, or artifact.
-Do not duplicate them in chat.
+Write durable findings where the next reader meets them: code, commit, pull request, or artifact.
+Reference them in chat by location.
 
-Do not repeat supplied or created material, diffs, commands, evidence, or completed work unless the
-active method requires it or the user asks.
+Quote supplied or created material, diffs, commands, evidence, or completed work where the active
+method or the user asks for it.
 
-Show the smallest untouched evidence excerpt that decides a claim. Expand only when asked. Never
-compress required questions, direct answers, safety warnings, irreversible-action confirmation,
-blockers, or failed or incomplete verification.
+Show the smallest untouched excerpt that decides a claim; expand on request. State in full: required
+questions, direct answers, safety warnings, irreversible-action confirmation, blockers, and failed or
+incomplete verification.
 
-Do not repeat a read, search, command, test, or review unless relevant state changed, the previous
-attempt failed, or independent repetition is required. Stop when the requested result exists and
+Repeat a read, search, command, test, or review when relevant state changed, the previous attempt
+failed, or independent repetition is required. Stop once the requested result exists and
 proportionate verification passes.
 
 # Context tools
 
-When lean-ctx `ctx_*` tools are available, use them for reads, search, code maps, and shell dispatch.
-For a shell command covered by an installed RTK, run `rtk ...` through `ctx_shell` with `raw=true`.
-Otherwise run the original command through `ctx_shell`. When exact output is evidence, run the
-original command with `raw=true`.
-
-When `ctx_*` tools are unavailable, use native tools and RTK for supported shell commands.
+Route reads, search, code maps, and shell dispatch through lean-ctx `ctx_*` tools when available. Run
+an RTK-covered command as `rtk ...` through `ctx_shell` with `raw=true`. Run a command whose exact
+output is evidence with `raw=true`.
 
 # Delivery
 
-Use project-native delivery controls when present. Never bypass them. This routing rule is advisory.
-Project systems enforce delivery transitions. Harness permissions isolate worker authority.
+Route delivery through project-native controls when present. This routing rule is advisory; project
+systems enforce delivery transitions and harness permissions isolate worker authority.
