@@ -1,0 +1,23 @@
+docs/adrs/0183-single-file-skills-and-role-routed-models.md
+  s_0a3429e31e555d::t_4dfa7ef5173189 1-40
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_c76178759c3d9f 5-6
+docs/adrs/README.md
+  s_0a3429e31e555d::t_4dfa7ef5173189 196,203,217
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "91fe34f99aa963a6f9fcf45130bada9e21e8c3df",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
