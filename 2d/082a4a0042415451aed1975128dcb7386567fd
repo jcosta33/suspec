@@ -1,0 +1,40 @@
+docs/adrs/0181-evidence-settled-decisions-and-bounded-panels.md
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 1-68
+checks/checks.yaml
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 22,27
+AGENTS.md
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 24-25
+docs/adrs/README.md
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 215
+docs/reference/artifact-formats.md
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 30,247-267
+  s_0a3429e31e555d::t_a6e394242e5711 268
+docs/reference/checks.md
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 24
+docs/reference/glossary.md
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 16,28
+scripts/lint-method-topology.sh
+  s_0a3429e31e555d::t_54fea68db70a5b 130
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 165,217,249
+  s_0a3429e31e555d::t_41f91682a8eeff 126,134
+docs/reference/agent-guides.md
+  s_0a3429e31e555d::t_8a5bd69aeb32d3 26-29
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_63f721c94af283 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2d082a4a0042415451aed1975128dcb7386567fd",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
