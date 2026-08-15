@@ -260,7 +260,8 @@ when they carry information. No other sections belong in a panel artifact.
 
 Honor a user-specified participant count. Otherwise use the smallest panel that covers every
 material perspective. Give fresh participants one fixed packet and hide peer analyses until every
-initial response lands. Use the cheapest capable models unless the user requests otherwise.
+initial response lands. Launch the initial analyses concurrently. Use the cheapest capable models
+unless the user requests otherwise.
 
 The orchestrator verifies load-bearing claims, synthesizes the result, and preserves material
 dissent. Agreement is not evidence. Persist no votes, identities, transcripts, or repeated

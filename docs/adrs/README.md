@@ -213,6 +213,7 @@ Two consequences of that rule govern this ledger:
 | [0179](./0179-proportional-campaign-authority.md) | Operation-scoped campaign preflight, proportional control strength, bootstrap, and delegated execution | **New (canon -> skills) - accepted (2026-08-11)** - narrows 0162, 0167, 0170, 0176, and 0178 |
 | [0180](./0180-evidence-bounded-execution.md) | Changed-state repetition, evidence-bounded stopping, and compact campaign handoffs | **New (canon -> skills/CLI) - accepted (2026-08-12)** - narrows 0162, 0163, 0167, 0171, and 0178 |
 | [0181](./0181-evidence-settled-decisions-and-bounded-panels.md) | Evidence-settled technical decisions and bounded independent panels | **New (canon -> skills/CLI/MCP) - accepted (2026-08-15)** - narrows 0151, 0157, 0169, and 0170 |
+| [0182](./0182-concurrent-independent-panel-pass.md) | Concurrent blind first-pass analysis for adaptive panels | **New (canon -> skills) - accepted (2026-08-15)** - narrows 0181 |
 
 ## The new kernel ADRs (0027+), by topic
 
