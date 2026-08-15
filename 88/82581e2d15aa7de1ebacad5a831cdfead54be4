@@ -1,0 +1,25 @@
+docs/reference/artifact-formats.md
+  s_0a3429e31e555d::t_08cd1057af382f 263-264
+scripts/lint-accepted-adrs.sh
+  s_0a3429e31e555d::t_1abd7470cd2c5a 5-6
+docs/adrs/README.md
+  s_0a3429e31e555d::t_08cd1057af382f 216
+docs/adrs/0182-concurrent-independent-panel-pass.md
+  s_0a3429e31e555d::t_08cd1057af382f 1-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "8882581e2d15aa7de1ebacad5a831cdfead54be4",
+  "prompts": {},
+  "sessions": {
+    "s_0a3429e31e555d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1568-8dda-7540-97a5-9da760eadac4",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
