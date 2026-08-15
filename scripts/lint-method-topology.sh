@@ -123,15 +123,15 @@ agent_policy="$canon/policy/agent.md"
 generated_policy="$cli/src/generated/agentPolicy.ts"
 test -f "$agent_policy" || { echo "canonical agent policy missing" >&2; exit 1; }
 test -f "$generated_policy" || { echo "CLI generated agent policy missing" >&2; exit 1; }
-grep -Fq 'Use project-native delivery controls when present. Never bypass them.' "$agent_policy" || {
+grep -Fq 'Route delivery through project-native controls when present.' "$agent_policy" || {
   echo "agent policy lacks native delivery routing" >&2
   exit 1
 }
-grep -Fq 'This routing rule is advisory.' "$agent_policy" || {
+grep -Fq 'This routing rule is advisory;' "$agent_policy" || {
   echo "agent policy overstates instruction enforcement" >&2
   exit 1
 }
-grep -Fq 'Project systems enforce delivery transitions. Harness permissions isolate worker authority.' "$agent_policy" || {
+grep -Fq 'systems enforce delivery transitions and harness permissions isolate worker authority.' "$agent_policy" || {
   echo "agent policy lacks native enforcement ownership" >&2
   exit 1
 }
@@ -162,6 +162,7 @@ require_writer change-plan sus-change-plan
 require_writer audit sus-audit
 require_writer research sus-research
 require_writer campaign sus-campaign
+require_writer panel sus-panel
 stale_methods='concise-output|revolver-review|codebase-exploration|promote-artifact|save-findings|empirical-proof|implement-task|market-research|planning-spec|write-spec|spec-check|split-work|review-output|security-review|fix-flaky-test|git-pr|write-audit|write-bug-report|write-change-plan|write-documentation|write-feature|write-fix|write-inventory|write-migration|write-performance|write-prd|write-refactor|write-research|write-rewrite|write-rfc|write-testing'
 if grep -RniE --exclude-dir=adrs "(^|[^[:alnum:]-])($stale_methods)([^[:alnum:]-]|$)" \
   "$canon/README.md" "$canon/AGENTS.md" "$canon/docs" "$canon/checks" \
@@ -213,7 +214,7 @@ if grep -RniE --exclude-dir=adrs \
   exit 1
 fi
 
-grep -q '^version: 0\.24\.0' "$canon/checks/checks.yaml" || {
+grep -q '^version: 0\.25\.0' "$canon/checks/checks.yaml" || {
   echo "checks contract version drift" >&2
   exit 1
 }
@@ -245,7 +246,7 @@ grep -Fq '  checked: [spec, task, review, change-plan, campaign]' "$canon/checks
   echo "checked artifact matrix drift" >&2
   exit 1
 }
-grep -Fq '  recognized_unchecked: [inventory, audit, research]' "$canon/checks/checks.yaml" || {
+grep -Fq '  recognized_unchecked: [inventory, audit, research, panel]' "$canon/checks/checks.yaml" || {
   echo "unchecked artifact matrix drift" >&2
   exit 1
 }

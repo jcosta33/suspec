@@ -212,6 +212,7 @@ Two consequences of that rule govern this ledger:
 | [0178](./0178-restartable-campaign-goals.md) | Stable campaign goal contracts, project-native progress, restart-safe execution, and deterministic campaign checks | **New (canon -> skills/CLI/MCP) - accepted (2026-08-10)** - narrows 0148, 0151, 0157, 0162, 0167, and 0176; checks contract 0.24.0; narrowed by [0179](./0179-proportional-campaign-authority.md) (readiness becomes operation-scoped) |
 | [0179](./0179-proportional-campaign-authority.md) | Operation-scoped campaign preflight, proportional control strength, bootstrap, and delegated execution | **New (canon -> skills) - accepted (2026-08-11)** - narrows 0162, 0167, 0170, 0176, and 0178 |
 | [0180](./0180-evidence-bounded-execution.md) | Changed-state repetition, evidence-bounded stopping, and compact campaign handoffs | **New (canon -> skills/CLI) - accepted (2026-08-12)** - narrows 0162, 0163, 0167, 0171, and 0178 |
+| [0181](./0181-evidence-settled-decisions-and-bounded-panels.md) | Evidence-settled technical decisions and bounded independent panels | **New (canon -> skills/CLI/MCP) - accepted (2026-08-15)** - narrows 0151, 0157, 0169, and 0170 |
 
 ## The new kernel ADRs (0027+), by topic
 

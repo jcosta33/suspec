@@ -23,7 +23,9 @@ The implementer cannot manufacture independence by changing hats. A fresh review
 reruns evidence; worker output is only a claim index.
 
 Revolver provides breadth, Triple-check depth, Bulletproof claim verification, and Demolition
-quarantined advocacy. Agents return evidence, findings, and assessments. Humans own intent, material
-tradeoffs, waivers, irreversible actions, and acceptance.
+quarantined advocacy. Settle resolves agent-owned technical ambiguity from evidence. A panel
+preserves independent alternatives when durable deliberation is required. Agents return evidence,
+findings, assessments, and recommendations. Humans own intent, material tradeoffs, waivers,
+irreversible actions, and acceptance.
 
 Related: [review stances](review-stances.md) · [review](../08-reviewing-output.md)
