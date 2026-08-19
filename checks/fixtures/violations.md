@@ -57,20 +57,20 @@ A bare CI URL also fails:
 
 ---
 
-## V2 — Supported with an empty Evidence cell (`supported-needs-evidence` / C016, hard error)
-
-A review packet's coverage table:
+## V2 — `type: review` is unknown (`unknown_type`, hard error)
 
 ```markdown
-| ID     | Assessment | Evidence |
-| ------ | ---------- | -------- |
-| AC-001 | Supported  |          |
+---
+type: review
+id: REVIEW-retired
+spec: SPEC-checkout
+reviewer: fixture-reviewer
+decision: pending
+---
 ```
 
-**Expected:** flagged — an empty Evidence cell means **Unverified**, never **Supported**.
-The row's correct content is `Unverified` plus a Findings or Open decisions entry. Implemented as
-**C016**: blocking at check time — a structural contradiction, not a judgment call; the human
-owns what blocks a merge.
+**Expected:** flagged — `type: review` is not a checked or recognized artifact. C012, C013, C016,
+C020, C026, and C027 are RESERVED and never reused. Independent review lives on the native PR.
 
 ---
 
@@ -203,22 +203,7 @@ labels after unordered (`-`, `*`, `+`) and ordered (`N.`) list markers. The cano
 
 ---
 
-## V23 — invalid review structure (unnumbered review contract, hard error)
-
-Each packet below violates the deterministic review schema without minting a C-code:
-
-```markdown
----
-type: review
-id: ""
-spec: SPEC-invalid
-reviewer: fixture-reviewer
-decision: approved
-waivers: [AC-001]
----
-
-## Requirement coverage
-```
+## V23 — `type: review` is unknown (`unknown_type`, hard error)
 
 ```markdown
 ---
@@ -227,66 +212,30 @@ id: REVIEW-invalid-acceptance
 spec: SPEC-invalid
 reviewer: fixture-reviewer
 decision: accepted
-waivers: [AC-001, AC-001]
 ---
-
-## Requirement coverage
-
-| ID | Assessment | Evidence |
-|---|---|---|
-| AC-001 | Unsupported | failing output |
-| AC-002 | Blocked | dependency unavailable |
-| AC-003 | Partially supported | incomplete output |
-
-## Open decisions
-
-- Decide whether to accept AC-001.
 ```
 
-**Expected:** the first packet fails for an empty ID, an invalid decision option, and an empty required
-coverage section; waivers are forbidden before acceptance. The second fails because accepted
-waivers contain a duplicate, and an accepted review cannot retain a non-empty Open decisions
-section or a `Blocked` assessment. `Partially supported` is outside the assessment enum; `Blocked`
-is valid before acceptance but cannot be waived or retained at acceptance.
-
-The same blocking option-value error applies to spec `status` outside `draft | ready` and task
-`status` outside `ready | running | review-ready | closed`.
-
-A present Change-plan coverage table uses the same three columns and assessment options:
-
-```markdown
-## Change-plan coverage
-
-| ID | Assessment | Evidence |
-|---|---|---|
-| PG-001 | Supported | |
-| PG-002 | Partially supported | incomplete output |
-| PG-003 | Blocked | dependency unavailable |
-```
-
-**Expected:** the table is parsed. C016 fires for PG-001, the invalid assessment is blocking, and
-every non-Supported preservation row blocks `decision: accepted`. C012, C013, and requirement-waiver
-reconciliation ignore all three rows.
+**Expected:** `unknown_type`. The review packet is gone. Option-value errors still apply to spec
+`status` outside `draft | ready` and task `status` outside `ready | running | review-ready | closed`.
 
 ---
 
-## V7 — out-of-scope change (review checklist)
+## V7 — out-of-scope change (native review)
 
-A task whose Affected areas list `src/auth/refresh.ts`, reviewed by a packet that says:
+A task whose Affected areas list `src/auth/refresh.ts`, reviewed on the native PR where the reviewer
+notes:
 
 ```markdown
-## Changed files
+Changed files:
 
 - `src/auth/refresh.ts`
 - `src/billing/invoice.ts`
 
-## Findings
-
-None — all requirements pass.
+Findings: none — all requirements pass.
 ```
 
 **Expected:** the reviewer flags `src/billing/invoice.ts` because it is outside the task's Affected
-areas and no Findings or Open decisions entry routes it. The deterministic checker receives no diff
+areas and no finding or open decision routes it. The deterministic checker receives no diff
 and does not claim this result.
 
 ---
@@ -420,46 +369,8 @@ A task packet with frontmatter `status: closed` whose sections end at
 
 **Expected:** flagged — `Run summary` is a required section of the task packet
 (checks.yaml `required_sections`). A closed task with no handoff digest leaves
-the review packet nothing to read; the Verify pastes hold the evidence, the
+a later reviewer nothing to read; the Verify pastes hold the evidence, the
 summary indexes it.
-
----
-
-## V18 — coverage gaps against a ready spec (C012 `coverage`, warning)
-
-A ready spec `SPEC-x` defining `AC-001`, `AC-002`, `AC-003`; a task whose
-`scope` is `[AC-001, AC-002, AC-003]`; reviewed by a packet whose coverage table omits `AC-003`
-and adds a row for `AC-009` (an id the source spec does not define):
-
-```markdown
-## Requirement coverage
-
-| ID     | Assessment | Evidence |
-| ------ | ---------- | -------- |
-| AC-001 | Supported  | pasted   |
-| AC-002 | Supported  | pasted   |
-| AC-009 | Supported  | pasted   |
-```
-
-**Expected:** flagged — `AC-003` is in scope but has no coverage row (**uncovered**), and `AC-009`
-names an id absent from the source spec (**orphan**). Review requires the source spec to be exactly
-`ready`; draft, missing, and unknown statuses fail before C012. Surfaces facts, never a verdict.
-
----
-
-## V19 — a verify block's cmd disagrees with the named command (C013 `verify-evidence-binding`, hard error)
-
-A ready spec whose `AC-001` carries `` Verify with: `npm test -- auth-refresh.spec.ts` ``, reviewed
-by a packet whose `AC-001` Supported row carries a structured `verify` block (a fenced sibling, info-string
-`id=AC-001 cmd="npm test -- other.spec.ts" result=pass`) recording a **different** command.
-
-**Expected:** flagged `cmd-mismatch` as a hard error — the block's recorded `cmd` does not
-match the requirement's named Verify command. The comparison normalizes away surrounding backticks,
-a trailing `(parenthetical)` note,
-and whitespace, so the canon's own backtick-wrapped Verify-with form does **not** false-fire;
-only a genuine disagreement trips it. A block whose `cmd` matches and reads `result=pass` is
-consistent → no finding; a Supported row with only the free-form Evidence cell stays a warning, never
-machine-rejected. A consistency fact, never a verdict.
 
 ---
 
@@ -529,67 +440,3 @@ empty, duplicated, misordered, or additional live lines are malformed. C003 sepa
 `Verify with` value.
 
 ---
-
-## V22 — a review's `task:` does not match the handed task packet (C020 `unresolvable-ref`, hard-error)
-
-A review packet whose frontmatter `task:` names a task id, checked against a task packet that
-identifies as a different task:
-
-```markdown
----
-type: review
-id: REVIEW-checkout-expiry
-spec: SPEC-checkout
-task: TASK-checkout-expiry-typo
-reviewer: fixture-reviewer
-decision: pending
----
-
-## Requirement coverage
-
-| ID     | Assessment | Evidence |
-| ------ | ---------- | -------- |
-| AC-001 | Supported  | pasted   |
-```
-
-…checked as `suspec check review.md --spec spec.md --task task.md`, where `task.md`'s frontmatter
-`id:` is not `TASK-checkout-expiry-typo`.
-
-**Expected:** flagged `unresolvable-ref` (hard-error) — the review's `task:` does not resolve to the
-task packet it was handed, so C012/C013/C016 would key on the wrong slice; without it a
-typo'd/renamed task ref silently bypasses the honesty checks. Blocking (structural, like C016).
-Deliberately narrow — C020 keys on the `task:` ref only; C027 separately binds `spec:`. A task-less
-review (no `task:` frontmatter) is out of C020's scope entirely and reconciles spec-keyed, with no
-`--task`. (A review
-that names a task but is checked with no `--task` never reaches this check: the missing flag is
-itself a blocking usage error.)
-
----
-
-## V25 — a review evidence link resolves nowhere (C026 `evidence-receipt-resolves`, hard error)
-
-```markdown
-| ID | Assessment | Evidence |
-| --- | --- | --- |
-| AC-001 | Supported | [E-001](./evidence-missing.md#E-001) |
-```
-
-**Expected:** C026 fires when `evidence-missing.md` is absent beside the review or lacks
-`<a id="E-001"></a>`. It checks explicit local path and anchor wiring, not evidence truth or age.
-
----
-
-## V26 — a review names the wrong spec (C027 `review-spec-ref`, hard error)
-
-```yaml
-type: review
-id: REVIEW-checkout
-spec: SPEC-checkout-v2
-reviewer: fixture-reviewer
-decision: pending
-```
-
-Checked with `--spec spec.md`, where `spec.md` identifies as `SPEC-checkout`.
-
-**Expected:** C027 fires. Coverage against the wrong requirement authority is structurally invalid,
-including when either side omits its spec ID.

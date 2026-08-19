@@ -1,5 +1,9 @@
 # Cheatsheet
 
+Use the skill the work needs.
+
+Spec-governed path:
+
 ```text
 intent -> spec -> implement -> review -> check -> findings
 ```
@@ -13,13 +17,15 @@ Use the least structure that changes execution or reviewability. Everything else
 | ----------- | ---------------------------------------------------------- |
 | spec        | intent and verifiable requirements                         |
 | task        | one scoped source slice                                    |
-| review      | requirement assessments and evidence                       |
 | inventory   | observed structure, behavior, tests, constraints, unknowns |
 | change plan | baseline, target, preservation, waves, rollback            |
 | audit       | evidenced present-state risks                              |
 | research    | evidence for one decision-informing question               |
+| campaign    | one restartable multi-pull-request goal                    |
+| panel       | independent alternatives and one recommendation            |
 
-Evidence receipts and run notes are untyped sidecars. Findings are not a type. Exact shapes:
+`drill` is a universal method, not an artifact. Evidence receipts and run notes are untyped sidecars.
+Findings are not a type. Independent review lives on the native PR. Exact shapes:
 [artifact formats](artifact-formats.md).
 
 ## Requirement
@@ -34,16 +40,17 @@ Evidence receipts and run notes are untyped sidecars. Findings are not a type. E
 Use one condition, one behavior, exactly one binding word, one verification, and no unresolved
 uncertainty.
 
-## Assessments
+## Review judgments
 
-| Assessment  | Meaning                               |
+| Judgment    | Meaning                               |
 | ----------- | ------------------------------------- |
 | Supported   | evidence demonstrates the requirement |
 | Unsupported | evidence demonstrates failure         |
 | Unverified  | evidence is missing or insufficient   |
 | Blocked     | a dependency prevents judgment        |
 
-Reverify after requirement text, commands, or exercised code changes.
+A non-implementer records the verdict on the native PR. The implementer cannot accept. Reverify after
+requirement text, commands, or exercised code changes.
 
 ## Evidence
 
@@ -60,8 +67,7 @@ questions.
 
 ```bash
 suspec check <artifact> [<artifact>...]
-suspec check <review-path> --spec <spec-path>
-suspec check <review-path> --spec <spec-path> --task <task-path>
+suspec check <task-path> --spec <spec-path>
 suspec check --contract
 ```
 

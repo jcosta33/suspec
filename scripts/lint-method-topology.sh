@@ -156,7 +156,6 @@ require_writer() {
 }
 require_writer spec sus-spec
 require_writer task sus-task
-require_writer review sus-review
 require_writer inventory sus-inventory
 require_writer change-plan sus-change-plan
 require_writer audit sus-audit
@@ -214,7 +213,7 @@ if grep -RniE --exclude-dir=adrs \
   exit 1
 fi
 
-grep -q '^version: 0\.25\.0' "$canon/checks/checks.yaml" || {
+grep -q '^version: 0\.26\.0' "$canon/checks/checks.yaml" || {
   echo "checks contract version drift" >&2
   exit 1
 }
@@ -242,7 +241,7 @@ printf '%s\n' "$actual_checks" | while read -r id name severity; do
     exit 1
   }
 done
-grep -Fq '  checked: [spec, task, review, change-plan, campaign]' "$canon/checks/checks.yaml" || {
+grep -Fq '  checked: [spec, task, change-plan, campaign]' "$canon/checks/checks.yaml" || {
   echo "checked artifact matrix drift" >&2
   exit 1
 }
@@ -268,31 +267,12 @@ grep -Fq '  common_scalar_fields: [type, id]' "$canon/checks/checks.yaml" || {
   echo "common frontmatter field-shape drift" >&2
   exit 1
 }
-grep -q '^  source_spec_status: ready' "$canon/checks/checks.yaml" || {
-  echo "ready source-spec review gate missing" >&2
-  exit 1
-}
-grep -q '^    sections: \[Requirement coverage, Change-plan coverage\]' "$canon/checks/checks.yaml" || {
-  echo "change-plan coverage parser contract missing" >&2
-  exit 1
-}
-grep -q '^    delimiter_row: required-immediately-after-header$' "$canon/checks/checks.yaml" || {
-  echo "coverage delimiter contract missing" >&2
-  exit 1
-}
-grep -q '^    rows: contiguous$' "$canon/checks/checks.yaml" || {
-  echo "coverage row-contiguity contract missing" >&2
-  exit 1
-}
-grep -q 'duplicate waiver' "$canon/checks/checks.yaml" || {
-  echo "duplicate waiver rejection missing" >&2
-  exit 1
-}
 grep -Fq '^(all )?(tests?|checks?) (pass(ed)?|succeeded)\.?$' "$canon/checks/checks.yaml" || {
   echo "C023 claim-only predicate drift" >&2
   exit 1
 }
-for id in C005 C006 C014 C017 C018; do
+# C012 is RESERVED. C013 is RESERVED. C016 is RESERVED. C020 is RESERVED. C026 is RESERVED. C027 is RESERVED. Never reuse.
+for id in C005 C006 C012 C013 C014 C016 C017 C018 C020 C026 C027; do
   if grep -qE "^  - \{ id: $id," "$canon/checks/checks.yaml"; then
     echo "$id must not be active" >&2
     exit 1

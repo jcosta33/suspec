@@ -1,6 +1,6 @@
 # Findings and memory
 
-Keep task-local findings with the live spec, task, or review and let them die there. Preserve only
+Keep task-local findings with the live spec or task and let them die there. Preserve only
 verified lessons that future work needs.
 
 Use `remember` to route one durable lesson:
@@ -28,7 +28,7 @@ Keep:
 
 Expired checkout sessions return `409 SESSION_EXPIRED`, not a 5xx.
 
-Evidence: `test/integration/expired-session.test.ts`; confirmed in the checkout-expiry review,
+Evidence: `test/integration/expired-session.test.ts`; confirmed on the checkout-expiry PR,
 AC-001.
 
 Applies to checkout session expiry. Excludes other validation failures and non-checkout sessions.

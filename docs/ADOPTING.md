@@ -14,6 +14,8 @@ policy stay in native instructions.
 Re-running `npx skills add` updates present entries but does not remove names absent from the source.
 After a catalog removal, delete only obsolete Suspec entries with
 `npx skills remove -g -a <agent> <names...>`, then reinstall. Preserve unrelated skills.
+The 5.0.0 catalog removes `sus-review` and adds `drill`. Remove `sus-review` explicitly, then
+reinstall the family so `drill` lands.
 
 ## Add the optional CLI
 
@@ -66,8 +68,8 @@ for the other.
 1. Use `sus-spec` to write intent and requirements with stable IDs and `Verify with:` lines.
 2. Carry its absolute path from `~/.agents/artifacts/<workspace>/`.
 3. Implement from that path and preserve real verification output.
-4. Have a non-implementer review the result; use `sus-review` when risk earns a formal packet.
-5. Optionally run `suspec check` against the artifacts involved.
+4. Have a non-implementer review the result on the native PR. The implementer cannot accept.
+5. Optionally run `suspec check` against the spec, task, change plan, or campaign involved.
 6. Route durable findings to native memory or project records.
 7. After the final consumer finishes, choose Delete, Leave, or Promote for the complete transient
    artifact set.
@@ -82,8 +84,8 @@ work whose risk requires independence.
 ## Without the CLI
 
 Write the documented [artifact shapes](reference/artifact-formats.md), run each verification, preserve
-real output, and review every requirement. Treat empty evidence as `Unverified`. The CLI automates
-structural checks only.
+real output, and have a non-implementer review every requirement. Treat empty evidence as unverified.
+The CLI automates structural checks only.
 
 ## Teams
 

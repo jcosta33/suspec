@@ -1,7 +1,7 @@
 # Tutorial
 
-Walk one fictional feature through spec, implementation, review, and cleanup. No grand tour, just the
-whole loop:
+Walk one fictional feature through spec, implementation, independent review, and cleanup. No grand
+tour, just the spec-governed path:
 
 > A checkout session older than 30 minutes must return `409 SESSION_EXPIRED`, never a 5xx.
 
@@ -14,6 +14,6 @@ executable evidence.
 4. [Close](04-close.md)
 
 This case earns a spec and deterministic check, but no task. One requirement going to one worker is
-not a decomposition problem.
+not a decomposition problem. Review happens on the native diff. The implementer cannot accept.
 
 Prerequisites: [install Suspec](../ADOPTING.md), choose a repository, and use an agent or human worker.

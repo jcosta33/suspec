@@ -5,8 +5,9 @@ inventory -> spec -> change plan -> task split when needed -> implement -> revie
 ```
 
 Add only the structure the work needs. If you cannot name current behavior, you cannot promise to
-preserve it. `sus-inventory` records present reality. `sus-change-plan` defines a behavior-preserving
-transformation. Both use the
+preserve it. `sus-inventory` records present reality. `drill` locks language, obligation, place, then slice;
+it writes no Suspec file. `sus-change-plan` defines a behavior-preserving transformation when ordered
+waves and rollback must outlive the session. Inventory and change-plan files use the
 [agent-neutral artifact location](03-where-files-live.md).
 
 ## Inventory
@@ -25,6 +26,9 @@ Inventory observes. It does not pitch a redesign. The CLI recognizes inventory b
 review it by hand.
 
 ## Change plan
+
+Use `drill` when the next write is one seam and ordered waves plus rollback need not
+outlive the session. Do not write `type: change-plan` for that path.
 
 Use a change plan for migrations, rewrites, schema changes, broad refactors, dependency upgrades, or
 staged performance work. It adds:

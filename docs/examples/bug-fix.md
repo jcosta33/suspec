@@ -42,40 +42,15 @@ blockers under the spec's `## Execution`.
 
 ## Review
 
-`~/.agents/artifacts/payments-api/payment-timeout-retry-review.md`:
-
-````markdown
----
-type: review
-id: REVIEW-payment-timeout-retry
-spec: SPEC-payment-timeout-retry
-pr: none yet
-reviewer: fresh-review-session
-decision: pending
----
-
-## Requirement coverage
-
-| ID     | Assessment | Evidence                                                                                   |
-| ------ | ---------- | ------------------------------------------------------------------------------------------ |
-| AC-003 | Supported  | `npm run test:integration -- payment-timeout-retry` -> failed before fix, passed after fix |
-
-```verify id=AC-003 cmd="npm run test:integration -- payment-timeout-retry" result=pass
-1 passed
-```
-
-## Findings
-
-1. Money path: inspect retry path and idempotency lookup before merge.
-````
+A non-implementer opens the native PR, reruns the command, and judges AC-003 against the fresh
+output. No Suspec review file.
 
 ```bash
-suspec check ~/.agents/artifacts/payments-api/payment-timeout-retry-review.md \
-  --spec ~/.agents/artifacts/payments-api/payments-spec.md
+suspec check ~/.agents/artifacts/payments-api/payments-spec.md
 ```
 
-The checker validates coverage, evidence, and command consistency. It does not decide whether a
-money-path finding is acceptable. The human does.
+The checker validates spec shape. It does not decide whether a money-path finding is acceptable. The
+human does. The implementer cannot accept.
 
 Preserve the verified shared-lookup lesson through native memory when useful. Then
 [close the transient set](../03-where-files-live.md#close).

@@ -21,7 +21,7 @@ A contract change travels as a unit. Half-updated truth is still wrong.
 - Present current behavior in fresh-product language. Keep migration history inside ADRs.
 - State delivery control honestly: `advisory`, `deterministic local`, or `isolated authority`.
   Otherwise name the enforcing command or owner.
-- Use current artifact types only: spec, task, review, inventory, change plan, audit, research,
+- Use current artifact types only: spec, task, inventory, change plan, audit, research,
   campaign, and panel.
   Evidence receipts and run notes are untyped sidecars.
 - Publish no changing catalog, repository, artifact, or ADR totals. Decorative counts rot. Keep

@@ -1,16 +1,18 @@
 # Proportional rigor
 
-| Signal                                               | Add          |
-| ---------------------------------------------------- | ------------ |
-| intent exceeds one precise sentence                  | spec         |
-| source work has separately dispatchable slices       | task         |
-| present behavior or ownership is unclear             | inventory    |
-| structural work must preserve behavior across stages | change plan  |
-| risk or later reconstruction exceeds direct review   | review packet |
-| review needs deterministic reconciliation            | checker      |
-| behavior is defective or consequential                | executable oracle |
-| several risk surfaces need breadth                   | Revolver     |
-| one high-consequence surface needs depth             | Triple-check |
+| Signal                                               | Reach for     |
+| ---------------------------------------------------- | ------------- |
+| intent exceeds one precise sentence                  | spec          |
+| source work has separately dispatchable slices       | task          |
+| present behavior or ownership is unclear             | inventory     |
+| next write is one seam; language, obligation, place, or slice unlocked | drill         |
+| structural work must preserve behavior across stages; not a single-seam write | change plan   |
+| one durable goal spans several pull requests          | campaign      |
+| risk exceeds implementer inspection                  | native independent review |
+| review needs deterministic structure                 | checker       |
+| behavior is defective or consequential               | executable oracle |
+| several risk surfaces need breadth                   | Revolver      |
+| one high-consequence surface needs depth             | Triple-check  |
 
 Escalate for scope growth, conflicting intent, cross-owner work, public interfaces, security, data,
 payments, migrations, destructive operations, weak verification, coordinated workers, or recurring

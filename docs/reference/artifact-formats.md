@@ -21,7 +21,6 @@ Leave, or Promote. Disposition is not frontmatter or lifecycle state.
 | --- | --- | --- | --- |
 | `spec` | `sus-spec` | intent and verifiable requirements | `SPEC-` |
 | `task` | `sus-task` | one dispatched source slice | `TASK-` |
-| `review` | `sus-review` | requirement assessments and evidence | `REVIEW-` |
 | `inventory` | `sus-inventory` | observed present-state structure | `INV-` |
 | `change-plan` | `sus-change-plan` | a staged structural transformation | `CHANGE-` |
 | `audit` | `sus-audit` | evidenced present-state risks | `AUDIT-` |
@@ -109,75 +108,8 @@ must name that spec. Several task paths may share one companion only when they s
 
 - `ready`
 - `running`
-- `review-ready`
+- `review-ready` — implementation and evidence are ready for a non-implementer; not a review file and not proof that independent review happened
 - `closed`
-
-## Review
-
-Frontmatter:
-
-```yaml
-type: review
-id: REVIEW-checkout-expiry
-spec: SPEC-checkout
-task: TASK-checkout-expiry   # omit for a 1:1 review with no task
-pr: https://example.test/pull/123
-reviewer: name-or-session
-decision: pending
-# waivers: [AC-002]          # required when an accepted review waives unsupported/unverified rows
-```
-
-A task is always spec-backed: `source` names the ready spec that owns every scoped requirement.
-A change plan can add wave and preservation context, but it never replaces the source spec.
-
-A review names the source spec in `spec:` and reconciles against that **spec**, always passed
-explicitly via `--spec <path>` on
-the check call: with
-`task:`, coverage keys on the spec's ACs the task scoped (the task's `scope:` list); with
-no `task:` (1:1, no task), on the whole spec. The checker rejects a `spec:` value that does not
-match the handed spec's `id:`. A task, when present, only
-scopes and indexes evidence — it is never the review's target. The review's frontmatter
-names the source slice; it does not replace `spec:`.
-
-The source spec must still be exactly `ready` when review begins. The review ID and
-`Requirement coverage` section are required and non-empty. Add `Changed files`, `Findings`, `Open decisions`,
-`Change-plan coverage`, or method notes only when they carry information.
-
-The method requires `reviewer` to identify the fresh human or agent context. The CLI requires it as
-a non-empty scalar but cannot prove independence; a name is provenance, not a force field.
-
-Coverage is one contiguous GFM table. Use the exact header and place its delimiter immediately
-after it. Keep every row together; structured `verify` blocks follow the table.
-
-```markdown
-| ID | Assessment | Evidence |
-| --- | --- | --- |
-| AC-001 | Supported | exact evidence |
-```
-
-Assessments:
-
-- `Supported`
-- `Unsupported`
-- `Unverified`
-- `Blocked`
-
-The decision enum is `pending`, `accepted`, `changes-requested`, or `deferred`. The assessment
-enum is exactly the four values above; any other option value is a blocking error. When present,
-`Change-plan coverage` is parsed with the same columns and assessment enum. `Supported` needs
-evidence in either table. The agent writes assessments and
-leaves `decision: pending`. After a state-aware human picker, the selected decision is written as
-`accepted`, `changes-requested`, or `deferred`. `waivers` is absent before acceptance. At acceptance,
-when Unsupported or Unverified Requirement coverage rows exist, it lists exactly once every such
-requirement ID and no others;
-otherwise it is absent. `Supported` and `Blocked` rows are not waivable. An accepted review has no
-non-empty `Open decisions` section and no `Blocked` assessment in requirement or change-plan
-coverage. Resolve the dependency or defer the review. Every Change-plan coverage row must be
-`Supported` before acceptance; requirement waivers cannot excuse a failed preservation guarantee.
-
-C012 coverage reconciliation, C013 structured command binding, and waivers read Requirement
-coverage only. C016 evidence and the accepted-review `Blocked` rule read both Requirement coverage
-and Change-plan coverage.
 
 ## Evidence receipt
 
@@ -198,9 +130,7 @@ untouched raw output
 ```
 ````
 
-The governing artifact links the anchor and includes only the decisive verbatim excerpt. Review
-checks resolve explicit local Markdown links with `E-NNN` fragments against the review's directory
-and require the linked file to carry the matching HTML id anchor.
+The governing artifact links the anchor and includes only the decisive verbatim excerpt.
 One receipt may support several claims when each claim names its evidence anchor.
 
 ## Run note
@@ -212,8 +142,8 @@ It carries no lifecycle status or independent verdict.
 ## Finding
 
 Findings are not a standalone artifact — there is no `finding` type, no `FINDING-` id, no
-file to write. Ephemeral findings ride the review packet's `Findings` section and die with
-it. A durable personal lesson becomes native harness memory. A durable team fact enters a
+file to write. Ephemeral findings ride the live spec or task and die with it. A durable
+personal lesson becomes native harness memory. A durable team fact enters a
 human-selected project channel such as an issue, ADR, test, runbook, or maintained documentation.
 Keep one claim, its evidence, a searchable title, and no assigned id ([memory](memory.md),
 [saving findings](../09-saving-findings.md)).

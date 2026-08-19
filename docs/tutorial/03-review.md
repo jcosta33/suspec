@@ -1,49 +1,20 @@
 # Review
 
-Run `sus-review` in an independent context. It reruns the requirement command, drafts assessments,
-asks the human for the decision, and writes:
+A non-implementer judges the result. Open the native diff. Rerun the requirement command. Do not
+write a Suspec review file.
 
 ```text
-~/.agents/artifacts/shop-api/checkout-expiry-review.md
-```
-
-````markdown
----
-type: review
-id: REVIEW-checkout-expiry
-spec: SPEC-checkout
-pr: none yet
-reviewer: fresh-review-session
-decision: pending
----
-
-# Review: Expired checkout session returns 409
-
-## Changed files
-
-- `src/checkout/expiry.ts`
-- `src/api/errors.ts`
-- `test/integration/expired-session.test.ts`
-
-## Requirement coverage
-
-| ID     | Assessment | Evidence                                                                    |
-| ------ | ---------- | --------------------------------------------------------------------------- |
-| AC-001 | Supported  | `npm run test:integration -- expired-session` -> `Tests: 3 passed, 3 total` |
-
-```verify id=AC-001 cmd="npm run test:integration -- expired-session" result=pass
+npm run test:integration -- expired-session
 Tests: 3 passed, 3 total
 ```
-````
 
-Check the taskless review:
+The implementer cannot accept this work. The checker reports facts on the spec (and the task, when
+one exists). It does not render the verdict.
 
 ```bash
-suspec check ~/.agents/artifacts/shop-api/checkout-expiry-review.md \
-  --spec ~/.agents/artifacts/shop-api/checkout-expiry-spec.md
+suspec check ~/.agents/artifacts/shop-api/checkout-expiry-spec.md
 ```
 
-The structured command must match the spec. Empty or stale evidence is `Unverified`. The checker
-reports facts. The human selects Accept; the workflow changes `decision` to `accepted`.
+Empty or stale evidence is unverified. The human accepts, requests changes, or defers on the PR.
 
 Next: [close](04-close.md).

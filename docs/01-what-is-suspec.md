@@ -3,18 +3,21 @@
 Suspec is a skill-delivered method: agents get the mechanical work; humans get the decisions. Your
 harness writes code. Suspec puts explicit intent, evidence, and review around it.
 
+Skills install independently. Use the one the work needs.
+
 It provides:
 
 - an inline path for work too small to need a file;
 - specs with verifiable requirements;
 - task packets for separately dispatchable slices;
 - inventories and change plans for structural work;
-- independent reviews reconciled requirement by requirement;
+- `drill` to lock language, obligation, place, then slice before one write;
+- independent review on the native PR, via Revolver, Triple-check, or Bulletproof;
 - durable-lesson routing to native memory or project records;
 - deterministic checks over recorded structure.
 
 It does not replace plan mode, project instructions, issue trackers, PRs, CI, tests, or human
-acceptance.
+acceptance. It does not write a review file.
 
 ## Proportional rigor
 
@@ -22,10 +25,13 @@ Use the least structure that changes execution or review:
 
 - State a trivial fix and its verification inline.
 - Write a spec when intent needs a working contract.
-- Add inventory, change planning, or task splitting only when the work demands them.
-- Escalate review with risk.
+- Add inventory, change planning, task splitting, or `drill` only when the work demands them.
+- Escalate independent review with risk. The implementer cannot accept their own work.
 
-Intent, review, and findings remain constant. Everything else must justify its cost.
+The keys remain intent, review, and findings. Everything else must justify its cost.
+
+The six-step sequence (`intent -> spec -> implement -> review -> check -> findings`) is the path for
+spec-governed work, not the product.
 
 ## Boundaries
 

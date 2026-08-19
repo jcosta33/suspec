@@ -16,8 +16,8 @@ Name:
 - whether this is the final consumer; and
 - return shape.
 
-Implementation receives its spec and optional task. Review receives both companion paths. A universal
-method receives one fixed target.
+Implementation receives its spec and optional task. Independent review judges the native PR; spec and
+task paths are context, not a check companion. A universal method receives one fixed target.
 
 The implementer cannot manufacture independence by changing hats. A fresh reviewer inspects code and
 reruns evidence; worker output is only a claim index.

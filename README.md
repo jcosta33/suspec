@@ -6,6 +6,8 @@ Suspec ships as standalone skills: explicit intent in, evidence out, human decis
 matter. A deterministic CLI catches structural holes without a model. Your harness writes the code.
 Plain Markdown keeps the work portable and the repository clean.
 
+Skills install independently. Use the one the work needs.
+
 ## Install
 
 Install the skill family for your harness (Codex shown):
@@ -13,6 +15,9 @@ Install the skill family for your harness (Codex shown):
 ```bash
 npx skills add jcosta33/suspec-skills -g -a codex
 ```
+
+Re-running `add` does not prune. After 5.0.0, remove leftover `sus-review`, then re-add the family
+so `drill` installs. Cutover detail: [adoption](docs/ADOPTING.md).
 
 Skills install the workflows. Add [suspec-cli](https://github.com/jcosta33/suspec-cli) for
 deterministic checks and the optional global agent policy:
@@ -69,10 +74,9 @@ itself:
 - a spec when one precise sentence cannot govern the work;
 - a task when one spec must split into separately dispatchable slices;
 - an inventory when present behavior or ownership is unclear;
+- `drill` when one seam must lock language, obligation, place, then slice;
 - a change plan when structural work must preserve behavior across stages;
-- a formal review when risk exceeds direct human inspection;
-- a campaign artifact when one durable goal spans several pull requests and the project can enforce
-  delivery transitions.
+- a campaign artifact when one durable goal spans several pull requests.
 
 Suspec does not replace native plan mode, project guidance, issue trackers, PRs, CI, tests, or human
 acceptance. Skills install globally; repository commands, architecture, and policy stay in the
@@ -85,16 +89,17 @@ reconstruct intent and proof. Skip it when native planning, project instructions
 review already make the work obvious.
 
 Its distinct mechanism is deterministic reconciliation keyed to requirement IDs. Agents assess and
-recommend. Humans own intent, waivers, irreversible actions, and acceptance.
+recommend. Humans own intent, waivers, irreversible actions, and acceptance. The implementer cannot
+accept their own work.
 
 ## Repositories
 
 | Need                                            | Owner                                                      |
 | ----------------------------------------------- | ---------------------------------------------------------- |
-| Install the method                              | [suspec-skills](https://github.com/jcosta33/suspec-skills) |
+| Install the skills                              | [suspec-skills](https://github.com/jcosta33/suspec-skills) |
 | Run checks or install global agent rules        | [suspec-cli](https://github.com/jcosta33/suspec-cli)       |
 | Give shell-less clients the checker             | [suspec-mcp](https://github.com/jcosta33/suspec-mcp)       |
-| Read the method, formats, checks, and decisions | this repository                                            |
+| Read formats, checks, and decisions             | this repository                                            |
 
 Start with [the basic workflow](docs/02-basic-workflow.md), [adoption](docs/ADOPTING.md), or the
 [tutorial](docs/tutorial/README.md). Exact formats and contracts live under

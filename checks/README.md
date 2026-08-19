@@ -13,54 +13,51 @@ the human contract.
   [[EVIBOUND]](../docs/research/sources.md#EVIBOUND).
 - C024 rejects unresolved canonical blocking fields in a closed task. `none` and `n/a` resolve them.
 - C025 rejects specs with missing identity, status, required sections, or requirements.
-- C026 rejects dangling local evidence-receipt paths and `E-NNN` anchors.
-- C027 rejects a review whose `spec:` does not match the handed spec.
 - C028 rejects missing, duplicated, misordered, or escaped requirement fields.
 - C029 rejects malformed campaign identity, status, authority, or required sections.
 - C030 rejects broken campaign authorities and copied task-list state.
 - C031 rejects unresolved blocking state in a ready campaign.
-- Accepted reviews cannot retain an open critical decision.
-- Accepted reviews require every preservation row to be `Supported`.
-- Empty review evidence is `Unverified`, never `Supported`.
+
+C012, C013, C016, C020, C026, and C027 are RESERVED. Never reuse.
 
 ## Contents
 
-| Path                                                           | Purpose                                                           |
-| -------------------------------------------------------------- | ----------------------------------------------------------------- |
-| [`checks.yaml`](./checks.yaml)                                 | machine contract                                                  |
-| [`fixtures/conformant-task.md`](./fixtures/conformant-task.md) | positive task oracle                                              |
-| [`fixtures/violations.md`](./fixtures/violations.md)           | minimal negative cases                                            |
-| `fixtures/auth-refresh/`                                       | spec, task, review, and expected result                          |
-| `fixtures/payment-5xx/`                                        | spec, task, review, and expected result                          |
-| `fixtures/checkout/`                                           | spec, task, review, and expected result                          |
-| `fixtures/transformation/`                                     | inventory, change plan, C010, and C011                            |
-| `fixtures/cross-folder-source/`                                | artifact-relative C009                                            |
-| `fixtures/attention-economy/`                                  | minimal/deferred specs, reviews, waivers, decisions, and receipts |
-| `fixtures/campaign/`                                           | restartable goal, native ledger, and governing source              |
+| Path | Role |
+| --- | --- |
+| [`checks.yaml`](./checks.yaml) | machine contract |
+| [`fixtures/conformant-task.md`](./fixtures/conformant-task.md) | positive task oracle |
+| [`fixtures/violations.md`](./fixtures/violations.md) | minimal negative cases |
+| `fixtures/auth-refresh/` | spec, task, and expected result |
+| `fixtures/payment-5xx/` | spec, task, and expected result |
+| `fixtures/checkout/` | spec, task, and expected result |
+| `fixtures/transformation/` | inventory, change plan, C010, and C011 |
+| `fixtures/cross-folder-source/` | artifact-relative C009 |
+| `fixtures/attention-economy/` | minimal and deferred specs |
+| `fixtures/campaign/` | restartable goal, native ledger, and governing source |
 
-C012 and C013 negative cases live in `fixtures/violations.md`; domain scenarios provide positive
-coverage. Live `Do not change` comparison remains reviewer work because the checker receives no diff.
+Live `Do not change` comparison remains reviewer work because the checker receives no diff.
 
 Related examples:
 
-| Fixture        | Example                                                        |
-| -------------- | -------------------------------------------------------------- |
+| Fixture | Example |
+| --- | --- |
 | `auth-refresh` | [feature from ticket](../docs/examples/feature-from-ticket.md) |
-| `payment-5xx`  | [bug fix](../docs/examples/bug-fix.md)                         |
-| `checkout`     | [large PR review](../docs/examples/large-pr-review.md)         |
+| `payment-5xx` | [bug fix](../docs/examples/bug-fix.md) |
+| `checkout` | [large PR review](../docs/examples/large-pr-review.md) |
 
 ## Closed values
 
-| Set            | Values                                                                    |
-| -------------- | ------------------------------------------------------------------------- |
-| strength words | `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY`                        |
-| assessments    | `Supported`, `Unsupported`, `Unverified`, `Blocked`                       |
-| artifact types | `spec`, `task`, `review`, `inventory`, `change-plan`, `audit`, `research`, `campaign` |
+| Family | Values |
+| --- | --- |
+| strength words | `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY` |
+| artifact types | `spec`, `task`, `inventory`, `change-plan`, `audit`, `research`, `campaign`, `panel` |
+
+Checked types: `spec`, `task`, `change-plan`, `campaign`.
 
 ## Maintainer contract
 
 - Core IDs and severities match [checks reference](../docs/reference/checks.md) row for row.
-- Task and review schemas match the checked subset of
+- Task schemas match the checked subset of
   [artifact formats](../docs/reference/artifact-formats.md).
 - Every pinned expectation agrees with contract and prose. A fixture is evidence, not decoration.
 - `conformant-task.md` returns no diagnostic.

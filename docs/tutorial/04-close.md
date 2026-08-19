@@ -15,7 +15,7 @@ Does not apply to: other checkout validation failures or non-checkout sessions.
 Without native memory, use the project's issue, decision, test, or maintained documentation. Saving
 nothing is valid.
 
-After the final consumer finishes, present one choice for the spec, review, and sidecars:
+After the final consumer finishes, present one choice for the spec and sidecars:
 
 1. **Delete:** remove exhausted transient work.
 2. **Leave:** keep files required by a known continuation.
