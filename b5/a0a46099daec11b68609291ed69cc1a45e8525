@@ -1,0 +1,87 @@
+docs/reference/cheatsheet.md
+  s_8598c794e118cb::t_00fcd5bed7ea74 3-6,24-25,27-28
+  s_8598c794e118cb::t_6f68be79efdc30 43,45,52-53,70
+AGENTS.md
+  s_8598c794e118cb::t_f93447abf3c02f 24
+docs/tutorial/03-review.md
+  s_8598c794e118cb::t_76fbe93be5b602 3-4,7,11-12,15,18
+docs/ADOPTING.md
+  s_8598c794e118cb::t_655e46fe0912cd 71-72,87-88
+  s_8598c794e118cb::t_f3947b3e03793e 17-18
+docs/reference/rigor-escalation.md
+  s_8598c794e118cb::t_e46698f94318e0 3-15
+docs/examples/large-pr-review.md
+  s_8598c794e118cb::t_10ee7768985db6 18-19,21,23,30,32-36,39-40,43-44,47,50,52-53,56-57
+checks/README.md
+  s_8598c794e118cb::t_6b5f8677e5f95d 21,25-36,38,42-43,45-46,50-55,60
+  s_487e9aa1e46063::t_c3870f0bb9c30e 20
+docs/reference/glossary.md
+  s_8598c794e118cb::t_7c1a2c67e90c25 7,13,20
+  s_8598c794e118cb::t_b4e3cf8e119a2f 6
+docs/08-reviewing-output.md
+  s_8598c794e118cb::t_488fd077ff7a00 3-11,13-14,16-18,20-23,25-26,28-29,37-38,43-46,49-50,54,56,58,63-64,66-67
+docs/tutorial/README.md
+  s_8598c794e118cb::t_3f03cc596d4738 3-4,17
+docs/02-basic-workflow.md
+  s_8598c794e118cb::t_d504ebfa7abe85 3-8,22,32-35,39-41,48-49,54,56
+README.md
+  s_8598c794e118cb::t_9b6e525695a7ec 9-10
+  s_8598c794e118cb::t_2d07370340dee9 19-21,77,79,92-93,99,102
+docs/examples/bug-fix.md
+  s_8598c794e118cb::t_acc48aed56e695 45-46,49,52-53
+docs/09-saving-findings.md
+  s_8598c794e118cb::t_709324749d9e2d 3,31
+docs/reference/checks.md
+  s_8598c794e118cb::t_88ed532d29203e 23,25,39,41-42,69,75,77-78,81-82
+docs/examples/feature-from-ticket.md
+  s_8598c794e118cb::t_cb31243b6d8ec3 57,59-60,64-65
+docs/tutorial/04-close.md
+  s_8598c794e118cb::t_83c477ef69cabf 18
+docs/05-brownfield-and-change-plans.md
+  s_8598c794e118cb::t_b19ce110ca4f72 8-10,30-31
+  s_487e9aa1e46063::t_2f405512fc67e5 32
+docs/01-what-is-suspec.md
+  s_8598c794e118cb::t_c3497004389b83 6-7,14-15,20,28-31
+  s_8598c794e118cb::t_da4696424b0982 33-34
+docs/adrs/0184-two-doors-drill-native-review.md
+  s_8598c794e118cb::t_3a4cf2db49cb1b 1-46
+  s_8598c794e118cb::t_825035a4390897 47
+checks/checks.yaml
+  s_487e9aa1e46063::t_ef8afbe82c4431 22,26,73-74,91-92,95,99,105-106
+checks/fixtures/violations.md
+  s_8598c794e118cb::t_e0b2012af2de0f 60,63-69,72-73,206,218-219,223,225-226,229,234,238,372
+docs/adrs/README.md
+  s_8598c794e118cb::t_d0511372c024b7 153,162,168,177-178,185,187-188,191-193,218
+docs/reference/agent-guides.md
+  s_8598c794e118cb::t_f0b4ce04840c9e 19-20
+docs/reference/artifact-formats.md
+  s_8598c794e118cb::t_cfb76ca7d16498 111,133,145-146
+scripts/lint-accepted-adrs.sh
+  s_8598c794e118cb::t_f5e7160a8c6234 5-6
+scripts/lint-method-topology.sh
+  s_487e9aa1e46063::t_79f7c7da10b006 216,244,274-275
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b5a0a46099daec11b68609291ed69cc1a45e8525",
+  "prompts": {},
+  "sessions": {
+    "s_487e9aa1e46063": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "49b45b91-028d-462c-b146-db1559561123",
+        "model": "claude-fable-5"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    },
+    "s_8598c794e118cb": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "15ca1455-5482-4084-88d1-8dd47611278d",
+        "model": "grok-4.6"
+      },
+      "human_author": "José Costa <j.costa.3394@gmail.com>"
+    }
+  }
+}
